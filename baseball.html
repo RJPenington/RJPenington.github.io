@@ -6,60 +6,62 @@
     <title>Baseball Ratings | RJ Penington</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.5; color: #1a202c; background: #f7fafc; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.5; color: #e2e8f0; background: #1a1d23; }
         .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
-        header { background: linear-gradient(135deg, #1a365d, #2c5282); color: white; padding: 2rem; margin-bottom: 1.5rem; border-radius: 8px; }
+        header { background: linear-gradient(135deg, #0f1419, #1f3a5f); color: #f7fafc; padding: 2rem; margin-bottom: 1.5rem; border-radius: 8px; border: 1px solid #2d3748; }
         header h1 { font-size: 2rem; }
-        header p { opacity: 0.85; margin-top: 0.3rem; }
-        .toolbar { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; background: white; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 1rem; }
-        .toolbar label { font-weight: 600; color: #2d3748; }
-        .toolbar select { padding: 0.4rem 0.6rem; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 0.95rem; }
-        .toolbar .summary { margin-left: auto; color: #2d3748; }
+        header p { opacity: 0.75; margin-top: 0.3rem; }
+        .toolbar { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; background: #252932; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); margin-bottom: 1rem; border: 1px solid #2d3748; }
+        .toolbar label { font-weight: 600; color: #e2e8f0; }
+        .toolbar select { padding: 0.4rem 0.6rem; border: 1px solid #4a5568; border-radius: 6px; font-size: 0.95rem; background: #1a1d23; color: #e2e8f0; }
+        .toolbar .summary { margin-left: auto; color: #e2e8f0; }
         .toolbar .summary .stat { display: inline-block; margin-left: 1rem; font-weight: 600; }
-        .toolbar .summary .stat.good { color: #2f855a; }
-        .toolbar .summary .stat.bad  { color: #c53030; }
+        .toolbar .summary .stat.good { color: #68d391; }
+        .toolbar .summary .stat.bad  { color: #fc8181; }
 
-        table { width: 100%; background: white; border-collapse: collapse; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-        thead { background: #1a365d; color: white; }
-        th, td { padding: 0.7rem 0.8rem; text-align: left; border-bottom: 1px solid #edf2f7; font-size: 0.9rem; }
+        table { width: 100%; background: #252932; border-collapse: collapse; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.3); border: 1px solid #2d3748; }
+        thead { background: #0f1419; color: #f7fafc; }
+        th, td { padding: 0.7rem 0.8rem; text-align: left; border-bottom: 1px solid #2d3748; font-size: 0.9rem; color: #e2e8f0; }
         th { font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.03em; }
-        tr:hover { background: #f7fafc; }
+        tbody tr:hover { background: #2d333d; }
         td.num { text-align: right; font-variant-numeric: tabular-nums; }
-        .pick-cell { font-weight: 600; }
-        .delta-strong { background: #fefcbf; font-weight: 700; }
-        .result-W { color: #2f855a; font-weight: 700; }
-        .result-L { color: #c53030; font-weight: 700; }
-        .result-T { color: #718096; }
+        .pick-cell { font-weight: 600; color: #f7fafc; }
+        .delta-strong { background: rgba(72, 187, 120, 0.12) !important; box-shadow: inset 0 0 12px rgba(72, 187, 120, 0.35); font-weight: 700; }
+        .delta-strong td { color: #c6f6d5 !important; }
+        .delta-strong:hover { background: rgba(72, 187, 120, 0.2) !important; box-shadow: inset 0 0 16px rgba(72, 187, 120, 0.5); }
+        .result-W { color: #68d391; font-weight: 700; }
+        .result-L { color: #fc8181; font-weight: 700; }
+        .result-T { color: #a0aec0; }
         .result-pending { color: #718096; font-style: italic; }
         .footer { text-align: center; margin-top: 2rem; color: #718096; font-size: 0.85rem; }
-        .empty { text-align: center; padding: 3rem; color: #718096; }
+        .empty { text-align: center; padding: 3rem; color: #a0aec0; background: #252932; border-radius: 8px; }
         tr.summary { cursor: pointer; }
-        tr.summary td:first-child::before { content: "▸ "; color: #4a5568; transition: transform 0.15s; display: inline-block; }
+        tr.summary td:first-child::before { content: "▸ "; color: #a0aec0; transition: transform 0.15s; display: inline-block; }
         tr.summary.expanded td:first-child::before { content: "▾ "; }
         tr.detail { display: none; }
         tr.detail.show { display: table-row; }
-        tr.detail td { background: #f7fafc; padding: 0.8rem 1rem; }
+        tr.detail td { background: #1f232b; padding: 0.8rem 1rem; }
         .breakdown { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; }
-        .cat-card { background: white; padding: 0.7rem; border-radius: 6px; border-left: 3px solid #4299e1; }
-        .cat-card .label { font-size: 0.75rem; text-transform: uppercase; color: #718096; font-weight: 600; letter-spacing: 0.05em; }
+        .cat-card { background: #2d333d; padding: 0.7rem; border-radius: 6px; border-left: 3px solid #4299e1; }
+        .cat-card .label { font-size: 0.75rem; text-transform: uppercase; color: #a0aec0; font-weight: 600; letter-spacing: 0.05em; }
         .cat-card .values { display: flex; justify-content: space-between; margin-top: 0.3rem; font-size: 0.95rem; }
-        .cat-card .away { color: #c53030; }
-        .cat-card .home { color: #2f855a; }
-        .cat-card .delta-row { margin-top: 0.3rem; font-size: 0.85rem; color: #4a5568; font-weight: 600; }
-        .cat-card { cursor: pointer; transition: border-color 0.15s, transform 0.15s; }
-        .cat-card:hover { border-left-color: #2c5282; transform: translateY(-1px); }
-        .cat-card.active { border-left-color: #2c5282; background: #ebf8ff; }
-        .metric-table { margin-top: 0.8rem; background: white; border-radius: 6px; overflow: hidden; }
-        .metric-table table { box-shadow: none; }
-        .metric-table thead { background: #4a5568; }
+        .cat-card .away { color: #fc8181; }
+        .cat-card .home { color: #68d391; }
+        .cat-card .delta-row { margin-top: 0.3rem; font-size: 0.85rem; color: #cbd5e0; font-weight: 600; }
+        .cat-card { cursor: pointer; transition: border-color 0.15s, transform 0.15s, background 0.15s; }
+        .cat-card:hover { border-left-color: #63b3ed; transform: translateY(-1px); background: #353c47; }
+        .cat-card.active { border-left-color: #63b3ed; background: #2c5282; }
+        .metric-table { margin-top: 0.8rem; background: #2d333d; border-radius: 6px; overflow: hidden; }
+        .metric-table table { box-shadow: none; background: #2d333d; }
+        .metric-table thead { background: #1a1d23; }
         .metric-table th, .metric-table td { padding: 0.45rem 0.6rem; font-size: 0.85rem; }
-        .metric-table th { font-size: 0.75rem; }
-        .metric-table td.metric-name { font-weight: 600; color: #2d3748; }
-        .metric-table td.away-val { color: #c53030; }
-        .metric-table td.home-val { color: #2f855a; }
-        .metric-table td.advantage-H { background: rgba(47, 133, 90, 0.07); }
-        .metric-table td.advantage-A { background: rgba(197, 48, 48, 0.07); }
-        .hint { font-size: 0.8rem; color: #718096; margin: 0.5rem 0 0.3rem 0; font-style: italic; }
+        .metric-table th { font-size: 0.75rem; color: #cbd5e0; }
+        .metric-table td.metric-name { font-weight: 600; color: #f7fafc; }
+        .metric-table td.away-val { color: #fc8181; }
+        .metric-table td.home-val { color: #68d391; }
+        .metric-table td.advantage-H { background: rgba(104, 211, 145, 0.1); }
+        .metric-table td.advantage-A { background: rgba(252, 129, 129, 0.1); }
+        .hint { font-size: 0.8rem; color: #a0aec0; margin: 0.5rem 0 0.3rem 0; font-style: italic; }
         @media (max-width: 800px) { .breakdown { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
@@ -75,8 +77,8 @@
             <select id="dateSelect"></select>
             <div class="summary" id="summary"></div>
         </div>
-        <p style="background:#ebf8ff; color:#2c5282; padding:0.7rem 1rem; border-radius:6px; margin-bottom:1rem; font-size:0.9rem;">
-            <strong>Tip:</strong> Click any game row to expand and see the full ratings breakdown. Click a category card inside to drill into individual metrics.
+        <p style="background:#252932; color:#a0aec0; padding:0.7rem 1rem; border-radius:6px; margin-bottom:1rem; font-size:0.9rem; border-left:3px solid #63b3ed;">
+            <strong style="color:#e2e8f0;">Click any game row</strong> to see the full ratings breakdown. Click a category card inside to drill into individual metrics. Rows glowing green are the model's strongest plays.
         </p>
 
         <div id="content">
