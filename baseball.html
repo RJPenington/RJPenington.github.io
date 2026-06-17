@@ -46,6 +46,20 @@
         .cat-card .away { color: #c53030; }
         .cat-card .home { color: #2f855a; }
         .cat-card .delta-row { margin-top: 0.3rem; font-size: 0.85rem; color: #4a5568; font-weight: 600; }
+        .cat-card { cursor: pointer; transition: border-color 0.15s, transform 0.15s; }
+        .cat-card:hover { border-left-color: #2c5282; transform: translateY(-1px); }
+        .cat-card.active { border-left-color: #2c5282; background: #ebf8ff; }
+        .metric-table { margin-top: 0.8rem; background: white; border-radius: 6px; overflow: hidden; }
+        .metric-table table { box-shadow: none; }
+        .metric-table thead { background: #4a5568; }
+        .metric-table th, .metric-table td { padding: 0.45rem 0.6rem; font-size: 0.85rem; }
+        .metric-table th { font-size: 0.75rem; }
+        .metric-table td.metric-name { font-weight: 600; color: #2d3748; }
+        .metric-table td.away-val { color: #c53030; }
+        .metric-table td.home-val { color: #2f855a; }
+        .metric-table td.advantage-H { background: rgba(47, 133, 90, 0.07); }
+        .metric-table td.advantage-A { background: rgba(197, 48, 48, 0.07); }
+        .hint { font-size: 0.8rem; color: #718096; margin: 0.5rem 0 0.3rem 0; font-style: italic; }
         @media (max-width: 800px) { .breakdown { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
@@ -61,6 +75,9 @@
             <select id="dateSelect"></select>
             <div class="summary" id="summary"></div>
         </div>
+        <p style="background:#ebf8ff; color:#2c5282; padding:0.7rem 1rem; border-radius:6px; margin-bottom:1rem; font-size:0.9rem;">
+            <strong>Tip:</strong> Click any game row to expand and see the full ratings breakdown. Click a category card inside to drill into individual metrics.
+        </p>
 
         <div id="content">
             <div class="empty">Loading...</div>
@@ -108,8 +125,65 @@
             return out;
         }
 
+        let games = [];
+
+        function renderMetricBreakdown(g, cat) {
+            const c = (g.categories || {})[cat] || {};
+            const homeDetails = c.home_details || [];
+            const awayDetails = c.away_details || [];
+            // Trends/runs use 'metric'+'rating', SP/bullpen/hitting use 'metric'+'metric_weight'+'rating'
+            // Build metric-keyed maps
+            const homeByMetric = {};
+            const awayByMetric = {};
+            (Array.isArray(homeDetails) ? homeDetails : []).forEach(m => {
+                const key = m.metric || m.situation || m.group_name;
+                if (key) homeByMetric[key] = m;
+            });
+            (Array.isArray(awayDetails) ? awayDetails : []).forEach(m => {
+                const key = m.metric || m.situation || m.group_name;
+                if (key) awayByMetric[key] = m;
+            });
+            const keys = Array.from(new Set([...Object.keys(homeByMetric), ...Object.keys(awayByMetric)]));
+            if (!keys.length) {
+                return '<div class="metric-table"><p style="padding:1rem; color:#718096;">No metric-level detail available for this category.</p></div>';
+            }
+            const fmt = v => (typeof v === "number") ? v.toFixed(3) : "—";
+            const rows = keys.map(k => {
+                const h = homeByMetric[k] || {};
+                const a = awayByMetric[k] || {};
+                const hr = h.rating;
+                const ar = a.rating;
+                const w = h.metric_weight ?? a.metric_weight ?? h.base_weight ?? a.base_weight ?? "—";
+                let advClass = "";
+                if (typeof hr === "number" && typeof ar === "number") {
+                    advClass = hr > ar ? "advantage-H" : (ar > hr ? "advantage-A" : "");
+                }
+                const contrib = (typeof hr === "number" && typeof w === "number")
+                    ? ((hr - (ar||0)) * w).toFixed(2) : "—";
+                return `<tr>
+                    <td class="metric-name">${k}</td>
+                    <td class="away-val">${fmt(ar)}</td>
+                    <td class="home-val">${fmt(hr)}</td>
+                    <td class="${advClass}">${typeof w === "number" ? w : "—"}</td>
+                    <td>${contrib}</td>
+                </tr>`;
+            }).join("");
+            return `<div class="metric-table">
+                <table>
+                    <thead><tr>
+                        <th>Metric</th>
+                        <th>${g.away_team} rating</th>
+                        <th>${g.home_team} rating</th>
+                        <th>Weight</th>
+                        <th>Net contrib (H-A)*W</th>
+                    </tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>`;
+        }
+
         function render(data, results) {
-            const games = data.games || [];
+            games = data.games || [];
             if (!games.length) {
                 document.getElementById("content").innerHTML = '<div class="empty">No games for this date</div>';
                 return;
@@ -142,7 +216,7 @@
                     const v = cats[c] || {};
                     const h = v.home, a = v.away;
                     const d = (typeof h === "number" && typeof a === "number") ? (h - a) : null;
-                    return `<div class="cat-card">
+                    return `<div class="cat-card" data-cat="${c}" data-row="${i}">
                         <div class="label">${c.toUpperCase()}</div>
                         <div class="values"><span class="away">${g.away_team}: ${fmt(a)}</span><span class="home">${g.home_team}: ${fmt(h)}</span></div>
                         <div class="delta-row">Δ ${d == null ? "—" : (d >= 0 ? "+" : "") + d.toFixed(2)}</div>
@@ -160,7 +234,11 @@
                     <td>${resultHtml}</td>
                 </tr>
                 <tr class="detail" data-row="${i}">
-                    <td colspan="9"><div class="breakdown">${catHtml}</div></td>
+                    <td colspan="9">
+                        <div class="breakdown">${catHtml}</div>
+                        <p class="hint">Click any category card above to see the metric-by-metric breakdown that produced its rating.</p>
+                        <div id="metric-detail-${i}"></div>
+                    </td>
                 </tr>`;
             }).join("");
             document.getElementById("content").innerHTML = `
@@ -181,6 +259,23 @@
                     const detail = document.querySelector(`tr.detail[data-row="${i}"]`);
                     row.classList.toggle("expanded");
                     detail.classList.toggle("show");
+                });
+            });
+
+            // Category card click → show metric breakdown
+            document.querySelectorAll(".cat-card").forEach(card => {
+                card.addEventListener("click", (ev) => {
+                    ev.stopPropagation();
+                    const i = card.getAttribute("data-row");
+                    const cat = card.getAttribute("data-cat");
+                    const g = games[parseInt(i)];
+                    const target = document.getElementById("metric-detail-" + i);
+                    // Toggle if same card already active
+                    const wasActive = card.classList.contains("active");
+                    card.parentElement.querySelectorAll(".cat-card").forEach(c => c.classList.remove("active"));
+                    if (wasActive) { target.innerHTML = ""; return; }
+                    card.classList.add("active");
+                    target.innerHTML = renderMetricBreakdown(g, cat);
                 });
             });
 
