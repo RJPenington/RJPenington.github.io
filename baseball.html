@@ -224,6 +224,15 @@
                         <div class="delta-row">Δ ${d == null ? "—" : (d >= 0 ? "+" : "") + d.toFixed(2)}</div>
                     </div>`;
                 }).join("");
+                // Format odds line
+                const odds = g.odds;
+                let oddsHtml = '<span style="color:#718096">—</span>';
+                if (odds && (odds.ml_home || odds.ml_away)) {
+                    oddsHtml = `<span class="away-val">${g.away_team} ${odds.ml_away || "—"}</span> / <span class="home-val">${g.home_team} ${odds.ml_home || "—"}</span>`;
+                    if (odds.total) {
+                        oddsHtml += `<br><span style="font-size:0.8rem; color:#a0aec0;">O/U ${odds.total}</span>`;
+                    }
+                }
                 return `<tr class="summary ${deltaClass}" data-row="${i}">
                     <td>${g.away_team} @ ${g.home_team}</td>
                     <td>${g.away_pitcher || ""}</td>
@@ -232,11 +241,12 @@
                     <td class="num">${g.home_total?.toFixed(2) ?? ""}</td>
                     <td class="num">${g.delta >= 0 ? "+" : ""}${g.delta?.toFixed(2) ?? ""}</td>
                     <td class="pick-cell">${g.pick}</td>
+                    <td style="font-size:0.85rem">${oddsHtml}</td>
                     <td>${scoreHtml}</td>
                     <td>${resultHtml}</td>
                 </tr>
                 <tr class="detail" data-row="${i}">
-                    <td colspan="9">
+                    <td colspan="10">
                         <div class="breakdown">${catHtml}</div>
                         <p class="hint">Click any category card above to see the metric-by-metric breakdown that produced its rating.</p>
                         <div id="metric-detail-${i}"></div>
@@ -249,7 +259,7 @@
                         <tr>
                             <th>Matchup</th><th>Away SP</th><th>Home SP</th>
                             <th class="num">Away</th><th class="num">Home</th><th class="num">Δ</th>
-                            <th>Pick</th><th>Score</th><th>Result</th>
+                            <th>Pick</th><th>Line</th><th>Score</th><th>Result</th>
                         </tr>
                     </thead>
                     <tbody>${rows}</tbody>
