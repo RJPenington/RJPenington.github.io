@@ -18,6 +18,7 @@
         .toolbar .summary .stat { display: inline-block; margin-left: 1rem; font-weight: 600; }
         .toolbar .summary .stat.good { color: #68d391; }
         .toolbar .summary .stat.bad  { color: #fc8181; }
+        .toolbar .summary .stat.divider { color: #4a5568; margin: 0 0.5rem; opacity: 0.6; }
 
         table { width: 100%; background: #252932; border-collapse: collapse; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.3); border: 1px solid #2d3748; }
         thead { background: #0f1419; color: #f7fafc; }
@@ -105,6 +106,14 @@
             const r = await fetch(INDEX_FILE);
             if (!r.ok) throw new Error("No index");
             return await r.json();
+        }
+
+        async function loadOverallSummary() {
+            try {
+                const r = await fetch("ratings/summary.json", {cache: "no-store"});
+                if (!r.ok) return null;
+                return await r.json();
+            } catch (e) { return null; }
         }
 
         async function loadDay(dateStr) {
@@ -305,16 +314,32 @@
 
             const total = wins + losses;
             const summary = document.getElementById("summary");
+            let html = "";
             if (total > 0) {
                 const pct = (wins / total * 100).toFixed(0);
                 const sTotal = sWins + sLosses;
                 const sPct = sTotal ? (sWins / sTotal * 100).toFixed(0) : "—";
-                summary.innerHTML = `
-                    <span class="stat ${wins>losses?'good':'bad'}">Record: ${wins}-${losses} (${pct}%)</span>
-                    <span class="stat ${sWins>=sLosses?'good':'bad'}">Strong: ${sWins}-${sLosses} (${sPct}%)</span>`;
+                html += `
+                    <span class="stat ${wins>losses?'good':'bad'}">Today: ${wins}-${losses} (${pct}%)</span>
+                    <span class="stat ${sWins>=sLosses?'good':'bad'}">Today Strong: ${sWins}-${sLosses} (${sPct}%)</span>`;
             } else {
-                summary.innerHTML = `<span class="stat">${games.length} games loaded</span>`;
+                html += `<span class="stat">${games.length} games loaded</span>`;
             }
+            // Overall rolling totals
+            if (overallSummary && overallSummary.totals) {
+                const t = overallSummary.totals;
+                const tt = t.wins + t.losses;
+                if (tt > 0) {
+                    const pct = (t.wins / tt * 100).toFixed(0);
+                    const st = t.strong_wins + t.strong_losses;
+                    const sPct = st ? (t.strong_wins / st * 100).toFixed(0) : "—";
+                    html += `
+                        <span class="stat divider">|</span>
+                        <span class="stat ${t.wins>t.losses?'good':'bad'}">Overall: ${t.wins}-${t.losses} (${pct}%)</span>
+                        <span class="stat ${t.strong_wins>=t.strong_losses?'good':'bad'}">Overall Strong: ${t.strong_wins}-${t.strong_losses} (${sPct}%)</span>`;
+                }
+            }
+            summary.innerHTML = html;
         }
 
         async function showDate(dateStr) {
@@ -332,9 +357,12 @@
             }
         }
 
+        let overallSummary = null;
+
         async function init() {
             try {
-                const idx = await loadIndex();
+                const [idx, summary] = await Promise.all([loadIndex(), loadOverallSummary()]);
+                overallSummary = summary;
                 const dates = (idx.dates || []).sort().reverse();
                 const sel = document.getElementById("dateSelect");
                 sel.innerHTML = dates.map(d => `<option value="${d}">${d}</option>`).join("");
