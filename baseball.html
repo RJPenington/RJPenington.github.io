@@ -47,6 +47,9 @@
         .cat-card .values { display: flex; justify-content: space-between; margin-top: 0.3rem; font-size: 0.95rem; }
         .cat-card .away { color: #fc8181; }
         .cat-card .home { color: #68d391; }
+        .cat-card .better { color: #68d391; font-weight: 600; }
+        .cat-card .worse  { color: #fc8181; }
+        .cat-card .neutral { color: #cbd5e0; }
         .cat-card .delta-row { margin-top: 0.3rem; font-size: 0.85rem; color: #cbd5e0; font-weight: 600; }
         .cat-card { cursor: pointer; transition: border-color 0.15s, transform 0.15s, background 0.15s; }
         .cat-card:hover { border-left-color: #63b3ed; transform: translateY(-1px); background: #353c47; }
@@ -59,6 +62,9 @@
         .metric-table td.metric-name { font-weight: 600; color: #f7fafc; }
         .metric-table td.away-val { color: #fc8181; }
         .metric-table td.home-val { color: #68d391; }
+        .metric-table td.better-val { color: #68d391; font-weight: 600; }
+        .metric-table td.worse-val  { color: #fc8181; }
+        .metric-table td.neutral-val { color: #cbd5e0; }
         .metric-table td.advantage-H { background: rgba(104, 211, 145, 0.1); }
         .metric-table td.advantage-A { background: rgba(252, 129, 129, 0.1); }
         .hint { font-size: 0.8rem; color: #a0aec0; margin: 0.5rem 0 0.3rem 0; font-style: italic; }
@@ -156,16 +162,17 @@
                 const hr = h.rating;
                 const ar = a.rating;
                 const w = h.metric_weight ?? a.metric_weight ?? h.base_weight ?? a.base_weight ?? "—";
-                let advClass = "";
+                let advClass = "", awayCls = "neutral-val", homeCls = "neutral-val";
                 if (typeof hr === "number" && typeof ar === "number") {
-                    advClass = hr > ar ? "advantage-H" : (ar > hr ? "advantage-A" : "");
+                    if (hr > ar) { advClass = "advantage-H"; homeCls = "better-val"; awayCls = "worse-val"; }
+                    else if (ar > hr) { advClass = "advantage-A"; awayCls = "better-val"; homeCls = "worse-val"; }
                 }
                 const contrib = (typeof hr === "number" && typeof w === "number")
                     ? ((hr - (ar||0)) * w).toFixed(2) : "—";
                 return `<tr>
                     <td class="metric-name">${k}</td>
-                    <td class="away-val">${fmt(ar)}</td>
-                    <td class="home-val">${fmt(hr)}</td>
+                    <td class="${awayCls}">${fmt(ar)}</td>
+                    <td class="${homeCls}">${fmt(hr)}</td>
                     <td class="${advClass}">${typeof w === "number" ? w : "—"}</td>
                     <td>${contrib}</td>
                 </tr>`;
@@ -218,9 +225,14 @@
                     const v = cats[c] || {};
                     const h = v.home, a = v.away;
                     const d = (typeof h === "number" && typeof a === "number") ? (h - a) : null;
+                    let awayCls = "neutral", homeCls = "neutral";
+                    if (typeof h === "number" && typeof a === "number") {
+                        if (h > a) { homeCls = "better"; awayCls = "worse"; }
+                        else if (a > h) { awayCls = "better"; homeCls = "worse"; }
+                    }
                     return `<div class="cat-card" data-cat="${c}" data-row="${i}">
                         <div class="label">${c.toUpperCase()}</div>
-                        <div class="values"><span class="away">${g.away_team}: ${fmt(a)}</span><span class="home">${g.home_team}: ${fmt(h)}</span></div>
+                        <div class="values"><span class="${awayCls}">${g.away_team}: ${fmt(a)}</span><span class="${homeCls}">${g.home_team}: ${fmt(h)}</span></div>
                         <div class="delta-row">Δ ${d == null ? "—" : (d >= 0 ? "+" : "") + d.toFixed(2)}</div>
                     </div>`;
                 }).join("");
