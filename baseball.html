@@ -33,6 +33,20 @@
         .result-pending { color: #718096; font-style: italic; }
         .footer { text-align: center; margin-top: 2rem; color: #718096; font-size: 0.85rem; }
         .empty { text-align: center; padding: 3rem; color: #718096; }
+        tr.summary { cursor: pointer; }
+        tr.summary td:first-child::before { content: "▸ "; color: #4a5568; transition: transform 0.15s; display: inline-block; }
+        tr.summary.expanded td:first-child::before { content: "▾ "; }
+        tr.detail { display: none; }
+        tr.detail.show { display: table-row; }
+        tr.detail td { background: #f7fafc; padding: 0.8rem 1rem; }
+        .breakdown { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; }
+        .cat-card { background: white; padding: 0.7rem; border-radius: 6px; border-left: 3px solid #4299e1; }
+        .cat-card .label { font-size: 0.75rem; text-transform: uppercase; color: #718096; font-weight: 600; letter-spacing: 0.05em; }
+        .cat-card .values { display: flex; justify-content: space-between; margin-top: 0.3rem; font-size: 0.95rem; }
+        .cat-card .away { color: #c53030; }
+        .cat-card .home { color: #2f855a; }
+        .cat-card .delta-row { margin-top: 0.3rem; font-size: 0.85rem; color: #4a5568; font-weight: 600; }
+        @media (max-width: 800px) { .breakdown { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
 <body>
@@ -122,7 +136,19 @@
                     }
                 }
                 const deltaClass = Math.abs(g.delta) >= 1.0 ? "delta-strong" : "";
-                return `<tr class="${deltaClass}">
+                const cats = g.categories || {};
+                const fmt = v => (typeof v === "number") ? v.toFixed(2) : "—";
+                const catHtml = ["trends","runs","sp","bullpen","hitting"].map(c => {
+                    const v = cats[c] || {};
+                    const h = v.home, a = v.away;
+                    const d = (typeof h === "number" && typeof a === "number") ? (h - a) : null;
+                    return `<div class="cat-card">
+                        <div class="label">${c.toUpperCase()}</div>
+                        <div class="values"><span class="away">${g.away_team}: ${fmt(a)}</span><span class="home">${g.home_team}: ${fmt(h)}</span></div>
+                        <div class="delta-row">Δ ${d == null ? "—" : (d >= 0 ? "+" : "") + d.toFixed(2)}</div>
+                    </div>`;
+                }).join("");
+                return `<tr class="summary ${deltaClass}" data-row="${i}">
                     <td>${g.away_team} @ ${g.home_team}</td>
                     <td>${g.away_pitcher || ""}</td>
                     <td>${g.home_pitcher || ""}</td>
@@ -132,6 +158,9 @@
                     <td class="pick-cell">${g.pick}</td>
                     <td>${scoreHtml}</td>
                     <td>${resultHtml}</td>
+                </tr>
+                <tr class="detail" data-row="${i}">
+                    <td colspan="9"><div class="breakdown">${catHtml}</div></td>
                 </tr>`;
             }).join("");
             document.getElementById("content").innerHTML = `
@@ -145,6 +174,16 @@
                     </thead>
                     <tbody>${rows}</tbody>
                 </table>`;
+            // Expand/collapse handler
+            document.querySelectorAll("tr.summary").forEach(row => {
+                row.addEventListener("click", () => {
+                    const i = row.getAttribute("data-row");
+                    const detail = document.querySelector(`tr.detail[data-row="${i}"]`);
+                    row.classList.toggle("expanded");
+                    detail.classList.toggle("show");
+                });
+            });
+
             const total = wins + losses;
             const summary = document.getElementById("summary");
             if (total > 0) {
