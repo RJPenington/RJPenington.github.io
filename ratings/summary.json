@@ -1,9 +1,9 @@
 {
   "totals": {
-    "wins": 42,
-    "losses": 36,
-    "strong_wins": 14,
-    "strong_losses": 13
+    "wins": 51,
+    "losses": 43,
+    "strong_wins": 17,
+    "strong_losses": 17
   },
   "per_day": [
     {
@@ -56,12 +56,20 @@
     },
     {
       "date": "2026-06-24",
+      "wins": 9,
+      "losses": 7,
+      "strong_wins": 3,
+      "strong_losses": 4,
+      "pending": 0
+    },
+    {
+      "date": "2026-06-25",
       "wins": 0,
       "losses": 0,
       "strong_wins": 0,
       "strong_losses": 0,
-      "pending": 16
+      "pending": 9
     }
   ],
-  "as_of": "2026-06-24"
+  "as_of": "2026-06-25"
 }
