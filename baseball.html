@@ -87,9 +87,12 @@
                 <button class="model-tab" data-rating="2" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Rating 2</button>
                 <button class="model-tab" data-rating="3" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Rating 3</button>
             </div>
-            <div class="view-tabs" id="viewTabs" style="display:inline-flex; gap:4px; margin-left:1rem; border-left:1px solid #4a5568; padding-left:1rem;">
+            <div class="view-tabs" id="viewTabs" style="display:inline-flex; gap:4px; margin-left:1rem; border-left:1px solid #4a5568; padding-left:1rem; flex-wrap:wrap;">
                 <button class="view-tab active" data-view="picks" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#48bb78; color:#fff; cursor:pointer; font-size:0.85rem;">Picks</button>
                 <button class="view-tab" data-view="gambling" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Gambling ROI</button>
+                <button class="view-tab" data-view="postgame" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Postgame Compare</button>
+                <button class="view-tab" data-view="perf_metrics" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Perf by Metrics</button>
+                <button class="view-tab" data-view="grand_total" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Grand Total</button>
             </div>
             <div class="summary" id="summary"></div>
         </div>
@@ -158,50 +161,274 @@
                     '<div class="empty">No ROI data yet — needs at least one completed day with odds + finals.</div>';
                 return;
             }
-            const r = roi.by_rating[currentRating] || {};
-            const flat = r.overall_flat || {bets:0,wins:0,losses:0,profit:0,stake:0,roi_pct:0};
-            const scaled = r.overall_scaled || {bets:0,wins:0,losses:0,profit:0,stake:0,roi_pct:0};
-            const perDay = r.per_day || [];
             const fmt = n => (n >= 0 ? "+" : "") + n.toFixed(2);
             const pct = p => (p >= 0 ? "+" : "") + p.toFixed(1) + "%";
             const cell = (v) => `<span style="color:${v>=0?'#48bb78':'#f56565'};">${v}</span>`;
 
-            let html = `<div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
-                <div style="background:#252932; padding:1rem; border-radius:6px; border:1px solid #4a5568;">
-                    <div style="color:#a0aec0; font-size:0.8rem; margin-bottom:0.3rem;">FLAT $100 / pick (Rating ${currentRating})</div>
-                    <div style="font-size:1.4rem; font-weight:600;">${cell(`$${fmt(flat.profit)}`)}</div>
-                    <div style="color:#a0aec0; font-size:0.85rem;">ROI: ${cell(pct(flat.roi_pct))} | ${flat.wins}-${flat.losses} (${flat.bets} bets, $${flat.stake.toFixed(0)} staked)</div>
-                </div>
-                <div style="background:#252932; padding:1rem; border-radius:6px; border:1px solid #4a5568;">
-                    <div style="color:#a0aec0; font-size:0.8rem; margin-bottom:0.3rem;">SCALED by delta (Rating ${currentRating})</div>
-                    <div style="font-size:1.4rem; font-weight:600;">${cell(`$${fmt(scaled.profit)}`)}</div>
-                    <div style="color:#a0aec0; font-size:0.85rem;">ROI: ${cell(pct(scaled.roi_pct))} | ${scaled.wins}-${scaled.losses} (${scaled.bets} bets, $${scaled.stake.toFixed(0)} staked)</div>
-                </div>
-            </div>`;
+            // Three columns — one card per rating
+            let html = '<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-bottom:1rem;">';
+            for (const r of [1, 2, 3]) {
+                const rData = roi.by_rating[r] || {};
+                const flat = rData.overall_flat || {bets:0,wins:0,losses:0,profit:0,stake:0,roi_pct:0};
+                const scaled = rData.overall_scaled || {bets:0,wins:0,losses:0,profit:0,stake:0,roi_pct:0};
+                html += `<div style="background:#252932; padding:1rem; border-radius:6px; border:1px solid #4a5568;">
+                    <div style="font-weight:600; margin-bottom:0.5rem;">Rating ${r}</div>
+                    <div style="color:#a0aec0; font-size:0.75rem;">FLAT $100/pick</div>
+                    <div style="font-size:1.1rem; font-weight:600;">${cell(`$${fmt(flat.profit)}`)} <span style="color:#a0aec0; font-size:0.85rem;">${cell(pct(flat.roi_pct))}</span></div>
+                    <div style="color:#a0aec0; font-size:0.8rem;">${flat.wins}-${flat.losses} (${flat.bets} bets)</div>
+                    <div style="border-top:1px solid #2d3748; margin-top:0.5rem; padding-top:0.5rem;">
+                        <div style="color:#a0aec0; font-size:0.75rem;">SCALED by delta</div>
+                        <div style="font-size:1.1rem; font-weight:600;">${cell(`$${fmt(scaled.profit)}`)} <span style="color:#a0aec0; font-size:0.85rem;">${cell(pct(scaled.roi_pct))}</span></div>
+                        <div style="color:#a0aec0; font-size:0.8rem;">${scaled.wins}-${scaled.losses} (${scaled.bets} bets)</div>
+                    </div>
+                </div>`;
+            }
+            html += `</div>`;
 
             html += `<div style="background:#252932; padding:0.8rem 1rem; border-radius:6px; margin-bottom:1rem; font-size:0.85rem; color:#a0aec0;">
                 <strong style="color:#e2e8f0;">Scaled unit sizing:</strong>
                 |Δ|&lt;1 → 1u ($100) · 1–1.5 → 1.5u · 1.5–2 → 2u · 2–2.5 → 2.5u · 2.5+ → 3u
             </div>`;
 
-            html += `<table class="games-table" style="width:100%; border-collapse:collapse;">
+            // Day-by-day table: shows each rating's flat/scaled per day
+            html += `<table class="games-table" style="width:100%; border-collapse:collapse; font-size:0.85rem;">
                 <thead><tr style="background:#252932;">
-                  <th style="text-align:left;padding:0.6rem;">Date</th>
-                  <th style="text-align:right;padding:0.6rem;">Flat P/L</th>
-                  <th style="text-align:right;padding:0.6rem;">Flat ROI</th>
-                  <th style="text-align:right;padding:0.6rem;">Scaled P/L</th>
-                  <th style="text-align:right;padding:0.6rem;">Scaled ROI</th>
-                  <th style="text-align:right;padding:0.6rem;">Record</th>
+                  <th style="text-align:left;padding:0.5rem;">Date</th>
+                  <th style="text-align:right;padding:0.5rem;">R1 Flat</th>
+                  <th style="text-align:right;padding:0.5rem;">R2 Flat</th>
+                  <th style="text-align:right;padding:0.5rem;">R3 Flat</th>
+                  <th style="text-align:right;padding:0.5rem;">R1 Scaled</th>
+                  <th style="text-align:right;padding:0.5rem;">R2 Scaled</th>
+                  <th style="text-align:right;padding:0.5rem;">R3 Scaled</th>
                 </tr></thead><tbody>`;
-            for (const day of perDay.slice().reverse()) {
+            // Collect all unique dates across the 3 rating per_day arrays
+            const dateSet = new Set();
+            for (const r of [1,2,3]) {
+                ((roi.by_rating[r] || {}).per_day || []).forEach(d => dateSet.add(d.date));
+            }
+            const datesSorted = [...dateSet].sort().reverse();
+            const indexByR = {};
+            for (const r of [1,2,3]) {
+                indexByR[r] = {};
+                ((roi.by_rating[r] || {}).per_day || []).forEach(d => { indexByR[r][d.date] = d; });
+            }
+            for (const date of datesSorted) {
                 html += `<tr style="border-bottom:1px solid #2d3748;">
-                  <td style="padding:0.6rem;">${day.date}</td>
-                  <td style="padding:0.6rem; text-align:right;">${cell(`$${fmt(day.flat.profit)}`)}</td>
-                  <td style="padding:0.6rem; text-align:right;">${cell(pct(day.flat.roi_pct))}</td>
-                  <td style="padding:0.6rem; text-align:right;">${cell(`$${fmt(day.scaled.profit)}`)}</td>
-                  <td style="padding:0.6rem; text-align:right;">${cell(pct(day.scaled.roi_pct))}</td>
-                  <td style="padding:0.6rem; text-align:right;">${day.flat.wins}-${day.flat.losses}</td>
+                    <td style="padding:0.5rem;">${date}</td>`;
+                for (const r of [1,2,3]) {
+                    const day = indexByR[r][date];
+                    html += `<td style="padding:0.5rem; text-align:right;">${day ? cell(`$${fmt(day.flat.profit)}`) : "—"}</td>`;
+                }
+                for (const r of [1,2,3]) {
+                    const day = indexByR[r][date];
+                    html += `<td style="padding:0.5rem; text-align:right;">${day ? cell(`$${fmt(day.scaled.profit)}`) : "—"}</td>`;
+                }
+                html += `</tr>`;
+            }
+            html += `</tbody></table>`;
+            document.getElementById("content").innerHTML = html;
+        }
+
+        // Load all 3 ratings JSON for a specific date — used by postgame/perf views.
+        async function loadAllRatingsForDate(dateStr) {
+            const out = {};
+            for (const r of [1,2,3]) {
+                try {
+                    const resp = await fetch(`ratings/${dateStr}_r${r}.json`);
+                    if (resp.ok) out[r] = await resp.json();
+                } catch (e) {}
+            }
+            if (!out[1]) {
+                try {
+                    const resp = await fetch(`ratings/${dateStr}.json`);
+                    if (resp.ok) out[1] = await resp.json();
+                } catch (e) {}
+            }
+            return out;
+        }
+
+        async function fetchBoxScore(gamePk) {
+            try {
+                const r = await fetch(`https://statsapi.mlb.com/api/v1/game/${gamePk}/boxscore`);
+                if (!r.ok) return null;
+                return await r.json();
+            } catch (e) { return null; }
+        }
+
+        async function fetchScheduleForDate(dateStr) {
+            try {
+                const r = await fetch(`https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${dateStr}&hydrate=team,linescore`);
+                if (!r.ok) return [];
+                const data = await r.json();
+                const out = [];
+                const norm = a => ({"KC":"KCR","SD":"SDP","SF":"SFG","WSH":"WSN","TB":"TBR","AZ":"ARI","CWS":"CHW","OAK":"ATH"}[a] || a);
+                for (const d of data.dates || []) {
+                    for (const g of d.games || []) {
+                        out.push({
+                            gamePk: g.gamePk,
+                            home: norm(g.teams.home.team.abbreviation),
+                            away: norm(g.teams.away.team.abbreviation),
+                            homeScore: g.teams.home.score ?? null,
+                            awayScore: g.teams.away.score ?? null,
+                            state: g.status?.detailedState || "",
+                        });
+                    }
+                }
+                return out;
+            } catch (e) { return []; }
+        }
+
+        async function renderPostgame(dateStr) {
+            const [all, schedule] = await Promise.all([
+                loadAllRatingsForDate(dateStr),
+                fetchScheduleForDate(dateStr),
+            ]);
+            if (!all[1]) {
+                document.getElementById("content").innerHTML = '<div class="empty">No data for this date.</div>';
+                return;
+            }
+            const games = all[1].games || [];
+            let html = `<h3 style="margin:0.5rem 0;">Postgame: each game shows R1/R2/R3 picks + final score</h3>
+                        <table style="width:100%; border-collapse:collapse;">
+                <thead><tr style="background:#252932;">
+                  <th style="text-align:left;padding:0.5rem;">Game</th>
+                  <th style="text-align:center;padding:0.5rem;">Final</th>
+                  <th style="text-align:center;padding:0.5rem;">R1 pick</th>
+                  <th style="text-align:center;padding:0.5rem;">R2 pick</th>
+                  <th style="text-align:center;padding:0.5rem;">R3 pick</th>
+                  <th style="text-align:center;padding:0.5rem;">Box</th>
+                </tr></thead><tbody>`;
+            for (const g of games) {
+                const matchup = `${g.away_team}@${g.home_team}`;
+                const sched = schedule.find(s => s.home === g.home_team && s.away === g.away_team) || {};
+                const finalText = (sched.state === "Final" && sched.homeScore != null)
+                    ? `${g.away_team} ${sched.awayScore} - ${sched.homeScore} ${g.home_team}` : "—";
+                const winner = sched.state === "Final"
+                    ? (sched.homeScore > sched.awayScore ? g.home_team : g.away_team) : null;
+                const pickCell = (r) => {
+                    const game = (all[r]?.games || []).find(x => x.home_team === g.home_team && x.away_team === g.away_team);
+                    if (!game) return "—";
+                    const correct = winner != null && winner === game.pick;
+                    const color = winner == null ? "#a0aec0" : (correct ? "#48bb78" : "#f56565");
+                    return `<span style="color:${color}; font-weight:600;">${game.pick} ${game.delta?.toFixed(2) || ""}</span>`;
+                };
+                html += `<tr style="border-bottom:1px solid #2d3748;">
+                    <td style="padding:0.5rem;">${matchup}</td>
+                    <td style="padding:0.5rem; text-align:center;">${finalText}</td>
+                    <td style="padding:0.5rem; text-align:center;">${pickCell(1)}</td>
+                    <td style="padding:0.5rem; text-align:center;">${pickCell(2)}</td>
+                    <td style="padding:0.5rem; text-align:center;">${pickCell(3)}</td>
+                    <td style="padding:0.5rem; text-align:center;">${sched.gamePk
+                        ? `<a href="https://www.mlb.com/gameday/${sched.gamePk}" target="_blank" style="color:#63b3ed;">view</a>`
+                        : "—"}</td>
                 </tr>`;
+            }
+            html += `</tbody></table>`;
+            document.getElementById("content").innerHTML = html;
+        }
+
+        async function renderPerfMetrics(dateStr) {
+            const [all, schedule] = await Promise.all([
+                loadAllRatingsForDate(dateStr),
+                fetchScheduleForDate(dateStr),
+            ]);
+            if (!all[1]) {
+                document.getElementById("content").innerHTML = '<div class="empty">No data for this date.</div>';
+                return;
+            }
+            const cats = ["trends","runs","sp","bullpen","hitting","bullpen_fatigue"];
+            const games = all[1].games || [];
+            let html = `<h3 style="margin:0.5rem 0;">Per-category pick correctness — each rating × each category × outcome</h3>`;
+            for (const g of games) {
+                const sched = schedule.find(s => s.home === g.home_team && s.away === g.away_team) || {};
+                const winner = sched.state === "Final"
+                    ? (sched.homeScore > sched.awayScore ? g.home_team : g.away_team) : null;
+                html += `<div style="background:#1f242c; border:1px solid #2d3748; border-radius:6px; padding:0.8rem; margin-bottom:1rem;">
+                    <div style="font-weight:600; margin-bottom:0.5rem;">${g.away_team} @ ${g.home_team}
+                    ${winner ? `<span style="color:#48bb78; margin-left:1rem;">Final: ${winner} won</span>` : `<span style="color:#a0aec0; margin-left:1rem;">In progress / pending</span>`}</div>
+                    <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                    <thead><tr style="color:#a0aec0;">
+                      <th style="text-align:left;padding:0.3rem;">Category</th>
+                      <th style="text-align:center;padding:0.3rem;">R1 pick</th>
+                      <th style="text-align:center;padding:0.3rem;">R2 pick</th>
+                      <th style="text-align:center;padding:0.3rem;">R3 pick</th>
+                    </tr></thead><tbody>`;
+                for (const c of cats) {
+                    html += `<tr><td style="padding:0.3rem;">${c}</td>`;
+                    for (const r of [1,2,3]) {
+                        const game = (all[r]?.games || []).find(x => x.home_team === g.home_team && x.away_team === g.away_team);
+                        if (!game || !game.categories?.[c]) { html += `<td style="text-align:center;padding:0.3rem;">—</td>`; continue; }
+                        const v = game.categories[c];
+                        if (typeof v.home !== "number" || typeof v.away !== "number") { html += `<td style="text-align:center;padding:0.3rem;">—</td>`; continue; }
+                        const catPick = v.home > v.away ? g.home_team : g.away_team;
+                        const correct = winner != null && winner === catPick;
+                        const color = winner == null ? "#a0aec0" : (correct ? "#48bb78" : "#f56565");
+                        const mark = winner == null ? "" : (correct ? " ✓" : " ✗");
+                        html += `<td style="text-align:center;padding:0.3rem; color:${color};">${catPick}${mark}</td>`;
+                    }
+                    html += `</tr>`;
+                }
+                html += `</tbody></table></div>`;
+            }
+            document.getElementById("content").innerHTML = html;
+        }
+
+        async function renderGrandTotal() {
+            // Aggregate per-category, per-rating wins/losses across ALL dates in index.
+            const idx = await loadIndex();
+            const dates = idx.dates || [];
+            const cats = ["trends","runs","sp","bullpen","hitting","bullpen_fatigue"];
+            // tally[rating][category] = {wins, losses, pending}
+            const tally = {1:{}, 2:{}, 3:{}};
+            for (const r of [1,2,3]) {
+                for (const c of cats) tally[r][c] = {wins:0, losses:0, pending:0};
+            }
+            for (const dateStr of dates) {
+                const [all, schedule] = await Promise.all([
+                    loadAllRatingsForDate(dateStr),
+                    fetchScheduleForDate(dateStr),
+                ]);
+                if (!all[1]) continue;
+                const games = all[1].games || [];
+                for (const g of games) {
+                    const sched = schedule.find(s => s.home === g.home_team && s.away === g.away_team) || {};
+                    if (sched.state !== "Final" || sched.homeScore == null) {
+                        for (const r of [1,2,3]) for (const c of cats) tally[r][c].pending += 1;
+                        continue;
+                    }
+                    const winner = sched.homeScore > sched.awayScore ? g.home_team : g.away_team;
+                    for (const r of [1,2,3]) {
+                        const game = (all[r]?.games || []).find(x => x.home_team === g.home_team && x.away_team === g.away_team);
+                        if (!game) continue;
+                        for (const c of cats) {
+                            const v = game.categories?.[c];
+                            if (!v || typeof v.home !== "number" || typeof v.away !== "number") continue;
+                            const catPick = v.home > v.away ? g.home_team : g.away_team;
+                            if (catPick === winner) tally[r][c].wins += 1;
+                            else tally[r][c].losses += 1;
+                        }
+                    }
+                }
+            }
+            let html = `<h3 style="margin:0.5rem 0;">Grand Total — per-category record across all dates, per rating</h3>
+                        <table style="width:100%; border-collapse:collapse;">
+                <thead><tr style="background:#252932;">
+                  <th style="text-align:left;padding:0.5rem;">Category</th>
+                  <th style="text-align:center;padding:0.5rem;">Rating 1</th>
+                  <th style="text-align:center;padding:0.5rem;">Rating 2</th>
+                  <th style="text-align:center;padding:0.5rem;">Rating 3</th>
+                </tr></thead><tbody>`;
+            for (const c of cats) {
+                html += `<tr style="border-bottom:1px solid #2d3748;">
+                    <td style="padding:0.5rem; font-weight:600;">${c.toUpperCase()}</td>`;
+                for (const r of [1,2,3]) {
+                    const t = tally[r][c];
+                    const games = t.wins + t.losses;
+                    const pct = games > 0 ? (t.wins / games * 100).toFixed(1) : "—";
+                    const color = games > 0 && t.wins > t.losses ? "#48bb78" : (games > 0 ? "#f56565" : "#a0aec0");
+                    html += `<td style="padding:0.5rem; text-align:center; color:${color};">${t.wins}-${t.losses} (${pct}%)</td>`;
+                }
+                html += `</tr>`;
             }
             html += `</tbody></table>`;
             document.getElementById("content").innerHTML = html;
@@ -220,11 +447,19 @@
                     t.style.background = "#48bb78";
                     t.style.color = "#fff";
                     currentView = t.dataset.view;
+                    const dateSel = document.getElementById("dateSelect");
+                    const dateStr = dateSel?.value || (new Date()).toISOString().slice(0,10);
+                    document.getElementById("content").innerHTML = '<div class="empty">Loading...</div>';
                     if (currentView === "gambling") {
                         const roi = await loadRoi();
                         renderGambling(roi);
+                    } else if (currentView === "postgame") {
+                        await renderPostgame(dateStr);
+                    } else if (currentView === "perf_metrics") {
+                        await renderPerfMetrics(dateStr);
+                    } else if (currentView === "grand_total") {
+                        await renderGrandTotal();
                     } else {
-                        const dateSel = document.getElementById("dateSelect");
                         if (dateSel && dateSel.value) await renderDate(dateSel.value);
                     }
                 });
@@ -361,7 +596,19 @@
                 const deltaClass = Math.abs(g.delta) >= 1.0 ? "delta-strong" : "";
                 const cats = g.categories || {};
                 const fmt = v => (typeof v === "number") ? v.toFixed(2) : "—";
-                const catHtml = ["trends","runs","sp","bullpen","hitting"].map(c => {
+                // Time-window labels per category per rating
+                const tw = {
+                    1: {sp: "(full/18d/42d)", bullpen: "(full/7d/14d)", hitting: "(full/5d/10d)",
+                        trends: "(season)", runs: "(7g/15g)", bullpen_fatigue: "(last 3d)"},
+                    2: {sp: "(full/18d/42d)", bullpen: "(full/2d/7d)", hitting: "(full/2d/4d)",
+                        trends: "(season)", runs: "(2g/6g)", bullpen_fatigue: "(last 3d)"},
+                    3: {sp: "(full/13d/33d)", bullpen: "(full/5d/10d)", hitting: "(full/3d/7d)",
+                        trends: "(season)", runs: "(5g/10g)", bullpen_fatigue: "(last 3d)"},
+                }[currentRating] || {};
+                const catList = cats.bullpen_fatigue !== undefined
+                    ? ["trends","runs","sp","bullpen","hitting","bullpen_fatigue"]
+                    : ["trends","runs","sp","bullpen","hitting"];
+                const catHtml = catList.map(c => {
                     const v = cats[c] || {};
                     const h = v.home, a = v.away;
                     const d = (typeof h === "number" && typeof a === "number") ? (h - a) : null;
@@ -370,12 +617,26 @@
                         if (h > a) { homeCls = "better"; awayCls = "worse"; }
                         else if (a > h) { awayCls = "better"; homeCls = "worse"; }
                     }
+                    const twLabel = tw[c] || "";
                     return `<div class="cat-card" data-cat="${c}" data-row="${i}">
-                        <div class="label">${c.toUpperCase()}</div>
+                        <div class="label">${c.toUpperCase()} <span style="font-weight:400; font-size:0.7rem; color:#a0aec0;">${twLabel}</span></div>
                         <div class="values"><span class="${awayCls}">${g.away_team}: ${fmt(a)}</span><span class="${homeCls}">${g.home_team}: ${fmt(h)}</span></div>
                         <div class="delta-row">Δ ${d == null ? "—" : (d >= 0 ? "+" : "") + d.toFixed(2)}</div>
                     </div>`;
                 }).join("");
+                // "Everything measured" panel — game context (weather/ballpark/etc.)
+                const meta = [];
+                if (g.day_night) meta.push(`<strong>${g.day_night}</strong>`);
+                if (g.weather) meta.push(`Weather: <strong>${g.weather}</strong>`);
+                const ballpark = g.ballpark_type || (g.categories?.sp?.ballpark);
+                if (ballpark) meta.push(`Park: <strong>${ballpark}</strong>`);
+                if (g.away_pitcher_hand) meta.push(`Away SP: <strong>${g.away_pitcher_hand.toUpperCase()}</strong>`);
+                if (g.home_pitcher_hand) meta.push(`Home SP: <strong>${g.home_pitcher_hand.toUpperCase()}</strong>`);
+                const measuredHtml = meta.length
+                    ? `<div style="background:#1f242c; border:1px solid #2d3748; border-radius:6px; padding:0.6rem 1rem; margin:0.5rem 0 1rem 0; font-size:0.85rem; color:#a0aec0;">
+                        <span style="color:#cbd5e0; font-weight:600;">What's being measured:</span> ${meta.join(" · ")}
+                       </div>`
+                    : "";
                 // Format odds line
                 const odds = g.odds;
                 let oddsHtml = '<span style="color:#718096">—</span>';
@@ -407,6 +668,7 @@
                 </tr>
                 <tr class="detail" data-row="${i}">
                     <td colspan="10">
+                        ${measuredHtml}
                         <div class="breakdown">${catHtml}</div>
                         <p class="hint">Click any category card above to see the metric-by-metric breakdown that produced its rating.</p>
                         <div id="metric-detail-${i}"></div>
