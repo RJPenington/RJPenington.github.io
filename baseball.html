@@ -82,6 +82,11 @@
         <div class="toolbar">
             <label for="dateSelect">Date:</label>
             <select id="dateSelect"></select>
+            <div class="model-tabs" id="modelTabs" style="display:inline-flex; gap:4px; margin-left:1rem;">
+                <button class="model-tab active" data-rating="1" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#3182ce; color:#fff; cursor:pointer; font-size:0.85rem;">Rating 1</button>
+                <button class="model-tab" data-rating="2" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Rating 2</button>
+                <button class="model-tab" data-rating="3" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Rating 3</button>
+            </div>
             <div class="summary" id="summary"></div>
         </div>
         <p style="background:#252932; color:#a0aec0; padding:0.7rem 1rem; border-radius:6px; margin-bottom:1rem; font-size:0.9rem; border-left:3px solid #63b3ed;">
@@ -101,6 +106,7 @@
     <script>
         const RATINGS_DIR = "ratings/";        // relative directory of daily JSON files
         const INDEX_FILE  = "ratings/index.json"; // listing of available dates
+        let currentRating = 1;                  // which rating model is selected (1/2/3)
 
         async function loadIndex() {
             const r = await fetch(INDEX_FILE);
@@ -117,9 +123,41 @@
         }
 
         async function loadDay(dateStr) {
+            // Try rating-specific file first; fall back to the legacy
+            // <date>.json (which is Rating 1) for older dates that pre-date
+            // the 3-rating split.
+            if (currentRating !== 1) {
+                const rSpecific = await fetch(RATINGS_DIR + dateStr + "_r" + currentRating + ".json");
+                if (rSpecific.ok) return await rSpecific.json();
+            } else {
+                const r1Specific = await fetch(RATINGS_DIR + dateStr + "_r1.json");
+                if (r1Specific.ok) return await r1Specific.json();
+            }
             const r = await fetch(RATINGS_DIR + dateStr + ".json");
             if (!r.ok) throw new Error("Missing " + dateStr);
             return await r.json();
+        }
+
+        function bindModelTabs() {
+            const tabs = document.querySelectorAll(".model-tab");
+            tabs.forEach(t => {
+                t.addEventListener("click", async () => {
+                    tabs.forEach(x => {
+                        x.classList.remove("active");
+                        x.style.background = "#252932";
+                        x.style.color = "#a0aec0";
+                    });
+                    t.classList.add("active");
+                    t.style.background = "#3182ce";
+                    t.style.color = "#fff";
+                    currentRating = parseInt(t.dataset.rating, 10);
+                    // Reload the currently-selected date with the new rating
+                    const dateSel = document.getElementById("dateSelect");
+                    if (dateSel && dateSel.value) {
+                        await renderDate(dateSel.value);
+                    }
+                });
+            });
         }
 
         async function fetchMLBScores(dateStr) {
@@ -359,8 +397,12 @@
 
         let overallSummary = null;
 
+        // Alias renderDate to whichever existing render function takes a date.
+        async function renderDate(d) { return showDate(d); }
+
         async function init() {
             try {
+                bindModelTabs();
                 const [idx, summary] = await Promise.all([loadIndex(), loadOverallSummary()]);
                 overallSummary = summary;
                 const dates = (idx.dates || []).sort().reverse();
