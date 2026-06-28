@@ -87,6 +87,10 @@
                 <button class="model-tab" data-rating="2" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Rating 2</button>
                 <button class="model-tab" data-rating="3" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Rating 3</button>
             </div>
+            <div class="view-tabs" id="viewTabs" style="display:inline-flex; gap:4px; margin-left:1rem; border-left:1px solid #4a5568; padding-left:1rem;">
+                <button class="view-tab active" data-view="picks" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#48bb78; color:#fff; cursor:pointer; font-size:0.85rem;">Picks</button>
+                <button class="view-tab" data-view="gambling" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Gambling ROI</button>
+            </div>
             <div class="summary" id="summary"></div>
         </div>
         <p style="background:#252932; color:#a0aec0; padding:0.7rem 1rem; border-radius:6px; margin-bottom:1rem; font-size:0.9rem; border-left:3px solid #63b3ed;">
@@ -136,6 +140,95 @@
             const r = await fetch(RATINGS_DIR + dateStr + ".json");
             if (!r.ok) throw new Error("Missing " + dateStr);
             return await r.json();
+        }
+
+        let currentView = "picks";  // 'picks' or 'gambling'
+
+        async function loadRoi() {
+            try {
+                const r = await fetch("ratings/roi.json", {cache: "no-store"});
+                if (!r.ok) return null;
+                return await r.json();
+            } catch (e) { return null; }
+        }
+
+        function renderGambling(roi) {
+            if (!roi || !roi.by_rating) {
+                document.getElementById("content").innerHTML =
+                    '<div class="empty">No ROI data yet — needs at least one completed day with odds + finals.</div>';
+                return;
+            }
+            const r = roi.by_rating[currentRating] || {};
+            const flat = r.overall_flat || {bets:0,wins:0,losses:0,profit:0,stake:0,roi_pct:0};
+            const scaled = r.overall_scaled || {bets:0,wins:0,losses:0,profit:0,stake:0,roi_pct:0};
+            const perDay = r.per_day || [];
+            const fmt = n => (n >= 0 ? "+" : "") + n.toFixed(2);
+            const pct = p => (p >= 0 ? "+" : "") + p.toFixed(1) + "%";
+            const cell = (v) => `<span style="color:${v>=0?'#48bb78':'#f56565'};">${v}</span>`;
+
+            let html = `<div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+                <div style="background:#252932; padding:1rem; border-radius:6px; border:1px solid #4a5568;">
+                    <div style="color:#a0aec0; font-size:0.8rem; margin-bottom:0.3rem;">FLAT $100 / pick (Rating ${currentRating})</div>
+                    <div style="font-size:1.4rem; font-weight:600;">${cell(`$${fmt(flat.profit)}`)}</div>
+                    <div style="color:#a0aec0; font-size:0.85rem;">ROI: ${cell(pct(flat.roi_pct))} | ${flat.wins}-${flat.losses} (${flat.bets} bets, $${flat.stake.toFixed(0)} staked)</div>
+                </div>
+                <div style="background:#252932; padding:1rem; border-radius:6px; border:1px solid #4a5568;">
+                    <div style="color:#a0aec0; font-size:0.8rem; margin-bottom:0.3rem;">SCALED by delta (Rating ${currentRating})</div>
+                    <div style="font-size:1.4rem; font-weight:600;">${cell(`$${fmt(scaled.profit)}`)}</div>
+                    <div style="color:#a0aec0; font-size:0.85rem;">ROI: ${cell(pct(scaled.roi_pct))} | ${scaled.wins}-${scaled.losses} (${scaled.bets} bets, $${scaled.stake.toFixed(0)} staked)</div>
+                </div>
+            </div>`;
+
+            html += `<div style="background:#252932; padding:0.8rem 1rem; border-radius:6px; margin-bottom:1rem; font-size:0.85rem; color:#a0aec0;">
+                <strong style="color:#e2e8f0;">Scaled unit sizing:</strong>
+                |Δ|&lt;1 → 1u ($100) · 1–1.5 → 1.5u · 1.5–2 → 2u · 2–2.5 → 2.5u · 2.5+ → 3u
+            </div>`;
+
+            html += `<table class="games-table" style="width:100%; border-collapse:collapse;">
+                <thead><tr style="background:#252932;">
+                  <th style="text-align:left;padding:0.6rem;">Date</th>
+                  <th style="text-align:right;padding:0.6rem;">Flat P/L</th>
+                  <th style="text-align:right;padding:0.6rem;">Flat ROI</th>
+                  <th style="text-align:right;padding:0.6rem;">Scaled P/L</th>
+                  <th style="text-align:right;padding:0.6rem;">Scaled ROI</th>
+                  <th style="text-align:right;padding:0.6rem;">Record</th>
+                </tr></thead><tbody>`;
+            for (const day of perDay.slice().reverse()) {
+                html += `<tr style="border-bottom:1px solid #2d3748;">
+                  <td style="padding:0.6rem;">${day.date}</td>
+                  <td style="padding:0.6rem; text-align:right;">${cell(`$${fmt(day.flat.profit)}`)}</td>
+                  <td style="padding:0.6rem; text-align:right;">${cell(pct(day.flat.roi_pct))}</td>
+                  <td style="padding:0.6rem; text-align:right;">${cell(`$${fmt(day.scaled.profit)}`)}</td>
+                  <td style="padding:0.6rem; text-align:right;">${cell(pct(day.scaled.roi_pct))}</td>
+                  <td style="padding:0.6rem; text-align:right;">${day.flat.wins}-${day.flat.losses}</td>
+                </tr>`;
+            }
+            html += `</tbody></table>`;
+            document.getElementById("content").innerHTML = html;
+        }
+
+        function bindViewTabs() {
+            const tabs = document.querySelectorAll(".view-tab");
+            tabs.forEach(t => {
+                t.addEventListener("click", async () => {
+                    tabs.forEach(x => {
+                        x.classList.remove("active");
+                        x.style.background = "#252932";
+                        x.style.color = "#a0aec0";
+                    });
+                    t.classList.add("active");
+                    t.style.background = "#48bb78";
+                    t.style.color = "#fff";
+                    currentView = t.dataset.view;
+                    if (currentView === "gambling") {
+                        const roi = await loadRoi();
+                        renderGambling(roi);
+                    } else {
+                        const dateSel = document.getElementById("dateSelect");
+                        if (dateSel && dateSel.value) await renderDate(dateSel.value);
+                    }
+                });
+            });
         }
 
         function bindModelTabs() {
@@ -403,6 +496,7 @@
         async function init() {
             try {
                 bindModelTabs();
+                bindViewTabs();
                 const [idx, summary] = await Promise.all([loadIndex(), loadOverallSummary()]);
                 overallSummary = summary;
                 const dates = (idx.dates || []).sort().reverse();
