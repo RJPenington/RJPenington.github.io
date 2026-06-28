@@ -385,10 +385,18 @@
                         oddsHtml += `<br><span style="font-size:0.8rem; color:#a0aec0;">O/U ${odds.total}</span>`;
                     }
                 }
+                // IP under each SP name: "fullsp / lastXdays / lastYdays"
+                const ipLine = (side) => {
+                    const ipSum = ((g.categories || {}).sp || {})[side + "_ip"] || {};
+                    const vals = Object.values(ipSum);
+                    if (!vals.length) return "";
+                    const labels = vals.map(v => (v == null ? "—" : Number(v).toFixed(1))).join("/");
+                    return `<div style="font-size:0.75rem; color:#a0aec0; margin-top:2px;">${labels}</div>`;
+                };
                 return `<tr class="summary ${deltaClass}" data-row="${i}">
                     <td>${g.away_team} @ ${g.home_team}</td>
-                    <td>${g.away_pitcher || ""}</td>
-                    <td>${g.home_pitcher || ""}</td>
+                    <td>${g.away_pitcher || ""}${ipLine("away")}</td>
+                    <td>${g.home_pitcher || ""}${ipLine("home")}</td>
                     <td class="num">${g.away_total?.toFixed(2) ?? ""}</td>
                     <td class="num">${g.home_total?.toFixed(2) ?? ""}</td>
                     <td class="num">${g.delta >= 0 ? "+" : ""}${g.delta?.toFixed(2) ?? ""}</td>
@@ -456,9 +464,17 @@
             } else {
                 html += `<span class="stat">${games.length} games loaded</span>`;
             }
-            // Overall rolling totals
-            if (overallSummary && overallSummary.totals) {
-                const t = overallSummary.totals;
+            // Overall rolling totals — pick the selected rating's totals if present
+            let overallTotals = null;
+            if (overallSummary) {
+                if (overallSummary.by_rating && overallSummary.by_rating[currentRating]) {
+                    overallTotals = overallSummary.by_rating[currentRating].totals;
+                } else if (overallSummary.totals) {
+                    overallTotals = overallSummary.totals;
+                }
+            }
+            if (overallTotals) {
+                const t = overallTotals;
                 const tt = t.wins + t.losses;
                 if (tt > 0) {
                     const pct = (t.wins / tt * 100).toFixed(0);
