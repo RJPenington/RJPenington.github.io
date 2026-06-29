@@ -572,6 +572,14 @@
             document.getElementById("content").innerHTML = html;
         }
 
+        // Map of (rating, category) -> time-frame label, surfaced under each
+        // expandable Grand Total row so you can see exactly what's being summed.
+        const TIME_FRAMES = {
+            1: {trends: "season",  runs: "7g/15g", sp: "full/18d/42d", bullpen: "full/7d/14d", hitting: "full/5d/10d", bullpen_fatigue: "last 3d"},
+            2: {trends: "season",  runs: "2g/6g",  sp: "full/18d/42d", bullpen: "full/2d/7d",  hitting: "full/2d/4d",  bullpen_fatigue: "last 3d"},
+            3: {trends: "season",  runs: "5g/10g", sp: "full/13d/33d", bullpen: "full/5d/10d", hitting: "full/3d/7d",  bullpen_fatigue: "last 3d"},
+        };
+
         async function renderGrandTotal() {
             // Aggregate per-category, per-rating wins/losses across ALL dates in index.
             const idx = await loadIndex();
@@ -618,8 +626,8 @@
                   <th style="text-align:center;padding:0.5rem;">Rating 3</th>
                 </tr></thead><tbody>`;
             for (const c of cats) {
-                html += `<tr style="border-bottom:1px solid #2d3748;">
-                    <td style="padding:0.5rem; font-weight:600;">${c.toUpperCase()}</td>`;
+                html += `<tr class="gt-row" data-cat="${c}" style="border-bottom:1px solid #2d3748; cursor:pointer;">
+                    <td style="padding:0.5rem; font-weight:600;"><span class="gt-arrow">▸</span> ${c.toUpperCase()}</td>`;
                 for (const r of [1,2,3]) {
                     const t = tally[r][c];
                     const games = t.wins + t.losses;
@@ -628,9 +636,29 @@
                     html += `<td style="padding:0.5rem; text-align:center; color:${color};">${t.wins}-${t.losses} (${pct}%)</td>`;
                 }
                 html += `</tr>`;
+                // Expanded detail row: time frames per rating
+                html += `<tr class="gt-detail" data-cat="${c}" style="display:none; background:#1f242c;">
+                    <td style="padding:0.5rem 1rem; color:#a0aec0; font-style:italic;">Time frames used →</td>`;
+                for (const r of [1,2,3]) {
+                    const tf = (TIME_FRAMES[r] || {})[c] || "—";
+                    html += `<td style="padding:0.5rem; text-align:center; color:#63b3ed;"><strong>${tf}</strong></td>`;
+                }
+                html += `</tr>`;
             }
             html += `</tbody></table>`;
             document.getElementById("content").innerHTML = html;
+            // Expand/collapse on category row click
+            document.querySelectorAll(".gt-row").forEach(row => {
+                row.addEventListener("click", () => {
+                    const cat = row.dataset.cat;
+                    const detail = document.querySelector(`.gt-detail[data-cat="${cat}"]`);
+                    if (!detail) return;
+                    const expanded = detail.style.display !== "none";
+                    detail.style.display = expanded ? "none" : "";
+                    const arrow = row.querySelector(".gt-arrow");
+                    if (arrow) arrow.textContent = expanded ? "▸" : "▾";
+                });
+            });
         }
 
         function bindViewTabs() {
