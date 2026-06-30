@@ -1056,11 +1056,11 @@
                 // Time-window labels per category per rating
                 const tw = {
                     1: {sp: "(full/18d/42d)", bullpen: "(full/7d/14d)", hitting: "(full/5d/10d)",
-                        trends: "(season)", runs: "(7g/15g)", bullpen_fatigue: "(last 3d)"},
+                        trends: "(season)", runs: "(7d/15d)", bullpen_fatigue: "(last 3d)"},
                     2: {sp: "(full/18d/42d)", bullpen: "(full/2d/7d)", hitting: "(full/2d/4d)",
-                        trends: "(season)", runs: "(2g/6g)", bullpen_fatigue: "(last 3d)"},
+                        trends: "(season)", runs: "(2g/5g)", bullpen_fatigue: "(last 3d)"},
                     3: {sp: "(full/13d/33d)", bullpen: "(full/5d/10d)", hitting: "(full/3d/7d)",
-                        trends: "(season)", runs: "(5g/10g)", bullpen_fatigue: "(last 3d)"},
+                        trends: "(season)", runs: "(7g/15g)", bullpen_fatigue: "(last 3d)"},
                 }[currentRating] || {};
                 const catList = cats.bullpen_fatigue !== undefined
                     ? ["trends","runs","sp","bullpen","hitting","bullpen_fatigue"]
@@ -1082,10 +1082,18 @@
                     </div>`;
                 }).join("");
                 // "What's being measured" — every game-context piece going into ratings
+                const wd = g.weather_details || {};
+                const fmt1 = v => (typeof v === "number") ? v.toFixed(1) : v;
                 const measurePairs = [
                     ["Day/Night", g.day_night],
-                    ["Weather", g.weather],
                     ["Ballpark", g.ballpark_type || g.ballpark],
+                    ["Weather", g.weather],
+                    ["Temp (avg)",  wd.temp_mean_f  != null ? fmt1(wd.temp_mean_f) + "°F"  : null],
+                    ["Temp (high)", wd.temp_max_f   != null ? fmt1(wd.temp_max_f)  + "°F"  : null],
+                    ["Wind",        wd.wind_mph     != null ? fmt1(wd.wind_mph)    + " mph" : null],
+                    ["Wind dir",    wd.wind_dir     != null ? Math.round(wd.wind_dir) + "°"  : null],
+                    ["Humidity",    wd.humidity_pct != null ? Math.round(wd.humidity_pct) + "%" : null],
+                    ["Precip",      wd.precip_mm    != null ? fmt1(wd.precip_mm)   + " mm" : null],
                     ["Weather code", g.weather_code],
                     ["Ballpark code", g.ballpark_code],
                     ["Away SP hand", g.away_pitcher_hand?.toUpperCase()],
@@ -1185,60 +1193,45 @@
 
             const total = wins + losses;
             const summary = document.getElementById("summary");
+            // Always render 6 tally slots: Today / Today Strong | This Week /
+            // Week Strong | Overall / Overall Strong. Each block is rendered
+            // even when 0-0 so the user can see the slots are present and
+            // will fill in as games complete.
+            const tallyPill = (label, w, l, isStrong) => {
+                const tot = w + l;
+                const pct = tot ? (w / tot * 100).toFixed(0) + "%" : "—";
+                const cls = tot === 0
+                    ? "stat"
+                    : (isStrong
+                        ? (w >= l ? "stat good" : "stat bad")
+                        : (w > l   ? "stat good" : "stat bad"));
+                return `<span class="${cls}">${label}: ${w}-${l} (${pct})</span>`;
+            };
             let html = "";
-            if (total > 0) {
-                const pct = (wins / total * 100).toFixed(0);
-                const sTotal = sWins + sLosses;
-                const sPct = sTotal ? (sWins / sTotal * 100).toFixed(0) : "—";
-                html += `
-                    <span class="stat ${wins>losses?'good':'bad'}">Today: ${wins}-${losses} (${pct}%)</span>
-                    <span class="stat ${sWins>=sLosses?'good':'bad'}">Today Strong: ${sWins}-${sLosses} (${sPct}%)</span>`;
-            } else {
-                html += `<span class="stat">${games.length} games loaded</span>`;
+            // Today
+            html += tallyPill("Today",        wins,  losses,  false);
+            html += tallyPill("Today Strong", sWins, sLosses, true);
+            // This week + Overall — pull from overallSummary for the selected rating
+            const overallRating = (overallSummary && overallSummary.by_rating && overallSummary.by_rating[currentRating])
+                ? overallSummary.by_rating[currentRating]
+                : (overallSummary || {});
+            const overallTotals = overallRating.totals || {wins:0, losses:0, strong_wins:0, strong_losses:0};
+            const weekStart = thisWeekMondayStr();
+            const weekEnd   = sundayAfter(weekStart);
+            let wW = 0, wL = 0, wSW = 0, wSL = 0;
+            for (const d of (overallRating.per_day || [])) {
+                if (d.date < weekStart || d.date > weekEnd) continue;
+                wW  += d.wins || 0;
+                wL  += d.losses || 0;
+                wSW += d.strong_wins || 0;
+                wSL += d.strong_losses || 0;
             }
-            // Overall rolling totals — pick the selected rating's totals if present
-            let overallTotals = null;
-            if (overallSummary) {
-                if (overallSummary.by_rating && overallSummary.by_rating[currentRating]) {
-                    overallTotals = overallSummary.by_rating[currentRating].totals;
-                } else if (overallSummary.totals) {
-                    overallTotals = overallSummary.totals;
-                }
-            }
-            if (overallTotals) {
-                const t = overallTotals;
-                const tt = t.wins + t.losses;
-                if (tt > 0) {
-                    const pct = (t.wins / tt * 100).toFixed(0);
-                    const st = t.strong_wins + t.strong_losses;
-                    const sPct = st ? (t.strong_wins / st * 100).toFixed(0) : "—";
-                    // This week = Mon-Sun containing today. Filter by_rating[r].per_day.
-                    const weekStart = thisWeekMondayStr();
-                    const weekEnd   = sundayAfter(weekStart);
-                    let wW = 0, wL = 0, wSW = 0, wSL = 0;
-                    const perDay = (overallSummary.by_rating && overallSummary.by_rating[currentRating])
-                        ? overallSummary.by_rating[currentRating].per_day
-                        : (overallSummary.per_day || []);
-                    for (const d of (perDay || [])) {
-                        if (d.date < weekStart || d.date > weekEnd) continue;
-                        wW  += d.wins || 0;
-                        wL  += d.losses || 0;
-                        wSW += d.strong_wins || 0;
-                        wSL += d.strong_losses || 0;
-                    }
-                    const wTot = wW + wL;
-                    const wPct = wTot ? (wW / wTot * 100).toFixed(0) : "—";
-                    const wST  = wSW + wSL;
-                    const wSPct = wST ? (wSW / wST * 100).toFixed(0) : "—";
-                    html += `
-                        <span class="stat divider">|</span>
-                        <span class="stat ${wW>wL?'good':'bad'}">This week: ${wW}-${wL} (${wPct}%)</span>
-                        <span class="stat ${wSW>=wSL?'good':'bad'}">Week strong: ${wSW}-${wSL} (${wSPct}%)</span>
-                        <span class="stat divider">|</span>
-                        <span class="stat ${t.wins>t.losses?'good':'bad'}">Overall: ${t.wins}-${t.losses} (${pct}%)</span>
-                        <span class="stat ${t.strong_wins>=t.strong_losses?'good':'bad'}">Overall Strong: ${t.strong_wins}-${t.strong_losses} (${sPct}%)</span>`;
-                }
-            }
+            html += `<span class="stat divider">|</span>`;
+            html += tallyPill("This Week",   wW,  wL,  false);
+            html += tallyPill("Week Strong", wSW, wSL, true);
+            html += `<span class="stat divider">|</span>`;
+            html += tallyPill("Overall",        overallTotals.wins,        overallTotals.losses,        false);
+            html += tallyPill("Overall Strong", overallTotals.strong_wins, overallTotals.strong_losses, true);
             summary.innerHTML = html;
         }
 
