@@ -580,9 +580,9 @@
         // Map of (rating, category) -> time-frame label, surfaced under each
         // expandable Grand Total row so you can see exactly what's being summed.
         const TIME_FRAMES = {
-            1: {trends: "season",  runs: "7g/15g", sp: "full/18d/42d", bullpen: "full/7d/14d", hitting: "full/5d/10d", bullpen_fatigue: "last 3d"},
-            2: {trends: "season",  runs: "2g/6g",  sp: "full/18d/42d", bullpen: "full/2d/7d",  hitting: "full/2d/4d",  bullpen_fatigue: "last 3d"},
-            3: {trends: "season",  runs: "5g/10g", sp: "full/13d/33d", bullpen: "full/5d/10d", hitting: "full/3d/7d",  bullpen_fatigue: "last 3d"},
+            1: {trends: "season",  runs: "7d/15d", sp: "full/18d/42d", bullpen: "full/7d/14d", hitting: "full/5d/10d", bullpen_fatigue: "last 3d"},
+            2: {trends: "season",  runs: "2g/5g",  sp: "full/18d/42d", bullpen: "full/2d/7d",  hitting: "full/2d/4d",  bullpen_fatigue: "last 3d"},
+            3: {trends: "season",  runs: "7g/15g", sp: "full/13d/33d", bullpen: "full/5d/10d", hitting: "full/3d/7d",  bullpen_fatigue: "last 3d"},
         };
 
         async function renderGrandTotal() {
