@@ -126,9 +126,14 @@
             return await r.json();
         }
 
+        // GitHub Pages CDN caches by URL alone — `cache: "no-store"` only
+        // affects the browser, not the upstream CDN. Append a per-load nonce
+        // so each request is a unique URL the CDN can't have cached.
+        const CACHE_BUST = "?v=" + Date.now();
+
         async function loadOverallSummary() {
             try {
-                const r = await fetch("ratings/summary.json", {cache: "no-store"});
+                const r = await fetch("ratings/summary.json" + CACHE_BUST, {cache: "no-store"});
                 if (!r.ok) return null;
                 return await r.json();
             } catch (e) { return null; }
@@ -139,13 +144,13 @@
             // <date>.json (which is Rating 1) for older dates that pre-date
             // the 3-rating split.
             if (currentRating !== 1) {
-                const rSpecific = await fetch(RATINGS_DIR + dateStr + "_r" + currentRating + ".json");
+                const rSpecific = await fetch(RATINGS_DIR + dateStr + "_r" + currentRating + ".json" + CACHE_BUST);
                 if (rSpecific.ok) return await rSpecific.json();
             } else {
-                const r1Specific = await fetch(RATINGS_DIR + dateStr + "_r1.json");
+                const r1Specific = await fetch(RATINGS_DIR + dateStr + "_r1.json" + CACHE_BUST);
                 if (r1Specific.ok) return await r1Specific.json();
             }
-            const r = await fetch(RATINGS_DIR + dateStr + ".json");
+            const r = await fetch(RATINGS_DIR + dateStr + ".json" + CACHE_BUST);
             if (!r.ok) throw new Error("Missing " + dateStr);
             return await r.json();
         }
@@ -154,7 +159,7 @@
 
         async function loadRoi() {
             try {
-                const r = await fetch("ratings/roi.json", {cache: "no-store"});
+                const r = await fetch("ratings/roi.json" + CACHE_BUST, {cache: "no-store"});
                 if (!r.ok) return null;
                 return await r.json();
             } catch (e) { return null; }
@@ -547,13 +552,13 @@
             const out = {};
             for (const r of [1,2,3]) {
                 try {
-                    const resp = await fetch(`ratings/${dateStr}_r${r}.json`);
+                    const resp = await fetch(`ratings/${dateStr}_r${r}.json` + CACHE_BUST);
                     if (resp.ok) out[r] = await resp.json();
                 } catch (e) {}
             }
             if (!out[1]) {
                 try {
-                    const resp = await fetch(`ratings/${dateStr}.json`);
+                    const resp = await fetch(`ratings/${dateStr}.json` + CACHE_BUST);
                     if (resp.ok) out[1] = await resp.json();
                 } catch (e) {}
             }
