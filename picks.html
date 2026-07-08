@@ -13,9 +13,63 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.5; color: #e2e8f0; background: #1a1d23; }
         .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
-        header { background: linear-gradient(135deg, #0f1419, #1f3a5f); color: #f7fafc; padding: 2rem; margin-bottom: 1.5rem; border-radius: 8px; border: 1px solid #2d3748; }
-        header h1 { font-size: 2rem; }
-        header p { opacity: 0.75; margin-top: 0.3rem; }
+        header {
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse at 25% 20%, rgba(56, 234, 214, 0.28) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 80%, rgba(0, 190, 200, 0.22) 0%, transparent 60%),
+                linear-gradient(135deg, #0a3e46 0%, #0f5f66 35%, #145476 65%, #0d2b45 100%);
+            color: #f7fafc;
+            padding: 2.5rem 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(72, 234, 214, 0.35);
+            box-shadow: 0 0 30px rgba(56, 234, 214, 0.15), inset 0 0 60px rgba(0, 0, 0, 0.25);
+            text-align: center;
+        }
+        header::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                repeating-linear-gradient( 45deg, rgba(255,255,255,0.03) 0 2px, transparent 2px 22px),
+                repeating-linear-gradient(-45deg, rgba(255,255,255,0.03) 0 2px, transparent 2px 22px);
+            pointer-events: none;
+        }
+        header::after {
+            content: '';
+            position: absolute; left: 50%; bottom: 1rem; transform: translateX(-50%);
+            width: 40%; height: 2px;
+            background: linear-gradient(90deg, transparent, #38ead6, transparent);
+            box-shadow: 0 0 12px #38ead6;
+            animation: rjpulse 3.5s ease-in-out infinite;
+        }
+        @keyframes rjpulse {
+            0%,100% { opacity: 0.45; width: 30%; }
+            50%      { opacity: 1;    width: 55%; }
+        }
+        header h1 {
+            font-family: 'Copperplate Gothic Bold', 'Copperplate', 'Bank Gothic',
+                         'Trajan Pro', 'Optima', Georgia, serif;
+            font-size: 2.7rem;
+            letter-spacing: 0.18em;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-shadow: 0 2px 12px rgba(56, 234, 214, 0.35),
+                         0 0 22px rgba(56, 234, 214, 0.15);
+            position: relative;
+            z-index: 1;
+        }
+        header p {
+            opacity: 0.85;
+            margin-top: 0.55rem;
+            letter-spacing: 0.08em;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: #b7f0e5;
+            position: relative;
+            z-index: 1;
+        }
         .toolbar { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; background: #252932; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); margin-bottom: 1rem; border: 1px solid #2d3748; }
         .toolbar label { font-weight: 600; color: #e2e8f0; }
         .toolbar select { padding: 0.4rem 0.6rem; border: 1px solid #4a5568; border-radius: 6px; font-size: 0.95rem; background: #1a1d23; color: #e2e8f0; }
@@ -80,7 +134,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>Baseball Picks</h1>
+            <h1>RJ's Daily Ratings</h1>
             <p id="subtitle">Daily MLB picks — final ratings and category breakdown</p>
         </header>
 
