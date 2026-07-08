@@ -1080,10 +1080,17 @@
                         else if (a > h) { awayCls = "better"; homeCls = "worse"; }
                     }
                     const twLabel = tw[c] || "";
+                    // SP category can be excluded from the game's final rating
+                    // when either starter is TBD — show a badge + strike delta.
+                    const spExcluded = c === "sp" && v && v.excluded_from_final === true;
+                    const excludedBadge = spExcluded
+                        ? `<span style="font-size:0.6rem; color:#fbb040; font-weight:700; background:rgba(251,176,64,0.15); padding:1px 4px; border-radius:3px; margin-left:4px;">TBD · not in final</span>`
+                        : "";
+                    const deltaStyle = spExcluded ? "text-decoration:line-through; opacity:0.55;" : "";
                     return `<div class="cat-card" data-cat="${c}" data-row="${i}">
-                        <div class="label">${c.toUpperCase()} <span style="font-weight:400; font-size:0.7rem; color:#a0aec0;">${twLabel}</span></div>
+                        <div class="label">${c.toUpperCase()} <span style="font-weight:400; font-size:0.7rem; color:#a0aec0;">${twLabel}</span>${excludedBadge}</div>
                         <div class="values"><span class="${awayCls}">${g.away_team}: ${fmt(a)}</span><span class="${homeCls}">${g.home_team}: ${fmt(h)}</span></div>
-                        <div class="delta-row">Δ ${d == null ? "—" : (d >= 0 ? "+" : "") + d.toFixed(2)}</div>
+                        <div class="delta-row" style="${deltaStyle}">Δ ${d == null ? "—" : (d >= 0 ? "+" : "") + d.toFixed(2)}</div>
                     </div>`;
                 }).join("");
                 // "What's being measured" — every game-context piece going into ratings
