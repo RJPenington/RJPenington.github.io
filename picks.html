@@ -1,0 +1,1349 @@
+<!-- v1782749449 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baseball Picks | RJ Penington</title>
+    <!-- Aggressive no-cache so a new publish always wins immediately -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.5; color: #e2e8f0; background: #1a1d23; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
+        header { background: linear-gradient(135deg, #0f1419, #1f3a5f); color: #f7fafc; padding: 2rem; margin-bottom: 1.5rem; border-radius: 8px; border: 1px solid #2d3748; }
+        header h1 { font-size: 2rem; }
+        header p { opacity: 0.75; margin-top: 0.3rem; }
+        .toolbar { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; background: #252932; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); margin-bottom: 1rem; border: 1px solid #2d3748; }
+        .toolbar label { font-weight: 600; color: #e2e8f0; }
+        .toolbar select { padding: 0.4rem 0.6rem; border: 1px solid #4a5568; border-radius: 6px; font-size: 0.95rem; background: #1a1d23; color: #e2e8f0; }
+        .toolbar .summary { margin-left: auto; color: #e2e8f0; }
+        .toolbar .summary .stat { display: inline-block; margin-left: 1rem; font-weight: 600; }
+        .toolbar .summary .stat.good { color: #68d391; }
+        .toolbar .summary .stat.bad  { color: #fc8181; }
+        .toolbar .summary .stat.divider { color: #4a5568; margin: 0 0.5rem; opacity: 0.6; }
+
+        table { width: 100%; background: #252932; border-collapse: collapse; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.3); border: 1px solid #2d3748; }
+        thead { background: #0f1419; color: #f7fafc; }
+        th, td { padding: 0.7rem 0.8rem; text-align: left; border-bottom: 1px solid #2d3748; font-size: 0.9rem; color: #e2e8f0; }
+        th { font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.03em; }
+        tbody tr:hover { background: #2d333d; }
+        td.num { text-align: right; font-variant-numeric: tabular-nums; }
+        .pick-cell { font-weight: 600; color: #f7fafc; }
+        .delta-strong { background: rgba(72, 187, 120, 0.12) !important; box-shadow: inset 0 0 12px rgba(72, 187, 120, 0.35); font-weight: 700; }
+        .delta-strong td { color: #c6f6d5 !important; }
+        .delta-strong:hover { background: rgba(72, 187, 120, 0.2) !important; box-shadow: inset 0 0 16px rgba(72, 187, 120, 0.5); }
+        .result-W { color: #68d391; font-weight: 700; }
+        .result-L { color: #fc8181; font-weight: 700; }
+        .result-T { color: #a0aec0; }
+        .result-pending { color: #718096; font-style: italic; }
+        .footer { text-align: center; margin-top: 2rem; color: #718096; font-size: 0.85rem; }
+        .empty { text-align: center; padding: 3rem; color: #a0aec0; background: #252932; border-radius: 8px; }
+        tr.summary { cursor: pointer; }
+        tr.summary td:first-child::before { content: "▸ "; color: #a0aec0; transition: transform 0.15s; display: inline-block; }
+        tr.summary.expanded td:first-child::before { content: "▾ "; }
+        tr.detail { display: none; }
+        tr.detail.show { display: table-row; }
+        tr.detail td { background: #1f232b; padding: 0.8rem 1rem; }
+        .breakdown { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.4rem; }
+        .cat-card { background: #2d333d; padding: 0.5rem 0.6rem; border-radius: 6px; border-left: 3px solid #4299e1; min-width: 0; }
+        .cat-card .label { font-size: 0.7rem; text-transform: uppercase; color: #a0aec0; font-weight: 600; letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .cat-card .values { display: flex; justify-content: space-between; margin-top: 0.25rem; font-size: 0.85rem; gap: 0.3rem; }
+        .cat-card .away { color: #fc8181; }
+        .cat-card .home { color: #68d391; }
+        .cat-card .better { color: #68d391; font-weight: 600; }
+        .cat-card .worse  { color: #fc8181; }
+        .cat-card .neutral { color: #cbd5e0; }
+        .cat-card .delta-row { margin-top: 0.3rem; font-size: 0.85rem; color: #cbd5e0; font-weight: 600; }
+        .cat-card { cursor: pointer; transition: border-color 0.15s, transform 0.15s, background 0.15s; }
+        .cat-card:hover { border-left-color: #63b3ed; transform: translateY(-1px); background: #353c47; }
+        .cat-card.active { border-left-color: #63b3ed; background: #2c5282; }
+        .metric-table { margin-top: 0.8rem; background: #2d333d; border-radius: 6px; overflow: hidden; }
+        .metric-table table { box-shadow: none; background: #2d333d; }
+        .metric-table thead { background: #1a1d23; }
+        .metric-table th, .metric-table td { padding: 0.45rem 0.6rem; font-size: 0.85rem; }
+        .metric-table th { font-size: 0.75rem; color: #cbd5e0; }
+        .metric-table td.metric-name { font-weight: 600; color: #f7fafc; }
+        .metric-table td.away-val { color: #fc8181; }
+        .metric-table td.home-val { color: #68d391; }
+        .metric-table td.better-val { color: #68d391; font-weight: 600; }
+        .metric-table td.worse-val  { color: #fc8181; }
+        .metric-table td.neutral-val { color: #cbd5e0; }
+        .metric-table td.advantage-H { background: rgba(104, 211, 145, 0.1); }
+        .metric-table td.advantage-A { background: rgba(252, 129, 129, 0.1); }
+        .hint { font-size: 0.8rem; color: #a0aec0; margin: 0.5rem 0 0.3rem 0; font-style: italic; }
+        @media (max-width: 800px) { .breakdown { grid-template-columns: repeat(2, 1fr); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Baseball Picks</h1>
+            <p id="subtitle">Daily MLB picks — final ratings and category breakdown</p>
+        </header>
+
+        <div class="toolbar">
+            <label for="dateSelect">Date:</label>
+            <select id="dateSelect"></select>
+            <div class="model-tabs" id="modelTabs" style="display:inline-flex; gap:4px; margin-left:1rem;">
+                <button class="model-tab active" data-rating="1" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#3182ce; color:#fff; cursor:pointer; font-size:0.85rem;">Rating 1</button>
+                <button class="model-tab" data-rating="2" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Rating 2</button>
+                <button class="model-tab" data-rating="3" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Rating 3</button>
+            </div>
+            <div class="view-tabs" id="viewTabs" style="display:inline-flex; gap:4px; margin-left:1rem; border-left:1px solid #4a5568; padding-left:1rem; flex-wrap:wrap;">
+                <button class="view-tab active" data-view="picks" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#48bb78; color:#fff; cursor:pointer; font-size:0.85rem;">Picks</button>
+                <button class="view-tab" data-view="gambling" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Gambling ROI</button>
+                <button class="view-tab" data-view="postgame" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Postgame Compare</button>
+                <button class="view-tab" data-view="perf_metrics" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Perf by Metrics</button>
+                <button class="view-tab" data-view="grand_total" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Grand Total</button>
+            </div>
+            <div class="summary" id="summary"></div>
+        </div>
+        <p style="background:#252932; color:#a0aec0; padding:0.7rem 1rem; border-radius:6px; margin-bottom:1rem; font-size:0.9rem; border-left:3px solid #63b3ed;">
+            <strong style="color:#e2e8f0;">Click any game row</strong> to see each category's rating for both teams. Rows glowing green are the model's strongest plays.
+        </p>
+
+        <div id="content">
+            <div class="empty">Loading...</div>
+        </div>
+
+        <div class="footer">
+            Ratings combine 5 categories: trends, runs, starting pitcher, bullpen, hitting.
+            Built by RJ Penington.
+        </div>
+    </div>
+
+    <script>
+        const RATINGS_DIR = "ratings/";        // relative directory of daily JSON files
+        const INDEX_FILE  = "ratings/index.json"; // listing of available dates
+        let currentRating = 1;                  // which rating model is selected (1/2/3)
+
+        async function loadIndex() {
+            const r = await fetch(INDEX_FILE + CACHE_BUST);
+            if (!r.ok) throw new Error("No index");
+            return await r.json();
+        }
+
+        // GitHub Pages CDN caches by URL alone — `cache: "no-store"` only
+        // affects the browser, not the upstream CDN. Append a per-load nonce
+        // so each request is a unique URL the CDN can't have cached.
+        const CACHE_BUST = "?v=" + Date.now();
+
+        async function loadOverallSummary() {
+            try {
+                const r = await fetch("ratings/summary.json" + CACHE_BUST, {cache: "no-store"});
+                if (!r.ok) return null;
+                return await r.json();
+            } catch (e) { return null; }
+        }
+
+        async function loadDay(dateStr) {
+            // Try rating-specific file first; fall back to the legacy
+            // <date>.json (which is Rating 1) for older dates that pre-date
+            // the 3-rating split.
+            if (currentRating !== 1) {
+                const rSpecific = await fetch(RATINGS_DIR + dateStr + "_r" + currentRating + ".json" + CACHE_BUST);
+                if (rSpecific.ok) return await rSpecific.json();
+            } else {
+                const r1Specific = await fetch(RATINGS_DIR + dateStr + "_r1.json" + CACHE_BUST);
+                if (r1Specific.ok) return await r1Specific.json();
+            }
+            const r = await fetch(RATINGS_DIR + dateStr + ".json" + CACHE_BUST);
+            if (!r.ok) throw new Error("Missing " + dateStr);
+            return await r.json();
+        }
+
+        let currentView = "picks";  // 'picks' or 'gambling'
+
+        async function loadRoi() {
+            try {
+                const r = await fetch("ratings/roi.json" + CACHE_BUST, {cache: "no-store"});
+                if (!r.ok) return null;
+                return await r.json();
+            } catch (e) { return null; }
+        }
+
+        // ─── Date / week helpers ──────────────────────────────────────────
+        function mondayOfWeek(dateStr) {
+            const d = new Date(dateStr + "T12:00:00");
+            const offset = (d.getDay() + 6) % 7; // 0=Mon, 1=Tue, ... 6=Sun
+            d.setDate(d.getDate() - offset);
+            return d.toISOString().slice(0, 10);
+        }
+        function thisWeekMondayStr() {
+            const t = new Date();
+            const yyyy = t.getFullYear();
+            const mm = String(t.getMonth() + 1).padStart(2, "0");
+            const dd = String(t.getDate()).padStart(2, "0");
+            return mondayOfWeek(`${yyyy}-${mm}-${dd}`);
+        }
+        function sundayAfter(mondayStr) {
+            const d = new Date(mondayStr + "T12:00:00");
+            d.setDate(d.getDate() + 6);
+            return d.toISOString().slice(0, 10);
+        }
+        function shortDate(dateStr) {
+            const d = new Date(dateStr + "T12:00:00");
+            return `${d.getMonth()+1}/${d.getDate()}`;
+        }
+
+        // ─── Strong-plays unit scaling ────────────────────────────────────
+        // User rule: only bet plays with |delta| >= 1.0; size by delta tier:
+        //   1.00 – 1.99 → 1u, 2.00 – 2.50 → 2u, 2.51+ → 3u
+        function strongUnits(delta) {
+            const a = Math.abs(delta);
+            if (a < 1.0)  return 0;
+            if (a < 2.0)  return 1;
+            if (a < 2.51) return 2;
+            return 3;
+        }
+        function americanToDecimal(odds) {
+            const o = parseInt(String(odds).replace("+", ""), 10);
+            if (!Number.isFinite(o)) return null;
+            return o > 0 ? (1 + o / 100) : (1 + 100 / Math.abs(o));
+        }
+        // Aggregate a list of games into {flat, scaled} ROI buckets.
+        // includeAll=true → flat = 1u on every pick + scaled = existing scaled units
+        // includeAll=false → flat = 1u on every STRONG pick + scaled = strong-tier units
+        function aggregateGames(games, mode) {
+            const flat   = {bets:0, wins:0, losses:0, stake:0, profit:0};
+            const scaled = {bets:0, wins:0, losses:0, stake:0, profit:0};
+            const byUnits = {};
+            for (const g of games) {
+                const isStrong = Math.abs(g.delta) >= 1.0;
+                if (mode === "strong" && !isStrong) continue;
+                const dec = americanToDecimal(g.odds_american);
+                if (dec == null) continue;
+                const isWin = g.outcome === "W";
+
+                // Flat: always 1u
+                flat.bets += 1;
+                flat.stake += 100;
+                if (isWin) { flat.wins += 1; flat.profit += 100 * (dec - 1); }
+                else if (g.outcome === "L") { flat.losses += 1; flat.profit -= 100; }
+                else { flat.bets -= 1; flat.stake -= 100; continue; } // skip pending
+
+                // Scaled units:
+                //   bet-every-pick mode → uses pre-computed g.units (1/1.5/2/2.5/3)
+                //   strong-plays  mode → uses strongUnits tier (1/2/3)
+                const units = mode === "strong" ? strongUnits(g.delta) : (g.units || 1);
+                const stake = units * 100;
+                scaled.bets += 1;
+                scaled.stake += stake;
+                if (isWin) { scaled.wins += 1; scaled.profit += stake * (dec - 1); }
+                else if (g.outcome === "L") { scaled.losses += 1; scaled.profit -= stake; }
+
+                // by-units breakdown
+                const key = units.toFixed(1) + "u";
+                if (!byUnits[key]) byUnits[key] = {bets:0, wins:0, losses:0, stake:0, profit:0};
+                const b = byUnits[key];
+                b.bets += 1; b.stake += stake;
+                if (isWin) { b.wins += 1; b.profit += stake * (dec - 1); }
+                else if (g.outcome === "L") { b.losses += 1; b.profit -= stake; }
+            }
+            const roi = s => Object.assign(s, {roi_pct: s.stake > 0 ? s.profit / s.stake * 100 : 0});
+            return { flat: roi(flat), scaled: roi(scaled), by_units: byUnits };
+        }
+        // Pull every game across all per_day entries for a rating, optionally
+        // filtered to days within [fromDate, toDate] inclusive (YYYY-MM-DD).
+        function gamesFor(ratingData, fromDate, toDate) {
+            const out = [];
+            for (const day of (ratingData.per_day || [])) {
+                if (fromDate && day.date < fromDate) continue;
+                if (toDate   && day.date > toDate)   continue;
+                for (const g of (day.games || [])) out.push(g);
+            }
+            return out;
+        }
+
+        function renderGambling(roi) {
+            if (!roi || !roi.by_rating) {
+                document.getElementById("content").innerHTML =
+                    '<div class="empty">No ROI data yet — needs at least one completed day with odds + finals.</div>';
+                return;
+            }
+            const fmt = n => (n >= 0 ? "+" : "") + n.toFixed(2);
+            const pct = p => (p >= 0 ? "+" : "") + p.toFixed(1) + "%";
+            // Color from the string itself — looks at whether it begins with "-"
+            const cell = (s) => {
+                const str = String(s);
+                const neg = str.includes("-");
+                const color = neg ? "#f56565" : "#48bb78";
+                return `<span style="color:${color}; font-weight:600;">${str}</span>`;
+            };
+            // Render a single bet column inside a split card (flat + scaled blocks).
+            const cardBlock = (header, agg) => {
+                const f = agg.flat, s = agg.scaled;
+                return `
+                    <div style="flex:1; min-width:0; padding:0.4rem;">
+                        <div style="text-align:center; font-weight:700; color:#e2e8f0; font-size:0.85rem; margin-bottom:0.4rem; padding-bottom:0.3rem; border-bottom:1px solid #2d3748;">${header}</div>
+                        <div style="color:#a0aec0; font-size:0.7rem; text-transform:uppercase;">Flat</div>
+                        <div style="font-size:1rem; font-weight:600;">${cell(`$${fmt(f.profit)}`)} <span style="color:#a0aec0; font-size:0.78rem;">${cell(pct(f.roi_pct))}</span></div>
+                        <div style="color:#a0aec0; font-size:0.72rem;">${f.wins}-${f.losses} (${f.bets})</div>
+                        <div style="margin-top:0.45rem; padding-top:0.4rem; border-top:1px solid #2d3748;">
+                            <div style="color:#a0aec0; font-size:0.7rem; text-transform:uppercase;">Scaled</div>
+                            <div style="font-size:1rem; font-weight:600;">${cell(`$${fmt(s.profit)}`)} <span style="color:#a0aec0; font-size:0.78rem;">${cell(pct(s.roi_pct))}</span></div>
+                            <div style="color:#a0aec0; font-size:0.72rem;">${s.wins}-${s.losses} (${s.bets})</div>
+                        </div>
+                    </div>`;
+            };
+
+            // Precompute per-rating aggregates from the per_day games arrays —
+            // gives us strong-plays calcs + weekly filtering client-side.
+            const weekStart = thisWeekMondayStr();
+            const weekEnd   = sundayAfter(weekStart);
+            const agg = {};
+            for (const r of [1, 2, 3]) {
+                const rData = roi.by_rating[r] || {};
+                const allGames  = gamesFor(rData);
+                const weekGames = gamesFor(rData, weekStart, weekEnd);
+                agg[r] = {
+                    overall_every:  aggregateGames(allGames,  "every"),
+                    overall_strong: aggregateGames(allGames,  "strong"),
+                    week_every:     aggregateGames(weekGames, "every"),
+                    week_strong:    aggregateGames(weekGames, "strong"),
+                };
+            }
+
+            // ─── Three OVERALL cards — split: "Bet every pick" | "Strong plays" ─
+            let html = '<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-bottom:1rem;">';
+            for (const r of [1, 2, 3]) {
+                const a = agg[r];
+                html += `<div style="background:#252932; padding:0.8rem; border-radius:6px; border:1px solid #4a5568;">
+                    <div style="text-align:center; font-weight:700; font-size:1.05rem; margin-bottom:0.5rem;">Rating ${r}</div>
+                    <div style="display:flex; gap:0.4rem;">
+                        ${cardBlock("Bet every pick", a.overall_every)}
+                        <div style="width:1px; background:#4a5568; align-self:stretch;"></div>
+                        ${cardBlock("Strong plays", a.overall_strong)}
+                    </div>
+                </div>`;
+            }
+            html += `</div>`;
+
+            // ─── Three WEEKLY cards (Mon–Sun containing today) ─────────────
+            html += `<h4 style="margin:1.2rem 0 0.4rem 0; color:#e2e8f0;">This week (Mon ${shortDate(weekStart)} – Sun ${shortDate(weekEnd)})</h4>`;
+            html += '<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-bottom:1rem;">';
+            for (const r of [1, 2, 3]) {
+                const a = agg[r];
+                html += `<div style="background:#252932; padding:0.8rem; border-radius:6px; border:1px solid #4a5568;">
+                    <div style="text-align:center; font-weight:700; font-size:1.05rem; margin-bottom:0.5rem;">Rating ${r}</div>
+                    <div style="display:flex; gap:0.4rem;">
+                        ${cardBlock("Bet every pick", a.week_every)}
+                        <div style="width:1px; background:#4a5568; align-self:stretch;"></div>
+                        ${cardBlock("Strong plays", a.week_strong)}
+                    </div>
+                </div>`;
+            }
+            html += `</div>`;
+
+            html += `<div style="background:#252932; padding:0.8rem 1rem; border-radius:6px; margin-bottom:1rem; font-size:0.85rem; color:#a0aec0;">
+                <strong style="color:#e2e8f0;">Bet-every-pick scaled sizing:</strong>
+                |Δ|&lt;1 → 1u ($100) · 1–1.5 → 1.5u · 1.5–2 → 2u · 2–2.5 → 2.5u · 2.5+ → 3u
+                <br><strong style="color:#e2e8f0;">Strong-plays scaled sizing:</strong>
+                only plays with |Δ|≥1; 1.0–1.99 → 1u · 2.0–2.50 → 2u · 2.51+ → 3u
+            </div>`;
+
+            // ─── Per-unit-size tally — both bet-every and strong-plays modes ──
+            html += `<h4 style="margin:1rem 0 0.5rem 0; color:#e2e8f0;">By unit size (scaled mode breakdown)</h4>`;
+            html += `<table style="width:100%; border-collapse:collapse; font-size:0.8rem; margin-bottom:1.5rem;">
+                <thead>
+                  <tr style="background:#252932;">
+                    <th rowspan="2" style="text-align:left; padding:0.4rem; border-right:1px solid #4a5568;">Unit</th>
+                    <th colspan="6" style="text-align:center; padding:0.4rem; border-right:1px solid #4a5568; color:#cbd5e0;">Bet every pick</th>
+                    <th colspan="6" style="text-align:center; padding:0.4rem; color:#cbd5e0;">Strong plays</th>
+                  </tr>
+                  <tr style="background:#252932; font-size:0.72rem;">
+                    <th style="padding:0.3rem; text-align:right;">R1 P/L</th><th style="text-align:right;">R1 W-L</th>
+                    <th style="text-align:right;">R2 P/L</th><th style="text-align:right;">R2 W-L</th>
+                    <th style="text-align:right; border-right:1px solid #4a5568; padding-right:0.4rem;">R3 P/L</th><th style="text-align:right; padding-right:0.4rem;">R3 W-L</th>
+                    <th style="text-align:right;">R1 P/L</th><th style="text-align:right;">R1 W-L</th>
+                    <th style="text-align:right;">R2 P/L</th><th style="text-align:right;">R2 W-L</th>
+                    <th style="text-align:right;">R3 P/L</th><th style="text-align:right;">R3 W-L</th>
+                  </tr>
+                </thead><tbody>`;
+            for (const uKey of ["1.0u","1.5u","2.0u","2.5u","3.0u"]) {
+                html += `<tr style="border-bottom:1px solid #2d3748;">
+                    <td style="padding:0.4rem; border-right:1px solid #4a5568;">${uKey}</td>`;
+                // Bet every pick: use server-side overall_by_units (already correct)
+                for (const r of [1,2,3]) {
+                    const u = ((roi.by_rating[r] || {}).overall_by_units || {})[uKey] || {};
+                    const p = u.profit ?? 0, w = u.wins ?? 0, l = u.losses ?? 0;
+                    const pStr = (p >= 0 ? "+" : "") + p.toFixed(0);
+                    const rec  = (w+l) ? `${w}-${l}` : "—";
+                    const rightBorder = r === 3 ? "border-right:1px solid #4a5568; padding-right:0.4rem;" : "";
+                    html += `<td style="padding:0.3rem; text-align:right; ${rightBorder}">${cell(`$${pStr}`)}</td>
+                             <td style="padding:0.3rem; text-align:right; color:#a0aec0; ${rightBorder}">${rec}</td>`;
+                }
+                // Strong plays: pull from client-computed agg
+                for (const r of [1,2,3]) {
+                    const u = (agg[r].overall_strong.by_units || {})[uKey] || {};
+                    const p = u.profit ?? 0, w = u.wins ?? 0, l = u.losses ?? 0;
+                    const pStr = (p >= 0 ? "+" : "") + p.toFixed(0);
+                    const rec  = (w+l) ? `${w}-${l}` : "—";
+                    html += `<td style="padding:0.3rem; text-align:right;">${cell(`$${pStr}`)}</td>
+                             <td style="padding:0.3rem; text-align:right; color:#a0aec0;">${rec}</td>`;
+                }
+                html += `</tr>`;
+            }
+            html += `</tbody></table>`;
+
+            // Day-by-day table: shows each rating's flat/scaled per day
+            html += `<table class="games-table" style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                <thead><tr style="background:#252932;">
+                  <th style="text-align:left;padding:0.5rem;">Date</th>
+                  <th style="text-align:right;padding:0.5rem;">R1 Flat</th>
+                  <th style="text-align:right;padding:0.5rem;">R2 Flat</th>
+                  <th style="text-align:right;padding:0.5rem;">R3 Flat</th>
+                  <th style="text-align:right;padding:0.5rem;">R1 Scaled</th>
+                  <th style="text-align:right;padding:0.5rem;">R2 Scaled</th>
+                  <th style="text-align:right;padding:0.5rem;">R3 Scaled</th>
+                </tr></thead><tbody>`;
+            // Collect all unique dates across the 3 rating per_day arrays
+            const dateSet = new Set();
+            for (const r of [1,2,3]) {
+                ((roi.by_rating[r] || {}).per_day || []).forEach(d => dateSet.add(d.date));
+            }
+            const datesSorted = [...dateSet].sort().reverse();
+            const indexByR = {};
+            for (const r of [1,2,3]) {
+                indexByR[r] = {};
+                ((roi.by_rating[r] || {}).per_day || []).forEach(d => { indexByR[r][d.date] = d; });
+            }
+            for (const date of datesSorted) {
+                html += `<tr class="roi-day" data-date="${date}" style="border-bottom:1px solid #2d3748; cursor:pointer;">
+                    <td style="padding:0.5rem;"><span class="roi-arrow">▸</span> ${date}</td>`;
+                for (const r of [1,2,3]) {
+                    const day = indexByR[r][date];
+                    html += `<td style="padding:0.5rem; text-align:right;">${day ? cell(`$${fmt(day.flat.profit)}`) : "—"}</td>`;
+                }
+                for (const r of [1,2,3]) {
+                    const day = indexByR[r][date];
+                    html += `<td style="padding:0.5rem; text-align:right;">${day ? cell(`$${fmt(day.scaled.profit)}`) : "—"}</td>`;
+                }
+                html += `</tr>`;
+                // Per-game expansion (hidden by default)
+                html += `<tr class="roi-detail" data-date="${date}" style="display:none; background:#1f242c;">
+                    <td colspan="7" style="padding:0.5rem 1rem;">`;
+                // For each game on this date, show row per rating with profit
+                // Build a unified list of (matchup, R1 row, R2 row, R3 row)
+                const matchups = {};
+                for (const r of [1,2,3]) {
+                    const day = indexByR[r][date];
+                    if (!day) continue;
+                    for (const game of (day.games || [])) {
+                        if (!matchups[game.matchup]) matchups[game.matchup] = {};
+                        matchups[game.matchup][r] = game;
+                    }
+                }
+                html += `<table style="width:100%; border-collapse:collapse; font-size:0.8rem;">
+                    <thead><tr style="color:#a0aec0;">
+                        <th style="text-align:left; padding:0.3rem;">Game</th>
+                        <th style="text-align:center; padding:0.3rem;">R1 pick / Δ / units / O / P/L</th>
+                        <th style="text-align:center; padding:0.3rem;">R2 pick / Δ / units / O / P/L</th>
+                        <th style="text-align:center; padding:0.3rem;">R3 pick / Δ / units / O / P/L</th>
+                    </tr></thead><tbody>`;
+                for (const matchup of Object.keys(matchups)) {
+                    html += `<tr><td style="padding:0.3rem;">${matchup}</td>`;
+                    for (const r of [1,2,3]) {
+                        const g = matchups[matchup][r];
+                        if (!g) { html += `<td style="text-align:center; padding:0.3rem;">—</td>`; continue; }
+                        const outColor = g.outcome === "W" ? "#48bb78" : (g.outcome === "L" ? "#f56565" : "#a0aec0");
+                        const pColor = g.profit_scaled >= 0 ? "#48bb78" : "#f56565";
+                        html += `<td style="text-align:center; padding:0.3rem;">
+                            <span>${g.pick}</span>
+                            <span style="color:#a0aec0;"> ${g.delta >= 0 ? "+" : ""}${g.delta.toFixed(2)} </span>
+                            <span style="color:#a0aec0;">${g.units}u</span>
+                            <span style="color:${outColor}; font-weight:600;"> ${g.outcome || "—"}</span>
+                            <span style="color:${pColor}; font-weight:600;"> $${g.profit_scaled >= 0 ? "+" : ""}${g.profit_scaled.toFixed(2)}</span>
+                        </td>`;
+                    }
+                    html += `</tr>`;
+                }
+                html += `</tbody></table>`;
+                html += `</td></tr>`;
+            }
+            html += `</tbody></table>`;
+
+            // ─── By-week table (bottom) ─────────────────────────────────────
+            // Group every per_day entry by its Monday week-key, aggregate
+            // each rating's bet-every and strong totals.
+            const weekKeys = new Set();
+            const weekRows = {};  // weekKey -> {r: {every, strong}}
+            for (const r of [1,2,3]) {
+                const rd = roi.by_rating[r] || {};
+                const byWeek = {};
+                for (const day of (rd.per_day || [])) {
+                    const wk = mondayOfWeek(day.date);
+                    weekKeys.add(wk);
+                    if (!byWeek[wk]) byWeek[wk] = [];
+                    for (const g of (day.games || [])) byWeek[wk].push(g);
+                }
+                for (const wk of Object.keys(byWeek)) {
+                    if (!weekRows[wk]) weekRows[wk] = {};
+                    weekRows[wk][r] = {
+                        every:  aggregateGames(byWeek[wk], "every"),
+                        strong: aggregateGames(byWeek[wk], "strong"),
+                    };
+                }
+            }
+            const weeksSorted = [...weekKeys].sort().reverse();
+            if (weeksSorted.length) {
+                html += `<h4 style="margin:1.5rem 0 0.5rem 0; color:#e2e8f0;">By week</h4>`;
+                html += `<table style="width:100%; border-collapse:collapse; font-size:0.8rem; margin-bottom:1rem;">
+                    <thead>
+                      <tr style="background:#252932;">
+                        <th rowspan="2" style="text-align:left; padding:0.4rem; border-right:1px solid #4a5568;">Week (Mon)</th>
+                        <th colspan="3" style="text-align:center; padding:0.4rem; border-right:1px solid #4a5568;">R1</th>
+                        <th colspan="3" style="text-align:center; padding:0.4rem; border-right:1px solid #4a5568;">R2</th>
+                        <th colspan="3" style="text-align:center; padding:0.4rem;">R3</th>
+                      </tr>
+                      <tr style="background:#252932; font-size:0.72rem; color:#cbd5e0;">
+                        <th style="text-align:right; padding:0.3rem;">Every (flat)</th>
+                        <th style="text-align:right;">Every (scaled)</th>
+                        <th style="text-align:right; border-right:1px solid #4a5568; padding-right:0.4rem;">Strong (scaled)</th>
+                        <th style="text-align:right;">Every (flat)</th>
+                        <th style="text-align:right;">Every (scaled)</th>
+                        <th style="text-align:right; border-right:1px solid #4a5568; padding-right:0.4rem;">Strong (scaled)</th>
+                        <th style="text-align:right;">Every (flat)</th>
+                        <th style="text-align:right;">Every (scaled)</th>
+                        <th style="text-align:right;">Strong (scaled)</th>
+                      </tr>
+                    </thead><tbody>`;
+                for (const wk of weeksSorted) {
+                    const sun = sundayAfter(wk);
+                    html += `<tr style="border-bottom:1px solid #2d3748;">
+                        <td style="padding:0.4rem; border-right:1px solid #4a5568;">${shortDate(wk)}–${shortDate(sun)}</td>`;
+                    for (const r of [1,2,3]) {
+                        const rw = (weekRows[wk] || {})[r];
+                        const f  = rw ? rw.every.flat   : {profit:0, wins:0, losses:0, bets:0};
+                        const s  = rw ? rw.every.scaled : {profit:0, wins:0, losses:0, bets:0};
+                        const ss = rw ? rw.strong.scaled: {profit:0, wins:0, losses:0, bets:0};
+                        const tail = r === 3 ? "" : "border-right:1px solid #4a5568; padding-right:0.4rem;";
+                        const fmt2 = n => (n>=0?"+":"") + n.toFixed(0);
+                        const recCell = (b) => `<span style="color:#a0aec0; font-size:0.7rem;"> (${b.wins}-${b.losses})</span>`;
+                        html += `<td style="padding:0.3rem; text-align:right;">${cell(`$${fmt2(f.profit)}`)}${recCell(f)}</td>
+                                 <td style="padding:0.3rem; text-align:right;">${cell(`$${fmt2(s.profit)}`)}${recCell(s)}</td>
+                                 <td style="padding:0.3rem; text-align:right; ${tail}">${cell(`$${fmt2(ss.profit)}`)}${recCell(ss)}</td>`;
+                    }
+                    html += `</tr>`;
+                }
+                html += `</tbody></table>`;
+            }
+
+            document.getElementById("content").innerHTML = html;
+            // Bind click handler for expand/collapse
+            document.querySelectorAll(".roi-day").forEach(row => {
+                row.addEventListener("click", () => {
+                    const date = row.dataset.date;
+                    const detail = document.querySelector(`.roi-detail[data-date="${date}"]`);
+                    if (!detail) return;
+                    const expanded = detail.style.display !== "none";
+                    detail.style.display = expanded ? "none" : "";
+                    const arrow = row.querySelector(".roi-arrow");
+                    if (arrow) arrow.textContent = expanded ? "▸" : "▾";
+                });
+            });
+        }
+
+        // Load all 3 ratings JSON for a specific date — used by postgame/perf views.
+        async function loadAllRatingsForDate(dateStr) {
+            const out = {};
+            for (const r of [1,2,3]) {
+                try {
+                    const resp = await fetch(`ratings/${dateStr}_r${r}.json` + CACHE_BUST);
+                    if (resp.ok) out[r] = await resp.json();
+                } catch (e) {}
+            }
+            if (!out[1]) {
+                try {
+                    const resp = await fetch(`ratings/${dateStr}.json` + CACHE_BUST);
+                    if (resp.ok) out[1] = await resp.json();
+                } catch (e) {}
+            }
+            return out;
+        }
+
+        async function fetchBoxScore(gamePk) {
+            try {
+                const r = await fetch(`https://statsapi.mlb.com/api/v1/game/${gamePk}/boxscore`);
+                if (!r.ok) return null;
+                return await r.json();
+            } catch (e) { return null; }
+        }
+
+        async function fetchScheduleForDate(dateStr) {
+            try {
+                const r = await fetch(`https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${dateStr}&hydrate=team,linescore`);
+                if (!r.ok) return [];
+                const data = await r.json();
+                const out = [];
+                const norm = a => ({"KC":"KCR","SD":"SDP","SF":"SFG","WSH":"WSN","TB":"TBR","AZ":"ARI","CWS":"CHW","OAK":"ATH"}[a] || a);
+                for (const d of data.dates || []) {
+                    for (const g of d.games || []) {
+                        out.push({
+                            gamePk: g.gamePk,
+                            home: norm(g.teams.home.team.abbreviation),
+                            away: norm(g.teams.away.team.abbreviation),
+                            homeScore: g.teams.home.score ?? null,
+                            awayScore: g.teams.away.score ?? null,
+                            state: g.status?.detailedState || "",
+                        });
+                    }
+                }
+                return out;
+            } catch (e) { return []; }
+        }
+
+        async function renderPostgame(dateStr) {
+            const [all, schedule] = await Promise.all([
+                loadAllRatingsForDate(dateStr),
+                fetchScheduleForDate(dateStr),
+            ]);
+            if (!all[1]) {
+                document.getElementById("content").innerHTML = '<div class="empty">No data for this date.</div>';
+                return;
+            }
+            const games = all[1].games || [];
+
+            // Tally today's record per rating
+            const todayTally = {1:{w:0,l:0}, 2:{w:0,l:0}, 3:{w:0,l:0}};
+            for (const g of games) {
+                const sched = schedule.find(s => s.home === g.home_team && s.away === g.away_team) || {};
+                if (sched.state !== "Final" || sched.homeScore == null) continue;
+                const winner = sched.homeScore > sched.awayScore ? g.home_team : g.away_team;
+                for (const r of [1,2,3]) {
+                    const game = (all[r]?.games || []).find(x => x.home_team === g.home_team && x.away_team === g.away_team);
+                    if (!game) continue;
+                    if (game.pick === winner) todayTally[r].w += 1;
+                    else todayTally[r].l += 1;
+                }
+            }
+            // Overall record per rating — from the summary file
+            const overallTally = {1:{w:0,l:0}, 2:{w:0,l:0}, 3:{w:0,l:0}};
+            if (overallSummary?.by_rating) {
+                for (const r of [1,2,3]) {
+                    const t = overallSummary.by_rating[r]?.totals || {};
+                    overallTally[r] = {w: t.wins||0, l: t.losses||0};
+                }
+            }
+
+            let html = `<h3 style="margin:0.5rem 0;">Postgame: each game shows R1/R2/R3 picks + final score</h3>`;
+            html += `<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-bottom:1rem;">`;
+            for (const r of [1,2,3]) {
+                const tT = todayTally[r], tO = overallTally[r];
+                const tdayPct = (tT.w+tT.l) ? Math.round(tT.w/(tT.w+tT.l)*100) : "—";
+                const ovPct = (tO.w+tO.l) ? Math.round(tO.w/(tO.w+tO.l)*100) : "—";
+                html += `<div style="background:#252932; padding:0.8rem 1rem; border-radius:6px; border:1px solid #4a5568;">
+                    <div style="font-weight:600; margin-bottom:0.3rem;">Rating ${r}</div>
+                    <div style="color:#a0aec0; font-size:0.75rem;">Today</div>
+                    <div style="font-size:1rem; font-weight:600;">${tT.w}-${tT.l} <span style="color:#a0aec0; font-size:0.85rem;">(${tdayPct}%)</span></div>
+                    <div style="color:#a0aec0; font-size:0.75rem; margin-top:0.4rem;">Overall</div>
+                    <div style="font-size:1rem; font-weight:600;">${tO.w}-${tO.l} <span style="color:#a0aec0; font-size:0.85rem;">(${ovPct}%)</span></div>
+                </div>`;
+            }
+            html += `</div>`;
+
+            html += `<table style="width:100%; border-collapse:collapse;">
+                <thead><tr style="background:#252932;">
+                  <th style="text-align:left;padding:0.5rem;">Game</th>
+                  <th style="text-align:center;padding:0.5rem;">Final</th>
+                  <th style="text-align:center;padding:0.5rem;">R1 pick</th>
+                  <th style="text-align:center;padding:0.5rem;">R2 pick</th>
+                  <th style="text-align:center;padding:0.5rem;">R3 pick</th>
+                  <th style="text-align:center;padding:0.5rem;">Box</th>
+                </tr></thead><tbody>`;
+            for (const g of games) {
+                const matchup = `${g.away_team}@${g.home_team}`;
+                const sched = schedule.find(s => s.home === g.home_team && s.away === g.away_team) || {};
+                const finalText = (sched.state === "Final" && sched.homeScore != null)
+                    ? `${g.away_team} ${sched.awayScore} - ${sched.homeScore} ${g.home_team}` : "—";
+                const winner = sched.state === "Final"
+                    ? (sched.homeScore > sched.awayScore ? g.home_team : g.away_team) : null;
+                const pickCell = (r) => {
+                    const game = (all[r]?.games || []).find(x => x.home_team === g.home_team && x.away_team === g.away_team);
+                    if (!game) return "—";
+                    const correct = winner != null && winner === game.pick;
+                    const color = winner == null ? "#a0aec0" : (correct ? "#48bb78" : "#f56565");
+                    return `<span style="color:${color}; font-weight:600;">${game.pick} ${game.delta?.toFixed(2) || ""}</span>`;
+                };
+                html += `<tr style="border-bottom:1px solid #2d3748;">
+                    <td style="padding:0.5rem;">${matchup}</td>
+                    <td style="padding:0.5rem; text-align:center;">${finalText}</td>
+                    <td style="padding:0.5rem; text-align:center;">${pickCell(1)}</td>
+                    <td style="padding:0.5rem; text-align:center;">${pickCell(2)}</td>
+                    <td style="padding:0.5rem; text-align:center;">${pickCell(3)}</td>
+                    <td style="padding:0.5rem; text-align:center;">${sched.gamePk
+                        ? `<a href="https://www.mlb.com/gameday/${sched.gamePk}" target="_blank" style="color:#63b3ed;">view</a>`
+                        : "—"}</td>
+                </tr>`;
+            }
+            html += `</tbody></table>`;
+            document.getElementById("content").innerHTML = html;
+        }
+
+        async function renderPerfMetrics(dateStr) {
+            const [all, schedule] = await Promise.all([
+                loadAllRatingsForDate(dateStr),
+                fetchScheduleForDate(dateStr),
+            ]);
+            if (!all[1]) {
+                document.getElementById("content").innerHTML = '<div class="empty">No data for this date.</div>';
+                return;
+            }
+            const cats = ["trends","runs","sp","bullpen","hitting","bullpen_fatigue"];
+            const games = all[1].games || [];
+
+            // Compute today's per-(rating, category) tallies
+            const todayCat = {1:{}, 2:{}, 3:{}};
+            for (const r of [1,2,3]) for (const c of cats) todayCat[r][c] = {w:0,l:0};
+            // Compute overall per-(rating, category) by walking every date in index
+            // (use what's already there, but build async + cache)
+            const recordFor = (catPick, winner, r, c) => {
+                if (winner == null) return;
+                if (catPick === winner) todayCat[r][c].w += 1;
+                else todayCat[r][c].l += 1;
+            };
+
+            // Also compute the per-game roll-up of 6 categories per rating (used in tally tables below each game)
+            const gameTally = {};
+            for (const g of games) {
+                const matchup = `${g.away_team}@${g.home_team}`;
+                gameTally[matchup] = {1:{w:0,l:0}, 2:{w:0,l:0}, 3:{w:0,l:0}};
+            }
+
+            // Pre-compute per-game category picks + winners
+            const gameInfo = games.map(g => {
+                const sched = schedule.find(s => s.home === g.home_team && s.away === g.away_team) || {};
+                const winner = sched.state === "Final"
+                    ? (sched.homeScore > sched.awayScore ? g.home_team : g.away_team) : null;
+                const matchup = `${g.away_team}@${g.home_team}`;
+                return {g, winner, matchup};
+            });
+
+            for (const {g, winner, matchup} of gameInfo) {
+                for (const r of [1,2,3]) {
+                    const game = (all[r]?.games || []).find(x => x.home_team === g.home_team && x.away_team === g.away_team);
+                    if (!game) continue;
+                    for (const c of cats) {
+                        const v = game.categories?.[c];
+                        if (!v || typeof v.home !== "number" || typeof v.away !== "number") continue;
+                        const catPick = v.home > v.away ? g.home_team : g.away_team;
+                        recordFor(catPick, winner, r, c);
+                        if (winner != null) {
+                            if (catPick === winner) gameTally[matchup][r].w += 1;
+                            else gameTally[matchup][r].l += 1;
+                        }
+                    }
+                }
+            }
+
+            // --- Render: cumulative tally box for the day on top ---
+            let html = `<h3 style="margin:0.5rem 0;">Per-category pick correctness — each rating × each category × outcome</h3>`;
+            html += `<div style="background:#252932; padding:1rem; border-radius:6px; border:1px solid #4a5568; margin-bottom:1rem;">
+                <div style="font-weight:600; margin-bottom:0.5rem;">Today — category totals per rating</div>
+                <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                <thead><tr style="color:#a0aec0;">
+                  <th style="text-align:left;padding:0.3rem;">Category</th>
+                  <th style="text-align:center;padding:0.3rem;">Rating 1</th>
+                  <th style="text-align:center;padding:0.3rem;">Rating 2</th>
+                  <th style="text-align:center;padding:0.3rem;">Rating 3</th>
+                </tr></thead><tbody>`;
+            for (const c of cats) {
+                html += `<tr><td style="padding:0.3rem;">${c.toUpperCase()}</td>`;
+                for (const r of [1,2,3]) {
+                    const t = todayCat[r][c];
+                    const tot = t.w+t.l;
+                    const pct = tot ? Math.round(t.w/tot*100) : "—";
+                    const color = tot ? (t.w >= t.l ? "#48bb78" : "#f56565") : "#a0aec0";
+                    html += `<td style="text-align:center;padding:0.3rem; color:${color};">${t.w}-${t.l} ${tot ? `(${pct}%)` : ""}</td>`;
+                }
+                html += `</tr>`;
+            }
+            html += `</tbody></table></div>`;
+
+            // --- Render: per-game tables ---
+            for (const {g, winner, matchup} of gameInfo) {
+                html += `<div style="background:#1f242c; border:1px solid #2d3748; border-radius:6px; padding:0.8rem; margin-bottom:1rem;">
+                    <div style="font-weight:600; margin-bottom:0.5rem;">${matchup}
+                    ${winner ? `<span style="color:#48bb78; margin-left:1rem;">Final: ${winner} won</span>` : `<span style="color:#a0aec0; margin-left:1rem;">In progress / pending</span>`}</div>
+                    <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                    <thead><tr style="color:#a0aec0;">
+                      <th style="text-align:left;padding:0.3rem;">Category</th>
+                      <th style="text-align:center;padding:0.3rem;">R1 pick</th>
+                      <th style="text-align:center;padding:0.3rem;">R2 pick</th>
+                      <th style="text-align:center;padding:0.3rem;">R3 pick</th>
+                    </tr></thead><tbody>`;
+                for (const c of cats) {
+                    html += `<tr><td style="padding:0.3rem;">${c}</td>`;
+                    for (const r of [1,2,3]) {
+                        const game = (all[r]?.games || []).find(x => x.home_team === g.home_team && x.away_team === g.away_team);
+                        if (!game || !game.categories?.[c]) { html += `<td style="text-align:center;padding:0.3rem;">—</td>`; continue; }
+                        const v = game.categories[c];
+                        if (typeof v.home !== "number" || typeof v.away !== "number") { html += `<td style="text-align:center;padding:0.3rem;">—</td>`; continue; }
+                        const catPick = v.home > v.away ? g.home_team : g.away_team;
+                        const correct = winner != null && winner === catPick;
+                        const color = winner == null ? "#a0aec0" : (correct ? "#48bb78" : "#f56565");
+                        const mark = winner == null ? "" : (correct ? " ✓" : " ✗");
+                        html += `<td style="text-align:center;padding:0.3rem; color:${color};">${catPick}${mark}</td>`;
+                    }
+                    html += `</tr>`;
+                }
+                // Game-level tally row
+                html += `<tr style="border-top:1px solid #2d3748;"><td style="padding:0.3rem; font-weight:600;">GAME 6-CAT</td>`;
+                for (const r of [1,2,3]) {
+                    const t = gameTally[matchup][r];
+                    const tot = t.w+t.l;
+                    const color = tot ? (t.w >= t.l ? "#48bb78" : "#f56565") : "#a0aec0";
+                    html += `<td style="text-align:center;padding:0.3rem; color:${color}; font-weight:600;">${t.w}-${t.l}</td>`;
+                }
+                html += `</tr>`;
+                html += `</tbody></table></div>`;
+            }
+            document.getElementById("content").innerHTML = html;
+        }
+
+        // Map of (rating, category) -> time-frame label, surfaced under each
+        // expandable Grand Total row so you can see exactly what's being summed.
+        const TIME_FRAMES = {
+            1: {trends: "season",  runs: "7d/15d", sp: "full/18d/42d", bullpen: "full/7d/14d", hitting: "full/5d/10d", bullpen_fatigue: "last 3d"},
+            2: {trends: "season",  runs: "2g/5g",  sp: "full/18d/42d", bullpen: "full/2d/7d",  hitting: "full/2d/4d",  bullpen_fatigue: "last 3d"},
+            3: {trends: "season",  runs: "7g/15g", sp: "full/13d/33d", bullpen: "full/5d/10d", hitting: "full/3d/7d",  bullpen_fatigue: "last 3d"},
+        };
+
+        async function renderGrandTotal() {
+            // Aggregate per-category, per-rating wins/losses across ALL dates in index.
+            const idx = await loadIndex();
+            const dates = idx.dates || [];
+            const cats = ["trends","runs","sp","bullpen","hitting","bullpen_fatigue"];
+            // tally[rating][category] = {wins, losses, pending}
+            const tally = {1:{}, 2:{}, 3:{}};
+            for (const r of [1,2,3]) {
+                for (const c of cats) tally[r][c] = {wins:0, losses:0, pending:0};
+            }
+            for (const dateStr of dates) {
+                const [all, schedule] = await Promise.all([
+                    loadAllRatingsForDate(dateStr),
+                    fetchScheduleForDate(dateStr),
+                ]);
+                if (!all[1]) continue;
+                const games = all[1].games || [];
+                for (const g of games) {
+                    const sched = schedule.find(s => s.home === g.home_team && s.away === g.away_team) || {};
+                    if (sched.state !== "Final" || sched.homeScore == null) {
+                        for (const r of [1,2,3]) for (const c of cats) tally[r][c].pending += 1;
+                        continue;
+                    }
+                    const winner = sched.homeScore > sched.awayScore ? g.home_team : g.away_team;
+                    for (const r of [1,2,3]) {
+                        const game = (all[r]?.games || []).find(x => x.home_team === g.home_team && x.away_team === g.away_team);
+                        if (!game) continue;
+                        for (const c of cats) {
+                            const v = game.categories?.[c];
+                            if (!v || typeof v.home !== "number" || typeof v.away !== "number") continue;
+                            const catPick = v.home > v.away ? g.home_team : g.away_team;
+                            if (catPick === winner) tally[r][c].wins += 1;
+                            else tally[r][c].losses += 1;
+                        }
+                    }
+                }
+            }
+            let html = `<h3 style="margin:0.5rem 0;">Grand Total — per-category record across all dates, per rating</h3>
+                        <table style="width:100%; border-collapse:collapse;">
+                <thead><tr style="background:#252932;">
+                  <th style="text-align:left;padding:0.5rem;">Category</th>
+                  <th style="text-align:center;padding:0.5rem;">Rating 1</th>
+                  <th style="text-align:center;padding:0.5rem;">Rating 2</th>
+                  <th style="text-align:center;padding:0.5rem;">Rating 3</th>
+                </tr></thead><tbody>`;
+            for (const c of cats) {
+                html += `<tr class="gt-row" data-cat="${c}" style="border-bottom:1px solid #2d3748; cursor:pointer;">
+                    <td style="padding:0.5rem; font-weight:600;"><span class="gt-arrow">▸</span> ${c.toUpperCase()}</td>`;
+                for (const r of [1,2,3]) {
+                    const t = tally[r][c];
+                    const games = t.wins + t.losses;
+                    const pct = games > 0 ? (t.wins / games * 100).toFixed(1) : "—";
+                    const color = games > 0 && t.wins > t.losses ? "#48bb78" : (games > 0 ? "#f56565" : "#a0aec0");
+                    html += `<td style="padding:0.5rem; text-align:center; color:${color};">${t.wins}-${t.losses} (${pct}%)</td>`;
+                }
+                html += `</tr>`;
+                // Expanded detail row: time frames per rating
+                html += `<tr class="gt-detail" data-cat="${c}" style="display:none; background:#1f242c;">
+                    <td style="padding:0.5rem 1rem; color:#a0aec0; font-style:italic;">Time frames used →</td>`;
+                for (const r of [1,2,3]) {
+                    const tf = (TIME_FRAMES[r] || {})[c] || "—";
+                    html += `<td style="padding:0.5rem; text-align:center; color:#63b3ed;"><strong>${tf}</strong></td>`;
+                }
+                html += `</tr>`;
+            }
+            html += `</tbody></table>`;
+            document.getElementById("content").innerHTML = html;
+            // Expand/collapse on category row click
+            document.querySelectorAll(".gt-row").forEach(row => {
+                row.addEventListener("click", () => {
+                    const cat = row.dataset.cat;
+                    const detail = document.querySelector(`.gt-detail[data-cat="${cat}"]`);
+                    if (!detail) return;
+                    const expanded = detail.style.display !== "none";
+                    detail.style.display = expanded ? "none" : "";
+                    const arrow = row.querySelector(".gt-arrow");
+                    if (arrow) arrow.textContent = expanded ? "▸" : "▾";
+                });
+            });
+        }
+
+        function bindViewTabs() {
+            const tabs = document.querySelectorAll(".view-tab");
+            tabs.forEach(t => {
+                t.addEventListener("click", async () => {
+                    tabs.forEach(x => {
+                        x.classList.remove("active");
+                        x.style.background = "#252932";
+                        x.style.color = "#a0aec0";
+                    });
+                    t.classList.add("active");
+                    t.style.background = "#48bb78";
+                    t.style.color = "#fff";
+                    currentView = t.dataset.view;
+                    await renderCurrent();
+                });
+            });
+        }
+
+        // Single source of truth for what to render. Called by model tabs,
+        // view tabs, and the date selector so the user's selected view + rating
+        // are preserved when any of them changes.
+        async function renderCurrent() {
+            const dateSel = document.getElementById("dateSelect");
+            const dateStr = dateSel?.value || (new Date()).toISOString().slice(0,10);
+            document.getElementById("content").innerHTML = '<div class="empty">Loading...</div>';
+            if (currentView === "gambling") {
+                const roi = await loadRoi();
+                renderGambling(roi);
+            } else if (currentView === "postgame") {
+                await renderPostgame(dateStr);
+            } else if (currentView === "perf_metrics") {
+                await renderPerfMetrics(dateStr);
+            } else if (currentView === "grand_total") {
+                await renderGrandTotal();
+            } else {
+                if (dateSel && dateSel.value) await renderDate(dateSel.value);
+            }
+        }
+
+        function bindModelTabs() {
+            const tabs = document.querySelectorAll(".model-tab");
+            tabs.forEach(t => {
+                t.addEventListener("click", async () => {
+                    tabs.forEach(x => {
+                        x.classList.remove("active");
+                        x.style.background = "#252932";
+                        x.style.color = "#a0aec0";
+                    });
+                    t.classList.add("active");
+                    t.style.background = "#3182ce";
+                    t.style.color = "#fff";
+                    currentRating = parseInt(t.dataset.rating, 10);
+                    await renderCurrent();
+                });
+            });
+        }
+
+        async function fetchMLBScores(dateStr) {
+            const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${dateStr}&hydrate=team,linescore`;
+            const r = await fetch(url);
+            if (!r.ok) return {};
+            const data = await r.json();
+            const out = {};
+            const norm = a => ({"KC":"KCR","SD":"SDP","SF":"SFG","WSH":"WSN","TB":"TBR","AZ":"ARI","CWS":"CHW","OAK":"ATH"}[a] || a);
+            for (const d of (data.dates || [])) {
+                for (const g of (d.games || [])) {
+                    const home = norm(g.teams.home.team.abbreviation);
+                    const away = norm(g.teams.away.team.abbreviation);
+                    const hs = g.teams.home.score ?? null;
+                    const as = g.teams.away.score ?? null;
+                    const state = g.status?.detailedState || "";
+                    out[home + "@" + away] = {home_score: hs, away_score: as, state};
+                }
+            }
+            return out;
+        }
+
+        let games = [];
+
+        function renderMetricBreakdown(g, cat) {
+            const c = (g.categories || {})[cat] || {};
+            const homeDetails = c.home_details || [];
+            const awayDetails = c.away_details || [];
+            const homeByMetric = {};
+            const awayByMetric = {};
+            (Array.isArray(homeDetails) ? homeDetails : []).forEach(m => {
+                const key = m.metric || m.situation || m.group_name;
+                if (key) homeByMetric[key] = m;
+            });
+            (Array.isArray(awayDetails) ? awayDetails : []).forEach(m => {
+                const key = m.metric || m.situation || m.group_name;
+                if (key) awayByMetric[key] = m;
+            });
+            const keys = Array.from(new Set([...Object.keys(homeByMetric), ...Object.keys(awayByMetric)]));
+            if (!keys.length) {
+                return '<div class="metric-table"><p style="padding:1rem; color:#718096;">No metric-level detail available for this category.</p></div>';
+            }
+            const fmt = v => (typeof v === "number") ? v.toFixed(3) : "—";
+            // Split × time-window sub-table for a metric. Only some categories
+            // (hitting/sp/bullpen) have this — trends/runs/bullpen_fatigue don't.
+            const buildSplitsTable = (homeMetric, awayMetric, awayTeam, homeTeam) => {
+                const hs = (homeMetric || {}).splits || [];
+                const as = (awayMetric || {}).splits || [];
+                if (!hs.length && !as.length) {
+                    return `<div style="padding:0.7rem 1rem; color:#718096; font-size:0.85rem;">No split-level detail (this category uses a flat structure).</div>`;
+                }
+                // Union of split codes across both sides
+                const codes = Array.from(new Set([
+                    ...hs.map(s => s.split_code),
+                    ...as.map(s => s.split_code),
+                ]));
+                const hByCode = Object.fromEntries(hs.map(s => [s.split_code, s]));
+                const aByCode = Object.fromEntries(as.map(s => [s.split_code, s]));
+                // Pick up every time-window label seen anywhere
+                const timeSet = new Set();
+                [...hs, ...as].forEach(s => (s.time_windows||[]).forEach(t => timeSet.add(t.time)));
+                const times = Array.from(timeSet);
+                // Header: split | for each time window: away / home / weight
+                const th = times.map(t =>
+                    `<th colspan="3" style="text-align:center; border-left:1px solid #4a5568;">${t}</th>`
+                ).join("");
+                const subth = times.map(_ =>
+                    `<th style="text-align:right; font-size:0.7rem; border-left:1px solid #4a5568; color:#a0aec0;">${awayTeam}</th>
+                     <th style="text-align:right; font-size:0.7rem; color:#a0aec0;">${homeTeam}</th>
+                     <th style="text-align:right; font-size:0.7rem; color:#a0aec0;">wt</th>`
+                ).join("");
+                const bodyRows = codes.map(code => {
+                    const hSplit = hByCode[code] || {};
+                    const aSplit = aByCode[code] || {};
+                    const label = hSplit.split_label || aSplit.split_label || code;
+                    const hTimes = Object.fromEntries((hSplit.time_windows || []).map(t => [t.time, t]));
+                    const aTimes = Object.fromEntries((aSplit.time_windows || []).map(t => [t.time, t]));
+                    const cells = times.map(t => {
+                        const h = hTimes[t] || {};
+                        const a = aTimes[t] || {};
+                        const hr = h.rating, ar = a.rating;
+                        let hCls = "neutral-val", aCls = "neutral-val";
+                        if (typeof hr === "number" && typeof ar === "number") {
+                            if (hr > ar) { hCls = "better-val"; aCls = "worse-val"; }
+                            else if (ar > hr) { aCls = "better-val"; hCls = "worse-val"; }
+                        }
+                        const wt = h.weight ?? a.weight;
+                        const wtStr = typeof wt === "number" ? wt.toFixed(1) : "—";
+                        return `<td class="${aCls}" style="text-align:right; border-left:1px solid #4a5568;">${fmt(ar)}</td>
+                                <td class="${hCls}" style="text-align:right;">${fmt(hr)}</td>
+                                <td style="text-align:right; color:#a0aec0; font-size:0.75rem;">${wtStr}</td>`;
+                    }).join("");
+                    return `<tr>
+                        <td class="metric-name">${label} <span style="color:#a0aec0; font-size:0.7rem;">(${code})</span></td>
+                        ${cells}
+                    </tr>`;
+                }).join("");
+                return `<div class="metric-table" style="margin-top:0.3rem; border-left:2px solid #4299e1;">
+                    <table>
+                        <thead>
+                            <tr><th rowspan="2" style="vertical-align:bottom;">Split</th>${th}</tr>
+                            <tr>${subth}</tr>
+                        </thead>
+                        <tbody>${bodyRows}</tbody>
+                    </table>
+                </div>`;
+            };
+            const rows = keys.map((k, idx) => {
+                const h = homeByMetric[k] || {};
+                const a = awayByMetric[k] || {};
+                const hr = h.rating;
+                const ar = a.rating;
+                const w = h.metric_weight ?? a.metric_weight ?? h.base_weight ?? a.base_weight ?? "—";
+                let advClass = "", awayCls = "neutral-val", homeCls = "neutral-val";
+                if (typeof hr === "number" && typeof ar === "number") {
+                    if (hr > ar) { advClass = "advantage-H"; homeCls = "better-val"; awayCls = "worse-val"; }
+                    else if (ar > hr) { advClass = "advantage-A"; awayCls = "better-val"; homeCls = "worse-val"; }
+                }
+                const contrib = (typeof hr === "number" && typeof w === "number")
+                    ? ((hr - (ar||0)) * w).toFixed(2) : "—";
+                const hasSplits = ((h.splits && h.splits.length) || (a.splits && a.splits.length));
+                const rowMain = `<tr class="metric-row" data-idx="${idx}" style="${hasSplits ? 'cursor:pointer;' : ''}">
+                    <td class="metric-name">${hasSplits ? '<span class="split-arrow" style="display:inline-block; width:14px;">▸</span>' : '<span style="display:inline-block; width:14px;"></span>'} ${k}</td>
+                    <td class="${awayCls}">${fmt(ar)}</td>
+                    <td class="${homeCls}">${fmt(hr)}</td>
+                    <td class="${advClass}">${typeof w === "number" ? w : "—"}</td>
+                    <td>${contrib}</td>
+                </tr>`;
+                const rowSplits = hasSplits
+                    ? `<tr class="metric-splits-row" data-idx="${idx}" style="display:none;">
+                        <td colspan="5" style="padding:0.3rem 0.5rem; background:#161a20;">
+                            ${buildSplitsTable(h, a, g.away_team, g.home_team)}
+                        </td>
+                    </tr>`
+                    : "";
+                return rowMain + rowSplits;
+            }).join("");
+            return `<div class="metric-table">
+                <p class="hint" style="margin:0 0 0.4rem 0.2rem;">Click any metric with ▸ to see its per-split breakdown across all 3 time frames.</p>
+                <table>
+                    <thead><tr>
+                        <th>Metric</th>
+                        <th>${g.away_team} rating</th>
+                        <th>${g.home_team} rating</th>
+                        <th>Weight</th>
+                        <th>Net contrib (H-A)*W</th>
+                    </tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>`;
+        }
+
+        function render(data, results) {
+            games = data.games || [];
+            if (!games.length) {
+                document.getElementById("content").innerHTML = '<div class="empty">No games for this date</div>';
+                return;
+            }
+            let wins = 0, losses = 0, sWins = 0, sLosses = 0;
+            const rows = games.map((g, i) => {
+                const key = g.home_team + "@" + g.away_team;
+                const act = results[key];
+                let scoreHtml = '<span class="result-pending">—</span>';
+                let resultHtml = '<span class="result-pending">pending</span>';
+                if (act && act.state === "Final" && act.home_score != null && act.away_score != null) {
+                    scoreHtml = `${act.away_score}-${act.home_score}`;
+                    const winner = act.home_score > act.away_score ? g.home_team : (act.away_score > act.home_score ? g.away_team : null);
+                    if (winner === g.pick) {
+                        resultHtml = '<span class="result-W">W</span>';
+                        wins++;
+                        if (Math.abs(g.delta) >= 1.0) sWins++;
+                    } else if (winner) {
+                        resultHtml = '<span class="result-L">L</span>';
+                        losses++;
+                        if (Math.abs(g.delta) >= 1.0) sLosses++;
+                    } else {
+                        resultHtml = '<span class="result-T">T</span>';
+                    }
+                }
+                const deltaClass = Math.abs(g.delta) >= 1.0 ? "delta-strong" : "";
+                const cats = g.categories || {};
+                const fmt = v => (typeof v === "number") ? v.toFixed(2) : "—";
+                // Time-window labels per category per rating
+                const tw = {
+                    1: {sp: "(full/18d/42d)", bullpen: "(full/7d/14d)", hitting: "(full/5d/10d)",
+                        trends: "(season)", runs: "(7d/15d)", bullpen_fatigue: "(last 3d)"},
+                    2: {sp: "(full/18d/42d)", bullpen: "(full/2d/7d)", hitting: "(full/2d/4d)",
+                        trends: "(season)", runs: "(2g/5g)", bullpen_fatigue: "(last 3d)"},
+                    3: {sp: "(full/13d/33d)", bullpen: "(full/5d/10d)", hitting: "(full/3d/7d)",
+                        trends: "(season)", runs: "(7g/15g)", bullpen_fatigue: "(last 3d)"},
+                }[currentRating] || {};
+                const catList = cats.bullpen_fatigue !== undefined
+                    ? ["trends","runs","sp","bullpen","hitting","bullpen_fatigue"]
+                    : ["trends","runs","sp","bullpen","hitting"];
+                const catHtml = catList.map(c => {
+                    const v = cats[c] || {};
+                    const h = v.home, a = v.away;
+                    const d = (typeof h === "number" && typeof a === "number") ? (h - a) : null;
+                    let awayCls = "neutral", homeCls = "neutral";
+                    if (typeof h === "number" && typeof a === "number") {
+                        if (h > a) { homeCls = "better"; awayCls = "worse"; }
+                        else if (a > h) { awayCls = "better"; homeCls = "worse"; }
+                    }
+                    const twLabel = tw[c] || "";
+                    // SP category can be excluded from the game's final rating
+                    // when either starter is TBD — show a badge + strike delta.
+                    const spExcluded = c === "sp" && v && v.excluded_from_final === true;
+                    const excludedBadge = spExcluded
+                        ? `<span style="font-size:0.6rem; color:#fbb040; font-weight:700; background:rgba(251,176,64,0.15); padding:1px 4px; border-radius:3px; margin-left:4px;">TBD · not in final</span>`
+                        : "";
+                    const deltaStyle = spExcluded ? "text-decoration:line-through; opacity:0.55;" : "";
+                    return `<div class="cat-card" data-cat="${c}" data-row="${i}">
+                        <div class="label">${c.toUpperCase()} <span style="font-weight:400; font-size:0.7rem; color:#a0aec0;">${twLabel}</span>${excludedBadge}</div>
+                        <div class="values"><span class="${awayCls}">${g.away_team}: ${fmt(a)}</span><span class="${homeCls}">${g.home_team}: ${fmt(h)}</span></div>
+                        <div class="delta-row" style="${deltaStyle}">Δ ${d == null ? "—" : (d >= 0 ? "+" : "") + d.toFixed(2)}</div>
+                    </div>`;
+                }).join("");
+                // "What's being measured" — every game-context piece going into ratings
+                const wd = g.weather_details || {};
+                const fmt1 = v => (typeof v === "number") ? v.toFixed(1) : v;
+                const measurePairs = [
+                    ["Day/Night", g.day_night],
+                    ["Ballpark", g.ballpark_type || g.ballpark],
+                    ["Weather", g.weather],
+                    ["Temp (avg)",  wd.temp_mean_f  != null ? fmt1(wd.temp_mean_f) + "°F"  : null],
+                    ["Temp (high)", wd.temp_max_f   != null ? fmt1(wd.temp_max_f)  + "°F"  : null],
+                    ["Wind",        wd.wind_mph     != null ? fmt1(wd.wind_mph)    + " mph" : null],
+                    ["Wind dir",    wd.wind_dir     != null ? Math.round(wd.wind_dir) + "°"  : null],
+                    ["Humidity",    wd.humidity_pct != null ? Math.round(wd.humidity_pct) + "%" : null],
+                    ["Precip",      wd.precip_mm    != null ? fmt1(wd.precip_mm)   + " mm" : null],
+                    ["Weather code", g.weather_code],
+                    ["Ballpark code", g.ballpark_code],
+                    ["Away SP hand", g.away_pitcher_hand?.toUpperCase()],
+                    ["Home SP hand", g.home_pitcher_hand?.toUpperCase()],
+                    ["Away days rest", g.away_days_rest],
+                    ["Home days rest", g.home_days_rest],
+                    ["Away last", g.away_last_result],
+                    ["Home last", g.home_last_result],
+                    ["Fav/Dog", g.fav_dog],
+                    ["Division game", g.is_division ? "yes" : (g.is_division === false ? "no" : null)],
+                    ["Interleague", g.is_interleague ? "yes" : (g.is_interleague === false ? "no" : null)],
+                ].filter(([_,v]) => v != null && v !== "");
+                const measuredHtml = `
+                    <div style="background:#1f242c; border:1px solid #4299e1; border-radius:6px; padding:0.8rem 1rem; margin:0.5rem 0 1rem 0; font-size:0.85rem;">
+                        <div style="color:#63b3ed; font-weight:700; margin-bottom:0.5rem; font-size:0.95rem;">📋 What's being measured for this game</div>
+                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:0.5rem 1rem;">
+                            ${measurePairs.map(([k,v]) =>
+                                `<div><span style="color:#a0aec0;">${k}:</span> <strong style="color:#e2e8f0;">${v}</strong></div>`
+                            ).join("")}
+                        </div>
+                    </div>`;
+                // Format odds line
+                const odds = g.odds;
+                let oddsHtml = '<span style="color:#718096">—</span>';
+                if (odds && (odds.ml_home || odds.ml_away)) {
+                    oddsHtml = `<span class="away-val">${g.away_team} ${odds.ml_away || "—"}</span> / <span class="home-val">${g.home_team} ${odds.ml_home || "—"}</span>`;
+                    if (odds.total) {
+                        oddsHtml += `<br><span style="font-size:0.8rem; color:#a0aec0;">O/U ${odds.total}</span>`;
+                    }
+                }
+                // IP under each SP name: "fullsp / lastXdays / lastYdays"
+                const ipLine = (side) => {
+                    const ipSum = ((g.categories || {}).sp || {})[side + "_ip"] || {};
+                    const vals = Object.values(ipSum);
+                    if (!vals.length) return "";
+                    const labels = vals.map(v => (v == null ? "—" : Number(v).toFixed(1))).join("/");
+                    return `<div style="font-size:0.75rem; color:#a0aec0; margin-top:2px;">${labels}</div>`;
+                };
+                return `<tr class="summary ${deltaClass}" data-row="${i}">
+                    <td>${g.away_team} @ ${g.home_team}</td>
+                    <td>${g.away_pitcher || ""}${ipLine("away")}</td>
+                    <td>${g.home_pitcher || ""}${ipLine("home")}</td>
+                    <td class="num">${g.away_total?.toFixed(2) ?? ""}</td>
+                    <td class="num">${g.home_total?.toFixed(2) ?? ""}</td>
+                    <td class="num">${g.delta >= 0 ? "+" : ""}${g.delta?.toFixed(2) ?? ""}</td>
+                    <td class="pick-cell">${g.pick}</td>
+                    <td style="font-size:0.85rem">${oddsHtml}</td>
+                    <td>${scoreHtml}</td>
+                    <td>${resultHtml}</td>
+                </tr>
+                <tr class="detail" data-row="${i}">
+                    <td colspan="10">
+                        ${measuredHtml}
+                        <div class="breakdown">${catHtml}</div>
+                    </td>
+                </tr>`;
+            }).join("");
+            document.getElementById("content").innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Matchup</th><th>Away SP</th><th>Home SP</th>
+                            <th class="num">Away</th><th class="num">Home</th><th class="num">Δ</th>
+                            <th>Pick</th><th>Line</th><th>Score</th><th>Result</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>`;
+            // Expand/collapse handler
+            document.querySelectorAll("tr.summary").forEach(row => {
+                row.addEventListener("click", () => {
+                    const i = row.getAttribute("data-row");
+                    const detail = document.querySelector(`tr.detail[data-row="${i}"]`);
+                    row.classList.toggle("expanded");
+                    detail.classList.toggle("show");
+                });
+            });
+
+            // PICKS-SITE VARIANT: category cards are non-interactive.
+            // No metric or split drill-down here — just the 6 category
+            // ratings + delta stay visible when the game row is expanded.
+            document.querySelectorAll(".cat-card").forEach(card => {
+                card.style.cursor = "default";
+            });
+
+            const total = wins + losses;
+            const summary = document.getElementById("summary");
+            // Always render 6 tally slots: Today / Today Strong | This Week /
+            // Week Strong | Overall / Overall Strong. Each block is rendered
+            // even when 0-0 so the user can see the slots are present and
+            // will fill in as games complete.
+            const tallyPill = (label, w, l, isStrong) => {
+                const tot = w + l;
+                const pct = tot ? (w / tot * 100).toFixed(0) + "%" : "—";
+                const cls = tot === 0
+                    ? "stat"
+                    : (isStrong
+                        ? (w >= l ? "stat good" : "stat bad")
+                        : (w > l   ? "stat good" : "stat bad"));
+                return `<span class="${cls}">${label}: ${w}-${l} (${pct})</span>`;
+            };
+            let html = "";
+            // Today
+            html += tallyPill("Today",        wins,  losses,  false);
+            html += tallyPill("Today Strong", sWins, sLosses, true);
+            // This week + Overall — pull from overallSummary for the selected rating
+            const overallRating = (overallSummary && overallSummary.by_rating && overallSummary.by_rating[currentRating])
+                ? overallSummary.by_rating[currentRating]
+                : (overallSummary || {});
+            const overallTotals = overallRating.totals || {wins:0, losses:0, strong_wins:0, strong_losses:0};
+            const weekStart = thisWeekMondayStr();
+            const weekEnd   = sundayAfter(weekStart);
+            let wW = 0, wL = 0, wSW = 0, wSL = 0;
+            for (const d of (overallRating.per_day || [])) {
+                if (d.date < weekStart || d.date > weekEnd) continue;
+                wW  += d.wins || 0;
+                wL  += d.losses || 0;
+                wSW += d.strong_wins || 0;
+                wSL += d.strong_losses || 0;
+            }
+            html += `<span class="stat divider">|</span>`;
+            html += tallyPill("This Week",   wW,  wL,  false);
+            html += tallyPill("Week Strong", wSW, wSL, true);
+            html += `<span class="stat divider">|</span>`;
+            html += tallyPill("Overall",        overallTotals.wins,        overallTotals.losses,        false);
+            html += tallyPill("Overall Strong", overallTotals.strong_wins, overallTotals.strong_losses, true);
+            summary.innerHTML = html;
+        }
+
+        async function showDate(dateStr) {
+            document.getElementById("content").innerHTML = '<div class="empty">Loading...</div>';
+            document.getElementById("summary").innerHTML = "";
+            try {
+                const [data, results] = await Promise.all([
+                    loadDay(dateStr),
+                    fetchMLBScores(dateStr),
+                ]);
+                document.getElementById("subtitle").textContent = `Predictions for ${dateStr}`;
+                render(data, results);
+            } catch (e) {
+                document.getElementById("content").innerHTML = '<div class="empty">No ratings file for ' + dateStr + '</div>';
+            }
+        }
+
+        let overallSummary = null;
+
+        // Alias renderDate to whichever existing render function takes a date.
+        async function renderDate(d) { return showDate(d); }
+
+        async function init() {
+            try {
+                bindModelTabs();
+                bindViewTabs();
+                const [idx, summary] = await Promise.all([loadIndex(), loadOverallSummary()]);
+                overallSummary = summary;
+                const dates = (idx.dates || []).sort().reverse();
+                const sel = document.getElementById("dateSelect");
+                sel.innerHTML = dates.map(d => `<option value="${d}">${d}</option>`).join("");
+                sel.addEventListener("change", () => renderCurrent());
+                if (dates.length) await showDate(dates[0]);
+                else document.getElementById("content").innerHTML = '<div class="empty">No ratings published yet</div>';
+            } catch (e) {
+                document.getElementById("content").innerHTML = '<div class="empty">Could not load ratings index</div>';
+            }
+        }
+        init();
+    </script>
+</body>
+</html>
