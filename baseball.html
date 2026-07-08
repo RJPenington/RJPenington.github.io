@@ -976,8 +976,6 @@
             const c = (g.categories || {})[cat] || {};
             const homeDetails = c.home_details || [];
             const awayDetails = c.away_details || [];
-            // Trends/runs use 'metric'+'rating', SP/bullpen/hitting use 'metric'+'metric_weight'+'rating'
-            // Build metric-keyed maps
             const homeByMetric = {};
             const awayByMetric = {};
             (Array.isArray(homeDetails) ? homeDetails : []).forEach(m => {
@@ -993,7 +991,71 @@
                 return '<div class="metric-table"><p style="padding:1rem; color:#718096;">No metric-level detail available for this category.</p></div>';
             }
             const fmt = v => (typeof v === "number") ? v.toFixed(3) : "—";
-            const rows = keys.map(k => {
+            // Split × time-window sub-table for a metric. Only some categories
+            // (hitting/sp/bullpen) have this — trends/runs/bullpen_fatigue don't.
+            const buildSplitsTable = (homeMetric, awayMetric, awayTeam, homeTeam) => {
+                const hs = (homeMetric || {}).splits || [];
+                const as = (awayMetric || {}).splits || [];
+                if (!hs.length && !as.length) {
+                    return `<div style="padding:0.7rem 1rem; color:#718096; font-size:0.85rem;">No split-level detail (this category uses a flat structure).</div>`;
+                }
+                // Union of split codes across both sides
+                const codes = Array.from(new Set([
+                    ...hs.map(s => s.split_code),
+                    ...as.map(s => s.split_code),
+                ]));
+                const hByCode = Object.fromEntries(hs.map(s => [s.split_code, s]));
+                const aByCode = Object.fromEntries(as.map(s => [s.split_code, s]));
+                // Pick up every time-window label seen anywhere
+                const timeSet = new Set();
+                [...hs, ...as].forEach(s => (s.time_windows||[]).forEach(t => timeSet.add(t.time)));
+                const times = Array.from(timeSet);
+                // Header: split | for each time window: away / home / weight
+                const th = times.map(t =>
+                    `<th colspan="3" style="text-align:center; border-left:1px solid #4a5568;">${t}</th>`
+                ).join("");
+                const subth = times.map(_ =>
+                    `<th style="text-align:right; font-size:0.7rem; border-left:1px solid #4a5568; color:#a0aec0;">${awayTeam}</th>
+                     <th style="text-align:right; font-size:0.7rem; color:#a0aec0;">${homeTeam}</th>
+                     <th style="text-align:right; font-size:0.7rem; color:#a0aec0;">wt</th>`
+                ).join("");
+                const bodyRows = codes.map(code => {
+                    const hSplit = hByCode[code] || {};
+                    const aSplit = aByCode[code] || {};
+                    const label = hSplit.split_label || aSplit.split_label || code;
+                    const hTimes = Object.fromEntries((hSplit.time_windows || []).map(t => [t.time, t]));
+                    const aTimes = Object.fromEntries((aSplit.time_windows || []).map(t => [t.time, t]));
+                    const cells = times.map(t => {
+                        const h = hTimes[t] || {};
+                        const a = aTimes[t] || {};
+                        const hr = h.rating, ar = a.rating;
+                        let hCls = "neutral-val", aCls = "neutral-val";
+                        if (typeof hr === "number" && typeof ar === "number") {
+                            if (hr > ar) { hCls = "better-val"; aCls = "worse-val"; }
+                            else if (ar > hr) { aCls = "better-val"; hCls = "worse-val"; }
+                        }
+                        const wt = h.weight ?? a.weight;
+                        const wtStr = typeof wt === "number" ? wt.toFixed(1) : "—";
+                        return `<td class="${aCls}" style="text-align:right; border-left:1px solid #4a5568;">${fmt(ar)}</td>
+                                <td class="${hCls}" style="text-align:right;">${fmt(hr)}</td>
+                                <td style="text-align:right; color:#a0aec0; font-size:0.75rem;">${wtStr}</td>`;
+                    }).join("");
+                    return `<tr>
+                        <td class="metric-name">${label} <span style="color:#a0aec0; font-size:0.7rem;">(${code})</span></td>
+                        ${cells}
+                    </tr>`;
+                }).join("");
+                return `<div class="metric-table" style="margin-top:0.3rem; border-left:2px solid #4299e1;">
+                    <table>
+                        <thead>
+                            <tr><th rowspan="2" style="vertical-align:bottom;">Split</th>${th}</tr>
+                            <tr>${subth}</tr>
+                        </thead>
+                        <tbody>${bodyRows}</tbody>
+                    </table>
+                </div>`;
+            };
+            const rows = keys.map((k, idx) => {
                 const h = homeByMetric[k] || {};
                 const a = awayByMetric[k] || {};
                 const hr = h.rating;
@@ -1006,15 +1068,25 @@
                 }
                 const contrib = (typeof hr === "number" && typeof w === "number")
                     ? ((hr - (ar||0)) * w).toFixed(2) : "—";
-                return `<tr>
-                    <td class="metric-name">${k}</td>
+                const hasSplits = ((h.splits && h.splits.length) || (a.splits && a.splits.length));
+                const rowMain = `<tr class="metric-row" data-idx="${idx}" style="${hasSplits ? 'cursor:pointer;' : ''}">
+                    <td class="metric-name">${hasSplits ? '<span class="split-arrow" style="display:inline-block; width:14px;">▸</span>' : '<span style="display:inline-block; width:14px;"></span>'} ${k}</td>
                     <td class="${awayCls}">${fmt(ar)}</td>
                     <td class="${homeCls}">${fmt(hr)}</td>
                     <td class="${advClass}">${typeof w === "number" ? w : "—"}</td>
                     <td>${contrib}</td>
                 </tr>`;
+                const rowSplits = hasSplits
+                    ? `<tr class="metric-splits-row" data-idx="${idx}" style="display:none;">
+                        <td colspan="5" style="padding:0.3rem 0.5rem; background:#161a20;">
+                            ${buildSplitsTable(h, a, g.away_team, g.home_team)}
+                        </td>
+                    </tr>`
+                    : "";
+                return rowMain + rowSplits;
             }).join("");
             return `<div class="metric-table">
+                <p class="hint" style="margin:0 0 0.4rem 0.2rem;">Click any metric with ▸ to see its per-split breakdown across all 3 time frames.</p>
                 <table>
                     <thead><tr>
                         <th>Metric</th>
@@ -1200,6 +1272,22 @@
                     if (wasActive) { target.innerHTML = ""; return; }
                     card.classList.add("active");
                     target.innerHTML = renderMetricBreakdown(g, cat);
+                    // Bind click-to-expand on each metric row (Level 3 —
+                    // per-split × time-frame breakdown). Only fires on rows
+                    // that were flagged with the ▸ arrow (i.e. rows that
+                    // actually have splits data).
+                    target.querySelectorAll(".metric-row").forEach(mrow => {
+                        mrow.addEventListener("click", (ev2) => {
+                            ev2.stopPropagation();
+                            const idx = mrow.dataset.idx;
+                            const detail = target.querySelector(`.metric-splits-row[data-idx="${idx}"]`);
+                            if (!detail) return;
+                            const shown = detail.style.display !== "none";
+                            detail.style.display = shown ? "none" : "table-row";
+                            const arr = mrow.querySelector(".split-arrow");
+                            if (arr) arr.textContent = shown ? "▸" : "▾";
+                        });
+                    });
                 });
             });
 
