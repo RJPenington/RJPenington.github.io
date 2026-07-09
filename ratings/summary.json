@@ -100,18 +100,26 @@
         },
         {
           "date": "2026-07-08",
-          "wins": 0,
-          "losses": 0,
-          "strong_wins": 0,
-          "strong_losses": 0,
-          "pending": 15
+          "wins": 7,
+          "losses": 8,
+          "strong_wins": 5,
+          "strong_losses": 2,
+          "pending": 0
+        },
+        {
+          "date": "2026-07-09",
+          "wins": 1,
+          "losses": 4,
+          "strong_wins": 1,
+          "strong_losses": 1,
+          "pending": 8
         }
       ],
       "totals": {
-        "wins": 99,
-        "losses": 64,
-        "strong_wins": 44,
-        "strong_losses": 27
+        "wins": 107,
+        "losses": 76,
+        "strong_wins": 50,
+        "strong_losses": 30
       }
     },
     "2": {
@@ -206,18 +214,26 @@
         },
         {
           "date": "2026-07-08",
-          "wins": 0,
-          "losses": 0,
-          "strong_wins": 0,
-          "strong_losses": 0,
-          "pending": 15
+          "wins": 6,
+          "losses": 9,
+          "strong_wins": 3,
+          "strong_losses": 1,
+          "pending": 0
+        },
+        {
+          "date": "2026-07-09",
+          "wins": 1,
+          "losses": 4,
+          "strong_wins": 1,
+          "strong_losses": 2,
+          "pending": 8
         }
       ],
       "totals": {
-        "wins": 90,
-        "losses": 58,
-        "strong_wins": 40,
-        "strong_losses": 24
+        "wins": 97,
+        "losses": 71,
+        "strong_wins": 44,
+        "strong_losses": 27
       }
     },
     "3": {
@@ -312,26 +328,34 @@
         },
         {
           "date": "2026-07-08",
+          "wins": 7,
+          "losses": 8,
+          "strong_wins": 2,
+          "strong_losses": 2,
+          "pending": 0
+        },
+        {
+          "date": "2026-07-09",
           "wins": 0,
-          "losses": 0,
+          "losses": 5,
           "strong_wins": 0,
-          "strong_losses": 0,
-          "pending": 15
+          "strong_losses": 1,
+          "pending": 8
         }
       ],
       "totals": {
-        "wins": 85,
-        "losses": 63,
-        "strong_wins": 38,
-        "strong_losses": 22
+        "wins": 92,
+        "losses": 76,
+        "strong_wins": 40,
+        "strong_losses": 25
       }
     }
   },
   "totals": {
-    "wins": 99,
-    "losses": 64,
-    "strong_wins": 44,
-    "strong_losses": 27
+    "wins": 107,
+    "losses": 76,
+    "strong_wins": 50,
+    "strong_losses": 30
   },
   "per_day": [
     {
@@ -432,12 +456,20 @@
     },
     {
       "date": "2026-07-08",
-      "wins": 0,
-      "losses": 0,
-      "strong_wins": 0,
-      "strong_losses": 0,
-      "pending": 15
+      "wins": 7,
+      "losses": 8,
+      "strong_wins": 5,
+      "strong_losses": 2,
+      "pending": 0
+    },
+    {
+      "date": "2026-07-09",
+      "wins": 1,
+      "losses": 4,
+      "strong_wins": 1,
+      "strong_losses": 1,
+      "pending": 8
     }
   ],
-  "as_of": "2026-07-08"
+  "as_of": "2026-07-09"
 }
