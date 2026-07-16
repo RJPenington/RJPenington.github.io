@@ -7,9 +7,9 @@
       "away_team": "NYM",
       "home_pitcher": "Aaron Nola",
       "away_pitcher": "Christian Scott",
-      "home_total": 5.1168455918227185,
-      "away_total": 6.34163384308115,
-      "delta": -1.2247882512584312,
+      "home_total": 5.202182674451028,
+      "away_total": 6.024066278689786,
+      "delta": -0.8218836042387583,
       "pick": "NYM",
       "odds": {
         "ml_home": "-131",
@@ -20,32 +20,24 @@
       },
       "categories": {
         "trends": {
-          "home": 7.2388937563609,
-          "away": 4.115275094524357,
+          "home": 7.485844007970396,
+          "away": 3.3562283987915404,
           "home_details": [
             {
               "metric": "Equal rest/ rest advantage/disadvantage?",
-              "situation": "rest_advantage",
-              "win_pct": 0.0,
-              "games": 2,
-              "rating": 0.0,
-              "weight": 10.666666666666666
+              "situation": "equal_rest",
+              "win_pct": 0.5489999999999999,
+              "games": 91,
+              "rating": 6.979999999999998,
+              "weight": 24.4375
             },
             {
               "metric": "coming off win or loss?",
-              "situation": "is_after_loss",
-              "win_pct": 0.561,
-              "games": 41,
-              "rating": 7.220000000000001,
-              "weight": 25.916666666666668
-            },
-            {
-              "metric": "coming off rest",
-              "situation": "four_plus_days_off",
-              "win_pct": 1.0,
-              "games": 1,
-              "rating": 10.96774193548387,
-              "weight": 5.333333333333333
+              "situation": "is_after_win",
+              "win_pct": 0.528,
+              "games": 53,
+              "rating": 6.5600000000000005,
+              "weight": 26.916666666666668
             },
             {
               "metric": "Home/Away",
@@ -58,10 +50,10 @@
             {
               "metric": "favroite/dog?",
               "situation": "is_fav",
-              "win_pct": 0.648,
-              "games": 71,
-              "rating": 8.96,
-              "weight": 20.6875
+              "win_pct": 0.649,
+              "games": 74,
+              "rating": 8.98,
+              "weight": 20.875
             },
             {
               "metric": "home/away/favorite/dog",
@@ -82,36 +74,28 @@
             {
               "metric": "win trends league/non league",
               "situation": "is_league",
-              "win_pct": 0.556,
-              "games": 72,
-              "rating": 7.12,
-              "weight": 18.25
+              "win_pct": 0.562,
+              "games": 73,
+              "rating": 7.24,
+              "weight": 18.3125
             }
           ],
           "away_details": [
             {
               "metric": "Equal rest/ rest advantage/disadvantage?",
-              "situation": "rest_disadvantage",
-              "win_pct": 0.4,
-              "games": 5,
-              "rating": 4.0,
-              "weight": 11.666666666666666
+              "situation": "equal_rest",
+              "win_pct": 0.41100000000000003,
+              "games": 90,
+              "rating": 4.220000000000001,
+              "weight": 24.375
             },
             {
               "metric": "coming off win or loss?",
-              "situation": "is_after_win",
-              "win_pct": 0.48700000000000004,
-              "games": 39,
-              "rating": 5.740000000000001,
-              "weight": 25.75
-            },
-            {
-              "metric": "coming off rest",
-              "situation": "four_plus_days_off",
-              "win_pct": 1.0,
-              "games": 1,
-              "rating": 10.96774193548387,
-              "weight": 5.333333333333333
+              "situation": "is_after_loss",
+              "win_pct": 0.35700000000000004,
+              "games": 56,
+              "rating": 3.140000000000001,
+              "weight": 27.166666666666668
             },
             {
               "metric": "Home/Away",
@@ -124,10 +108,10 @@
             {
               "metric": "favroite/dog?",
               "situation": "is_dog",
-              "win_pct": 0.313,
-              "games": 32,
-              "rating": 2.2600000000000002,
-              "weight": 17.666666666666668
+              "win_pct": 0.303,
+              "games": 33,
+              "rating": 2.06,
+              "weight": 17.75
             },
             {
               "metric": "home/away/favorite/dog",
@@ -156,13 +140,13 @@
           ]
         },
         "runs": {
-          "home": 5.193495813023373,
-          "away": 6.383417072865892,
+          "home": 5.476920384951882,
+          "away": 5.296712910886139,
           "home_details": [
             {
               "metric": "runs per game 2025",
-              "value": 4.43,
-              "rating": 6.859999999999999,
+              "value": 4.37,
+              "rating": 6.74,
               "weight": 30.0
             },
             {
@@ -179,100 +163,26 @@
             },
             {
               "metric": "last 7 rpg",
-              "value": 4.142857142857143,
-              "rating": 6.2857142857142865,
+              "value": 3.142857142857143,
+              "rating": 4.285714285714286,
               "weight": 50.0
             },
             {
               "metric": "last 15 runs per game",
-              "value": 5.466666666666667,
-              "rating": 8.933333333333334,
+              "value": 4.2,
+              "rating": 6.4,
               "weight": 30.0
             },
             {
               "metric": "opponent last 7 rpg",
-              "value": 6.428571428571429,
-              "rating": 0.9523809523809523,
+              "value": 5.571428571428571,
+              "rating": 1.8571428571428577,
               "weight": 30.0
             },
             {
               "metric": "opponent last 15 runs per game",
-              "value": 5.666666666666667,
-              "rating": 1.666666666666666,
-              "weight": 20.0
-            },
-            {
-              "metric": "last 4 wins",
-              "value": 1,
-              "rating": 3.0,
-              "weight": 35.0
-            },
-            {
-              "metric": "last 7 wins",
-              "value": 3,
-              "rating": 4.0,
-              "weight": 20.0
-            },
-            {
-              "metric": "last 15 wins",
-              "value": 9,
-              "rating": 7.0,
-              "weight": 15.0
-            },
-            {
-              "metric": "avg rank last 7",
-              "value": 19.428571428571427,
-              "rating": 4.523809523809525,
-              "weight": 35.0
-            },
-            {
-              "metric": "avg rank last 15",
-              "value": 18.733333333333334,
-              "rating": 4.7555555555555555,
-              "weight": 20.0
-            }
-          ],
-          "away_details": [
-            {
-              "metric": "runs per game 2025",
-              "value": 4.16,
-              "rating": 6.32,
-              "weight": 30.0
-            },
-            {
-              "metric": "RPG last 1",
-              "value": 6.0,
-              "rating": 10.0,
-              "weight": 7.5
-            },
-            {
-              "metric": "rpg away",
-              "value": 3.81,
-              "rating": 5.62,
-              "weight": 25.0
-            },
-            {
-              "metric": "last 7 rpg",
-              "value": 6.857142857142857,
-              "rating": 10.214285714285714,
-              "weight": 50.0
-            },
-            {
-              "metric": "last 15 runs per game",
-              "value": 4.933333333333334,
-              "rating": 7.866666666666667,
-              "weight": 30.0
-            },
-            {
-              "metric": "opponent last 7 rpg",
-              "value": 7.857142857142857,
-              "rating": 0.7936507936507937,
-              "weight": 30.0
-            },
-            {
-              "metric": "opponent last 15 runs per game",
-              "value": 5.933333333333334,
-              "rating": 1.1333333333333329,
+              "value": 5.2,
+              "rating": 2.5999999999999996,
               "weight": 20.0
             },
             {
@@ -289,20 +199,94 @@
             },
             {
               "metric": "last 15 wins",
+              "value": 8,
+              "rating": 6.0,
+              "weight": 15.0
+            },
+            {
+              "metric": "avg rank last 7",
+              "value": 16.142857142857142,
+              "rating": 5.6190476190476195,
+              "weight": 35.0
+            },
+            {
+              "metric": "avg rank last 15",
+              "value": 15.666666666666666,
+              "rating": 5.777777777777778,
+              "weight": 20.0
+            }
+          ],
+          "away_details": [
+            {
+              "metric": "runs per game 2025",
+              "value": 4.1,
+              "rating": 6.199999999999999,
+              "weight": 30.0
+            },
+            {
+              "metric": "RPG last 1",
+              "value": 2.0,
+              "rating": 2.0,
+              "weight": 7.5
+            },
+            {
+              "metric": "rpg away",
+              "value": 3.81,
+              "rating": 5.62,
+              "weight": 25.0
+            },
+            {
+              "metric": "last 7 rpg",
+              "value": 5.142857142857143,
+              "rating": 8.285714285714286,
+              "weight": 50.0
+            },
+            {
+              "metric": "last 15 runs per game",
+              "value": 4.6,
+              "rating": 7.199999999999999,
+              "weight": 30.0
+            },
+            {
+              "metric": "opponent last 7 rpg",
+              "value": 5.714285714285714,
+              "rating": 1.5714285714285712,
+              "weight": 30.0
+            },
+            {
+              "metric": "opponent last 15 runs per game",
+              "value": 5.733333333333333,
+              "rating": 1.5333333333333332,
+              "weight": 20.0
+            },
+            {
+              "metric": "last 4 wins",
+              "value": 1,
+              "rating": 3.0,
+              "weight": 35.0
+            },
+            {
+              "metric": "last 7 wins",
+              "value": 3,
+              "rating": 4.0,
+              "weight": 20.0
+            },
+            {
+              "metric": "last 15 wins",
               "value": 6,
               "rating": 4.0,
               "weight": 15.0
             },
             {
               "metric": "avg rank last 7",
-              "value": 11.714285714285714,
-              "rating": 7.095238095238096,
+              "value": 13.0,
+              "rating": 6.666666666666667,
               "weight": 35.0
             },
             {
               "metric": "avg rank last 15",
-              "value": 9.733333333333333,
-              "rating": 7.7555555555555555,
+              "value": 9.933333333333334,
+              "rating": 7.688888888888889,
               "weight": 20.0
             }
           ]
