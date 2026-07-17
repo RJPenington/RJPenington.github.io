@@ -256,7 +256,7 @@
                 <div class="stat-tile"><div class="value">0</div><div class="label">Manual Steps Required</div></div>
             </div>
 
-            <h3>Master Orchestrator <span class="software">(Windows Task Scheduler)</span><span class="time-saved">~2 hrs / week</span></h3>
+            <h3>Master Orchestrator <span class="software">(Windows Task Scheduler — built-in job runner)</span><span class="time-saved">~2 hrs / week</span></h3>
             <div class="card">
                 <div class="title">Run_all_codes_here.py — 8 AM Daily Runner</div>
                 <div class="subtitle">Sequential subprocess runner with 30-min per-script timeout, master log, day-of-week conditional dispatch</div>
@@ -269,7 +269,7 @@
                 </ul>
             </div>
 
-            <h3>Foundation ↔ Assignar Syncs <span class="software">(Foundation ERP · Assignar workforce mgmt)</span><span class="time-saved">~5 hrs / week</span></h3>
+            <h3>Foundation ↔ Assignar Syncs <span class="software">(Foundation — accounting · Assignar — field crew scheduling)</span><span class="time-saved">~5 hrs / week</span></h3>
             <div class="card">
                 <div class="title">Cost Code Creation Sync</div>
                 <ul>
@@ -294,7 +294,7 @@
                 </ul>
             </div>
 
-            <h3>Paychex → Foundation Employee Sync <span class="software">(Paychex payroll · Foundation)</span><span class="time-saved">~3 hrs / week</span></h3>
+            <h3>Paychex → Foundation Employee Sync <span class="software">(Paychex — payroll processing · Foundation — accounting)</span><span class="time-saved">~3 hrs / week</span></h3>
             <div class="card">
                 <div class="title">Automated Employee Creation Pipeline</div>
                 <ul>
@@ -304,7 +304,7 @@
                 </ul>
             </div>
 
-            <h3>Elation Certified Payroll <span class="software">(Elation cert-payroll · Paychex · Foundation · Micron PLA)</span><span class="time-saved">~2 hrs / week</span></h3>
+            <h3>Elation Certified Payroll <span class="software">(Elation — govt certified-payroll filing · Paychex — payroll · Foundation — accounting · Micron PLA — union agreement rules)</span><span class="time-saved">~2 hrs / week</span></h3>
             <div class="card">
                 <div class="title">PDF-Driven Cert-Payroll Pipeline (rebuilt 2026-06-12)</div>
                 <ul>
@@ -315,7 +315,7 @@
                 </ul>
             </div>
 
-            <h3>Receipt Import to Foundation <span class="software">(Chase bank · Foundation · Supabase · TEAMPPC app)</span><span class="time-saved">~5 hrs / week</span></h3>
+            <h3>Receipt Import to Foundation <span class="software">(Chase — business credit card · Foundation — accounting · Supabase — cloud database · TEAMPPC — my field crew mobile app)</span><span class="time-saved">~5 hrs / week</span></h3>
             <div class="card">
                 <div class="title">Chase CSV → Field App → Desktop Review → Foundation SQL</div>
                 <ul>
@@ -327,7 +327,7 @@
                 </ul>
             </div>
 
-            <h3>AP Invoices Automation <span class="software">(Outlook · Foundation · OpenAI GPT)</span><span class="time-saved">~7 hrs / week</span></h3>
+            <h3>AP Invoices Automation <span class="software">(Outlook — email · Foundation — accounting · OpenAI GPT — AI text parsing)</span><span class="time-saved">~7 hrs / week</span></h3>
             <div class="card">
                 <div class="title">Outlook Puller + 17 Vendor Parsers + GPT Fallback</div>
                 <ul>
@@ -337,7 +337,7 @@
                 </ul>
             </div>
 
-            <h3>Sherwin Invoice Automation <span class="software">(Sherwin-Williams Pro-site · Microsoft Edge · Foundation)</span><span class="time-saved">~2 hrs / week</span></h3>
+            <h3>Sherwin Invoice Automation <span class="software">(Sherwin-Williams Pro-site — paint supplier portal · Microsoft Edge — browser · Foundation — accounting)</span><span class="time-saved">~2 hrs / week</span></h3>
             <div class="card">
                 <div class="title">Attach-to-Edge Bot + Foundation Price Reconciliation</div>
                 <ul>
@@ -347,7 +347,7 @@
                 </ul>
             </div>
 
-            <h3>Daily Dashboards <span class="software">(Foundation · Assignar · openpyxl · ReportLab)</span><span class="time-saved">~6 hrs / week</span></h3>
+            <h3>Daily Dashboards <span class="software">(Foundation — accounting · Assignar — field crew · outputs to Excel + PDF)</span><span class="time-saved">~6 hrs / week</span></h3>
             <div class="card">
                 <div class="title">Job Financial Dashboard v3</div>
                 <ul>
@@ -475,6 +475,12 @@
                 <div class="stat-tile"><div class="value">~5,800</div><div class="label">Split CSVs Generated Daily</div></div>
                 <div class="stat-tile"><div class="value">7:00 AM</div><div class="label">Daily Pipeline Runtime</div></div>
             </div>
+            <div class="stat-row">
+                <div class="stat-tile"><div class="value">5</div><div class="label">External APIs Merged Daily</div></div>
+                <div class="stat-tile"><div class="value">28</div><div class="label">Advanced Stats Rebuilt</div></div>
+                <div class="stat-tile"><div class="value">~600K</div><div class="label">Plate Appearances Owned</div></div>
+                <div class="stat-tile"><div class="value">~15 min</div><div class="label">End-to-End Pipeline Time</div></div>
+            </div>
 
             <p style="text-align:center; margin: 1.5rem 0;">
                 <a href="baseball.html" style="background:#b91c1c; color:#ffffff; padding:10px 20px; border-radius:6px; font-weight:700; text-decoration:none; text-transform:uppercase; letter-spacing:0.05em; box-shadow:0 0 14px rgba(185,28,28,0.55);">View Analyst Site</a>
@@ -486,85 +492,91 @@
             <p>It started with a workbook. I built manual rating templates in Excel — trends, runs, starting pitching, bullpen, hitting — each with columns for splits (home/away, day/night, vs team, weather) and time windows (season, last N days). Every night I'd manually enter Fangraphs data into the sheets and read out the ratings.</p>
 
             <h3>Chapter 2: The Fangraphs Scraper</h3>
-            <p>Manual entry didn't scale. Built a Python scraper against Fangraphs' splits leaderboard endpoints to auto-populate the workbook. Worked for a while, then Fangraphs changed their API shape and everything broke. Got tired of scraper-vs-website whack-a-mole.</p>
+            <p>Manual entry didn't scale. Built a Python scraper against Fangraphs' splits leaderboard endpoints. At peak it was pulling <strong>~6,000 stat tables every morning in 30 minutes</strong> and auto-populating the Excel workbook via SQL Server–linked queries — so the sheets refreshed themselves the moment I opened them. Worked beautifully for a while, then Fangraphs changed their API shape and everything broke overnight. Got tired of playing scraper-vs-website whack-a-mole and decided the real fix was owning the raw data.</p>
 
             <h3>Chapter 3: Building My Own Statcast Database</h3>
             <div class="card">
                 <div class="title">SQLite Statcast DB</div>
                 <ul>
                     <li>Switched from scraping Fangraphs to pulling raw pitch-by-pitch data from Baseball Savant via <code>pybaseball</code>.</li>
-                    <li>Ingest tables: <code>plate_appearances</code>, <code>pitcher_game_stats</code>, <code>game_info</code>, <code>ingest_log</code>, <code>team_bullpen_stats</code>, <code>pitcher_roles</code>.</li>
-                    <li>Yesterday's Statcast pulled and inserted every morning, ~975 PA rows and ~100 pitcher game stats per game night.</li>
+                    <li>Six ingest tables: <code>plate_appearances</code>, <code>pitcher_game_stats</code>, <code>game_info</code>, <code>ingest_log</code>, <code>team_bullpen_stats</code>, <code>pitcher_roles</code>.</li>
+                    <li>Every morning ingests yesterday's games — roughly <strong>3,700 pitches → 975 plate appearances → 100 pitcher game-stat rows per night</strong>. Over a season that's <strong>~600,000+ plate appearances and 15,000+ pitcher-game rows</strong> owned in-house, forever queryable.</li>
                 </ul>
             </div>
 
             <h3>Chapter 4: Rebuilding Fangraphs Stats From Scratch</h3>
             <div class="card">
                 <div class="title">Custom Advanced-Stat Calculator</div>
-                <div class="subtitle">Every stat recomputed from raw events using Fangraphs' actual formulas</div>
+                <div class="subtitle">28 stats recomputed from raw events using Fangraphs' actual formulas</div>
                 <ul>
-                    <li>Team hitting: AVG, OBP, SLG, OPS, ISO, BABIP, BB%, K%, BB/K, wOBA, wRAA, wRC, <strong>wRC+ with 3-year rolling park factors</strong>.</li>
-                    <li>Starting pitching: K/9, BB/9, K/BB, HR/9, WHIP, BABIP, <strong>LOB% (Fangraphs formula with ER, not R)</strong>, FIP, xFIP.</li>
-                    <li>Annual constants (wBB, wHBP, w1B, w2B, w3B, wHR, wOBA_scale, lg_wOBA, lg_R_PA, FIP_constant, lg_HR_FB) sourced from Fangraphs Guts and version-locked per season.</li>
-                    <li>Verified against Fangraphs to ~0.01 precision on veteran pitchers; tiny residuals traced to Statcast vs MLB Stats API aggregation differences.</li>
+                    <li><strong>14 team hitting stats:</strong> AVG, OBP, SLG, OPS, ISO, BABIP, BB%, K%, BB/K, wOBA, wRAA, wRC, PA, and <strong>wRC+ with 3-year rolling park factors</strong> for all 30 MLB parks.</li>
+                    <li><strong>14 pitching stats:</strong> K/9, BB/9, K/BB, HR/9, K%, BB%, K-BB%, AVG, WHIP, BABIP, <strong>LOB% (Fangraphs formula with ER, not R)</strong>, FIP, xFIP, IP.</li>
+                    <li><strong>11 annual constants</strong> (wBB, wHBP, w1B, w2B, w3B, wHR, wOBA_scale, lg_wOBA, lg_R_PA, FIP_constant, lg_HR_FB) sourced from Fangraphs Guts and version-locked per season.</li>
+                    <li>Verified against Fangraphs to <strong>0.01 precision</strong> on veteran pitchers — tiny residuals traced to Statcast vs MLB Stats API aggregation differences.</li>
                 </ul>
             </div>
 
             <h3>Chapter 5: The Ratings Engine</h3>
             <div class="card">
                 <div class="title">Six-Category Weighted Rating System</div>
+                <div class="subtitle">Every game gets scored across ~1,000 individual sub-ratings before rolling up to a single number</div>
                 <ul>
                     <li><strong>Trends</strong> — 8 metrics from TeamRankings win-trend tables (rest advantage, coming off win/loss, home/away, fav/dog, division, league, etc.), each mapped to a game situation.</li>
-                    <li><strong>Runs</strong> — Team run-scoring metrics with per-rating windowing (calendar-days for R1, games for R2/R3).</li>
-                    <li><strong>Starting Pitching</strong> — 14 advanced metrics across up to 12 splits × 3 time frames (full / last 18d / last 42d).</li>
-                    <li><strong>Bullpen</strong> — Role-classified relief data with full / last 7d / last 14d windows.</li>
-                    <li><strong>Team Hitting</strong> — 13 metrics × 6 splits × 3 time frames per rating.</li>
+                    <li><strong>Runs</strong> — 13 team run-scoring metrics with per-rating windowing (calendar-days for R1, games for R2/R3).</li>
+                    <li><strong>Starting Pitching</strong> — 14 advanced metrics × up to 12 splits × 3 time frames = <strong>up to 504 sub-scores per SP per game</strong>.</li>
+                    <li><strong>Bullpen</strong> — Role-classified relief data with full / last 7d / last 14d windows across 14 metrics.</li>
+                    <li><strong>Team Hitting</strong> — 13 metrics × 6 splits × 3 time frames = <strong>234 sub-scores per team per game</strong>.</li>
                     <li><strong>Bullpen Fatigue</strong> — 0-10 score based on top-4 reliever availability and bullpen IP over last 3/7 days.</li>
+                    <li>Each of the 6 categories rolls up via weighted average → one final rating per team per game.</li>
                 </ul>
             </div>
 
             <h3>Chapter 6: Three Rating Models</h3>
             <div class="card">
                 <div class="title">R1, R2, R3 — Each with Different Windows</div>
+                <div class="subtitle">3 models × up to 15 games per day = ~45 predictions per day published to the site</div>
                 <ul>
                     <li><strong>Rating 1</strong> — Original baseline. Runs uses last 7/15 <em>calendar days</em>. SP full/18d/42d.</li>
                     <li><strong>Rating 2</strong> — Adds 6 new granular SP splits (h @ h vs team, h @ h weather, h@h d/n weather, and combos). Runs windows: last 2/5 <em>games</em>. Sharp recency focus.</li>
                     <li><strong>Rating 3</strong> — All the R2 splits, plus SP window changes to full/13d/33d and runs windows to last 7/15 <em>games</em>.</li>
-                    <li>Each rating has its own config folder (metric weights, scales, thresholds, weight_points, split_totals).</li>
-                    <li>Website shows all 3 side by side; user can switch between them and see how the picks differ.</li>
+                    <li>Each rating has its own <strong>19-tab config bundle</strong> (metric weights, scales, thresholds, weight_points, split_totals across 5 category files).</li>
+                    <li>Website shows all 3 side by side; user switches tabs and sees how the picks differ. ROI tab tracks per-model P/L against real Vegas lines.</li>
                 </ul>
             </div>
 
             <h3>Chapter 7: External Data Sources</h3>
             <div class="card">
-                <div class="title">Multi-Source Fusion</div>
+                <div class="title">Multi-Source Fusion — 5 APIs Merged Every Morning</div>
                 <ul>
-                    <li><strong>Baseball Savant / Statcast</strong> — Pitch-by-pitch events, ingested nightly.</li>
-                    <li><strong>MLB Stats API</strong> — Today's schedule, probable pitchers, pitcher handedness, results grading (no auth required).</li>
-                    <li><strong>TeamRankings.com</strong> — Game logs, win trends across 26 situations, runs per game (scraped daily; emojis in print statements caused a week-long silent Unicode crash before I bulletproofed it).</li>
-                    <li><strong>The Odds API</strong> — Pregame moneylines, spreads, totals. Frozen at 8 AM so ROI is graded against actual pregame lines.</li>
-                    <li><strong>Open-Meteo</strong> — Temperature, wind, humidity, precipitation per venue.</li>
+                    <li><strong>Baseball Savant / Statcast</strong> — Pitch-by-pitch events, ingested nightly (~3,700 pitches per game night).</li>
+                    <li><strong>MLB Stats API</strong> — Today's schedule, probable pitchers, pitcher handedness, results grading — free, no auth.</li>
+                    <li><strong>TeamRankings.com</strong> — Game logs for all 30 teams, win trends across <strong>26 situations</strong>, runs-per-game splits (scraped daily; emojis in print statements once caused a week-long silent Unicode crash before I bulletproofed it).</li>
+                    <li><strong>The Odds API</strong> — Pregame moneylines, spreads, totals. <strong>Frozen at 8 AM</strong> so ROI is graded against actual pregame lines, not shifted closing numbers.</li>
+                    <li><strong>Open-Meteo</strong> — Temperature, wind, humidity, precipitation per venue for all 30 ballparks.</li>
                 </ul>
             </div>
 
             <h3>Chapter 8: The Website</h3>
             <div class="card">
                 <div class="title">Dual GitHub Pages Sites</div>
+                <div class="subtitle">Two ~1,200-line HTML pages, published to GitHub Pages, refreshed automatically every morning</div>
                 <ul>
-                    <li><strong>Analyst site</strong> (<a href="baseball.html" target="_blank">baseball.html</a>) — Full drill-down. Click a game → click a category → click a metric → see all splits × 3 time frames with per-split ratings and weights.</li>
+                    <li><strong>Analyst site</strong> (<a href="baseball.html" target="_blank">baseball.html</a>) — Full drill-down. Click a game → click a category → click a metric → see all splits × 3 time frames with per-split ratings and weights. <strong>3 levels of drill-down</strong>.</li>
                     <li><strong>Picks-lite site</strong> (<a href="picks.html" target="_blank">picks.html</a>) — Same picks, no metric drill-down. For sharing with people who don't want to see the guts.</li>
-                    <li>Tabs: Picks, Gambling ROI (with "Bet Every Pick" vs "Strong Plays" split, weekly cards, by-week table), Postgame Compare, Perf by Metrics, Grand Total.</li>
-                    <li>Cache-busting on every JSON fetch to defeat GitHub Pages CDN staleness.</li>
+                    <li><strong>5 tabs per site:</strong> Picks, Gambling ROI (with "Bet Every Pick" vs "Strong Plays" split, weekly cards, by-week table), Postgame Compare, Perf by Metrics, Grand Total.</li>
+                    <li>Cache-busting on every JSON fetch to defeat GitHub Pages CDN staleness (10-min TTL was making the site show yesterday's data even after publish).</li>
                 </ul>
             </div>
 
             <h3>Chapter 9: Daily Automation</h3>
             <div class="card">
                 <div class="title">7:00 AM Cron Pipeline (Windows Task Scheduler)</div>
+                <div class="subtitle">8-step pipeline · ~15-minute end-to-end runtime · ~5,800 CSV files regenerated every morning</div>
                 <ul>
                     <li>Ingest yesterday's Statcast → pull weather → classify pitcher roles → pull MLB bullpen stats → scrape TeamRankings → export hitting + SP resolved CSVs → export bullpen CSVs → sync exports to project root → build today's games.json → merge pregame odds → run all 3 ratings → publish to GitHub Pages.</li>
-                    <li>Site is updated by ~7:20 AM every morning.</li>
-                    <li>Mid-day regrade script also available for late-late-game refreshes.</li>
+                    <li><strong>Site is fully updated by ~7:20 AM every morning</strong>, whether I'm at my desk or not.</li>
+                    <li>~5,800 CSVs regenerated daily (hitting × splits × time windows, pitching × splits × time windows, bullpen × splits × time windows).</li>
+                    <li>Mid-day regrade script also available for late-West-Coast-game refreshes.</li>
                 </ul>
             </div>
 
