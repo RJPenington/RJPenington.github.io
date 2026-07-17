@@ -40,11 +40,19 @@
                 inset 0 0 60px rgba(0, 0, 0, 0.55);
             text-align: center;
         }
+        /* Isometric 3D cube pattern — three gradient layers combine to give
+           the illusion of stacked cubes. Symmetrical, geometric, tech vibe. */
         header::before {
             content: ''; position: absolute; inset: 0;
+            background-color: transparent;
             background-image:
-                repeating-linear-gradient( 45deg, rgba(239, 68, 68, 0.04) 0 2px, transparent 2px 22px),
-                repeating-linear-gradient(-45deg, rgba(239, 68, 68, 0.04) 0 2px, transparent 2px 22px);
+                linear-gradient(30deg,  rgba(239, 68, 68, 0.06) 12%, transparent 12.5%, transparent 87%, rgba(239, 68, 68, 0.06) 87.5%, rgba(239, 68, 68, 0.06)),
+                linear-gradient(150deg, rgba(239, 68, 68, 0.06) 12%, transparent 12.5%, transparent 87%, rgba(239, 68, 68, 0.06) 87.5%, rgba(239, 68, 68, 0.06)),
+                linear-gradient(30deg,  rgba(239, 68, 68, 0.06) 12%, transparent 12.5%, transparent 87%, rgba(239, 68, 68, 0.06) 87.5%, rgba(239, 68, 68, 0.06)),
+                linear-gradient(150deg, rgba(239, 68, 68, 0.06) 12%, transparent 12.5%, transparent 87%, rgba(239, 68, 68, 0.06) 87.5%, rgba(239, 68, 68, 0.06)),
+                linear-gradient(60deg,  rgba(220, 38, 38, 0.05) 25%, transparent 25.5%, transparent 75%, rgba(220, 38, 38, 0.05) 75%, rgba(220, 38, 38, 0.05));
+            background-size: 60px 105px;
+            background-position: 0 0, 0 0, 30px 52px, 30px 52px, 0 0;
             pointer-events: none;
         }
         header::after {
