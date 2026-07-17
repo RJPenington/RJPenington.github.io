@@ -114,6 +114,16 @@
         h3 {
             color: #e2e8f0; margin: 1.5rem 0 0.6rem 0; font-size: 1.15rem;
             border-left: 3px solid #b91c1c; padding-left: 0.7rem;
+            display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem;
+        }
+        h3 .software {
+            font-size: 0.78rem; color: #8a7c7c; font-weight: 500;
+            letter-spacing: 0.02em; text-transform: none;
+        }
+        h3 .time-saved {
+            margin-left: auto; font-size: 0.78rem; color: #dc2626;
+            font-weight: 700; letter-spacing: 0.02em;
+            background: rgba(185, 28, 28, 0.15); padding: 3px 10px; border-radius: 4px;
         }
         h4 { color: #cbd5e0; margin: 1rem 0 0.4rem 0; font-size: 1rem; }
 
@@ -168,8 +178,10 @@
         a:hover { color: #63e6d5; }
         footer {
             text-align: center; padding: 2rem 0;
-            color: #718096; font-size: 0.85rem;
+            color: #b91c1c; font-size: 0.85rem;
+            text-shadow: 0 0 8px rgba(185, 28, 28, 0.35);
         }
+        footer p { color: #b91c1c; }
     </style>
 </head>
 <body>
@@ -185,6 +197,7 @@
             <button class="tab" data-panel="wf">Workflows Streamlined</button>
             <button class="tab" data-panel="app">TEAMPPC Mobile App</button>
             <button class="tab" data-panel="baseball">Baseball Ratings System</button>
+            <button class="tab" data-panel="totals">Grand Totals</button>
         </div>
 
         <!-- ============================================================
@@ -243,7 +256,7 @@
                 <div class="stat-tile"><div class="value">0</div><div class="label">Manual Steps Required</div></div>
             </div>
 
-            <h3>Master Orchestrator</h3>
+            <h3>Master Orchestrator <span class="software">(Windows Task Scheduler)</span><span class="time-saved">~2 hrs / week</span></h3>
             <div class="card">
                 <div class="title">Run_all_codes_here.py — 8 AM Daily Runner</div>
                 <div class="subtitle">Sequential subprocess runner with 30-min per-script timeout, master log, day-of-week conditional dispatch</div>
@@ -256,7 +269,7 @@
                 </ul>
             </div>
 
-            <h3>Foundation ↔ Assignar Syncs</h3>
+            <h3>Foundation ↔ Assignar Syncs <span class="software">(Foundation ERP · Assignar workforce mgmt)</span><span class="time-saved">~5 hrs / week</span></h3>
             <div class="card">
                 <div class="title">Cost Code Creation Sync</div>
                 <ul>
@@ -281,7 +294,7 @@
                 </ul>
             </div>
 
-            <h3>Paychex → Foundation Employee Sync</h3>
+            <h3>Paychex → Foundation Employee Sync <span class="software">(Paychex payroll · Foundation)</span><span class="time-saved">~3 hrs / week</span></h3>
             <div class="card">
                 <div class="title">Automated Employee Creation Pipeline</div>
                 <ul>
@@ -291,7 +304,7 @@
                 </ul>
             </div>
 
-            <h3>Elation Certified Payroll (Micron PLA)</h3>
+            <h3>Elation Certified Payroll <span class="software">(Elation cert-payroll · Paychex · Foundation · Micron PLA)</span><span class="time-saved">~2 hrs / week</span></h3>
             <div class="card">
                 <div class="title">PDF-Driven Cert-Payroll Pipeline (rebuilt 2026-06-12)</div>
                 <ul>
@@ -302,7 +315,7 @@
                 </ul>
             </div>
 
-            <h3>Receipt Import to Foundation</h3>
+            <h3>Receipt Import to Foundation <span class="software">(Chase bank · Foundation · Supabase · TEAMPPC app)</span><span class="time-saved">~5 hrs / week</span></h3>
             <div class="card">
                 <div class="title">Chase CSV → Field App → Desktop Review → Foundation SQL</div>
                 <ul>
@@ -314,7 +327,7 @@
                 </ul>
             </div>
 
-            <h3>AP Invoices Automation</h3>
+            <h3>AP Invoices Automation <span class="software">(Outlook · Foundation · OpenAI GPT)</span><span class="time-saved">~7 hrs / week</span></h3>
             <div class="card">
                 <div class="title">Outlook Puller + 17 Vendor Parsers + GPT Fallback</div>
                 <ul>
@@ -324,7 +337,7 @@
                 </ul>
             </div>
 
-            <h3>Sherwin Invoice Automation</h3>
+            <h3>Sherwin Invoice Automation <span class="software">(Sherwin-Williams Pro-site · Microsoft Edge · Foundation)</span><span class="time-saved">~2 hrs / week</span></h3>
             <div class="card">
                 <div class="title">Attach-to-Edge Bot + Foundation Price Reconciliation</div>
                 <ul>
@@ -334,7 +347,7 @@
                 </ul>
             </div>
 
-            <h3>Daily Dashboards</h3>
+            <h3>Daily Dashboards <span class="software">(Foundation · Assignar · openpyxl · ReportLab)</span><span class="time-saved">~6 hrs / week</span></h3>
             <div class="card">
                 <div class="title">Job Financial Dashboard v3</div>
                 <ul>
@@ -573,6 +586,128 @@
 
             <h3>Chapter 11: What's Next</h3>
             <p>Parked for now: two-URL access tier (base + pro), multi-model tournament with W-L tracking to identify which rating is winning long-term, KBO expansion. All on hold until the current MLB model is audited category-by-category. Currently working through hitting + pitching audits against Fangraphs.</p>
+        </section>
+
+        <!-- ============================================================
+             GRAND TOTALS
+             ============================================================ -->
+        <section class="panel" id="totals">
+            <h2>Grand Totals</h2>
+            <div class="lead">Aggregate impact across every automation on this site — subscriptions cancelled, hours saved, workflows shipped, apps in production. All time-saved figures are estimates based on the manual process each automation replaced.</div>
+
+            <div class="stat-row">
+                <div class="stat-tile"><div class="value">~1,660</div><div class="label">Hours Saved per Year</div></div>
+                <div class="stat-tile"><div class="value">$16K+</div><div class="label">Annual Subscription Savings</div></div>
+                <div class="stat-tile"><div class="value">8</div><div class="label">Workflows Automated</div></div>
+                <div class="stat-tile"><div class="value">91%</div><div class="label">Weighted Automation Rate</div></div>
+            </div>
+
+            <div class="stat-row">
+                <div class="stat-tile"><div class="value">2</div><div class="label">Subscriptions Replaced</div></div>
+                <div class="stat-tile"><div class="value">1</div><div class="label">Mobile App in App Store</div></div>
+                <div class="stat-tile"><div class="value">1</div><div class="label">Personal Data Platform</div></div>
+                <div class="stat-tile"><div class="value">7</div><div class="label">Days/Week the Cron Runs</div></div>
+            </div>
+
+            <h3>Per-Workflow Time Savings <span class="software">(estimated vs. the manual process each replaced)</span></h3>
+            <div style="overflow-x:auto;">
+            <table style="width:100%; border-collapse:collapse; font-size:0.9rem; margin-top:0.5rem;">
+                <thead>
+                    <tr style="background:#0d0f13; text-align:left;">
+                        <th style="padding:0.6rem 0.8rem; border-bottom:1px solid #1a1e26; color:#dc2626; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.05em;">Workflow</th>
+                        <th style="padding:0.6rem 0.8rem; border-bottom:1px solid #1a1e26; color:#dc2626; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.05em; text-align:right;">Hrs / Week</th>
+                        <th style="padding:0.6rem 0.8rem; border-bottom:1px solid #1a1e26; color:#dc2626; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.05em; text-align:right;">Hrs / Year</th>
+                        <th style="padding:0.6rem 0.8rem; border-bottom:1px solid #1a1e26; color:#dc2626; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.05em; text-align:right;">% Automated</th>
+                    </tr>
+                </thead>
+                <tbody style="font-variant-numeric:tabular-nums;">
+                    <tr style="border-bottom:1px solid #1a1e26;">
+                        <td style="padding:0.55rem 0.8rem;">Master Orchestrator</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right;">2</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right; color:#8a7c7c;">104</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right; color:#dc2626; font-weight:700;">100%</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #1a1e26;">
+                        <td style="padding:0.55rem 0.8rem;">Foundation ↔ Assignar Syncs</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right;">5</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right; color:#8a7c7c;">260</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right; color:#dc2626; font-weight:700;">100%</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #1a1e26;">
+                        <td style="padding:0.55rem 0.8rem;">Paychex → Foundation Employee Sync</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right;">3</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right; color:#8a7c7c;">156</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right; color:#dc2626; font-weight:700;">95%</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #1a1e26;">
+                        <td style="padding:0.55rem 0.8rem;">Elation Certified Payroll</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right;">2</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right; color:#8a7c7c;">104</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right; color:#dc2626; font-weight:700;">90%</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #1a1e26;">
+                        <td style="padding:0.55rem 0.8rem;">Receipt Import to Foundation</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right;">5</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right; color:#8a7c7c;">260</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right; color:#dc2626; font-weight:700;">80%</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #1a1e26;">
+                        <td style="padding:0.55rem 0.8rem;">AP Invoices Automation</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right;">7</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right; color:#8a7c7c;">364</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right; color:#dc2626; font-weight:700;">85%</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #1a1e26;">
+                        <td style="padding:0.55rem 0.8rem;">Sherwin Invoice Automation</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right;">2</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right; color:#8a7c7c;">104</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right; color:#dc2626; font-weight:700;">80%</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #1a1e26;">
+                        <td style="padding:0.55rem 0.8rem;">Daily Dashboards</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right;">6</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right; color:#8a7c7c;">312</td>
+                        <td style="padding:0.55rem 0.8rem; text-align:right; color:#dc2626; font-weight:700;">100%</td>
+                    </tr>
+                    <tr style="background:#0d0f13; font-weight:700;">
+                        <td style="padding:0.7rem 0.8rem; color:#dc2626;">TOTAL</td>
+                        <td style="padding:0.7rem 0.8rem; text-align:right; color:#dc2626;">32</td>
+                        <td style="padding:0.7rem 0.8rem; text-align:right; color:#dc2626;">1,664</td>
+                        <td style="padding:0.7rem 0.8rem; text-align:right; color:#dc2626;">91%</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+
+            <h3>What the hours-saved figure represents</h3>
+            <p>Every workflow above replaced a manual process — either something I used to do myself, something someone else in the office used to do, or something the company paid a subscription for. The "hrs / week" column is a conservative estimate of the recurring manual work eliminated. Actual savings are higher when you count the time spent fixing manual entry errors, chasing down missing data, and reconciling spreadsheets.</p>
+
+            <h3>Other Impact</h3>
+            <div class="card">
+                <div class="title">Subscription Costs Cut</div>
+                <ul>
+                    <li><strong>Briq Construction Analytics:</strong> $10,000 / year saved. Replaced with in-house Foundation ↔ Assignar sync + custom financial dashboards.</li>
+                    <li><strong>Fishbowl Inventory:</strong> $6,000 / year saved. Replaced with the InventorySystem desktop app + TEAMPPC mobile companion.</li>
+                    <li><strong>Recurring annual savings: ~$16,000</strong> — that's before any productivity gain.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="title">Production Software Shipped</div>
+                <ul>
+                    <li><strong>TEAMPPC mobile app</strong> — React Native / Expo, iOS App Store v1.0.3. ~500 strings localized to Spanish. Offline-first architecture. Backs the receipt pipeline and inventory workflow.</li>
+                    <li><strong>InventorySystem desktop app</strong> — Python / Tkinter with shared Supabase database. Replaces Fishbowl at every touchpoint.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="title">Personal Data Platform</div>
+                <ul>
+                    <li><strong>Baseball ratings engine</strong> — 3 rating models × 6 categories × up to 12 splits × 3 time frames, generating ~5,800 CSVs per day. Public site auto-publishes at 7:00 AM.</li>
+                    <li>Not counted in the office hours-saved total — this is my own project, not company work. But it's proof of the same skills applied to a different domain.</li>
+                </ul>
+            </div>
+
+            <h3>Framing These Numbers</h3>
+            <p>1,664 hours a year is roughly <strong>0.8 of a full-time employee</strong> freed up to do higher-value work — plus $16K in subscription costs cancelled outright. Numbers are estimates and conservative on purpose; the real leverage of automation is compounding — the mistakes you didn't make, the meetings you didn't have to have, the fires you didn't have to put out.</p>
         </section>
 
         <footer>
