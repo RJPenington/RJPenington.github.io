@@ -40,19 +40,11 @@
                 inset 0 0 60px rgba(0, 0, 0, 0.55);
             text-align: center;
         }
-        /* Isometric 3D cube pattern — three gradient layers combine to give
-           the illusion of stacked cubes. Symmetrical, geometric, tech vibe. */
-        header::before {
-            content: ''; position: absolute; inset: 0;
-            background-color: transparent;
-            background-image:
-                linear-gradient(30deg,  rgba(239, 68, 68, 0.06) 12%, transparent 12.5%, transparent 87%, rgba(239, 68, 68, 0.06) 87.5%, rgba(239, 68, 68, 0.06)),
-                linear-gradient(150deg, rgba(239, 68, 68, 0.06) 12%, transparent 12.5%, transparent 87%, rgba(239, 68, 68, 0.06) 87.5%, rgba(239, 68, 68, 0.06)),
-                linear-gradient(30deg,  rgba(239, 68, 68, 0.06) 12%, transparent 12.5%, transparent 87%, rgba(239, 68, 68, 0.06) 87.5%, rgba(239, 68, 68, 0.06)),
-                linear-gradient(150deg, rgba(239, 68, 68, 0.06) 12%, transparent 12.5%, transparent 87%, rgba(239, 68, 68, 0.06) 87.5%, rgba(239, 68, 68, 0.06)),
-                linear-gradient(60deg,  rgba(220, 38, 38, 0.05) 25%, transparent 25.5%, transparent 75%, rgba(220, 38, 38, 0.05) 75%, rgba(220, 38, 38, 0.05));
-            background-size: 60px 105px;
-            background-position: 0 0, 0 0, 30px 52px, 30px 52px, 0 0;
+        /* Sound-bar canvas sits behind the title (see #bgBars in <header>).
+           Height envelope dips in the middle so bars stay under the text;
+           each bar is a red-to-black gradient with per-bar tone variance. */
+        #bgBars {
+            position: absolute; inset: 0; width: 100%; height: 100%;
             pointer-events: none;
         }
         header::after {
@@ -183,6 +175,7 @@
 <body>
     <div class="container">
         <header>
+            <canvas id="bgBars"></canvas>
             <h1>RJ Penington</h1>
             <p>Automation Engineer &nbsp;·&nbsp; Data Systems &nbsp;·&nbsp; Full-Stack Builder</p>
         </header>
@@ -589,6 +582,76 @@
     </div>
 
     <script>
+        // Sound-bar background animation in the header.
+        // - Height envelope dips in the center so bars clear the title text.
+        // - Each bar picks from a small palette of red/black-mix gradients so
+        //   the row reads as a red-and-black mix, not a uniform red wall.
+        (function () {
+            const canvas = document.getElementById('bgBars');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const header = canvas.parentElement;
+            let W = 0, H = 0, dpr = 1;
+            const N = 72;
+            // Per-bar random phases + palette index (stable across frames).
+            const phases   = Array.from({length: N}, () => Math.random() * Math.PI * 2);
+            const paletteI = Array.from({length: N}, (_, i) => (i * 7 + Math.floor(Math.random() * 5)) % 5);
+            // 5 gradient recipes — each is (top color, bottom color).
+            // Reads as a mix of pure red, deep crimson, red-into-black, and
+            // near-black-with-red-edge tones across the bar row.
+            const palette = [
+                { top: 'rgba(239, 68, 68, 0.90)', bot: 'rgba(10, 0, 0, 0.05)' },      // bright red -> near black
+                { top: 'rgba(220, 38, 38, 0.85)', bot: 'rgba(20, 5, 5, 0.10)' },      // crimson -> dark
+                { top: 'rgba(122, 20, 20, 0.85)', bot: 'rgba(6, 0, 0, 0.15)' },       // deep red -> black
+                { top: 'rgba(30, 10, 10, 0.90)',  bot: 'rgba(239, 68, 68, 0.30)' },   // charcoal with red edge (flipped)
+                { top: 'rgba(255, 90, 90, 0.75)', bot: 'rgba(60, 10, 10, 0.05)' },    // hot red -> muted
+            ];
+
+            function resize() {
+                dpr = window.devicePixelRatio || 1;
+                const rect = header.getBoundingClientRect();
+                W = rect.width; H = rect.height;
+                canvas.width  = Math.max(1, Math.floor(W * dpr));
+                canvas.height = Math.max(1, Math.floor(H * dpr));
+                canvas.style.width  = W + 'px';
+                canvas.style.height = H + 'px';
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            // Height envelope: 1.0 at edges, dips to 0.30 in the middle so
+            // bars stay well below the title's baseline.
+            function envelope(x01) {
+                const d = Math.abs(x01 - 0.5) * 2;            // 0 center -> 1 edges
+                return 0.30 + 0.70 * Math.pow(d, 1.35);
+            }
+
+            function frame(t) {
+                ctx.clearRect(0, 0, W, H);
+                const barW = W / N;
+                for (let i = 0; i < N; i++) {
+                    const x01 = i / (N - 1);
+                    const p = phases[i];
+                    // Two sines combined for organic motion.
+                    const v = (Math.sin(t / 700 + p) * 0.5 + 0.5)
+                            * (0.55 + Math.sin(t / 1400 + i * 0.4) * 0.35);
+                    const env = envelope(x01);
+                    // Max bar height is 90% of header height at the edges, ~27% in center.
+                    const barH = Math.max(4, v * H * 0.9 * env);
+                    const y = H - barH;
+                    const rec = palette[paletteI[i]];
+                    const grad = ctx.createLinearGradient(0, y, 0, H);
+                    grad.addColorStop(0, rec.top);
+                    grad.addColorStop(1, rec.bot);
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(i * barW + 1, y, barW - 2, barH);
+                }
+                requestAnimationFrame(frame);
+            }
+            requestAnimationFrame(frame);
+        })();
+
         document.querySelectorAll('.tab').forEach(t => {
             t.addEventListener('click', () => {
                 const target = t.dataset.panel;
