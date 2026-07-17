@@ -3,68 +3,574 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RJ Penington | Automation & Data Solutions</title>
+    <title>RJ Penington | Automation Portfolio</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif; line-height: 1.6; color: #333; background: #f8f9fa; }
-        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
-        header { background: linear-gradient(135deg, #2c3e50, #3498db); color: white; padding: 3rem 2rem; margin-bottom: 2rem; border-radius: 8px; }
-        header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
-        header p { font-size: 1.2rem; opacity: 0.9; }
-        .section { background: white; padding: 2rem; margin-bottom: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .section h2 { color: #2c3e50; margin-bottom: 1rem; border-bottom: 2px solid #3498db; padding-bottom: 0.5rem; }
-        .skills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
-        .skill { background: #e8f4fc; color: #2980b9; padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.9rem; }
-        .project { border-left: 3px solid #3498db; padding-left: 1rem; margin-bottom: 1.5rem; }
-        .project h3 { color: #2c3e50; }
-        .project .impact { color: #27ae60; font-weight: bold; }
-        .contact { text-align: center; }
-        .contact a { color: #3498db; text-decoration: none; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6; color: #e2e8f0; background: #1a1d23;
+        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+
+        header {
+            position: relative; overflow: hidden;
+            background:
+                radial-gradient(ellipse at 25% 20%, rgba(56, 234, 214, 0.28) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 80%, rgba(0, 190, 200, 0.22) 0%, transparent 60%),
+                linear-gradient(135deg, #0a3e46 0%, #0f5f66 35%, #145476 65%, #0d2b45 100%);
+            color: #f7fafc; padding: 3rem 1.5rem;
+            margin-bottom: 1.5rem; border-radius: 10px;
+            border: 1px solid rgba(72, 234, 214, 0.35);
+            box-shadow: 0 0 30px rgba(56, 234, 214, 0.15), inset 0 0 60px rgba(0, 0, 0, 0.25);
+            text-align: center;
+        }
+        header::before {
+            content: ''; position: absolute; inset: 0;
+            background-image:
+                repeating-linear-gradient( 45deg, rgba(255,255,255,0.03) 0 2px, transparent 2px 22px),
+                repeating-linear-gradient(-45deg, rgba(255,255,255,0.03) 0 2px, transparent 2px 22px);
+            pointer-events: none;
+        }
+        header::after {
+            content: ''; position: absolute; left: 50%; bottom: 1rem; transform: translateX(-50%);
+            width: 40%; height: 2px;
+            background: linear-gradient(90deg, transparent, #38ead6, transparent);
+            box-shadow: 0 0 12px #38ead6;
+            animation: rjpulse 3.5s ease-in-out infinite;
+        }
+        @keyframes rjpulse {
+            0%,100% { opacity: 0.45; width: 30%; }
+            50%      { opacity: 1;    width: 55%; }
+        }
+        header h1 {
+            font-family: 'Copperplate Gothic Bold', 'Copperplate', 'Bank Gothic', 'Trajan Pro', 'Optima', Georgia, serif;
+            font-size: 3rem; letter-spacing: 0.18em; font-weight: 700;
+            text-transform: uppercase;
+            text-shadow: 0 2px 12px rgba(56, 234, 214, 0.35), 0 0 22px rgba(56, 234, 214, 0.15);
+            position: relative; z-index: 1;
+        }
+        header p {
+            opacity: 0.85; margin-top: 0.75rem; letter-spacing: 0.12em;
+            font-size: 0.9rem; text-transform: uppercase; color: #b7f0e5;
+            position: relative; z-index: 1;
+        }
+
+        /* Section-nav tabs */
+        .tabs {
+            display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+            margin-bottom: 1.5rem; padding: 0.6rem;
+            background: #252932; border-radius: 8px; border: 1px solid #2d3748;
+        }
+        .tab {
+            padding: 8px 16px; border-radius: 6px; border: 1px solid #4a5568;
+            background: #252932; color: #a0aec0; cursor: pointer; font-size: 0.9rem;
+            font-weight: 600; letter-spacing: 0.03em; transition: all 0.15s;
+        }
+        .tab:hover { background: #2d333d; color: #e2e8f0; }
+        .tab.active {
+            background: linear-gradient(135deg, #0f5f66, #145476);
+            color: #f0fdfa; border-color: #38ead6;
+            box-shadow: 0 0 12px rgba(56, 234, 214, 0.3);
+        }
+
+        section.panel {
+            background: #252932; padding: 2rem; margin-bottom: 1.5rem;
+            border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            border: 1px solid #2d3748; display: none;
+        }
+        section.panel.active { display: block; }
+
+        section h2 {
+            font-family: 'Copperplate Gothic Bold', 'Copperplate', 'Bank Gothic', serif;
+            font-size: 1.6rem; letter-spacing: 0.1em; color: #38ead6;
+            margin-bottom: 0.3rem; text-transform: uppercase;
+        }
+        section .lead {
+            color: #a0aec0; font-size: 0.9rem; margin-bottom: 1.5rem;
+            border-bottom: 1px solid #2d3748; padding-bottom: 1rem;
+        }
+
+        h3 {
+            color: #e2e8f0; margin: 1.5rem 0 0.6rem 0; font-size: 1.15rem;
+            border-left: 3px solid #38ead6; padding-left: 0.7rem;
+        }
+        h4 { color: #cbd5e0; margin: 1rem 0 0.4rem 0; font-size: 1rem; }
+
+        .card {
+            background: #1f242c; border-radius: 8px; padding: 1.2rem;
+            margin: 0.8rem 0; border-left: 4px solid #38ead6;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        .card .title { font-weight: 700; color: #f7fafc; font-size: 1.05rem; }
+        .card .subtitle { color: #a0aec0; font-size: 0.85rem; margin-top: 0.2rem; }
+        .card ul { margin: 0.6rem 0 0 1.3rem; color: #cbd5e0; }
+        .card li { margin: 0.25rem 0; }
+
+        .savings {
+            display: inline-block;
+            background: rgba(72, 234, 214, 0.15); color: #38ead6;
+            padding: 3px 10px; border-radius: 4px; font-size: 0.8rem;
+            font-weight: 700; letter-spacing: 0.02em; margin-left: 0.5rem;
+        }
+        .tag {
+            display: inline-block;
+            background: #2d333d; color: #cbd5e0;
+            padding: 2px 8px; border-radius: 3px; font-size: 0.72rem;
+            font-weight: 600; letter-spacing: 0.02em; margin-right: 0.3rem;
+        }
+
+        .stat-row {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem; margin: 1rem 0 1.5rem 0;
+        }
+        .stat-tile {
+            background: #1f242c; border: 1px solid #2d3748;
+            border-radius: 8px; padding: 1rem; text-align: center;
+            border-top: 3px solid #38ead6;
+        }
+        .stat-tile .value {
+            font-size: 1.8rem; font-weight: 800; color: #38ead6;
+            font-family: 'Copperplate Gothic Bold', 'Copperplate', serif;
+        }
+        .stat-tile .label {
+            font-size: 0.75rem; color: #a0aec0;
+            text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.2rem;
+        }
+
+        p { margin: 0.6rem 0; color: #cbd5e0; }
+        strong { color: #f7fafc; }
+        code {
+            background: #1a1d23; color: #b7f0e5; padding: 1px 6px;
+            border-radius: 3px; font-size: 0.85em;
+        }
+        a { color: #38ead6; }
+        a:hover { color: #63e6d5; }
+        footer {
+            text-align: center; padding: 2rem 0;
+            color: #718096; font-size: 0.85rem;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>RJ Penington</h1>
-            <p>Workflow Automation & Data Solutions Specialist</p>
+            <p>Automation Engineer &nbsp;·&nbsp; Data Systems &nbsp;·&nbsp; Full-Stack Builder</p>
         </header>
 
-        <div class="section">
-            <h2>About</h2>
-            <p>I specialize in automating business workflows and building data pipelines that save time and reduce errors. My work focuses on transforming manual, repetitive processes into efficient automated systems.</p>
-            <div class="skills">
-                <span class="skill">Python</span>
-                <span class="skill">SQL</span>
-                <span class="skill">Process Automation</span>
-                <span class="skill">Data Mining</span>
-                <span class="skill">ETL Pipelines</span>
-                <span class="skill">Reporting Dashboards</span>
-            </div>
+        <div class="tabs" id="tabs">
+            <button class="tab active" data-panel="subs">Subscriptions Replaced</button>
+            <button class="tab" data-panel="wf">Workflows Streamlined</button>
+            <button class="tab" data-panel="app">TEAMPPC Mobile App</button>
+            <button class="tab" data-panel="baseball">Baseball Ratings System</button>
         </div>
 
-        <div class="section">
-            <h2>Featured Projects</h2>
-            
-            <div class="project">
-                <h3>Daily Briefing Automation</h3>
-                <p>Automated the generation and distribution of daily performance reports for a regional media company.</p>
-                <p class="impact">Impact: Reduced manual reporting time by 6+ hours per week</p>
-                <p><strong>Technologies:</strong> Python, SQL, Automated Scheduling</p>
+        <!-- ============================================================
+             SUBSCRIPTIONS REPLACED
+             ============================================================ -->
+        <section class="panel active" id="subs">
+            <h2>Subscriptions Replaced</h2>
+            <div class="lead">Third-party SaaS I've written in-house replacements for — annual savings measured in five figures.</div>
+
+            <div class="stat-row">
+                <div class="stat-tile"><div class="value">$16K+</div><div class="label">Annual Savings (Recurring)</div></div>
+                <div class="stat-tile"><div class="value">2</div><div class="label">Vendors Cut</div></div>
+                <div class="stat-tile"><div class="value">100%</div><div class="label">Feature Parity or Better</div></div>
             </div>
 
-            <div class="project">
-                <h3>Your Next Project</h3>
-                <p>Description of the problem solved and approach taken.</p>
-                <p class="impact">Impact: Metrics demonstrating value</p>
-                <p><strong>Technologies:</strong> Tools used</p>
+            <div class="card">
+                <div class="title">Briq Construction Analytics <span class="savings">$10,000 / year saved</span></div>
+                <div class="subtitle">Replaced with custom Foundation SQL → Assignar sync + in-house financial dashboards</div>
+                <ul>
+                    <li>Rebuilt every core workflow Briq handled: cost code creation, project-manager job assignments, employee/customer sync, live job financials.</li>
+                    <li>Daily Foundation SQL → Assignar sync running at 8:00 AM automatically pushes new cost codes, updates every active job, employee, and customer to Assignar's API.</li>
+                    <li>Custom Job Financial Dashboard (v3) — pulls active jobs, generates per-job Excel worksheets with OH&P calcs (Billings - Actual Cost / Billings) and a rollup summary tab.</li>
+                    <li>PM-specific dashboard variant — same data sliced by project manager.</li>
+                    <li>Data flows are direct API and SQL — no Briq middleware, no vendor lock-in.</li>
+                </ul>
+                <div style="margin-top:0.8rem;">
+                    <span class="tag">Python</span><span class="tag">Foundation SQL Server</span><span class="tag">Assignar API</span><span class="tag">openpyxl</span><span class="tag">Task Scheduler</span>
+                </div>
             </div>
-        </div>
 
-        <div class="section contact">
-            <h2>Contact</h2>
-            <p>Interested in discussing automation opportunities?</p>
-            <p><a href="mailto:your.email@example.com">your.email@example.com</a></p>
-        </div>
+            <div class="card">
+                <div class="title">Fishbowl Inventory <span class="savings">$6,000 / year saved</span></div>
+                <div class="subtitle">Replaced with InventorySystem — a Python/Tkinter desktop app + Supabase-backed mobile field app</div>
+                <ul>
+                    <li>Full desktop inventory management app: stock levels, POs, receiving, adjustments, PO completion log, transfers.</li>
+                    <li>Companion mobile app (TEAMPPC) reads/writes the same Supabase database — field crew can fulfill orders, check stock, receive shipments from a phone.</li>
+                    <li>Bidirectional sync with SQL Server so accounting sees inventory movements in Foundation the same day.</li>
+                    <li>Handles vendor SKUs, cost codes, PO status pipelines — everything Fishbowl did without the license fee.</li>
+                </ul>
+                <div style="margin-top:0.8rem;">
+                    <span class="tag">Python</span><span class="tag">Tkinter</span><span class="tag">Supabase</span><span class="tag">SQL Server</span><span class="tag">React Native (mobile side)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             WORKFLOWS STREAMLINED
+             ============================================================ -->
+        <section class="panel" id="wf">
+            <h2>Workflows Streamlined</h2>
+            <div class="lead">Manual processes turned into daily automated pipelines. Everything below runs unattended overnight — I check logs, not spreadsheets.</div>
+
+            <div class="stat-row">
+                <div class="stat-tile"><div class="value">12+</div><div class="label">Automated Daily Pipelines</div></div>
+                <div class="stat-tile"><div class="value">8:00 AM</div><div class="label">Master Orchestrator Runtime</div></div>
+                <div class="stat-tile"><div class="value">0</div><div class="label">Manual Steps Required</div></div>
+            </div>
+
+            <h3>Master Orchestrator</h3>
+            <div class="card">
+                <div class="title">Run_all_codes_here.py — 8 AM Daily Runner</div>
+                <div class="subtitle">Sequential subprocess runner with 30-min per-script timeout, master log, day-of-week conditional dispatch</div>
+                <ul>
+                    <li>Fires at 8:00 AM from Windows Task Scheduler (runs whether logged in or not, wakes machine, catches up if missed).</li>
+                    <li>Runs 8+ scripts in sequence: cost code sync, jobs sync, employee sync, customer sync, PPC daily briefing, then day-specific dashboards or exports.</li>
+                    <li>Thursday: Elation certified payroll build for Micron PLA jobs.</li>
+                    <li>Wednesday: financial dashboards + active jobs/employees export.</li>
+                    <li>Master log at <code>_Logs for todays codes/master_log.txt</code>, per-script logs in dated subfolders.</li>
+                </ul>
+            </div>
+
+            <h3>Foundation ↔ Assignar Syncs</h3>
+            <div class="card">
+                <div class="title">Cost Code Creation Sync</div>
+                <ul>
+                    <li>Scans Foundation job_costcodes for 4-digit labor codes (matches <code>/1\d{3}/</code>), creates missing ones as Assignar activities.</li>
+                    <li>Sources from job_costcodes (not master), so archived-but-still-in-use codes get synced.</li>
+                    <li>Runs before jobs sync so codes exist before jobs try to attach them.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="title">Jobs Sync (Production)</div>
+                <ul>
+                    <li>Pulls active jobs from a Foundation SQL view, updates each in Assignar via PUT.</li>
+                    <li>Auto-matches client names, attaches cost codes, logs to a per-run tracking file.</li>
+                    <li>Handles 100+ jobs per run in ~1 minute.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="title">Employees + Customers Syncs</div>
+                <ul>
+                    <li>Employee sync pulls Foundation HR → creates/updates Assignar user records.</li>
+                    <li>Customer sync keeps Assignar's client list mirrored to Foundation vendors.</li>
+                </ul>
+            </div>
+
+            <h3>Paychex → Foundation Employee Sync</h3>
+            <div class="card">
+                <div class="title">Automated Employee Creation Pipeline</div>
+                <ul>
+                    <li>Pulls new hires from Paychex Workers API, inserts into Foundation SQL Server on schedule.</li>
+                    <li><strong>Write API unlocked (2026-06-05):</strong> reusable PATCH template writes rate changes back to Paychex — used to update 41 Micron rates in one run.</li>
+                    <li>Cached worker map fallback if Paychex /workers endpoint 500s.</li>
+                </ul>
+            </div>
+
+            <h3>Elation Certified Payroll (Micron PLA)</h3>
+            <div class="card">
+                <div class="title">PDF-Driven Cert-Payroll Pipeline (rebuilt 2026-06-12)</div>
+                <ul>
+                    <li>Parses Paychex Payroll Journal PDF for tax name columns (API doesn't return names) — handles concatenated boundary tokens, y-coord clustering, block detection via EMPLOYEE TOTAL.</li>
+                    <li>Foundation supplies hours / identity / fringes; Paychex supplies FICA / Fed / State tax details.</li>
+                    <li><strong>5 hard validation gates</strong> abort the run on drift: API completeness, FICA = 7.65%, Foundation cross-check within tolerance, unknown-tax-name check, gross reconciliation.</li>
+                    <li>Runs every Thursday for job <code>IDPW25050X</code> — outputs Elation-ready CSV to shared network drive.</li>
+                </ul>
+            </div>
+
+            <h3>Receipt Import to Foundation</h3>
+            <div class="card">
+                <div class="title">Chase CSV → Field App → Desktop Review → Foundation SQL</div>
+                <ul>
+                    <li>Chase credit card export → batched into the receipts module.</li>
+                    <li>Field crew submits receipt photos via mobile app; matches to Chase transactions.</li>
+                    <li>Admin desktop app: batch review, AI vendor matching, GL auto-fill for jobs 55+, reconciliation tab for mismatches.</li>
+                    <li>Foundation AP insert via <code>ap_invoice_h</code> + <code>ap_invoice_d</code> tables — voucher_no via MAX+1, single-transaction insert verified in SSMS, posted_flag='N' for accounting review.</li>
+                    <li>Phase 1 (audit log, dup detection, post-upload modal) shipped May 2026. Phases 2-6 roadmap next.</li>
+                </ul>
+            </div>
+
+            <h3>AP Invoices Automation</h3>
+            <div class="card">
+                <div class="title">Outlook Puller + 17 Vendor Parsers + GPT Fallback</div>
+                <ul>
+                    <li>Pulls invoice emails from Outlook automatically, routes to vendor-specific parsers.</li>
+                    <li>17 hand-written parsers for the highest-volume vendors, GPT fallback for the long tail.</li>
+                    <li>Column mapping + parsing patterns lifted into a new module currently in scope.</li>
+                </ul>
+            </div>
+
+            <h3>Sherwin Invoice Automation</h3>
+            <div class="card">
+                <div class="title">Attach-to-Edge Bot + Foundation Price Reconciliation</div>
+                <ul>
+                    <li>Chromium bot attaches to your Edge session, scrapes the Sherwin Pro-site unpaid invoice list.</li>
+                    <li>Verifies each invoice against Foundation AP (leading-5-digit + amount + date match).</li>
+                    <li>Human keeps the "Pay" click; automation handles extract + reconcile.</li>
+                </ul>
+            </div>
+
+            <h3>Daily Dashboards</h3>
+            <div class="card">
+                <div class="title">Job Financial Dashboard v3</div>
+                <ul>
+                    <li>Runs Wednesdays. Pulls all active Foundation jobs, generates a per-job Excel worksheet.</li>
+                    <li>Calculates OH&P = (Billings to Date - Actual Cost) / Billings to Date per job.</li>
+                    <li>Rollup summary tab. Output to network share for PMs.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="title">PM-Specific Dashboard</div>
+                <ul>
+                    <li>Same financial data, sliced by project manager. Each PM gets their own workbook.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="title">PPC Daily Briefing PDF</div>
+                <ul>
+                    <li>Generates a company-wide daily briefing PDF every morning (Jerry's newspaper-style dashboard).</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="title">Taylor's Assignar → Excel Export</div>
+                <ul>
+                    <li>Manual re-runnable script that exports active jobs + employees from Assignar to a timestamped .xlsx.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             TEAMPPC MOBILE APP
+             ============================================================ -->
+        <section class="panel" id="app">
+            <h2>TEAMPPC Mobile App</h2>
+            <div class="lead">React Native + Expo field app for Penington Painting Company employees. Currently v1.0.3 in the App Store. iOS-first, built for field crew and admin.</div>
+
+            <div class="stat-row">
+                <div class="stat-tile"><div class="value">1.0.3</div><div class="label">App Store Version</div></div>
+                <div class="stat-tile"><div class="value">~500</div><div class="label">Localized Strings</div></div>
+                <div class="stat-tile"><div class="value">2</div><div class="label">Languages (EN/ES)</div></div>
+                <div class="stat-tile"><div class="value">Offline</div><div class="label">First-Class Support</div></div>
+            </div>
+
+            <h3>Stack</h3>
+            <p>
+                <span class="tag">React Native</span>
+                <span class="tag">Expo</span>
+                <span class="tag">TypeScript</span>
+                <span class="tag">Supabase (PostgreSQL)</span>
+                <span class="tag">i18n-js</span>
+                <span class="tag">expo-localization</span>
+                <span class="tag">expo-camera</span>
+                <span class="tag">AsyncStorage</span>
+                <span class="tag">EAS Build</span>
+            </p>
+
+            <h3>Shipped Features</h3>
+            <div class="card">
+                <div class="title">Spanish Localization</div>
+                <div class="subtitle">Full app translated for Spanish-speaking crew</div>
+                <ul>
+                    <li>~500 strings translated across every screen.</li>
+                    <li>Language toggle in Settings, persisted via AsyncStorage.</li>
+                    <li>i18n-js + expo-localization for locale detection.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="title">Offline Support (Fetch-Level Interceptor)</div>
+                <div class="subtitle">Zero-UI-change offline mode — app just works when signal drops</div>
+                <ul>
+                    <li>Fetch-level interceptor in <code>supabase.ts</code> handles online/offline transparently.</li>
+                    <li>Cache with TTL (<code>offlineStorage.ts</code>) serves reads from local storage when offline.</li>
+                    <li>Write queue with dedup (<code>offlineQueue.ts</code>) buffers writes, replays when connection returns.</li>
+                    <li>NetInfo connectivity monitoring (<code>networkStatus.ts</code>).</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="title">Receipts Module</div>
+                <div class="subtitle">Field photo submission → admin review → Foundation SQL AP insert</div>
+                <ul>
+                    <li>4 image pickers across the flow (camera + gallery, front/back of receipt).</li>
+                    <li>Full-receipt capture (removed forced crop step in v1.0.3 — was hiding line items).</li>
+                    <li>Upload to Supabase storage, receipt row created for admin review.</li>
+                    <li>Admin desktop app handles vendor matching + Foundation SQL insert.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="title">Pressures Module</div>
+                <div class="subtitle">Team stress-check reporting (schema uses "stress" naming for legacy compat)</div>
+                <ul>
+                    <li>Field crew can report situations that need admin attention.</li>
+                    <li>Multiple pressure levels with photo attachments.</li>
+                    <li>Admin dashboard shows all reports in real time.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="title">Inventory Integration</div>
+                <ul>
+                    <li>Field crew can check stock, fulfill orders, receive shipments from phone.</li>
+                    <li>Shared Supabase database with the desktop InventorySystem app.</li>
+                </ul>
+            </div>
+
+            <h3>Infrastructure</h3>
+            <div class="card">
+                <div class="title">App Store Delivery</div>
+                <ul>
+                    <li>EAS Build for iOS. Bundle ID: <code>com.peningtonpainting.fieldapp</code>.</li>
+                    <li>Apple App ID: 6759874585. ASC App ID: 6761210658.</li>
+                    <li>v1.0.1 released 2026-05-21; v1.0.3 (Receipts no-crop fix) uploaded 2026-05-27.</li>
+                    <li>Terms of Service hosted at <a href="https://rjpenington.github.io/TEAMPPC-Terms-and-Agreement/TERMS_OF_SERVICE.html" target="_blank">rjpenington.github.io/TEAMPPC-Terms-and-Agreement</a>.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             BASEBALL RATINGS SYSTEM (A-Z)
+             ============================================================ -->
+        <section class="panel" id="baseball">
+            <h2>Baseball Ratings System — A to Z</h2>
+            <div class="lead">A personal project that started as an Excel workbook and grew into a full data pipeline with a live public site. This is what happens when I get obsessed with a problem.</div>
+
+            <div class="stat-row">
+                <div class="stat-tile"><div class="value">3</div><div class="label">Rating Models</div></div>
+                <div class="stat-tile"><div class="value">6</div><div class="label">Categories per Rating</div></div>
+                <div class="stat-tile"><div class="value">~5,800</div><div class="label">Split CSVs Generated Daily</div></div>
+                <div class="stat-tile"><div class="value">7:00 AM</div><div class="label">Daily Pipeline Runtime</div></div>
+            </div>
+
+            <p style="text-align:center; margin: 1.5rem 0;">
+                <a href="baseball.html" style="background:#38ead6; color:#0a3e46; padding:10px 20px; border-radius:6px; font-weight:700; text-decoration:none; text-transform:uppercase; letter-spacing:0.05em;">View Analyst Site</a>
+                &nbsp;&nbsp;
+                <a href="picks.html" style="background:#252932; color:#38ead6; padding:10px 20px; border-radius:6px; font-weight:700; text-decoration:none; text-transform:uppercase; letter-spacing:0.05em; border:1px solid #38ead6;">View Picks-Only Lite Site</a>
+            </p>
+
+            <h3>Chapter 1: Excel Calculator Sheets</h3>
+            <p>It started with a workbook. I built manual rating templates in Excel — trends, runs, starting pitching, bullpen, hitting — each with columns for splits (home/away, day/night, vs team, weather) and time windows (season, last N days). Every night I'd manually enter Fangraphs data into the sheets and read out the ratings.</p>
+
+            <h3>Chapter 2: The Fangraphs Scraper</h3>
+            <p>Manual entry didn't scale. Built a Python scraper against Fangraphs' splits leaderboard endpoints to auto-populate the workbook. Worked for a while, then Fangraphs changed their API shape and everything broke. Got tired of scraper-vs-website whack-a-mole.</p>
+
+            <h3>Chapter 3: Building My Own Statcast Database</h3>
+            <div class="card">
+                <div class="title">SQLite Statcast DB</div>
+                <ul>
+                    <li>Switched from scraping Fangraphs to pulling raw pitch-by-pitch data from Baseball Savant via <code>pybaseball</code>.</li>
+                    <li>Ingest tables: <code>plate_appearances</code>, <code>pitcher_game_stats</code>, <code>game_info</code>, <code>ingest_log</code>, <code>team_bullpen_stats</code>, <code>pitcher_roles</code>.</li>
+                    <li>Yesterday's Statcast pulled and inserted every morning, ~975 PA rows and ~100 pitcher game stats per game night.</li>
+                </ul>
+            </div>
+
+            <h3>Chapter 4: Rebuilding Fangraphs Stats From Scratch</h3>
+            <div class="card">
+                <div class="title">Custom Advanced-Stat Calculator</div>
+                <div class="subtitle">Every stat recomputed from raw events using Fangraphs' actual formulas</div>
+                <ul>
+                    <li>Team hitting: AVG, OBP, SLG, OPS, ISO, BABIP, BB%, K%, BB/K, wOBA, wRAA, wRC, <strong>wRC+ with 3-year rolling park factors</strong>.</li>
+                    <li>Starting pitching: K/9, BB/9, K/BB, HR/9, WHIP, BABIP, <strong>LOB% (Fangraphs formula with ER, not R)</strong>, FIP, xFIP.</li>
+                    <li>Annual constants (wBB, wHBP, w1B, w2B, w3B, wHR, wOBA_scale, lg_wOBA, lg_R_PA, FIP_constant, lg_HR_FB) sourced from Fangraphs Guts and version-locked per season.</li>
+                    <li>Verified against Fangraphs to ~0.01 precision on veteran pitchers; tiny residuals traced to Statcast vs MLB Stats API aggregation differences.</li>
+                </ul>
+            </div>
+
+            <h3>Chapter 5: The Ratings Engine</h3>
+            <div class="card">
+                <div class="title">Six-Category Weighted Rating System</div>
+                <ul>
+                    <li><strong>Trends</strong> — 8 metrics from TeamRankings win-trend tables (rest advantage, coming off win/loss, home/away, fav/dog, division, league, etc.), each mapped to a game situation.</li>
+                    <li><strong>Runs</strong> — Team run-scoring metrics with per-rating windowing (calendar-days for R1, games for R2/R3).</li>
+                    <li><strong>Starting Pitching</strong> — 14 advanced metrics across up to 12 splits × 3 time frames (full / last 18d / last 42d).</li>
+                    <li><strong>Bullpen</strong> — Role-classified relief data with full / last 7d / last 14d windows.</li>
+                    <li><strong>Team Hitting</strong> — 13 metrics × 6 splits × 3 time frames per rating.</li>
+                    <li><strong>Bullpen Fatigue</strong> — 0-10 score based on top-4 reliever availability and bullpen IP over last 3/7 days.</li>
+                </ul>
+            </div>
+
+            <h3>Chapter 6: Three Rating Models</h3>
+            <div class="card">
+                <div class="title">R1, R2, R3 — Each with Different Windows</div>
+                <ul>
+                    <li><strong>Rating 1</strong> — Original baseline. Runs uses last 7/15 <em>calendar days</em>. SP full/18d/42d.</li>
+                    <li><strong>Rating 2</strong> — Adds 6 new granular SP splits (h @ h vs team, h @ h weather, h@h d/n weather, and combos). Runs windows: last 2/5 <em>games</em>. Sharp recency focus.</li>
+                    <li><strong>Rating 3</strong> — All the R2 splits, plus SP window changes to full/13d/33d and runs windows to last 7/15 <em>games</em>.</li>
+                    <li>Each rating has its own config folder (metric weights, scales, thresholds, weight_points, split_totals).</li>
+                    <li>Website shows all 3 side by side; user can switch between them and see how the picks differ.</li>
+                </ul>
+            </div>
+
+            <h3>Chapter 7: External Data Sources</h3>
+            <div class="card">
+                <div class="title">Multi-Source Fusion</div>
+                <ul>
+                    <li><strong>Baseball Savant / Statcast</strong> — Pitch-by-pitch events, ingested nightly.</li>
+                    <li><strong>MLB Stats API</strong> — Today's schedule, probable pitchers, pitcher handedness, results grading (no auth required).</li>
+                    <li><strong>TeamRankings.com</strong> — Game logs, win trends across 26 situations, runs per game (scraped daily; emojis in print statements caused a week-long silent Unicode crash before I bulletproofed it).</li>
+                    <li><strong>The Odds API</strong> — Pregame moneylines, spreads, totals. Frozen at 8 AM so ROI is graded against actual pregame lines.</li>
+                    <li><strong>Open-Meteo</strong> — Temperature, wind, humidity, precipitation per venue.</li>
+                </ul>
+            </div>
+
+            <h3>Chapter 8: The Website</h3>
+            <div class="card">
+                <div class="title">Dual GitHub Pages Sites</div>
+                <ul>
+                    <li><strong>Analyst site</strong> (<a href="baseball.html" target="_blank">baseball.html</a>) — Full drill-down. Click a game → click a category → click a metric → see all splits × 3 time frames with per-split ratings and weights.</li>
+                    <li><strong>Picks-lite site</strong> (<a href="picks.html" target="_blank">picks.html</a>) — Same picks, no metric drill-down. For sharing with people who don't want to see the guts.</li>
+                    <li>Tabs: Picks, Gambling ROI (with "Bet Every Pick" vs "Strong Plays" split, weekly cards, by-week table), Postgame Compare, Perf by Metrics, Grand Total.</li>
+                    <li>Cache-busting on every JSON fetch to defeat GitHub Pages CDN staleness.</li>
+                </ul>
+            </div>
+
+            <h3>Chapter 9: Daily Automation</h3>
+            <div class="card">
+                <div class="title">7:00 AM Cron Pipeline (Windows Task Scheduler)</div>
+                <ul>
+                    <li>Ingest yesterday's Statcast → pull weather → classify pitcher roles → pull MLB bullpen stats → scrape TeamRankings → export hitting + SP resolved CSVs → export bullpen CSVs → sync exports to project root → build today's games.json → merge pregame odds → run all 3 ratings → publish to GitHub Pages.</li>
+                    <li>Site is updated by ~7:20 AM every morning.</li>
+                    <li>Mid-day regrade script also available for late-late-game refreshes.</li>
+                </ul>
+            </div>
+
+            <h3>Chapter 10: The Bugs I've Hunted</h3>
+            <div class="card">
+                <div class="title">Debugging Log — Highlights</div>
+                <ul>
+                    <li>Trends context bug: 7 game-context fields (last_result, days_rest, fav_dog, is_division, is_interleague, etc.) were hardcoded as placeholders. Every trend metric was picking the wrong situation → wrong win %. Fixed with real derivation.</li>
+                    <li>Name collision: Logan Gilbert vs Tyler Gilbert (and Bryce Miller vs Mason/Bobby/Erik Miller) — the player matcher was returning the first match on last name. Fixed with first-name refinement regardless of input format.</li>
+                    <li>Split code order bug: exporter joined codes in resolved order (<code>9_91_119</code>), loader sorted before joining (<code>119_9_91</code>) → every multi-code split silently missed. R2/R3 lost half their SP splits until fixed.</li>
+                    <li>LOB% used total runs (R) instead of earned runs (ER); FIP constant was 3.10 (2025 placeholder) when Fangraphs is at 3.12 for 2026; wRC+ had no park factor adjustment (Coors was wildly overrated). All fixed.</li>
+                    <li>Hitting short/long window config for R1 had literal <code>X</code> placeholders (<code>pa_lastX</code>, <code>pa_last2X</code>) that never got substituted. Loader couldn't find <code>lastXdays</code> folder. Renamed columns to actual N values.</li>
+                    <li>Export/sync gap: exports wrote to <code>statcast_output/</code>, engine read from project root, and only bullpen got synced. Hitting + SP were reading 10-day-stale files. Fixed sync to walk all export folders.</li>
+                    <li>TeamRankings scraper Unicode crash: scripts printed rocket-launch emojis; subprocess default encoding cp1252 died on the first emoji. 7 days of stale game logs before I caught it. Fixed by forcing <code>PYTHONIOENCODING=utf-8</code> on the subprocess env.</li>
+                    <li>GitHub Pages CDN caching JSON responses aggressively. Site would show old data for 10+ min after publish. Added <code>?v=&lt;timestamp&gt;</code> nonce to every JSON fetch — every page load bypasses the CDN cache.</li>
+                    <li>Task Scheduler wake-from-sleep failing silently: desktop only supports S0 Modern Standby (not S3), which doesn't fire wake timers reliably. Solution: disabled auto-sleep entirely; monitor still turns off but machine stays responsive to timers.</li>
+                </ul>
+            </div>
+
+            <h3>Chapter 11: What's Next</h3>
+            <p>Parked for now: two-URL access tier (base + pro), multi-model tournament with W-L tracking to identify which rating is winning long-term, KBO expansion. All on hold until the current MLB model is audited category-by-category. Currently working through hitting + pitching audits against Fangraphs.</p>
+        </section>
+
+        <footer>
+            <p>Built with obsession. Every line of code, every workflow, every dashboard on this page — mine.</p>
+            <p style="margin-top:0.5rem;">Portfolio deployed via GitHub Pages · Last updated automatically.</p>
+        </footer>
     </div>
+
+    <script>
+        document.querySelectorAll('.tab').forEach(t => {
+            t.addEventListener('click', () => {
+                const target = t.dataset.panel;
+                document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+                document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === target));
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            });
+        });
+    </script>
 </body>
 </html>
