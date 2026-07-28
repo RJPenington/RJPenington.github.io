@@ -866,42 +866,59 @@
             3: {trends: "season",  runs: "7g/15g", sp: "full/13d/33d", bullpen: "full/5d/10d", hitting: "full/3d/7d",  bullpen_fatigue: "last 3d"},
         };
 
+        // In-memory cache so subsequent tab clicks are instant.
+        let _grandTotalCache = null;
+
         async function renderGrandTotal() {
-            // Aggregate per-category, per-rating wins/losses across ALL dates in index.
-            const idx = await loadIndex();
-            const dates = idx.dates || [];
             const cats = ["trends","runs","sp","bullpen","hitting","bullpen_fatigue"];
-            // tally[rating][category] = {wins, losses, pending}
-            const tally = {1:{}, 2:{}, 3:{}};
-            for (const r of [1,2,3]) {
-                for (const c of cats) tally[r][c] = {wins:0, losses:0, pending:0};
-            }
-            for (const dateStr of dates) {
-                const [all, schedule] = await Promise.all([
-                    loadAllRatingsForDate(dateStr),
-                    fetchScheduleForDate(dateStr),
-                ]);
-                if (!all[1]) continue;
-                const games = all[1].games || [];
-                for (const g of games) {
-                    const sched = schedule.find(s => s.home === g.home_team && s.away === g.away_team) || {};
-                    if (sched.state !== "Final" || sched.homeScore == null) {
-                        for (const r of [1,2,3]) for (const c of cats) tally[r][c].pending += 1;
-                        continue;
-                    }
-                    const winner = sched.homeScore > sched.awayScore ? g.home_team : g.away_team;
-                    for (const r of [1,2,3]) {
-                        const game = (all[r]?.games || []).find(x => x.home_team === g.home_team && x.away_team === g.away_team);
-                        if (!game) continue;
-                        for (const c of cats) {
-                            const v = game.categories?.[c];
-                            if (!v || typeof v.home !== "number" || typeof v.away !== "number") continue;
-                            const catPick = v.home > v.away ? g.home_team : g.away_team;
-                            if (catPick === winner) tally[r][c].wins += 1;
-                            else tally[r][c].losses += 1;
+            let tally = _grandTotalCache;
+
+            if (!tally) {
+                document.getElementById("content").innerHTML =
+                    '<div class="empty">Crunching per-category records across every date… (this only runs once per page load — subsequent clicks are instant)</div>';
+
+                const idx = await loadIndex();
+                const dates = idx.dates || [];
+                tally = {1:{}, 2:{}, 3:{}};
+                for (const r of [1,2,3]) {
+                    for (const c of cats) tally[r][c] = {wins:0, losses:0, pending:0};
+                }
+
+                // Fire all date fetches in parallel — the browser will fan
+                // them out up to its 6-per-host limit and finish MUCH faster
+                // than the old one-at-a-time loop.
+                const perDate = await Promise.all(dates.map(async (dateStr) => {
+                    const [all, schedule] = await Promise.all([
+                        loadAllRatingsForDate(dateStr),
+                        fetchScheduleForDate(dateStr),
+                    ]);
+                    return { dateStr, all, schedule };
+                }));
+
+                for (const { all, schedule } of perDate) {
+                    if (!all[1]) continue;
+                    const games = all[1].games || [];
+                    for (const g of games) {
+                        const sched = schedule.find(s => s.home === g.home_team && s.away === g.away_team) || {};
+                        if (sched.state !== "Final" || sched.homeScore == null) {
+                            for (const r of [1,2,3]) for (const c of cats) tally[r][c].pending += 1;
+                            continue;
+                        }
+                        const winner = sched.homeScore > sched.awayScore ? g.home_team : g.away_team;
+                        for (const r of [1,2,3]) {
+                            const game = (all[r]?.games || []).find(x => x.home_team === g.home_team && x.away_team === g.away_team);
+                            if (!game) continue;
+                            for (const c of cats) {
+                                const v = game.categories?.[c];
+                                if (!v || typeof v.home !== "number" || typeof v.away !== "number") continue;
+                                const catPick = v.home > v.away ? g.home_team : g.away_team;
+                                if (catPick === winner) tally[r][c].wins += 1;
+                                else tally[r][c].losses += 1;
+                            }
                         }
                     }
                 }
+                _grandTotalCache = tally;
             }
             let html = `<h3 style="margin:0.5rem 0;">Grand Total — per-category record across all dates, per rating</h3>
                         <table style="width:100%; border-collapse:collapse;">
