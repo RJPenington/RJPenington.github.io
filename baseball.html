@@ -553,19 +553,22 @@
                     <thead>
                       <tr style="background:#252932;">
                         <th rowspan="2" style="text-align:left; padding:0.4rem; border-right:1px solid #4a5568;">Week (Mon)</th>
-                        <th colspan="3" style="text-align:center; padding:0.4rem; border-right:1px solid #4a5568;">R1</th>
-                        <th colspan="3" style="text-align:center; padding:0.4rem; border-right:1px solid #4a5568;">R2</th>
-                        <th colspan="3" style="text-align:center; padding:0.4rem;">R3</th>
+                        <th colspan="4" style="text-align:center; padding:0.4rem; border-right:1px solid #4a5568;">R1</th>
+                        <th colspan="4" style="text-align:center; padding:0.4rem; border-right:1px solid #4a5568;">R2</th>
+                        <th colspan="4" style="text-align:center; padding:0.4rem;">R3</th>
                       </tr>
                       <tr style="background:#252932; font-size:0.72rem; color:#cbd5e0;">
                         <th style="text-align:right; padding:0.3rem;">Every (flat)</th>
                         <th style="text-align:right;">Every (scaled)</th>
+                        <th style="text-align:right;">Strong (flat)</th>
                         <th style="text-align:right; border-right:1px solid #4a5568; padding-right:0.4rem;">Strong (scaled)</th>
                         <th style="text-align:right;">Every (flat)</th>
                         <th style="text-align:right;">Every (scaled)</th>
+                        <th style="text-align:right;">Strong (flat)</th>
                         <th style="text-align:right; border-right:1px solid #4a5568; padding-right:0.4rem;">Strong (scaled)</th>
                         <th style="text-align:right;">Every (flat)</th>
                         <th style="text-align:right;">Every (scaled)</th>
+                        <th style="text-align:right;">Strong (flat)</th>
                         <th style="text-align:right;">Strong (scaled)</th>
                       </tr>
                     </thead><tbody>`;
@@ -575,14 +578,17 @@
                         <td style="padding:0.4rem; border-right:1px solid #4a5568;">${shortDate(wk)}–${shortDate(sun)}</td>`;
                     for (const r of [1,2,3]) {
                         const rw = (weekRows[wk] || {})[r];
-                        const f  = rw ? rw.every.flat   : {profit:0, wins:0, losses:0, bets:0};
-                        const s  = rw ? rw.every.scaled : {profit:0, wins:0, losses:0, bets:0};
-                        const ss = rw ? rw.strong.scaled: {profit:0, wins:0, losses:0, bets:0};
+                        const empty = {profit:0, wins:0, losses:0, bets:0};
+                        const f  = rw ? rw.every.flat    : empty;
+                        const s  = rw ? rw.every.scaled  : empty;
+                        const sf = rw ? rw.strong.flat   : empty;
+                        const ss = rw ? rw.strong.scaled : empty;
                         const tail = r === 3 ? "" : "border-right:1px solid #4a5568; padding-right:0.4rem;";
                         const fmt2 = n => (n>=0?"+":"") + n.toFixed(0);
                         const recCell = (b) => `<span style="color:#a0aec0; font-size:0.7rem;"> (${b.wins}-${b.losses})</span>`;
                         html += `<td style="padding:0.3rem; text-align:right;">${cell(`$${fmt2(f.profit)}`)}${recCell(f)}</td>
                                  <td style="padding:0.3rem; text-align:right;">${cell(`$${fmt2(s.profit)}`)}${recCell(s)}</td>
+                                 <td style="padding:0.3rem; text-align:right;">${cell(`$${fmt2(sf.profit)}`)}${recCell(sf)}</td>
                                  <td style="padding:0.3rem; text-align:right; ${tail}">${cell(`$${fmt2(ss.profit)}`)}${recCell(ss)}</td>`;
                     }
                     html += `</tr>`;
@@ -870,9 +876,9 @@
             3: {trends: "season",  runs: "7g/15g", sp: "full/13d/33d", bullpen: "full/5d/10d", hitting: "full/3d/7d",  bullpen_fatigue: "last 3d"},
         };
 
-        // In-memory cache — Grand Total is expensive to compute (fetches
-        // r1/r2/r3 + MLB schedule per date across the entire index). Once
-        // computed for a page-load, reuse on subsequent tab clicks.
+        // Grand Total data is precomputed server-side during the daily
+        // publish (see statcast_db/compute_grand_totals.py). Frontend just
+        // fetches one small JSON — instant every click.
         let _grandTotalCache = null;
 
         async function renderGrandTotal() {
@@ -880,53 +886,24 @@
             let tally = _grandTotalCache;
 
             if (!tally) {
-                // Show a loading indicator while first computation runs.
-                document.getElementById("content").innerHTML =
-                    '<div class="empty">Crunching per-category records across every date… (this only runs once per page load — subsequent clicks are instant)</div>';
-
-                const idx = await loadIndex();
-                const dates = idx.dates || [];
-                tally = {1:{}, 2:{}, 3:{}};
-                for (const r of [1,2,3]) {
-                    for (const c of cats) tally[r][c] = {wins:0, losses:0, pending:0};
-                }
-
-                // Parallelize across dates — the old sequential loop was 4×N
-                // requests one at a time. Firing them concurrently lets the
-                // browser use its 6-per-host limit and shaves the wait down
-                // from ~15 s to a couple seconds even on a warm CDN.
-                const perDate = await Promise.all(dates.map(async (dateStr) => {
-                    const [all, schedule] = await Promise.all([
-                        loadAllRatingsForDate(dateStr),
-                        fetchScheduleForDate(dateStr),
-                    ]);
-                    return { dateStr, all, schedule };
-                }));
-
-                for (const { all, schedule } of perDate) {
-                    if (!all[1]) continue;
-                    const games = all[1].games || [];
-                    for (const g of games) {
-                        const sched = schedule.find(s => s.home === g.home_team && s.away === g.away_team) || {};
-                        if (sched.state !== "Final" || sched.homeScore == null) {
-                            for (const r of [1,2,3]) for (const c of cats) tally[r][c].pending += 1;
-                            continue;
-                        }
-                        const winner = sched.homeScore > sched.awayScore ? g.home_team : g.away_team;
-                        for (const r of [1,2,3]) {
-                            const game = (all[r]?.games || []).find(x => x.home_team === g.home_team && x.away_team === g.away_team);
-                            if (!game) continue;
-                            for (const c of cats) {
-                                const v = game.categories?.[c];
-                                if (!v || typeof v.home !== "number" || typeof v.away !== "number") continue;
-                                const catPick = v.home > v.away ? g.home_team : g.away_team;
-                                if (catPick === winner) tally[r][c].wins += 1;
-                                else tally[r][c].losses += 1;
-                            }
+                try {
+                    const r = await fetch("ratings/grand_totals.json" + CACHE_BUST, {cache: "no-store"});
+                    if (!r.ok) throw new Error("no static grand totals");
+                    const data = await r.json();
+                    // Rehydrate to the shape the render code below expects:
+                    // tally[ratingInt][cat] = {wins, losses, pending}
+                    tally = {1:{}, 2:{}, 3:{}};
+                    for (const r of [1,2,3]) {
+                        for (const c of cats) {
+                            tally[r][c] = (data.by_rating[r] || {})[c] || {wins:0, losses:0, pending:0};
                         }
                     }
+                    _grandTotalCache = tally;
+                } catch (e) {
+                    document.getElementById("content").innerHTML =
+                        '<div class="empty">Grand totals not published yet — will appear after the next daily run.</div>';
+                    return;
                 }
-                _grandTotalCache = tally;  // freeze for subsequent tab clicks
             }
             let html = `<h3 style="margin:0.5rem 0;">Grand Total — per-category record across all dates, per rating</h3>
                         <table style="width:100%; border-collapse:collapse;">
