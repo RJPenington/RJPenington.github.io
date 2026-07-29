@@ -403,18 +403,18 @@
         <div class="tabs">
             <button class="tab active" data-panel="enter-rj">Enter Picks — RJ</button>
             <button class="tab" data-panel="enter-nick">Enter Picks — Nick</button>
+            <button class="tab" data-panel="picks">Week Picks</button>
             <button class="tab" data-panel="h2h">Breakdown</button>
             <button class="tab" data-panel="teams">Team Performance</button>
             <button class="tab" data-panel="locks">Mortal Locks</button>
-            <button class="tab" data-panel="picks">Week Picks</button>
         </div>
 
         <section class="panel active" id="enter-rj"></section>
         <section class="panel" id="enter-nick"></section>
+        <section class="panel" id="picks"></section>
         <section class="panel" id="h2h"></section>
         <section class="panel" id="teams"></section>
         <section class="panel" id="locks"></section>
-        <section class="panel" id="picks"></section>
 
         <footer>
             <p>Pick'em · Pigskin, points, and the perpetual attempt to outsmart the other guy.</p>
@@ -1506,7 +1506,7 @@
                 <div class="stat-tile"><div class="value">${fmtNet(nickTotal - rjTotal)} u</div><div class="label">Nick − RJ (season)</div></div>
             </div>
             <div class="panel-card">
-                <h3>Week-by-Week</h3>
+                <h3>Week-by-Week (Nick − RJ)</h3>
                 <table class="data">
                     <thead><tr>
                         <th>Week</th>
@@ -1649,6 +1649,30 @@
         }));
     }
 
+    // O/U record per team, split by whether the team was HOME or AWAY in the
+    // matchup. Requires form-saved picks with p.home / p.away — historical
+    // O/U picks lack home-vs-away info and are excluded from this table.
+    function computeTeamOUHomeAway(who) {
+        const weeks = SEASONS[seasonSel.value] || [];
+        const map = {};   // team -> { team, home: {picks,W,L,net}, away: {picks,W,L,net} }
+        const empty = () => ({picks:0, wins:0, losses:0, pushes:0, net:0});
+        for (const w of weeks) for (const p of w[who].picks) {
+            if (p.bet_type !== 'O/U') continue;
+            if (!p.home || !p.away) continue;   // need explicit sides
+            const n = numOrZero(p.net);
+            for (const [team, role] of [[p.home, 'home'], [p.away, 'away']]) {
+                if (!map[team]) map[team] = {team, home: empty(), away: empty()};
+                const r = map[team][role];
+                r.picks++;
+                r.net += n;
+                if (n > 0) r.wins++;
+                else if (n < 0) r.losses++;
+                else r.pushes++;
+            }
+        }
+        return Object.values(map);
+    }
+
     // Track our record against each team as an opponent.
     // Only meaningful when the opponent is known — that's:
     //   - Form-saved ML/Spread/TTO where opponent is explicit
@@ -1684,6 +1708,8 @@
         const rjTeams = computeTeamStats('rj');
         const nickVsOpp = computeVsOpponentStats('nick');
         const rjVsOpp = computeVsOpponentStats('rj');
+        const nickOUHA = computeTeamOUHomeAway('nick');
+        const rjOUHA   = computeTeamOUHomeAway('rj');
 
         function table(rows, title, mode) {
             // mode = 'best' → sort by net desc; 'worst' → sort by net asc, only negatives
@@ -1718,6 +1744,37 @@
 
         const OU_NOTE = `<div style="color:var(--dim); font-size:0.78rem; margin:-0.35rem 0 0.9rem 0.2rem;">O/U picks credit both teams in the game (e.g. "Alabama FSU Over" → Alabama +1 W and FSU +1 W). ML/Spread/TTO credit only the picked team.</div>`;
         const VS_NOTE = `<div style="color:var(--dim); font-size:0.78rem; margin:-0.35rem 0 0.9rem 0.2rem;">Record when a team was the opponent. Historical picks only supply an opponent on O/U bets; ML/Spread/TTO opponents appear as new picks come in from the form.</div>`;
+
+        // O/U-by-team broken out into Home vs Away — only meaningful for
+        // form-saved picks that carry p.home / p.away.
+        function ouHomeAwayTable(label, rows) {
+            const sorted = [...rows].sort((a,b) => (b.home.net + b.away.net) - (a.home.net + a.away.net));
+            const body = sorted.length ? sorted.slice(0, 15).map(t => {
+                function cellFor(r) {
+                    if (r.picks === 0) return `<td class="num" style="color:var(--dim)">—</td>`;
+                    const g = r.wins + r.losses;
+                    const pct = g > 0 ? Math.round(r.wins/g*100) + '%' : '—';
+                    return `<td class="num">${r.wins}-${r.losses}${r.pushes ? '-'+r.pushes : ''} · <span class="${classForNet(r.net)}">${fmtNet(r.net)}u</span> · ${pct}</td>`;
+                }
+                return `<tr>
+                    <td>${t.team}</td>
+                    ${cellFor(t.home)}
+                    ${cellFor(t.away)}
+                </tr>`;
+            }).join('') : '<tr><td colspan="3" style="text-align:center; color:var(--dim); padding:1rem;">No O/U picks with home/away recorded yet — populates as form-saved picks land.</td></tr>';
+            return `<div class="panel-card">
+                <h3>${label} — O/U Record by Team When Home vs Away</h3>
+                <table class="data">
+                    <thead><tr>
+                        <th>Team</th>
+                        <th class="num">Home O/U (W-L · Net · Hit %)</th>
+                        <th class="num">Away O/U (W-L · Net · Hit %)</th>
+                    </tr></thead>
+                    <tbody>${body}</tbody>
+                </table>
+            </div>`;
+        }
+
         el.innerHTML =
             `<h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.06em; font-size:0.95rem; margin:0.5rem 0 0.75rem;">Nick's Teams</h2>` +
             OU_NOTE +
@@ -1725,12 +1782,14 @@
             table(nickTeams, "Nick — Worst Teams (top 15 by lowest Net Units)", 'worst') +
             VS_NOTE +
             table(nickVsOpp, "Nick — Vs Opponents (top 15 by Net Units)", 'best') +
+            ouHomeAwayTable('Nick', nickOUHA) +
             `<h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.06em; font-size:0.95rem; margin:1.5rem 0 0.75rem;">RJ's Teams</h2>` +
             OU_NOTE +
             table(rjTeams,   "RJ — Best Teams (top 15 by Net Units)", 'best') +
             table(rjTeams,   "RJ — Worst Teams (top 15 by lowest Net Units)", 'worst') +
             VS_NOTE +
-            table(rjVsOpp,   "RJ — Vs Opponents (top 15 by Net Units)", 'best');
+            table(rjVsOpp,   "RJ — Vs Opponents (top 15 by Net Units)", 'best') +
+            ouHomeAwayTable('RJ', rjOUHA);
     }
 
     /* ===== Render — Mortal Locks tab ===== */
@@ -1853,7 +1912,11 @@
     function renderEnter(who) {
         const el = document.getElementById(`enter-${who}`);
         const nameLabel = who === 'rj' ? 'RJ' : 'Nick';
-        const teamOpts = FBS_TEAMS.map(t => `<option>${t}</option>`).join('');
+        // One shared <datalist> per panel — every home/away input references
+        // it via list="fbs-teams-list". Type-ahead is built into the browser.
+        const teamDatalist = `<datalist id="fbs-teams-list">${
+            FBS_TEAMS.map(t => `<option value="${t}"></option>`).join('')
+        }</datalist>`;
 
         function formRow(sectionKey, i) {
             // Scope uid by person so RJ's row #1 doesn't collide with Nick's row #1
@@ -1871,11 +1934,11 @@
                 <span class="sign-group side-h" title="Bet on home team">
                     <label><input type="radio" name="side-${uid}" value="H" />H</label>
                 </span>
-                <select class="home" title="Home team"><option value="">— home —</option>${teamOpts}</select>
+                <input class="home team-input" list="fbs-teams-list" placeholder="home team" autocomplete="off" title="Home team — type to filter FBS teams" />
                 <span class="sign-group side-a" title="Bet on away team">
                     <label><input type="radio" name="side-${uid}" value="A" />A</label>
                 </span>
-                <select class="away" title="Away team"><option value="">— away —</option>${teamOpts}</select>
+                <input class="away team-input" list="fbs-teams-list" placeholder="away team" autocomplete="off" title="Away team — type to filter FBS teams" />
                 <span class="sign-group sign-slot">
                     <label><input type="radio" name="sign-${uid}" value="-" />−</label>
                     <label><input type="radio" name="sign-${uid}" value="+" />+</label>
@@ -1910,6 +1973,7 @@
             </div>`;
         }
         el.innerHTML = `
+            ${teamDatalist}
             <h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; font-size:1.05rem; margin:0.25rem 0 0.75rem;">${nameLabel}'s Picks</h2>
             <div class="banner-warn">
                 <strong>Heads up:</strong> this form is UI-only right now — picks don't save to a database or lock at the deadline yet. Live saving + time-based locks land in Phase 2 (requires a small backend). Use it as a mockup for now to confirm the layout.
