@@ -237,7 +237,7 @@
 
     .form-row {
         display: grid;
-        grid-template-columns: auto 80px 1fr auto 1fr auto 75px 65px auto;
+        grid-template-columns: auto 80px auto 1fr auto 1fr auto 75px 65px auto;
         gap: 0.45rem; align-items: center; margin: 0.45rem 0;
     }
     .lock-cell {
@@ -258,7 +258,7 @@
     }
     .form-col-header {
         display: grid;
-        grid-template-columns: auto 80px 1fr auto 1fr auto 75px 65px auto;
+        grid-template-columns: auto 80px auto 1fr auto 1fr auto 75px 65px auto;
         gap: 0.45rem; align-items: center;
         color: var(--dim); font-size: 0.72rem; text-transform: uppercase;
         letter-spacing: 0.08em; padding: 0 0 0.35rem;
@@ -275,16 +275,29 @@
     }
     .form-row select:focus, .form-row input:focus { outline: 1px solid var(--accent); }
     .sign-group {
-        display: inline-flex; gap: 0.3rem; align-items: center;
-        border: 1px solid var(--line); border-radius: 4px; padding: 3px 6px;
-        background: var(--card);
+        display: inline-flex; gap: 0.25rem; align-items: center;
+        border: 1px solid transparent; border-radius: 4px; padding: 2px;
+        background: transparent;
     }
     .sign-group label {
-        display: inline-flex; align-items: center; gap: 3px;
-        color: var(--ink); font-size: 0.85rem; cursor: pointer;
+        display: inline-flex; align-items: center; justify-content: center;
+        min-width: 22px; height: 22px; padding: 0 6px;
+        background: rgba(0, 0, 0, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 4px;
+        color: var(--dim); font-size: 0.82rem; cursor: pointer;
         font-family: 'Copperplate Gothic Bold', serif;
+        transition: background 0.12s ease, color 0.12s ease,
+                    border-color 0.12s ease, box-shadow 0.12s ease;
     }
-    .sign-group input[type="radio"] { accent-color: var(--accent); margin: 0; }
+    .sign-group label:hover { background: rgba(0, 0, 0, 0.35); color: var(--ink); }
+    .sign-group input[type="radio"] { display: none; }
+    .sign-group label:has(input:checked) {
+        background: rgba(74, 222, 128, 0.22);
+        border-color: var(--accent);
+        color: var(--accent);
+        box-shadow: 0 0 8px rgba(74, 222, 128, 0.45);
+    }
     .hidden-field { visibility: hidden; pointer-events: none; }
     .form-section-title {
         color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em;
@@ -1192,20 +1205,24 @@
 
     /* ===== Render — Head to Head tab ===== */
     // Aggregate picks in `weeks` by the field returned by keyFn(pick, week).
-    // Returns [{key, picks, wins, losses, pushes, net}, ...].
+    // Returns [{key, picks, wins, losses, pushes, net, uWon, uLost}, ...].
+    //   net   = signed sum of every pick's Total column (profit/loss)
+    //   uWon  = sum of the *positive* nets — gross units earned on winners
+    //   uLost = absolute sum of the *negative* nets — gross units surrendered on losers
+    // So `net === uWon - uLost` by construction.
     function aggregatePicksBy(weeks, who, keyFn) {
         const buckets = {};
         for (const w of weeks) {
             for (const p of w[who].picks) {
                 const key = keyFn(p, w);
                 if (key == null) continue;
-                if (!buckets[key]) buckets[key] = {key, picks:0, wins:0, losses:0, pushes:0, net:0};
+                if (!buckets[key]) buckets[key] = {key, picks:0, wins:0, losses:0, pushes:0, net:0, uWon:0, uLost:0};
                 const b = buckets[key];
                 b.picks++;
                 const n = numOrZero(p.net);
                 b.net += n;
-                if (n > 0) b.wins++;
-                else if (n < 0) b.losses++;
+                if (n > 0) { b.wins++;   b.uWon  += n; }
+                else if (n < 0) { b.losses++; b.uLost += -n; }
                 else b.pushes++;
             }
         }
@@ -1235,13 +1252,14 @@
 
         function betTypeTable(label, buckets) {
             const rows = BET_ORDER.map(bt => {
-                const b = buckets.find(x => x.key === bt) || {key:bt, picks:0, wins:0, losses:0, pushes:0, net:0};
+                const b = buckets.find(x => x.key === bt) || {key:bt, picks:0, wins:0, losses:0, pushes:0, net:0, uWon:0, uLost:0};
                 const g = b.wins + b.losses;
                 const pct = g > 0 ? Math.round(b.wins/g * 100) + '%' : '—';
                 return `<tr>
                     <td>${bt}</td>
                     <td class="num">${b.picks}</td>
                     <td class="num">${b.wins}-${b.losses}${b.pushes ? '-' + b.pushes : ''}</td>
+                    <td class="num"><span class="net-good">+${b.uWon.toFixed(2)}</span> / <span class="net-bad">-${b.uLost.toFixed(2)}</span></td>
                     <td class="num">${pct}</td>
                     <td class="num ${classForNet(b.net)}">${fmtNet(b.net)}</td>
                 </tr>`;
@@ -1253,11 +1271,16 @@
                         <th>Bet Type</th>
                         <th class="num">Picks</th>
                         <th class="num">W-L-P</th>
+                        <th class="num" title="Gross units won on winners / gross units lost on losers">Units W / L</th>
                         <th class="num">Hit %</th>
-                        <th class="num">Net (u)</th>
+                        <th class="num" title="Won minus lost — net profit/loss in units">Net (u)</th>
                     </tr></thead>
                     <tbody>${rows}</tbody>
                 </table>
+                <div style="color:var(--dim); font-size:0.78rem; margin-top:0.5rem;">
+                    <strong>Units W/L</strong> = gross units won on winning picks / gross units lost on losing picks (from the sheet's Total column).
+                    <strong>Net (u)</strong> = Won − Lost, the actual profit/loss for that bet type.
+                </div>
             </div>`;
         }
 
@@ -1493,9 +1516,11 @@
                     <option value="O/U">O/U</option>
                     <option value="TTO">TTO</option>
                 </select>
-                <select class="home" title="Home team"><option value="">— home —</option>${teamOpts}</select>
-                <span class="sign-group side-slot" title="Which side did you bet on?">
+                <span class="sign-group side-h" title="Bet on home team">
                     <label><input type="radio" name="side-${uid}" value="H" />H</label>
+                </span>
+                <select class="home" title="Home team"><option value="">— home —</option>${teamOpts}</select>
+                <span class="sign-group side-a" title="Bet on away team">
                     <label><input type="radio" name="side-${uid}" value="A" />A</label>
                 </span>
                 <select class="away" title="Away team"><option value="">— away —</option>${teamOpts}</select>
@@ -1517,9 +1542,10 @@
             const header = `<div class="form-col-header">
                 <span title="Mortal Lock">🔒</span>
                 <span>Bet Type</span>
-                <span>Home</span>
-                <span>H/A</span>
-                <span>Away</span>
+                <span>H</span>
+                <span>Home Team</span>
+                <span>A</span>
+                <span>Away Team</span>
                 <span>±/OU</span>
                 <span>Pts</span>
                 <span>Units</span>
@@ -1553,15 +1579,17 @@
         if (!row) return;
         const bt = row.querySelector('.bet-type').value;
         const signGroup = row.querySelector('.sign-slot');
-        const sideGroup = row.querySelector('.side-slot');
+        const sideH = row.querySelector('.side-h');
+        const sideA = row.querySelector('.side-a');
         const points = row.querySelector('.points');
 
         const signLabels = signGroup.querySelectorAll('label');
         // signLabels: 0=−, 1=+, 2=O, 3=U
         const showSign = (idx, on) => signLabels[idx].classList.toggle('hidden-field', !on);
-        // H/A side selector: shown for ML/Spread/TTO (single-side bets),
+        // H/A bubbles: shown for ML/Spread/TTO (single-side bets),
         // hidden for O/U (both sides bet the total together — no "side" concept).
-        sideGroup.classList.toggle('hidden-field', bt === 'O/U');
+        sideH.classList.toggle('hidden-field', bt === 'O/U');
+        sideA.classList.toggle('hidden-field', bt === 'O/U');
 
         if (bt === 'ML') {
             showSign(0,false); showSign(1,false); showSign(2,false); showSign(3,false);
