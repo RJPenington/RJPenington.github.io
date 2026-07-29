@@ -252,6 +252,19 @@
         grid-template-columns: 28px 80px 30px 1fr 30px 1fr 60px 75px 65px 30px;
         gap: 0.45rem; align-items: center; margin: 0.45rem 0;
     }
+    /* Pin every row item to its explicit column so display:none on a hidden
+       cell (e.g. H/A bubbles on O/U bets, Pts input on ML bets) doesn't cause
+       subsequent items to auto-place and shift the layout left. */
+    .form-row > .lock-cell  { grid-column: 1; }
+    .form-row > .bet-type   { grid-column: 2; }
+    .form-row > .side-h     { grid-column: 3; }
+    .form-row > .home       { grid-column: 4; }
+    .form-row > .side-a     { grid-column: 5; }
+    .form-row > .away       { grid-column: 6; }
+    .form-row > .sign-slot  { grid-column: 7; }
+    .form-row > .points     { grid-column: 8; }
+    .form-row > .units      { grid-column: 9; }
+    .form-row > .idx        { grid-column: 10; }
     .lock-cell {
         display: inline-flex; align-items: center; justify-content: center;
         width: 28px; height: 28px;
