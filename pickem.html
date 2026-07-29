@@ -1528,10 +1528,95 @@
             </div>
             ${betTypeTable('Nick', nickByType)}
             ${betTypeTable('RJ',   rjByType)}
+            ${mlLineTable('Nick', weeks, 'nick')}
+            ${mlLineTable('RJ',   weeks, 'rj')}
             ${haCrossTable('Nick', weeks, 'nick')}
             ${haCrossTable('RJ',   weeks, 'rj')}
             ${wdCrossTable('Nick', weeks, 'nick')}
             ${wdCrossTable('RJ',   weeks, 'rj')}`;
+    }
+
+    // ML line-range buckets — used by the ML performance breakdown on the
+    // Breakdown tab. Bucket edges are inclusive on both ends.
+    const ML_BUCKETS = [
+        {label: '-130 to -121', min: -130, max: -121},
+        {label: '-120 to -116', min: -120, max: -116},
+        {label: '-115 to -111', min: -115, max: -111},
+        {label: '-110 to -101', min: -110, max: -101},
+        {label: '+100 to +110', min:  100, max:  110},
+        {label: '+111 to +120', min:  111, max:  120},
+        {label: '+121 to +130', min:  121, max:  130},
+        {label: '+131 to +140', min:  131, max:  140},
+        {label: '+141 to +150', min:  141, max:  150},
+    ];
+    // Compute the signed ML line for a pick, or null if not determinable.
+    // Form-saved picks store the sign ('+' or '-') and the positive line value.
+    function pickMlLine(p) {
+        if (p.line != null && !isNaN(Number(p.line))) return Number(p.line);
+        if (p.sign && p.points != null) {
+            const val = Math.abs(Number(p.points));
+            if (!isNaN(val)) return p.sign === '-' ? -val : val;
+        }
+        return null;
+    }
+    function mlLineTable(label, weeks, who) {
+        const buckets = ML_BUCKETS.map(b => ({...b, picks:0, wins:0, losses:0, pushes:0, net:0, uWon:0, uLost:0}));
+        const unknown = {label: 'Line unknown (historical)', picks:0, wins:0, losses:0, pushes:0, net:0, uWon:0, uLost:0};
+        for (const w of weeks) for (const p of w[who].picks) {
+            if (p.bet_type !== 'ML') continue;
+            const line = pickMlLine(p);
+            let bucket = unknown;
+            if (line !== null) {
+                const hit = buckets.find(b => line >= b.min && line <= b.max);
+                if (hit) bucket = hit;
+                // Lines outside the tracked ranges (e.g. -140 or +200) also
+                // land in "unknown" for now — could add "off-scale" bucket later.
+                else bucket = unknown;
+            }
+            bucket.picks++;
+            const n = numOrZero(p.net);
+            bucket.net += n;
+            if (n > 0) { bucket.wins++;   bucket.uWon  += n; }
+            else if (n < 0) { bucket.losses++; bucket.uLost += -n; }
+            else bucket.pushes++;
+        }
+        const rows = [...buckets, unknown].map(b => {
+            const g = b.wins + b.losses;
+            const pct = g > 0 ? Math.round(b.wins/g*100) + '%' : '—';
+            if (b.picks === 0) {
+                return `<tr>
+                    <td>${b.label}</td>
+                    <td class="num" style="color:var(--dim)">—</td>
+                    <td class="num" style="color:var(--dim)">—</td>
+                    <td class="num" style="color:var(--dim)">—</td>
+                    <td class="num" style="color:var(--dim)">—</td>
+                    <td class="num" style="color:var(--dim)">—</td>
+                </tr>`;
+            }
+            return `<tr>
+                <td>${b.label}</td>
+                <td class="num">${b.picks}</td>
+                <td class="num">${b.wins}-${b.losses}${b.pushes ? '-' + b.pushes : ''}</td>
+                <td class="num"><span class="net-good">+${b.uWon.toFixed(2)}</span> / <span class="net-bad">-${b.uLost.toFixed(2)}</span></td>
+                <td class="num">${pct}</td>
+                <td class="num ${classForNet(b.net)}">${fmtNet(b.net)}</td>
+            </tr>`;
+        }).join('');
+        return `<div class="panel-card">
+            <h3>${label} — ML Performance by Line Range</h3>
+            <table class="data">
+                <thead><tr>
+                    <th>ML Line Range</th>
+                    <th class="num">Picks</th>
+                    <th class="num">W-L-P</th>
+                    <th class="num">Units W / L</th>
+                    <th class="num">Hit %</th>
+                    <th class="num">Net (u)</th>
+                </tr></thead>
+                <tbody>${rows}</tbody>
+            </table>
+            <div style="color:var(--dim); font-size:0.78rem; margin-top:0.5rem;">Line derived from the pick's ± bubble + Pts value on new form-saved picks. Historical picks land under "Line unknown".</div>
+        </div>`;
     }
 
     /* ===== Render — Teams tab (best + worst) =====
@@ -1923,8 +2008,10 @@
         sideA.classList.toggle('hidden-field', bt === 'O/U');
 
         if (bt === 'ML') {
-            showSign(0,false); showSign(1,false); showSign(2,false); showSign(3,false);
-            points.classList.add('hidden-field');
+            // ML now takes an actual line: -/+ bubble + line value (e.g. -110, +145)
+            showSign(0,true); showSign(1,true); showSign(2,false); showSign(3,false);
+            points.classList.remove('hidden-field');
+            points.placeholder = 'Line';
         } else if (bt === 'Spread') {
             showSign(0,true); showSign(1,true); showSign(2,false); showSign(3,false);
             points.classList.remove('hidden-field');
