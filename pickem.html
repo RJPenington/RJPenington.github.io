@@ -542,38 +542,16 @@
                 ctx.beginPath(); ctx.moveTo(x, marginY + 2); ctx.lineTo(x, H - marginY - 2); ctx.stroke();
             }
 
-            // Oregon "O" logo at midfield — bright yellow ring on the 50
-            const midX = marginX + 60 * uPx;
-            const cy = H / 2;
-            const oRadY = Math.min(fieldH * 0.42, 34);
-            const oRadX = oRadY * 0.75;
-            const ringW = Math.max(4, oRadY * 0.28);
-            // Outer yellow filled oval
-            ctx.fillStyle = '#fee11a';
-            ctx.beginPath();
-            ctx.ellipse(midX, cy, oRadX, oRadY, 0, 0, Math.PI * 2);
-            ctx.fill();
-            // Punch out the middle with the field green — leaves a thick yellow "O"
-            ctx.fillStyle = '#0d3b1f';
-            ctx.beginPath();
-            ctx.ellipse(midX, cy, oRadX - ringW, oRadY - ringW, 0, 0, Math.PI * 2);
-            ctx.fill();
-            // Subtle inner shadow for depth
-            ctx.strokeStyle = 'rgba(0,0,0,0.30)';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.ellipse(midX, cy, oRadX - ringW + 0.5, oRadY - ringW + 0.5, 0, 0, Math.PI * 2);
-            ctx.stroke();
-
             // Yard-line numbers — top and bottom rows, upright on both halves
             ctx.font = '800 13px "Helvetica Neue", system-ui, sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             for (const m of yardMarks) {
                 if (m.label === 'G') continue;
-                if (m.u === 60) continue;   // 50 is covered by the O logo
                 const x = marginX + m.u * uPx;
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.88)';
+                ctx.fillStyle = m.label === '50'
+                    ? 'rgba(255, 255, 255, 1.0)'
+                    : 'rgba(255, 255, 255, 0.88)';
                 ctx.fillText(m.label, x, marginY + 16);
                 ctx.fillText(m.label, x, H - marginY - 16);
             }
@@ -1284,14 +1262,66 @@
             </div>`;
         }
 
-        // Weekday vs weekend split — historical picks lack a per-pick date, so
-        // we can only report it once the Enter Picks form starts storing dates.
-        const anyDated = weeks.some(w => (w.nick.picks.concat(w.rj.picks)).some(p => p.game_date));
-        const dowNote = anyDated
-            ? '' // will render a real table once game_date is populated
-            : `<div class="banner-warn" style="margin-top:1rem;">
-                    <strong>Weekday vs Weekend</strong> — historical picks in the sheet don't have game dates, so we can't split them yet. New picks entered via the form (once Phase 2 saves dates) will populate this breakdown automatically.
-                </div>`;
+        // Weekday vs weekend split by bet type.
+        //   p.game_date is present on new form-saved picks (Phase 2) → we can
+        //   bucket into Weekday / Weekend. Historical picks lack a date and
+        //   land in "Date unknown".
+        function isWeekend(dateStr) {
+            if (!dateStr) return null;
+            const d = new Date(dateStr);
+            if (isNaN(d)) return null;
+            const dow = d.getDay();     // 0 Sun, 6 Sat
+            return dow === 0 || dow === 5 || dow === 6;   // Fri/Sat/Sun = "gameday weekend"
+        }
+        function wdCrossTable(label, weeks, who) {
+            const cell = {WD:{}, WE:{}, '?':{}};
+            for (const bucket of ['WD','WE','?'])
+                for (const bt of BET_ORDER) cell[bucket][bt] = {picks:0, wins:0, losses:0, pushes:0, net:0, uWon:0, uLost:0};
+            for (const w of weeks) for (const p of w[who].picks) {
+                const bt = p.bet_type; if (!bt || !BET_ORDER.includes(bt)) continue;
+                const we = isWeekend(p.game_date);
+                const bucket = we === true ? 'WE' : (we === false ? 'WD' : '?');
+                const c = cell[bucket][bt];
+                c.picks++;
+                const n = numOrZero(p.net);
+                c.net += n;
+                if (n > 0) { c.wins++;   c.uWon  += n; }
+                else if (n < 0) { c.losses++; c.uLost += -n; }
+                else c.pushes++;
+            }
+            const rowLabel = {WD:'Weekday (Mon–Thu)', WE:'Weekend (Fri–Sun)', '?':'Date unknown (historical)'};
+            const rows = ['WD','WE','?'].map(bucket => {
+                const tds = BET_ORDER.map(bt => {
+                    const c = cell[bucket][bt];
+                    if (c.picks === 0) return `<td class="num" style="color:var(--dim)">—</td>`;
+                    const g = c.wins + c.losses;
+                    const pct = g > 0 ? Math.round(c.wins/g*100) + '%' : '—';
+                    return `<td class="num">${c.wins}-${c.losses} · <span class="${classForNet(c.net)}">${fmtNet(c.net)}u</span> · ${pct}</td>`;
+                }).join('');
+                // Row total across all bet types
+                const totals = BET_ORDER.reduce((acc, bt) => {
+                    const c = cell[bucket][bt];
+                    acc.picks += c.picks; acc.wins += c.wins; acc.losses += c.losses; acc.net += c.net;
+                    return acc;
+                }, {picks:0, wins:0, losses:0, net:0});
+                const gT = totals.wins + totals.losses;
+                const pctT = gT > 0 ? Math.round(totals.wins/gT*100) + '%' : '—';
+                const totalCell = totals.picks === 0
+                    ? `<td class="num" style="color:var(--dim)">—</td>`
+                    : `<td class="num"><strong>${totals.wins}-${totals.losses} · <span class="${classForNet(totals.net)}">${fmtNet(totals.net)}u</span> · ${pctT}</strong></td>`;
+                return `<tr><td>${rowLabel[bucket]}</td>${tds}${totalCell}</tr>`;
+            }).join('');
+            return `<div class="panel-card">
+                <h3>${label} — By Weekday vs Weekend</h3>
+                <table class="data">
+                    <thead><tr>
+                        <th></th>${BET_ORDER.map(bt => `<th class="num">${bt}</th>`).join('')}<th class="num">All</th>
+                    </tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+                <div style="color:var(--dim); font-size:0.78rem; margin-top:0.5rem;">Each cell shows <em>W-L · Net · Hit %</em>. Historical picks land in "Date unknown" until the new form saves game dates.</div>
+            </div>`;
+        }
 
         // Home vs Away split — pick.side is 'H' or 'A' once the new form saves it.
         // Historical picks are null → shown under a "no side" row.
@@ -1364,7 +1394,8 @@
             ${betTypeTable('RJ',   rjByType)}
             ${haCrossTable('Nick', weeks, 'nick')}
             ${haCrossTable('RJ',   weeks, 'rj')}
-            ${dowNote}`;
+            ${wdCrossTable('Nick', weeks, 'nick')}
+            ${wdCrossTable('RJ',   weeks, 'rj')}`;
     }
 
     /* ===== Render — Teams tab (best + worst) ===== */
@@ -1507,8 +1538,8 @@
         function formRow(sectionKey, i) {
             const uid = `${sectionKey}-${i}`;
             return `<div class="form-row" data-uid="${uid}">
-                <label class="lock-cell" title="Mark as Mortal Lock">
-                    <input type="checkbox" class="lock" />
+                <label class="lock-cell" title="Mortal Lock — pays 1.5× units on win/loss. Only one per week.">
+                    <input type="checkbox" class="lock" onchange="onMortalLockChange(this)" />
                 </label>
                 <select class="bet-type" onchange="onBetTypeChange('${uid}')">
                     <option value="ML">ML</option>
@@ -1561,6 +1592,9 @@
             <div class="banner-warn">
                 <strong>Heads up:</strong> this form is UI-only right now — picks don't save to a database or lock at the deadline yet. Live saving + time-based locks land in Phase 2 (requires a small backend). Use it as a mockup for now to confirm the layout.
             </div>
+            <div class="banner-warn" style="border-color: rgba(74, 222, 128, 0.35);">
+                <strong style="color: var(--accent);">🔒 Mortal Lock rules:</strong> pays 1.5× the units placed on either a win or a loss. <strong>Only one mortal lock per week</strong> — checking a new one auto-unchecks the previous.
+            </div>
             ${formSection('wd',  'Weekday Games',      5, 'Locks Saturday 9:00 AM')}
             ${formSection('main','Main Slate',        15, 'Locks Saturday 9:00 AM')}
             ${formSection('day', 'Gameday Additions', 10, 'Locks Sunday night')}
@@ -1571,6 +1605,15 @@
         // Initialize every row's visible fields to match its default bet type.
         el.querySelectorAll('.form-row').forEach(r => onBetTypeChange(r.dataset.uid));
     }
+
+    // Enforce one mortal lock per week — clicking a new lock unchecks all
+    // other rows across every section (Weekday / Main / Gameday).
+    window.onMortalLockChange = function(inputEl) {
+        if (!inputEl.checked) return;   // unchecking is always allowed
+        document.querySelectorAll('#enter .lock-cell input.lock').forEach(cb => {
+            if (cb !== inputEl) cb.checked = false;
+        });
+    };
 
     // Toggle the visible fields per bet type. Kept globally callable so the
     // inline onchange handler works after the form is re-rendered.
