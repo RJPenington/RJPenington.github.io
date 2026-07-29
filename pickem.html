@@ -307,6 +307,7 @@
     .sign-group {
         display: inline-flex; gap: 0.25rem; align-items: center;
         justify-content: center;
+        justify-self: center;   /* Center this bubble group inside its grid cell */
         border: 1px solid transparent; border-radius: 4px; padding: 2px;
         background: transparent;
     }
@@ -608,7 +609,7 @@
                 ctx.fillText(label, 0, 0);
                 ctx.restore();
             }
-            endzoneText('R.J.',      5);    // left endzone  — dotted initials
+            endzoneText('R . J .',    5);   // left endzone  — spaced dotted initials
             endzoneText('N I C K',  115);   // right endzone — spaced letters
 
             // Note: the "PICK'EM" midfield text is painted by the h1 element
