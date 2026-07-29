@@ -56,25 +56,22 @@
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         z-index: 2; text-align: center; pointer-events: none;
     }
+    /* Header title, painted on the field like a stadium midfield logo:
+       bold yellow with a heavy dark stroke for grass-paint depth. */
     header h1 {
         font-family: 'Copperplate Gothic Bold', 'Copperplate', 'Bank Gothic', 'Trajan Pro', 'Optima', Georgia, serif;
-        font-size: 4rem; font-weight: 900;
-        letter-spacing: 0.14em; text-transform: uppercase;
-        color: #ffffff;
-        text-shadow:
-            0 0 8px rgba(255,255,255,0.35),
-            0 0 18px var(--accent-glow-strong),
-            0 2px 26px var(--accent-glow);
+        font-size: 5rem; font-weight: 900;
+        letter-spacing: 0.12em; text-transform: uppercase;
+        color: #fee11a;
+        background: linear-gradient(180deg, #fff2a0 0%, #fee11a 55%, #c99c00 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        -webkit-text-stroke: 2px rgba(0, 0, 0, 0.55);
+        text-shadow: 0 3px 6px rgba(0, 0, 0, 0.45);
         line-height: 1;
     }
-    header h1 .apostrophe { color: var(--accent-bright); }
-    header .subtitle {
-        margin-top: 0.75rem;
-        color: var(--accent);
-        font-family: 'Copperplate Gothic Bold', 'Copperplate', serif;
-        font-size: 0.95rem; letter-spacing: 0.24em; text-transform: uppercase;
-        text-shadow: 0 0 12px var(--accent-glow);
-    }
+    header h1 .apostrophe { -webkit-text-fill-color: #fff; color: #fff; }
 
     /* Rules banner */
     .rules {
@@ -331,7 +328,6 @@
             <canvas id="hdrCanvas"></canvas>
             <div class="title-stack">
                 <h1>PICK<span class="apostrophe">'</span>EM</h1>
-                <div class="subtitle">RJ &amp; Nick — Head to Head</div>
             </div>
         </header>
 
@@ -342,7 +338,7 @@
                 <li>Line on any pick must be equal to or lower than <strong>-130</strong>.</li>
                 <li>Weekday games + Main Slate lock at <strong>Saturday 9:00 AM ET</strong>.</li>
                 <li>Gameday Additions lock <strong>Sunday night</strong>.</li>
-                <li>One <strong>mortal lock</strong> per person per week (highlighted red).</li>
+                <li>One <strong>mortal lock</strong> per person per week (highlighted glowing green) — pays <strong>1.5×</strong> the units placed on either a win or a loss.</li>
             </ul>
         </div>
 
@@ -548,13 +544,40 @@
             ctx.textBaseline = 'middle';
             for (const m of yardMarks) {
                 if (m.label === 'G') continue;
+                if (m.u === 60) continue;  // midfield covered by PICK'EM logo
                 const x = marginX + m.u * uPx;
-                ctx.fillStyle = m.label === '50'
-                    ? 'rgba(255, 255, 255, 1.0)'
-                    : 'rgba(255, 255, 255, 0.88)';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.88)';
                 ctx.fillText(m.label, x, marginY + 16);
                 ctx.fillText(m.label, x, H - marginY - 16);
             }
+
+            // ---- Endzone team names — vertical, painted white, both endzones ----
+            function endzoneText(label, uCenter) {
+                const ex = marginX + uCenter * uPx;
+                ctx.save();
+                ctx.translate(ex, H / 2);
+                // Text runs top-to-bottom on the left endzone (turned +90°),
+                // and bottom-to-top on the right endzone (turned −90°) so both
+                // read facing outward as at a real stadium.
+                ctx.rotate(uCenter < 60 ? -Math.PI / 2 : Math.PI / 2);
+                const ezPx = Math.min(fieldH * 0.55, 42);
+                ctx.font = `900 ${ezPx}px 'Copperplate Gothic Bold', 'Impact', system-ui`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                // Outline for depth
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = 'rgba(0,0,0,0.55)';
+                ctx.strokeText(label, 0, 0);
+                ctx.fillStyle = 'rgba(255,255,255,0.94)';
+                ctx.fillText(label, 0, 0);
+                ctx.restore();
+            }
+            endzoneText('RJ',   5);    // left endzone (u=0-10, center u=5)
+            endzoneText('NICK', 115);  // right endzone (u=110-120, center u=115)
+
+            // Note: the "PICK'EM" midfield text is painted by the h1 element
+            // overlaid on top of this canvas via header .title-stack — kept in
+            // HTML so it stays selectable + accessible + easily restyled.
         }
 
         // Draw a football helmet profile with a team-specific logo painted on
@@ -850,16 +873,17 @@
         }
 
         // ---------- Field-goal-miss scene ----------
-        // ASU trying to kick from the left-33 (u=43); holder+kicker on the 40
-        // (u=50). Ball snaps → hold → kick → flies toward the left uprights,
-        // curves left, misses wide left. "WIDE LEFT · ASU LOSES" flashes.
-        function drawFieldGoal(p) {
+        // Nick's team trying to kick from the right-33 (u=77); holder+kicker on
+        // the 40 (u=70, 7 yards behind LOS toward the kicker's direction).
+        // Ball snaps → hold → kick → flies toward the right uprights (Nick's
+        // endzone), curves right, misses wide right. "WIDE RIGHT · NICK LOSES".
+        function drawFieldGoal(p, t) {
             const geom = fieldGeom();
             const {marginX, marginY, fieldW, fieldH, uPx, x} = geom;
             const groundY = H * 0.62;
 
-            // Uprights on the left endzone at u≈5 (middle of the endzone)
-            const upX = x(5);
+            // Uprights on the RIGHT endzone at u≈115 (center of endzone)
+            const upX = x(115);
             const upTop = H * 0.10;
             const upMid = H * 0.55;   // crossbar height
             ctx.strokeStyle = '#ffea3c';
@@ -890,82 +914,72 @@
                 ctx.stroke();
             }
 
-            // Line of scrimmage at u=43 (the 33-yard line kicking left).
-            // Kicking team = ASU (gold + maroon). Defense = generic (dark).
-            const losX = x(43);
-            const yTop = groundY - 12;    // one row of blockers
-            const yBot = groundY;
+            // Line of scrimmage at u=77 (the 33-yard line, right side).
+            // Kicking direction: to the RIGHT. Kicker/holder are BEHIND (to the
+            // left of) the LOS, i.e. at u=70 (the 40).
+            const losX = x(77);
 
-            // 5 O-linemen (ASU gold)
-            for (let i = -2; i <= 2; i++) player(losX + i * 12, yBot, '#ffcf3a', '#5a3d00');
-            // 5 D-linemen just left of them (dark)
-            for (let i = -2; i <= 2; i++) player(losX - 14 + i * 12, yBot, '#333', '#000');
+            // 5 O-linemen (Nick's team, blue)
+            for (let i = -2; i <= 2; i++) player(losX + i * 12, groundY, '#3b82f6', '#0d3b7a');
+            // 5 D-linemen just to the right of them
+            for (let i = -2; i <= 2; i++) player(losX + 14 + i * 12, groundY, '#333', '#000');
 
-            // Holder + kicker sit at u=50 (40-yard line = 7 yards behind LOS)
-            const holderX = x(50);
+            // Holder + kicker sit at u=70 (40-yard line = 7 yards behind LOS,
+            // to the LEFT since we're kicking RIGHT).
+            const holderX = x(70);
             const holderY = groundY + 2;
-            const kickerX = holderX + 24;
+            const kickerX = holderX - 24;    // kicker sits BEHIND holder (further left)
             const kickerY = groundY - 6;
 
             // Ball animation timeline:
-            //   0.00-0.15 pre-snap idle
-            //   0.15-0.30 snap: ball travels from LOS to holder
+            //   0.00-0.15 pre-snap idle at LOS
+            //   0.15-0.30 snap: LOS → holder (moving LEFT)
             //   0.30-0.42 hold + plant
-            //   0.42-0.75 kick: ball arcs from holder toward the uprights,
-            //             drifting LEFT — misses wide
-            //   0.75-1.00 freeze + "WIDE LEFT · ASU LOSES" flashes
+            //   0.42-0.75 kick: holder → past RIGHT upright, drifting RIGHT (miss)
+            //   0.75-1.00 ball sails past + "WIDE RIGHT · NICK LOSES" flashes
             let ballX, ballY, ballAngle = 0;
-            const holderBallY = holderY - 4;   // ball on the tee held low
+            const holderBallY = holderY - 4;
 
             if (p < 0.15) {
-                // Pre-snap: ball at LOS
                 ballX = losX; ballY = groundY - 2;
-                // Kicker takes a slow prep step (subtle)
             } else if (p < 0.30) {
-                // Snap
                 const k = (p - 0.15) / 0.15;
                 ballX = losX + (holderX - losX) * k;
                 ballY = (groundY - 2) + (-12 * Math.sin(k * Math.PI)) + (holderBallY - (groundY - 2)) * k;
                 ballAngle = k * 3;
             } else if (p < 0.42) {
-                // Hold before kick
                 ballX = holderX; ballY = holderBallY;
             } else if (p < 0.75) {
-                // Kick! Ball arcs across the field, gently drifting LEFT of the uprights.
                 const k = (p - 0.42) / 0.33;
-                // horizontal: start at holderX, end past left upright, wide left
-                const targetX = upX - barW * 0.85;   // WIDE LEFT of the left upright
+                const targetX = upX + barW * 0.85;   // WIDE RIGHT of the right upright
                 ballX = holderX + (targetX - holderX) * k;
-                // vertical: parabolic arc, apex around p=0.55
                 const arcApex = -Math.min(H * 0.55, 100);
                 ballY = holderBallY + arcApex * Math.sin(k * Math.PI) + (upMid - holderBallY) * k * 0.4;
                 ballAngle = k * 8;
             } else {
-                // Ball hangs past the post
                 const k = (p - 0.75) / 0.25;
-                ballX = upX - barW * 0.85 - 30 * k;
+                ballX = upX + barW * 0.85 + 30 * k;
                 ballY = upMid - 10 + 60 * k;
                 ballAngle = 8 + k * 4;
             }
 
-            // Draw the kicker (mid-kick during the kick window)
+            // Kicker (mid-kick during the kick window)
             if (p >= 0.15 && p < 0.42) {
-                // Plant, back leg lifted
-                player(kickerX, kickerY, '#ffcf3a', '#5a3d00');
+                player(kickerX, kickerY, '#3b82f6', '#0d3b7a');
             } else if (p >= 0.42 && p < 0.75) {
-                // Full follow-through — kick leg extended forward
-                player(kickerX - 8, kickerY - 8, '#ffcf3a', '#5a3d00');
-                ctx.strokeStyle = '#8c1d40'; ctx.lineWidth = 3; ctx.lineCap='round';
+                // Follow-through — kick leg extended forward (toward the RIGHT now)
+                player(kickerX + 8, kickerY - 8, '#3b82f6', '#0d3b7a');
+                ctx.strokeStyle = '#ffea3c'; ctx.lineWidth = 3; ctx.lineCap='round';
                 ctx.beginPath();
-                ctx.moveTo(kickerX - 8, kickerY - 6);
-                ctx.lineTo(kickerX + 12, kickerY + 4);
+                ctx.moveTo(kickerX + 8, kickerY - 6);
+                ctx.lineTo(kickerX - 12, kickerY + 4);
                 ctx.stroke();
             } else {
-                player(kickerX, kickerY, '#ffcf3a', '#5a3d00');
+                player(kickerX, kickerY, '#3b82f6', '#0d3b7a');
             }
 
-            // Holder (kneeling, maroon)
-            player(holderX, holderY + 2, '#8c1d40', '#4a0a1e');
+            // Holder (kneeling, darker blue)
+            player(holderX, holderY + 2, '#1e40af', '#0d1f4a');
 
             // Draw the football
             ctx.save();
@@ -975,7 +989,6 @@
             ctx.beginPath();
             ctx.ellipse(0, 0, 6, 3.5, 0, 0, Math.PI * 2);
             ctx.fill();
-            // Laces
             ctx.strokeStyle = '#fff'; ctx.lineWidth = 0.8;
             ctx.beginPath();
             ctx.moveTo(-2, 0); ctx.lineTo(2, 0);
@@ -995,11 +1008,11 @@
                 ctx.fillStyle = '#fff';
                 ctx.shadowColor = `rgba(239, 68, 68, ${0.7 + 0.3 * flash})`;
                 ctx.shadowBlur = 25;
-                ctx.fillText('WIDE LEFT', W / 2, H * 0.35);
+                ctx.fillText('WIDE RIGHT', W / 2, H * 0.35);
                 ctx.font = `700 ${Math.min(28, H * 0.16)}px 'Copperplate Gothic Bold', Impact, sans-serif`;
                 ctx.fillStyle = '#ef4444';
                 ctx.shadowColor = 'rgba(239, 68, 68, 0.9)';
-                ctx.fillText('ASU LOSES', W / 2, H * 0.60);
+                ctx.fillText('NICK LOSES', W / 2, H * 0.60);
                 ctx.globalAlpha = 1;
                 ctx.shadowBlur = 0;
             }
@@ -1021,7 +1034,7 @@
             drawField();
 
             if (sceneChoice === 'fg') {
-                drawFieldGoal(p);
+                drawFieldGoal(p, t);
             } else {
                 const cy = H * 0.5;
                 const leftStart = -60, leftMid = W / 2 - 30;
@@ -1079,18 +1092,95 @@
     // Seasons keyed by string name; single-season for now, structured for growth.
     const SEASONS = { "2025-2026": RAW.weeks };
 
-    // ===== Utility: parse team name out of a pick string =====
-    // Handles formats like: "K State -3", "Fresno St +14.5", "Hawaii", "Sam Houston/WKU Over"
+    // ===== Utility: parse team name(s) out of a pick string =====
+    // Common abbreviations RJ uses in the sheet, so short forms match FBS names.
+    const TEAM_ABBR = {
+        'wsu':'Washington State','asu':'Arizona State','ucf':'UCF','usf':'South Florida',
+        'ksu':'Kansas State','ku':'Kansas','osu':'Ohio State','msu':'Michigan State',
+        'vt':'Virginia Tech','uva':'Virginia','uw':'Washington','gt':'Georgia Tech',
+        'lsu':'LSU','tcu':'TCU','byu':'BYU','smu':'SMU','nd':'Notre Dame',
+        'ecu':'East Carolina','fsu':'Florida State','ttu':'Texas Tech',
+        'k state':'Kansas State','nc state':'NC State','miss st':'Mississippi State',
+        'iowa st':'Iowa State','iowa state':'Iowa State','ole miss':'Ole Miss',
+        'sam houston':'Sam Houston','wku':'Western Kentucky','unm':'New Mexico',
+        'uab':'UAB','nmsu':'New Mexico State','usc':'USC','fiu':'FIU',
+        'a&m':'Texas A&M','texas a&m':'Texas A&M','uw':'Washington','uofa':'Arizona',
+        'kent st':'Kent State','ball st':'Ball State','shsu':'Sam Houston',
+        'jmu':'James Madison','niu':'Northern Illinois','ltech':'Louisiana Tech',
+        'unlv':'UNLV','utep':'UTEP','utsa':'UTSA', 'usa':'South Alabama',
+    };
+    // Given a raw pick string, return every FBS team name mentioned.
+    // Also matches common abbreviations RJ types in the sheet.
+    function matchFBSTeamsIn(s) {
+        const lower = ' ' + s.toLowerCase() + ' ';
+        const found = [];
+        // Match full official FBS names first (longest names win, so sort by length)
+        const sorted = [...FBS_TEAMS].sort((a,b) => b.length - a.length);
+        let scratch = lower;
+        for (const t of sorted) {
+            const needle = ' ' + t.toLowerCase() + ' ';
+            if (scratch.includes(needle)) {
+                found.push(t);
+                scratch = scratch.replace(needle, ' ___ ');   // consume so partials don't rematch
+            }
+        }
+        // Then abbreviations, longest first (so 'k state' matches before 'k')
+        const abbrSorted = Object.entries(TEAM_ABBR).sort((a,b) => b[0].length - a[0].length);
+        for (const [ab, canon] of abbrSorted) {
+            const needle = ' ' + ab + ' ';
+            if (scratch.includes(needle) && !found.includes(canon)) {
+                found.push(canon);
+                scratch = scratch.replace(needle, ' ___ ');
+            }
+        }
+        return found;
+    }
+
+    // Legacy single-team extractor — kept for the "picked team" case on
+    // ML/Spread/TTO where we only care about the primary side.
     function extractTeam(pickStr) {
         if (!pickStr || typeof pickStr !== 'string') return null;
         let s = pickStr.trim();
-        // Drop trailing spread / total tokens
         s = s.replace(/\s+(Over|Under|O|U)\s+\d+(\.\d+)?.*/i, ' [total]');
         s = s.replace(/\s+([+\-−]?\d+(\.\d+)?).*$/, '');
         s = s.replace(/\s*Team\s+Total.*$/i, '');
         s = s.trim();
         if (!s || s.includes('[total]') || s.includes('/')) return null;
         return s;
+    }
+
+    // Return { picked: [team...], opponents: [team...] } for a pick.
+    //   ML/Spread/TTO → one picked team, opponent = form's p.opponent when present
+    //   O/U          → both teams in the game count as picked (they share the outcome)
+    // Uses p.home / p.away / p.side from form-saved picks when available.
+    function extractTeamsFromPick(p) {
+        if (!p || !p.pick) return { picked: [], opponents: [] };
+        // Prefer explicit fields from the form when they exist
+        if (p.home || p.away) {
+            const side = p.side;
+            const picked = [], opponents = [];
+            if (p.bet_type === 'O/U') {
+                if (p.home) picked.push(p.home);
+                if (p.away) picked.push(p.away);
+            } else if (side === 'H') {
+                if (p.home) picked.push(p.home);
+                if (p.away) opponents.push(p.away);
+            } else if (side === 'A') {
+                if (p.away) picked.push(p.away);
+                if (p.home) opponents.push(p.home);
+            } else {
+                if (p.home) picked.push(p.home);
+                if (p.away) opponents.push(p.away);
+            }
+            return { picked, opponents };
+        }
+        // Fallback: parse the pick string itself
+        if (p.bet_type === 'O/U') {
+            const teams = matchFBSTeamsIn(p.pick);
+            return { picked: teams.slice(0, 2), opponents: [] };
+        }
+        const one = extractTeam(p.pick);
+        return { picked: one ? [one] : [], opponents: [] };
     }
     function numOrZero(v) { return typeof v === 'number' ? v : (Number(v) || 0); }
     function fmtNet(v) {
@@ -1398,24 +1488,57 @@
             ${wdCrossTable('RJ',   weeks, 'rj')}`;
     }
 
-    /* ===== Render — Teams tab (best + worst) ===== */
+    /* ===== Render — Teams tab (best + worst) =====
+       O/U picks credit BOTH teams involved in the game — winning
+       "Alabama FSU Over" gives Alabama and FSU each +1 W. ML/Spread/TTO
+       still credit only the one picked team. */
     function computeTeamStats(who) {
         const weeks = SEASONS[seasonSel.value] || [];
-        // teamMap[team][person] = { picks, wins, losses, net, units }
         const map = {};
         for (const w of weeks) {
             for (const p of w[who].picks) {
-                const team = extractTeam(p.pick);
-                if (!team) continue;
-                if (!map[team]) map[team] = { team, picks: 0, wins: 0, losses: 0, pushes: 0, net: 0, units: 0 };
-                const rec = map[team];
-                rec.picks += 1;
-                rec.units += numOrZero(p.units);
-                const n = numOrZero(p.net);
-                rec.net += n;
-                if (n > 0) rec.wins++;
-                else if (n < 0) rec.losses++;
-                else rec.pushes++;
+                const { picked } = extractTeamsFromPick(p);
+                for (const team of picked) {
+                    if (!map[team]) map[team] = { team, picks: 0, wins: 0, losses: 0, pushes: 0, net: 0, units: 0 };
+                    const rec = map[team];
+                    rec.picks += 1;
+                    rec.units += numOrZero(p.units);
+                    const n = numOrZero(p.net);
+                    rec.net += n;
+                    if (n > 0) rec.wins++;
+                    else if (n < 0) rec.losses++;
+                    else rec.pushes++;
+                }
+            }
+        }
+        return Object.values(map).map(t => ({
+            ...t,
+            hit_pct: (t.wins + t.losses) > 0 ? t.wins / (t.wins + t.losses) : null,
+        }));
+    }
+
+    // Track our record against each team as an opponent.
+    // Only meaningful when the opponent is known — that's:
+    //   - Form-saved ML/Spread/TTO where opponent is explicit
+    //   - Historical O/U picks (the "other" team is by convention the opponent
+    //     of the "first" team, though O/U isn't really "against" anyone; we
+    //     still show it because it's the closest signal we have)
+    function computeVsOpponentStats(who) {
+        const weeks = SEASONS[seasonSel.value] || [];
+        const map = {};
+        for (const w of weeks) {
+            for (const p of w[who].picks) {
+                const { opponents } = extractTeamsFromPick(p);
+                for (const team of opponents) {
+                    if (!map[team]) map[team] = { team, picks: 0, wins: 0, losses: 0, pushes: 0, net: 0 };
+                    const rec = map[team];
+                    rec.picks += 1;
+                    const n = numOrZero(p.net);
+                    rec.net += n;
+                    if (n > 0) rec.wins++;
+                    else if (n < 0) rec.losses++;
+                    else rec.pushes++;
+                }
             }
         }
         return Object.values(map).map(t => ({
@@ -1427,6 +1550,8 @@
         const el = document.getElementById('teams');
         const nickTeams = computeTeamStats('nick');
         const rjTeams = computeTeamStats('rj');
+        const nickVsOpp = computeVsOpponentStats('nick');
+        const rjVsOpp = computeVsOpponentStats('rj');
 
         function table(rows, title, mode) {
             // mode = 'best' → sort by net desc; 'worst' → sort by net asc, only negatives
@@ -1459,13 +1584,21 @@
             </div>`;
         }
 
+        const OU_NOTE = `<div style="color:var(--dim); font-size:0.78rem; margin:-0.35rem 0 0.9rem 0.2rem;">O/U picks credit both teams in the game (e.g. "Alabama FSU Over" → Alabama +1 W and FSU +1 W). ML/Spread/TTO credit only the picked team.</div>`;
+        const VS_NOTE = `<div style="color:var(--dim); font-size:0.78rem; margin:-0.35rem 0 0.9rem 0.2rem;">Record when a team was the opponent. Historical picks only supply an opponent on O/U bets; ML/Spread/TTO opponents appear as new picks come in from the form.</div>`;
         el.innerHTML =
             `<h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.06em; font-size:0.95rem; margin:0.5rem 0 0.75rem;">Nick's Teams</h2>` +
+            OU_NOTE +
             table(nickTeams, "Nick — Best Teams (top 15 by Net Units)", 'best') +
             table(nickTeams, "Nick — Worst Teams (top 15 by lowest Net Units)", 'worst') +
+            VS_NOTE +
+            table(nickVsOpp, "Nick — Vs Opponents (top 15 by Net Units)", 'best') +
             `<h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.06em; font-size:0.95rem; margin:1.5rem 0 0.75rem;">RJ's Teams</h2>` +
+            OU_NOTE +
             table(rjTeams,   "RJ — Best Teams (top 15 by Net Units)", 'best') +
-            table(rjTeams,   "RJ — Worst Teams (top 15 by lowest Net Units)", 'worst');
+            table(rjTeams,   "RJ — Worst Teams (top 15 by lowest Net Units)", 'worst') +
+            VS_NOTE +
+            table(rjVsOpp,   "RJ — Vs Opponents (top 15 by Net Units)", 'best');
     }
 
     /* ===== Render — Mortal Locks tab ===== */
