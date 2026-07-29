@@ -587,8 +587,8 @@
                 ctx.fillText(label, 0, 0);
                 ctx.restore();
             }
-            endzoneText('RJ',   5);    // left endzone (u=0-10, center u=5)
-            endzoneText('NICK', 115);  // right endzone (u=110-120, center u=115)
+            endzoneText('R.J.',      5);    // left endzone  — dotted initials
+            endzoneText('N I C K',  115);   // right endzone — spaced letters
 
             // Note: the "PICK'EM" midfield text is painted by the h1 element
             // overlaid on top of this canvas via header .title-stack — kept in
@@ -888,38 +888,34 @@
         }
 
         // ---------- Field-goal-miss scene ----------
-        // Nick's team trying to kick from the right-33 (u=77); holder+kicker on
-        // the 40 (u=70, 7 yards behind LOS toward the kicker's direction).
-        // Ball snaps → hold → kick → flies toward the right uprights (Nick's
-        // endzone), curves right, misses wide right. "WIDE RIGHT · NICK LOSES".
+        // Nick's team kicking LEFT from the left-33 (u=43); holder+kicker on
+        // the 40 (u=50). Ball snaps → hold → kick → flies toward the LEFT
+        // uprights, drifts LEFT, misses wide left. "WIDE LEFT · NICK LOSES".
+        // "WIDE LEFT" renders ABOVE the PICK'EM header, "NICK LOSES" below.
         function drawFieldGoal(p, t) {
             const geom = fieldGeom();
             const {marginX, marginY, fieldW, fieldH, uPx, x} = geom;
             const groundY = H * 0.62;
 
-            // Uprights on the RIGHT endzone at u≈115 (center of endzone)
-            const upX = x(115);
+            // Uprights on the LEFT endzone at u≈5 (center of endzone)
+            const upX = x(5);
             const upTop = H * 0.10;
-            const upMid = H * 0.55;   // crossbar height
+            const upMid = H * 0.55;
             ctx.strokeStyle = '#ffea3c';
             ctx.lineWidth = 4; ctx.lineCap = 'square';
-            // Ground post
             ctx.beginPath();
             ctx.moveTo(upX, upMid); ctx.lineTo(upX, H - marginY - 4);
             ctx.stroke();
-            // Crossbar
             const barW = uPx * 6;
             ctx.beginPath();
             ctx.moveTo(upX - barW/2, upMid);
             ctx.lineTo(upX + barW/2, upMid);
             ctx.stroke();
-            // Uprights (two vertical yellow bars going up)
             ctx.beginPath();
             ctx.moveTo(upX - barW/2, upMid); ctx.lineTo(upX - barW/2, upTop);
             ctx.moveTo(upX + barW/2, upMid); ctx.lineTo(upX + barW/2, upTop);
             ctx.stroke();
 
-            // Player dot helper — small colored circle with subtle shadow
             function player(px, py, colorFill, colorEdge) {
                 ctx.fillStyle = 'rgba(0,0,0,0.35)';
                 ctx.beginPath(); ctx.ellipse(px, py + 6, 6, 2, 0, 0, Math.PI * 2); ctx.fill();
@@ -929,29 +925,19 @@
                 ctx.stroke();
             }
 
-            // Line of scrimmage at u=77 (the 33-yard line, right side).
-            // Kicking direction: to the RIGHT. Kicker/holder are BEHIND (to the
-            // left of) the LOS, i.e. at u=70 (the 40).
-            const losX = x(77);
-
-            // 5 O-linemen (Nick's team, blue)
+            // LOS at u=43 (left-side 33-yard line); kicking to the LEFT.
+            const losX = x(43);
+            // O-line (Nick's, blue) + D-line (dark) on the LOS
             for (let i = -2; i <= 2; i++) player(losX + i * 12, groundY, '#3b82f6', '#0d3b7a');
-            // 5 D-linemen just to the right of them
-            for (let i = -2; i <= 2; i++) player(losX + 14 + i * 12, groundY, '#333', '#000');
+            for (let i = -2; i <= 2; i++) player(losX - 14 + i * 12, groundY, '#333', '#000');
 
-            // Holder + kicker sit at u=70 (40-yard line = 7 yards behind LOS,
-            // to the LEFT since we're kicking RIGHT).
-            const holderX = x(70);
+            // Holder + kicker sit at u=50 (40-yard line, 7 yds behind LOS to the RIGHT
+            // since we kick LEFT)
+            const holderX = x(50);
             const holderY = groundY + 2;
-            const kickerX = holderX - 24;    // kicker sits BEHIND holder (further left)
+            const kickerX = holderX + 24;   // kicker behind holder (right side)
             const kickerY = groundY - 6;
 
-            // Ball animation timeline:
-            //   0.00-0.15 pre-snap idle at LOS
-            //   0.15-0.30 snap: LOS → holder (moving LEFT)
-            //   0.30-0.42 hold + plant
-            //   0.42-0.75 kick: holder → past RIGHT upright, drifting RIGHT (miss)
-            //   0.75-1.00 ball sails past + "WIDE RIGHT · NICK LOSES" flashes
             let ballX, ballY, ballAngle = 0;
             const holderBallY = holderY - 4;
 
@@ -966,37 +952,36 @@
                 ballX = holderX; ballY = holderBallY;
             } else if (p < 0.75) {
                 const k = (p - 0.42) / 0.33;
-                const targetX = upX + barW * 0.85;   // WIDE RIGHT of the right upright
+                const targetX = upX - barW * 0.85;   // WIDE LEFT of the left upright
                 ballX = holderX + (targetX - holderX) * k;
                 const arcApex = -Math.min(H * 0.55, 100);
                 ballY = holderBallY + arcApex * Math.sin(k * Math.PI) + (upMid - holderBallY) * k * 0.4;
                 ballAngle = k * 8;
             } else {
-                const k = (p - 0.75) / 0.25;
-                ballX = upX + barW * 0.85 + 30 * k;
-                ballY = upMid - 10 + 60 * k;
+                // Freeze frame — ball settles just past the upright, on the ground
+                const k = Math.min(1, (p - 0.75) / 0.25);
+                ballX = upX - barW * 0.85 - 30 * k;
+                ballY = Math.min(H - marginY - 6, upMid - 10 + 60 * k);
                 ballAngle = 8 + k * 4;
             }
 
-            // Kicker (mid-kick during the kick window)
             if (p >= 0.15 && p < 0.42) {
                 player(kickerX, kickerY, '#3b82f6', '#0d3b7a');
             } else if (p >= 0.42 && p < 0.75) {
-                // Follow-through — kick leg extended forward (toward the RIGHT now)
-                player(kickerX + 8, kickerY - 8, '#3b82f6', '#0d3b7a');
+                // Follow-through — kick leg extended forward (LEFT)
+                player(kickerX - 8, kickerY - 8, '#3b82f6', '#0d3b7a');
                 ctx.strokeStyle = '#ffea3c'; ctx.lineWidth = 3; ctx.lineCap='round';
                 ctx.beginPath();
-                ctx.moveTo(kickerX + 8, kickerY - 6);
-                ctx.lineTo(kickerX - 12, kickerY + 4);
+                ctx.moveTo(kickerX - 8, kickerY - 6);
+                ctx.lineTo(kickerX + 12, kickerY + 4);
                 ctx.stroke();
             } else {
                 player(kickerX, kickerY, '#3b82f6', '#0d3b7a');
             }
 
-            // Holder (kneeling, darker blue)
             player(holderX, holderY + 2, '#1e40af', '#0d1f4a');
 
-            // Draw the football
+            // Football
             ctx.save();
             ctx.translate(ballX, ballY);
             ctx.rotate(ballAngle);
@@ -1013,90 +998,101 @@
             ctx.stroke();
             ctx.restore();
 
-            // Post-miss text flash
+            // Post-miss text — "WIDE LEFT" above the header, "NICK LOSES" below.
+            // The h1 PICK'EM sits near H/2, so we put text at ~14% and ~82%.
             if (p >= 0.72) {
                 const k = Math.min(1, (p - 0.72) / 0.05);
                 const flash = 0.5 + 0.5 * Math.sin(t * 0.02);
                 ctx.globalAlpha = k;
-                ctx.font = `900 ${Math.min(48, H * 0.28)}px 'Copperplate Gothic Bold', Impact, sans-serif`;
                 ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                // "WIDE LEFT" above the header
+                ctx.font = `900 ${Math.min(38, H * 0.18)}px 'Copperplate Gothic Bold', Impact, sans-serif`;
                 ctx.fillStyle = '#fff';
                 ctx.shadowColor = `rgba(239, 68, 68, ${0.7 + 0.3 * flash})`;
                 ctx.shadowBlur = 25;
-                ctx.fillText('WIDE RIGHT', W / 2, H * 0.35);
-                ctx.font = `700 ${Math.min(28, H * 0.16)}px 'Copperplate Gothic Bold', Impact, sans-serif`;
+                ctx.fillText('WIDE LEFT', W / 2, H * 0.14);
+                // "NICK LOSES" below the header
+                ctx.font = `700 ${Math.min(32, H * 0.16)}px 'Copperplate Gothic Bold', Impact, sans-serif`;
                 ctx.fillStyle = '#ef4444';
                 ctx.shadowColor = 'rgba(239, 68, 68, 0.9)';
-                ctx.fillText('NICK LOSES', W / 2, H * 0.60);
+                ctx.fillText('NICK LOSES', W / 2, H * 0.86);
                 ctx.globalAlpha = 1;
                 ctx.shadowBlur = 0;
             }
         }
 
-        // Scene chooser — picks a new scene at each cycle boundary
-        let sceneChoice = Math.random() < 0.5 ? 'collision' : 'fg';
-        let lastCycleIndex = 0;
+        // ---------- Animation loop — runs each scene ONCE then freezes ----------
+        // Phase A (0 .. CYCLE_MS)          : helmet collision
+        // Phase B (CYCLE_MS .. 2*CYCLE_MS) : field goal miss
+        // Phase C (>= 2*CYCLE_MS)          : freeze on the final FG frame
+        function drawCollision(p) {
+            const cy = H * 0.5;
+            const leftStart = -60, leftMid = W / 2 - 30;
+            const rightStart = W + 60, rightMid = W / 2 + 30;
 
+            let lx, rx;
+            if (p < APPROACH) {
+                const k = p / APPROACH;
+                const ease = k * k;
+                lx = leftStart + (leftMid - leftStart) * ease;
+                rx = rightStart + (rightMid - rightStart) * ease;
+            } else if (p < APPROACH + EXPLODE_LEN) {
+                const k = (p - APPROACH) / EXPLODE_LEN;
+                if (particles.length === 0) spawnExplosion(W / 2, cy);
+                lx = leftMid - 40 * k;
+                rx = rightMid + 40 * k;
+            } else {
+                const k = (p - APPROACH - EXPLODE_LEN) / (1 - APPROACH - EXPLODE_LEN);
+                lx = leftMid - 40 - (leftMid + 100) * k;
+                rx = rightMid + 40 + (W - rightMid + 100) * k;
+                if (k > 0.85) particles = [];
+            }
+
+            for (const pt of particles) {
+                pt.x += pt.vx;
+                pt.y += pt.vy;
+                pt.vy += 0.14;
+                pt.life -= 0.018;
+                if (pt.life > 0) {
+                    ctx.globalAlpha = Math.max(0, pt.life);
+                    ctx.fillStyle = pt.color;
+                    ctx.shadowColor = pt.color;
+                    ctx.shadowBlur = 8;
+                    ctx.beginPath();
+                    ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            ctx.globalAlpha = 1;
+            ctx.shadowBlur = 0;
+            particles = particles.filter(pt => pt.life > 0);
+
+            drawHelmet(lx, cy, true,  'WSU');
+            drawHelmet(rx, cy, false, 'ASU');
+        }
+
+        let frozen = false;
         function frame(t) {
             const dt = t - start;
-            const cycleIndex = Math.floor(dt / CYCLE_MS);
-            if (cycleIndex !== lastCycleIndex) {
-                sceneChoice = Math.random() < 0.5 ? 'collision' : 'fg';
-                lastCycleIndex = cycleIndex;
-                particles = [];   // clean slate between scenes
-            }
-            const p = (dt % CYCLE_MS) / CYCLE_MS;   // 0..1
+
             drawField();
 
-            if (sceneChoice === 'fg') {
-                drawFieldGoal(p, t);
+            if (dt < CYCLE_MS) {
+                // Phase A — collision plays out
+                drawCollision(dt / CYCLE_MS);
+                requestAnimationFrame(frame);
+            } else if (dt < 2 * CYCLE_MS) {
+                // Phase B — field goal plays out
+                particles = [];   // clear collision debris before FG scene
+                drawFieldGoal((dt - CYCLE_MS) / CYCLE_MS, t);
+                requestAnimationFrame(frame);
             } else {
-                const cy = H * 0.5;
-                const leftStart = -60, leftMid = W / 2 - 30;
-                const rightStart = W + 60, rightMid = W / 2 + 30;
-
-                let lx, rx;
-                if (p < APPROACH) {
-                    const k = p / APPROACH;
-                    const ease = k * k;
-                    lx = leftStart + (leftMid - leftStart) * ease;
-                    rx = rightStart + (rightMid - rightStart) * ease;
-                } else if (p < APPROACH + EXPLODE_LEN) {
-                    const k = (p - APPROACH) / EXPLODE_LEN;
-                    if (particles.length === 0) spawnExplosion(W / 2, cy);
-                    lx = leftMid - 40 * k;
-                    rx = rightMid + 40 * k;
-                } else {
-                    const k = (p - APPROACH - EXPLODE_LEN) / (1 - APPROACH - EXPLODE_LEN);
-                    lx = leftMid - 40 - (leftMid + 100) * k;
-                    rx = rightMid + 40 + (W - rightMid + 100) * k;
-                    if (k > 0.85) particles = [];
-                }
-
-                for (const pt of particles) {
-                    pt.x += pt.vx;
-                    pt.y += pt.vy;
-                    pt.vy += 0.14;
-                    pt.life -= 0.018;
-                    if (pt.life > 0) {
-                        ctx.globalAlpha = Math.max(0, pt.life);
-                        ctx.fillStyle = pt.color;
-                        ctx.shadowColor = pt.color;
-                        ctx.shadowBlur = 8;
-                        ctx.beginPath();
-                        ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                }
-                ctx.globalAlpha = 1;
-                ctx.shadowBlur = 0;
-                particles = particles.filter(pt => pt.life > 0);
-
-                drawHelmet(lx, cy, true,  'WSU');
-                drawHelmet(rx, cy, false, 'ASU');
+                // Phase C — freeze on the final field goal frame (ball landed
+                // past the upright, "WIDE LEFT" / "NICK LOSES" flashing).
+                // Keep drawing so the flashing sine wave keeps pulsing gently.
+                drawFieldGoal(1.0, t);
+                requestAnimationFrame(frame);
             }
-
-            requestAnimationFrame(frame);
         }
         requestAnimationFrame(frame);
     })();
