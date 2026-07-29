@@ -142,6 +142,19 @@
         text-transform: uppercase; margin-bottom: 0.7rem;
         border-left: 3px solid var(--accent); padding-left: 0.6rem;
     }
+    /* Collapsible header — click the h3 to hide/show the card body */
+    .panel-card h3.collapsible-h3 {
+        cursor: pointer; user-select: none;
+        display: flex; align-items: center; gap: 0.5rem;
+    }
+    .panel-card h3.collapsible-h3 .chev {
+        display: inline-block; color: var(--accent);
+        font-size: 0.9em; transition: transform 0.18s ease;
+    }
+    .panel-card h3.collapsible-h3:hover { color: #7ff2a5; }
+    .panel-card.collapsed > *:not(h3) { display: none; }
+    .panel-card.collapsed h3 { margin-bottom: 0; }
+    .panel-card.collapsed h3 .chev { transform: rotate(-90deg); }
 
     /* Two-column picks (Nick | RJ) */
     .picks-grid {
@@ -357,14 +370,16 @@
             <button class="tab" data-panel="h2h">Head-to-Head</button>
             <button class="tab" data-panel="teams">Teams</button>
             <button class="tab" data-panel="locks">Mortal Locks</button>
-            <button class="tab" data-panel="enter">Enter Picks</button>
+            <button class="tab" data-panel="enter-rj">Enter Picks — RJ</button>
+            <button class="tab" data-panel="enter-nick">Enter Picks — Nick</button>
         </div>
 
         <section class="panel active" id="picks"></section>
         <section class="panel" id="h2h"></section>
         <section class="panel" id="teams"></section>
         <section class="panel" id="locks"></section>
-        <section class="panel" id="enter"></section>
+        <section class="panel" id="enter-rj"></section>
+        <section class="panel" id="enter-nick"></section>
 
         <footer>
             <p>Pick'em · Pigskin, points, and the perpetual attempt to outsmart the other guy.</p>
@@ -1605,8 +1620,20 @@
     function renderLocks() {
         const el = document.getElementById('locks');
         const weeks = SEASONS[seasonSel.value] || [];
-        const stats = { nick: {picks:0, wins:0, losses:0, pushes:0, net:0, rows:[]},
-                        rj:   {picks:0, wins:0, losses:0, pushes:0, net:0, rows:[]} };
+        const empty = () => ({picks:0, wins:0, losses:0, pushes:0, net:0});
+        const stats = {
+            nick: {picks:0, wins:0, losses:0, pushes:0, net:0, rows:[],
+                   wd: empty(), we: empty(), unk: empty()},
+            rj:   {picks:0, wins:0, losses:0, pushes:0, net:0, rows:[],
+                   wd: empty(), we: empty(), unk: empty()},
+        };
+        function isWkndDate(dateStr) {
+            if (!dateStr) return null;
+            const d = new Date(dateStr);
+            if (isNaN(d)) return null;
+            const dow = d.getDay();
+            return dow === 0 || dow === 5 || dow === 6;   // Fri/Sat/Sun
+        }
         for (const w of weeks) {
             for (const who of ['nick', 'rj']) {
                 for (const p of w[who].picks) {
@@ -1618,7 +1645,16 @@
                     if (n > 0) s.wins++;
                     else if (n < 0) s.losses++;
                     else s.pushes++;
-                    s.rows.push({week: w.week, pick: p.pick, units: p.units, net: p.net});
+                    s.rows.push({week: w.week, pick: p.pick, units: p.units, net: p.net, game_date: p.game_date});
+                    // WD/WE bucketing — historical picks have no date → 'unk'
+                    const we = isWkndDate(p.game_date);
+                    const bucket = we === true ? 'we' : (we === false ? 'wd' : 'unk');
+                    const b = s[bucket];
+                    b.picks++;
+                    b.net += n;
+                    if (n > 0) b.wins++;
+                    else if (n < 0) b.losses++;
+                    else b.pushes++;
                 }
             }
         }
@@ -1652,7 +1688,40 @@
             </div>`;
         }
 
+        function wdWeTable(label, s) {
+            function cell(b) {
+                if (b.picks === 0) return `<td class="num" style="color:var(--dim)">—</td>`;
+                const g = b.wins + b.losses;
+                const pct = g > 0 ? Math.round(b.wins/g*100) + '%' : '—';
+                return `<td class="num">${b.wins}-${b.losses}${b.pushes ? '-'+b.pushes : ''} · <span class="${classForNet(b.net)}">${fmtNet(b.net)}u</span> · ${pct}</td>`;
+            }
+            return `<div class="panel-card">
+                <h3>${label} — Lock Record by Weekday vs Weekend</h3>
+                <table class="data">
+                    <thead><tr>
+                        <th></th>
+                        <th class="num">Weekday (Mon–Thu)</th>
+                        <th class="num">Weekend (Fri–Sun)</th>
+                        <th class="num">Date unknown (historical)</th>
+                        <th class="num">All</th>
+                    </tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>Mortal Locks</td>
+                            ${cell(s.wd)}
+                            ${cell(s.we)}
+                            ${cell(s.unk)}
+                            ${cell({picks: s.picks, wins: s.wins, losses: s.losses, pushes: s.pushes, net: s.net})}
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="color:var(--dim); font-size:0.78rem; margin-top:0.5rem;">Each cell shows <em>W-L · Net · Hit %</em>. Historical picks have no game date and land under "Date unknown"; new picks entered via the form (once Phase 2 saves dates) auto-populate the Weekday/Weekend columns.</div>
+            </div>`;
+        }
+
         el.innerHTML = `<div class="stat-row">${personLockCard('Nick', stats.nick)}${personLockCard('RJ', stats.rj)}</div>
+            ${wdWeTable('Nick', stats.nick)}
+            ${wdWeTable('RJ',   stats.rj)}
             ${lockTable('Nick', stats.nick)}
             ${lockTable('RJ', stats.rj)}`;
     }
@@ -1664,12 +1733,14 @@
          O/U      — team (game reference OK) + O/U + total points
          TTO      — team + O/U + team-total points
        Every bet has an Opponent so we can track "how well do we do vs Team X". */
-    function renderEnter() {
-        const el = document.getElementById('enter');
+    function renderEnter(who) {
+        const el = document.getElementById(`enter-${who}`);
+        const nameLabel = who === 'rj' ? 'RJ' : 'Nick';
         const teamOpts = FBS_TEAMS.map(t => `<option>${t}</option>`).join('');
 
         function formRow(sectionKey, i) {
-            const uid = `${sectionKey}-${i}`;
+            // Scope uid by person so RJ's row #1 doesn't collide with Nick's row #1
+            const uid = `${who}-${sectionKey}-${i}`;
             return `<div class="form-row" data-uid="${uid}">
                 <label class="lock-cell" title="Mortal Lock — pays 1.5× units on win/loss. Only one per week.">
                     <input type="checkbox" class="lock" onchange="onMortalLockChange(this)" />
@@ -1722,6 +1793,7 @@
             </div>`;
         }
         el.innerHTML = `
+            <h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; font-size:1.05rem; margin:0.25rem 0 0.75rem;">${nameLabel}'s Picks</h2>
             <div class="banner-warn">
                 <strong>Heads up:</strong> this form is UI-only right now — picks don't save to a database or lock at the deadline yet. Live saving + time-based locks land in Phase 2 (requires a small backend). Use it as a mockup for now to confirm the layout.
             </div>
@@ -1739,11 +1811,14 @@
         el.querySelectorAll('.form-row').forEach(r => onBetTypeChange(r.dataset.uid));
     }
 
-    // Enforce one mortal lock per week — clicking a new lock unchecks all
-    // other rows across every section (Weekday / Main / Gameday).
+    // Enforce one mortal lock per week PER PERSON — clicking a new lock
+    // unchecks all other rows across every section in the SAME panel
+    // (RJ's picks and Nick's picks are independent).
     window.onMortalLockChange = function(inputEl) {
         if (!inputEl.checked) return;   // unchecking is always allowed
-        document.querySelectorAll('#enter .lock-cell input.lock').forEach(cb => {
+        const panel = inputEl.closest('.panel');
+        if (!panel) return;
+        panel.querySelectorAll('.lock-cell input.lock').forEach(cb => {
             if (cb !== inputEl) cb.checked = false;
         });
     };
@@ -1819,7 +1894,28 @@
         else if (active === 'h2h') renderH2H();
         else if (active === 'teams') renderTeams();
         else if (active === 'locks') renderLocks();
-        else if (active === 'enter') renderEnter();
+        else if (active === 'enter-rj') renderEnter('rj');
+        else if (active === 'enter-nick') renderEnter('nick');
+        makeCollapsible(document.querySelector('.panel.active'));
+    }
+
+    // Wire every panel-card with an <h3> so you can click the header to
+    // collapse/expand the card body. Idempotent — safe to call after re-renders.
+    function makeCollapsible(root) {
+        if (!root) return;
+        root.querySelectorAll('.panel-card > h3:first-child').forEach(h => {
+            if (h.dataset.collapsibleReady) return;
+            h.dataset.collapsibleReady = '1';
+            h.classList.add('collapsible-h3');
+            const chev = document.createElement('span');
+            chev.className = 'chev';
+            chev.textContent = '▾';
+            h.prepend(chev);
+            h.addEventListener('click', () => {
+                const card = h.parentElement;
+                card.classList.toggle('collapsed');
+            });
+        });
     }
     renderAll();
 </script>
