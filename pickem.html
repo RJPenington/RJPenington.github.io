@@ -362,74 +362,251 @@
             rg.addColorStop(1, 'rgba(74, 222, 128, 0)');
             ctx.fillStyle = rg;
             ctx.fillRect(0, 0, W, H);
-            // Yardlines every ~10% of width — white/gray, faint
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.10)';
-            ctx.lineWidth = 1;
-            for (let i = 1; i < 10; i++) {
-                const x = (W / 10) * i;
-                ctx.beginPath(); ctx.moveTo(x, 12); ctx.lineTo(x, H - 12); ctx.stroke();
-            }
-            // Center line — brighter green
-            ctx.strokeStyle = 'rgba(74, 222, 128, 0.35)';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath(); ctx.moveTo(W/2, 8); ctx.lineTo(W/2, H - 8); ctx.stroke();
-            // Sideline top+bottom
-            ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+
+            // Proper football field markings.
+            // Layout: two 10-yard endzones + 100 yards playing field = 120 units.
+            // Left to right: EZ | G | 10 | 20 | 30 | 40 | 50 | 40 | 30 | 20 | 10 | G | EZ
+            const marginX = 20;
+            const marginY = 12;
+            const fieldW = W - marginX * 2;
+            const fieldH = H - marginY * 2;
+            const unitsTotal = 120;                 // 100 yards + 2×10-yard endzones
+            const uPx = fieldW / unitsTotal;        // px per yard-unit
+
+            // Sidelines (top + bottom)
+            ctx.strokeStyle = 'rgba(255,255,255,0.35)';
             ctx.lineWidth = 2;
-            ctx.beginPath(); ctx.moveTo(0, 6); ctx.lineTo(W, 6); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(0, H - 6); ctx.lineTo(W, H - 6); ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(marginX, marginY); ctx.lineTo(W - marginX, marginY); ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(marginX, H - marginY); ctx.lineTo(W - marginX, H - marginY); ctx.stroke();
+
+            // Endzone hatching — very faint diagonal fill both ends
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(marginX, marginY, uPx * 10, fieldH);
+            ctx.rect(W - marginX - uPx * 10, marginY, uPx * 10, fieldH);
+            ctx.clip();
+            ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+            ctx.lineWidth = 1;
+            for (let x = -H; x < W + H; x += 8) {
+                ctx.beginPath();
+                ctx.moveTo(x, marginY); ctx.lineTo(x + fieldH, H - marginY); ctx.stroke();
+            }
+            ctx.restore();
+
+            // Goal lines (thicker white)
+            ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+            ctx.lineWidth = 2;
+            [10, 110].forEach(u => {
+                const x = marginX + u * uPx;
+                ctx.beginPath(); ctx.moveTo(x, marginY); ctx.lineTo(x, H - marginY); ctx.stroke();
+            });
+
+            // Yard-line markings every 10 yards (10 → 100 = the 10s across the playing field)
+            // With 50 in the middle. Labels: G 10 20 30 40 50 40 30 20 10 G
+            const yardMarks = [
+                {u: 10,  label: 'G'},
+                {u: 20,  label: '10'},
+                {u: 30,  label: '20'},
+                {u: 40,  label: '30'},
+                {u: 50,  label: '40'},
+                {u: 60,  label: '50'},
+                {u: 70,  label: '40'},
+                {u: 80,  label: '30'},
+                {u: 90,  label: '20'},
+                {u: 100, label: '10'},
+                {u: 110, label: 'G'},
+            ];
+            // Draw hash + short lines (5-yard subdivisions between the 10s)
+            ctx.strokeStyle = 'rgba(255,255,255,0.14)';
+            ctx.lineWidth = 1;
+            for (let u = 15; u < 110; u += 5) {
+                if (u % 10 === 0) continue;  // skip the 10s; drawn below
+                const x = marginX + u * uPx;
+                // hash marks — 4 rows across the field at 1/3 and 2/3 heights
+                const hashLen = 6;
+                [fieldH * 0.33 + marginY, fieldH * 0.66 + marginY].forEach(y => {
+                    ctx.beginPath();
+                    ctx.moveTo(x, y - hashLen / 2);
+                    ctx.lineTo(x, y + hashLen / 2);
+                    ctx.stroke();
+                });
+            }
+            // Ten-yard lines — full-height white lines
+            ctx.strokeStyle = 'rgba(255,255,255,0.30)';
+            ctx.lineWidth = 1.2;
+            for (const m of yardMarks) {
+                if (m.label === 'G') continue;   // goal lines already drawn thicker
+                const x = marginX + m.u * uPx;
+                ctx.beginPath(); ctx.moveTo(x, marginY + 4); ctx.lineTo(x, H - marginY - 4); ctx.stroke();
+            }
+            // 50-yard line — brighter green accent
+            const midX = marginX + 60 * uPx;
+            ctx.strokeStyle = 'rgba(74, 222, 128, 0.5)';
+            ctx.lineWidth = 1.8;
+            ctx.beginPath(); ctx.moveTo(midX, marginY + 3); ctx.lineTo(midX, H - marginY - 3); ctx.stroke();
+
+            // Yard-line numbers — top and bottom rows, upright on both halves
+            ctx.font = '700 12px system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            for (const m of yardMarks) {
+                if (m.label === 'G') continue;
+                const x = marginX + m.u * uPx;
+                ctx.fillStyle = m.label === '50'
+                    ? 'rgba(74, 222, 128, 0.85)'
+                    : 'rgba(255, 255, 255, 0.55)';
+                ctx.fillText(m.label, x, marginY + 16);
+                ctx.fillText(m.label, x, H - marginY - 16);
+            }
         }
 
-        function drawHelmet(cx, cy, facingRight, colorMain, colorTrim) {
-            // Football helmet — profile view, small stylized.
-            const R = Math.min(H * 0.16, 42);
+        // Draw a football helmet profile with a team-specific logo painted on
+        // the side. `team` is one of 'WSU' or 'ASU'.
+        function drawHelmet(cx, cy, facingRight, team) {
+            const R = Math.min(H * 0.20, 54);
             ctx.save();
             ctx.translate(cx, cy);
             if (!facingRight) ctx.scale(-1, 1);
+
+            // Team palettes
+            const paint = team === 'WSU'
+                ? { shell: '#a8a9ad', shellDark: '#4a4b4f', trim: '#3a1010', mask: '#c0c0c0', chin: '#333' }
+                : { shell: '#8c1d40', shellDark: '#4a0a1e', trim: '#ffc627', mask: '#111',      chin: '#000' };
+
             // Shadow beneath
-            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.fillStyle = 'rgba(0,0,0,0.55)';
             ctx.beginPath();
-            ctx.ellipse(0, R * 0.85, R * 0.9, R * 0.15, 0, 0, Math.PI * 2);
+            ctx.ellipse(0, R * 0.95, R * 1.05, R * 0.16, 0, 0, Math.PI * 2);
             ctx.fill();
-            // Main dome
-            const grad = ctx.createRadialGradient(-R*0.3, -R*0.3, R*0.2, 0, 0, R*1.1);
-            grad.addColorStop(0, colorMain);
-            grad.addColorStop(1, '#000');
-            ctx.fillStyle = grad;
+
+            // ---- Helmet shell (right-facing profile) ----
+            // Overall silhouette approximated with a rounded-front dome +
+            // extended ear-flap tail on the back (left side).
+            const shellGrad = ctx.createRadialGradient(-R * 0.35, -R * 0.4, R * 0.15, 0, 0, R * 1.15);
+            shellGrad.addColorStop(0, paint.shell);
+            shellGrad.addColorStop(0.75, paint.shell);
+            shellGrad.addColorStop(1, paint.shellDark);
+            ctx.fillStyle = shellGrad;
             ctx.beginPath();
-            ctx.arc(0, 0, R, Math.PI * 0.05, Math.PI * 0.95);
-            ctx.lineTo(-R * 0.9, R * 0.15);
-            ctx.lineTo(-R * 0.85, -R * 0.05);
+            // Top dome (right side is the "face"): sweep from top-back around
+            // the front and down to the jaw
+            ctx.moveTo(-R * 0.75, -R * 0.55);       // top-back
+            ctx.bezierCurveTo(-R * 0.9, -R * 0.85,  R * 0.6, -R * 1.05,  R * 0.75, -R * 0.55);
+            ctx.bezierCurveTo(R * 0.95, -R * 0.15,  R * 0.98,  R * 0.15,  R * 0.65,  R * 0.4);
+            ctx.lineTo(R * 0.28, R * 0.4);          // jaw front
+            // Bottom edge back toward ear flap
+            ctx.bezierCurveTo(R * 0.15, R * 0.55,  -R * 0.2, R * 0.7,  -R * 0.55, R * 0.6);
+            // Back ear-flap tail
+            ctx.bezierCurveTo(-R * 0.85, R * 0.5, -R * 0.95, R * 0, -R * 0.75, -R * 0.55);
             ctx.closePath();
             ctx.fill();
-            // Ear hole
+            // Rim highlight on top
+            ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // ---- Helmet stripe (single center stripe front-to-back) ----
+            ctx.fillStyle = paint.trim;
+            ctx.beginPath();
+            ctx.moveTo(-R * 0.75, -R * 0.55);
+            ctx.quadraticCurveTo(-R * 0.1, -R * 0.95, R * 0.75, -R * 0.55);
+            ctx.lineTo(R * 0.75, -R * 0.45);
+            ctx.quadraticCurveTo(-R * 0.1, -R * 0.85, -R * 0.75, -R * 0.45);
+            ctx.closePath();
+            ctx.fill();
+
+            // ---- Team logo on the side ----
+            if (team === 'WSU') {
+                // White "WSU" letters, block style
+                ctx.fillStyle = '#ffffff';
+                ctx.font = `900 ${Math.round(R * 0.42)}px 'Impact', 'Arial Black', system-ui`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                // Slight rotation to look painted on curved surface
+                ctx.save();
+                ctx.translate(-R * 0.1, -R * 0.15);
+                ctx.rotate(-0.05);
+                ctx.shadowColor = 'rgba(0,0,0,0.4)';
+                ctx.shadowBlur = 2;
+                ctx.fillText('WSU', 0, 0);
+                ctx.restore();
+            } else {
+                // ASU pitchfork — three-tined trident in Sun Devil gold
+                ctx.save();
+                ctx.translate(-R * 0.1, -R * 0.1);
+                ctx.rotate(-0.05);
+                ctx.fillStyle = paint.trim;   // #ffc627
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1;
+                // Handle
+                const w = R * 0.06, h = R * 0.55;
+                ctx.beginPath();
+                ctx.rect(-w / 2, 0, w, h);
+                ctx.fill(); ctx.stroke();
+                // Crossbar
+                ctx.beginPath();
+                ctx.rect(-R * 0.35, -R * 0.05, R * 0.7, w);
+                ctx.fill(); ctx.stroke();
+                // Three tines pointing up
+                const tineH = R * 0.55;
+                function tine(x) {
+                    ctx.beginPath();
+                    ctx.moveTo(x - w / 2, -R * 0.05);
+                    ctx.lineTo(x + w / 2, -R * 0.05);
+                    ctx.lineTo(x + w / 2, -R * 0.05 - tineH * 0.75);
+                    ctx.lineTo(x, -R * 0.05 - tineH);       // point
+                    ctx.lineTo(x - w / 2, -R * 0.05 - tineH * 0.75);
+                    ctx.closePath();
+                    ctx.fill(); ctx.stroke();
+                }
+                tine(-R * 0.28);
+                tine(0);
+                tine(R * 0.28);
+                ctx.restore();
+            }
+
+            // ---- Ear hole ----
             ctx.fillStyle = '#000';
             ctx.beginPath();
-            ctx.arc(-R * 0.15, R * 0.2, R * 0.18, 0, Math.PI * 2);
+            ctx.arc(-R * 0.32, R * 0.15, R * 0.16, 0, Math.PI * 2);
             ctx.fill();
-            // Face mask — thin bars
-            ctx.strokeStyle = colorTrim;
-            ctx.lineWidth = 2.2;
+
+            // ---- Face mask ----
+            // Classic 2-bar mask that wraps around the front of the helmet
+            ctx.strokeStyle = paint.mask;
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            // Top bar
             ctx.beginPath();
-            ctx.moveTo(R * 0.4, -R * 0.2);
-            ctx.quadraticCurveTo(R * 0.95, 0, R * 0.4, R * 0.4);
+            ctx.moveTo(R * 0.25, -R * 0.05);
+            ctx.quadraticCurveTo(R * 1.05, R * 0.05, R * 0.35, R * 0.35);
             ctx.stroke();
+            // Bottom bar
             ctx.beginPath();
-            ctx.moveTo(R * 0.3, 0);
-            ctx.quadraticCurveTo(R * 0.85, R * 0.2, R * 0.35, R * 0.5);
+            ctx.moveTo(R * 0.20, R * 0.20);
+            ctx.quadraticCurveTo(R * 0.95, R * 0.30, R * 0.30, R * 0.52);
             ctx.stroke();
-            // Chin strap
-            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-            ctx.lineWidth = 1.5;
+            // Vertical connector at the far right
             ctx.beginPath();
-            ctx.moveTo(-R * 0.2, R * 0.55);
-            ctx.lineTo(R * 0.3, R * 0.55);
+            ctx.moveTo(R * 0.92, R * 0.05);
+            ctx.lineTo(R * 0.92, R * 0.28);
             ctx.stroke();
-            // Trim stripe on top
-            ctx.fillStyle = colorTrim;
+
+            // ---- Chin strap ----
+            ctx.strokeStyle = paint.chin;
+            ctx.lineWidth = 2.5;
             ctx.beginPath();
-            ctx.ellipse(0, -R * 0.85, R * 0.7, R * 0.08, 0, 0, Math.PI * 2);
+            ctx.moveTo(-R * 0.35, R * 0.62);
+            ctx.lineTo(R * 0.32, R * 0.52);
+            ctx.stroke();
+            // Chin cup
+            ctx.fillStyle = paint.chin;
+            ctx.beginPath();
+            ctx.ellipse(R * 0.35, R * 0.55, R * 0.10, R * 0.06, 0, 0, Math.PI * 2);
             ctx.fill();
+
             ctx.restore();
         }
 
@@ -505,8 +682,8 @@
             particles = particles.filter(pt => pt.life > 0);
 
             // Draw helmets AFTER particles so they sit on top during frame 1 of collision
-            drawHelmet(lx, cy, true,  '#8b1a1a', '#e5e7eb');   // dark red, silver mask
-            drawHelmet(rx, cy, false, '#1c3d7a', '#e5e7eb');   // navy blue, silver mask
+            drawHelmet(lx, cy, true,  'WSU');   // Washington State — gray shell, WSU wordmark
+            drawHelmet(rx, cy, false, 'ASU');   // Arizona State — maroon shell, gold pitchfork
 
             requestAnimationFrame(frame);
         }
