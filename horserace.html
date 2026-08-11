@@ -555,11 +555,14 @@ function buildHorses(n, names) {
         // Waves add visual variation during the race that's ALWAYS 0 at the
         // endpoints — so every horse still crosses at t == finishTime exactly.
         // amp = deviation size (fraction of total progress), k = number of
-        // half-cycles across the race (higher = wigglier).
+        // half-cycles across the race. Amps are constrained so the derivative
+        // (velocity) can never go negative: worst-case wave contribution to
+        // velocity is amp_1·π·k_1 + amp_2·π·k_2 ≈ 0.28 + 0.38 = 0.66, well
+        // below the base rate of 1. A horse may slow down, never reverse.
         const waves = [
-            { amp: 0.06 + Math.random() * 0.06, k: 1 + Math.floor(Math.random() * 3),
+            { amp: 0.03 + Math.random() * 0.06, k: 1,
               sign: Math.random() < 0.5 ? -1 : 1 },
-            { amp: 0.03 + Math.random() * 0.03, k: 2 + Math.floor(Math.random() * 4),
+            { amp: 0.015 + Math.random() * 0.025, k: 2 + Math.floor(Math.random() * 2),
               sign: Math.random() < 0.5 ? -1 : 1 },
         ];
         horses.push({
@@ -590,7 +593,13 @@ function positionAt(h, t) {
     for (const w of h.waves) {
         p += w.sign * w.amp * Math.sin(w.k * Math.PI * u);
     }
-    return Math.max(0, Math.min(0.999, p));
+    p = Math.max(0, Math.min(0.999, p));
+    // Monotonic clamp — a horse can slow down or even briefly hold position,
+    // but never move backwards on the track no matter what the waves compute.
+    if (h._maxProgress === undefined) h._maxProgress = 0;
+    if (p < h._maxProgress) p = h._maxProgress;
+    else h._maxProgress = p;
+    return p;
 }
 
 
