@@ -156,6 +156,7 @@
                 <button class="view-tab" data-view="postgame" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Postgame Compare</button>
                 <button class="view-tab" data-view="perf_metrics" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Perf by Metrics</button>
                 <button class="view-tab" data-view="grand_total" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Grand Total</button>
+                <button class="view-tab" data-view="ai_analyzed" style="padding:4px 12px; border-radius:4px; border:1px solid #d69e2e; background:#252932; color:#f6ad55; cursor:pointer; font-size:0.85rem;">AI Analyzed</button>
             </div>
             <div class="summary" id="summary"></div>
         </div>
@@ -881,6 +882,193 @@
         // fetches one small JSON — instant every click.
         let _grandTotalCache = null;
 
+        // AI Analyzed tab — 5 client-consumable stat sections + a paragraph
+        // Claude wrote overnight. Both JSONs are refreshed by the daily
+        // baseball pipeline (statcast_db/compute_ai_stats.py + ai_summarize.py).
+        async function renderAiAnalyzed() {
+            const el = document.getElementById("content");
+            el.innerHTML = '<div class="empty">Loading AI analysis...</div>';
+            let stats, summary;
+            try {
+                const [rs, rm] = await Promise.all([
+                    fetch("ratings/ai_stats.json"   + CACHE_BUST, {cache: "no-store"}),
+                    fetch("ratings/ai_summary.json" + CACHE_BUST, {cache: "no-store"}),
+                ]);
+                if (!rs.ok) throw new Error("ai_stats.json not available");
+                stats = await rs.json();
+                summary = rm.ok ? await rm.json() : null;
+            } catch (e) {
+                el.innerHTML = '<div class="empty">AI stats not published yet — will appear after the next daily run.</div>';
+                return;
+            }
+            const CATS = stats.categories;
+            const RATINGS = ["1", "2", "3"];
+
+            // Helper: format a hit% cell with a colored background based on how far from 50%
+            const pctCell = (pct, extra="") => {
+                if (pct == null) return `<td style="padding:6px; text-align:center; color:#a0aec0;">—</td>`;
+                const p = pct * 100;
+                const color = p >= 55 ? "#22c55e" : (p >= 50 ? "#84cc16" : (p >= 45 ? "#f59e0b" : "#ef4444"));
+                return `<td style="padding:6px; text-align:center; color:${color}; font-weight:600;">${p.toFixed(0)}%${extra ? " <span style='color:#a0aec0; font-weight:400; font-size:0.85em;'>"+extra+"</span>" : ""}</td>`;
+            };
+
+            // ---- Section 1: AI summary card ----
+            let html = "";
+            if (summary?.summary) {
+                const genStr = summary.generated_at ? summary.generated_at.replace("T", " ") : "";
+                html += `<div style="background:linear-gradient(180deg,#2d3748,#1a202c); border:1px solid #d69e2e; border-radius:8px; padding:1rem 1.25rem; margin-bottom:1.5rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.5rem;">
+                        <h3 style="margin:0; color:#f6ad55; font-size:0.9rem; letter-spacing:0.08em; text-transform:uppercase;">Today's briefing</h3>
+                        <span style="color:#a0aec0; font-size:0.75rem;">via ${summary.model || "Claude"} · ${genStr}</span>
+                    </div>
+                    <div style="color:#e2e8f0; line-height:1.55; font-size:0.95rem; white-space:pre-wrap;">${summary.summary.replace(/</g,'&lt;')}</div>
+                </div>`;
+            } else {
+                html += `<div style="background:#252932; border:1px solid #4a5568; border-radius:6px; padding:0.85rem 1rem; margin-bottom:1.5rem; color:#a0aec0; font-size:0.85rem;">
+                    AI summary not yet generated for today. Charts below still reflect the latest stats.
+                </div>`;
+            }
+
+            // ---- Section 2: Rating x Category heatgrid (last 14 vs season) ----
+            html += `<div style="margin-bottom:1.75rem;">
+                <h3 style="margin:0 0 0.35rem 0; color:#63b3ed;">Rating x Category — recent form</h3>
+                <div style="color:#a0aec0; font-size:0.78rem; margin-bottom:0.5rem;">Last 14 days · HOT/COLD flagged when 14d hit% is ${stats.hot_delta_pts}pts above/below season and n≥${stats.hot_min_games}</div>
+                <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                    <thead><tr style="background:#252932;">
+                        <th style="padding:6px; text-align:left;">Rating</th>
+                        ${CATS.map(c => `<th style='padding:6px; text-align:center; text-transform:capitalize;'>${c.replace('_', ' ')}</th>`).join('')}
+                    </tr></thead><tbody>`;
+            for (const r of RATINGS) {
+                html += `<tr style="border-bottom:1px solid #2d3748;">
+                    <td style="padding:6px; font-weight:600;">R${r}</td>`;
+                for (const c of CATS) {
+                    const cd = stats.by_rating_category[r][c];
+                    const w14 = cd["14d"]; const n14 = w14.wins + w14.losses;
+                    const flag = cd.hot ? " 🔥" : (cd.cold ? " ❄️" : "");
+                    const streak = cd.streak?.count >= 3 ? ` <span style='color:#63b3ed; font-size:0.85em;'>(${cd.streak.count}${cd.streak.type})</span>` : "";
+                    html += pctCell(w14.hit_pct, `${w14.wins}-${w14.losses}${flag}${streak}`);
+                }
+                html += `</tr>`;
+            }
+            html += `</tbody></table></div>`;
+
+            // ---- Section 3: Strong plays panel per rating ----
+            html += `<div style="margin-bottom:1.75rem;">
+                <h3 style="margin:0 0 0.35rem 0; color:#48bb78;">Strong plays — |delta| ≥ 1.0, sized 1u/2u/3u</h3>
+                <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                    <thead><tr style="background:#252932;">
+                        <th style="padding:6px; text-align:left;">Rating</th>
+                        <th style="padding:6px; text-align:center;">7d</th>
+                        <th style="padding:6px; text-align:center;">14d</th>
+                        <th style="padding:6px; text-align:center;">30d</th>
+                        <th style="padding:6px; text-align:center;">Season</th>
+                    </tr></thead><tbody>`;
+            for (const r of RATINGS) {
+                const sp = stats.strong_plays[r];
+                html += `<tr style="border-bottom:1px solid #2d3748;">
+                    <td style="padding:6px; font-weight:600;">R${r}</td>`;
+                for (const win of ["7d", "14d", "30d", "season"]) {
+                    const w = sp[win];
+                    const uColor = w.units_net > 0 ? "#48bb78" : (w.units_net < 0 ? "#f56565" : "#a0aec0");
+                    const pct = w.hit_pct != null ? (w.hit_pct*100).toFixed(0)+"%" : "—";
+                    html += `<td style="padding:6px; text-align:center;">
+                        <div style="color:${uColor}; font-weight:700;">${w.units_net > 0 ? "+" : ""}${w.units_net}u</div>
+                        <div style="color:#a0aec0; font-size:0.85em;">${w.wins}-${w.losses} · ${pct}</div>
+                    </td>`;
+                }
+                html += `</tr>`;
+            }
+            html += `</tbody></table></div>`;
+
+            // ---- Section 4: Overall record trend (last 8 weeks per rating) ----
+            html += `<div style="margin-bottom:1.75rem;">
+                <h3 style="margin:0 0 0.35rem 0; color:#9f7aea;">Overall hit % — last 8 weeks</h3>
+                <div style="color:#a0aec0; font-size:0.78rem; margin-bottom:0.5rem;">All picks (not just strong). Weeks start Monday.</div>
+                <table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
+                    <thead><tr style="background:#252932;">
+                        <th style="padding:6px; text-align:left;">Rating</th>`;
+            // Column headers = week starts (from R1 since all ratings share the same date range)
+            const weeks1 = stats.overall_by_week["1"];
+            for (const w of weeks1) {
+                const d = new Date(w.week_start);
+                html += `<th style="padding:6px; text-align:center;">${d.getMonth()+1}/${d.getDate()}</th>`;
+            }
+            html += `</tr></thead><tbody>`;
+            for (const r of RATINGS) {
+                html += `<tr style="border-bottom:1px solid #2d3748;"><td style="padding:6px; font-weight:600;">R${r}</td>`;
+                for (const w of stats.overall_by_week[r]) {
+                    html += pctCell(w.hit_pct, `${w.wins}-${w.losses}`);
+                }
+                html += `</tr>`;
+            }
+            html += `</tbody></table></div>`;
+
+            // ---- Section 5: Best category combos ----
+            const combos = stats.best_category_combos || [];
+            if (combos.length) {
+                html += `<div style="margin-bottom:1.75rem;">
+                    <h3 style="margin:0 0 0.35rem 0; color:#f6ad55;">Best category combos — where 2 categories agree</h3>
+                    <div style="color:#a0aec0; font-size:0.78rem; margin-bottom:0.5rem;">Pairs of categories that pick the same side, ranked by hit% (min 20 picks)</div>
+                    <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                        <thead><tr style="background:#252932;">
+                            <th style="padding:6px; text-align:left;">Combo</th>
+                            <th style="padding:6px; text-align:center;">Hit %</th>
+                            <th style="padding:6px; text-align:center;">Record</th>
+                            <th style="padding:6px; text-align:center;">n</th>
+                        </tr></thead><tbody>`;
+                for (const c of combos) {
+                    const pct = (c.hit_pct*100).toFixed(1);
+                    const color = c.hit_pct >= 0.55 ? "#22c55e" : (c.hit_pct >= 0.5 ? "#84cc16" : "#f59e0b");
+                    html += `<tr style="border-bottom:1px solid #2d3748;">
+                        <td style="padding:6px; text-transform:capitalize;">${c.cats[0].replace('_',' ')} + ${c.cats[1].replace('_',' ')}</td>
+                        <td style="padding:6px; text-align:center; color:${color}; font-weight:600;">${pct}%</td>
+                        <td style="padding:6px; text-align:center;">${c.wins}-${c.losses}</td>
+                        <td style="padding:6px; text-align:center; color:#a0aec0;">${c.picks}</td>
+                    </tr>`;
+                }
+                html += `</tbody></table></div>`;
+            }
+
+            // ---- Section 6: Teams when model likes them (top 20 by pick volume) ----
+            const teams = (stats.team_when_liked || []).slice(0, 20);
+            if (teams.length) {
+                html += `<div style="margin-bottom:1.75rem;">
+                    <h3 style="margin:0 0 0.35rem 0; color:#4fd1c5;">Teams when the model picks them</h3>
+                    <div style="color:#a0aec0; font-size:0.78rem; margin-bottom:0.5rem;">Top 20 by pick volume. "Strong" = |delta| ≥ 1.0 unit-sized bets.</div>
+                    <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                        <thead><tr style="background:#252932;">
+                            <th style="padding:6px; text-align:left;">Team</th>
+                            <th style="padding:6px; text-align:center;">Any pick — record</th>
+                            <th style="padding:6px; text-align:center;">Any pick — hit %</th>
+                            <th style="padding:6px; text-align:center;">Strong record</th>
+                            <th style="padding:6px; text-align:center;">Strong units</th>
+                        </tr></thead><tbody>`;
+                for (const t of teams) {
+                    const anyPct = t.hit_pct_any != null ? (t.hit_pct_any*100).toFixed(0)+"%" : "—";
+                    const anyColor = t.hit_pct_any != null && t.hit_pct_any >= 0.55 ? "#48bb78" : (t.hit_pct_any != null && t.hit_pct_any < 0.5 ? "#f56565" : "#e2e8f0");
+                    const uColor = t.units_strong > 0 ? "#48bb78" : (t.units_strong < 0 ? "#f56565" : "#a0aec0");
+                    const strongRecord = t.picks_strong > 0
+                        ? `${t.wins_strong}-${t.picks_strong-t.wins_strong}${t.hit_pct_strong != null ? " ("+(t.hit_pct_strong*100).toFixed(0)+"%)" : ""}`
+                        : "—";
+                    html += `<tr style="border-bottom:1px solid #2d3748;">
+                        <td style="padding:6px; font-weight:600;">${t.team}</td>
+                        <td style="padding:6px; text-align:center;">${t.wins_any}-${t.picks_any-t.wins_any}</td>
+                        <td style="padding:6px; text-align:center; color:${anyColor}; font-weight:600;">${anyPct}</td>
+                        <td style="padding:6px; text-align:center;">${strongRecord}</td>
+                        <td style="padding:6px; text-align:center; color:${uColor}; font-weight:700;">${t.units_strong > 0 ? "+" : ""}${t.units_strong}u</td>
+                    </tr>`;
+                }
+                html += `</tbody></table></div>`;
+            }
+
+            // ---- Footer meta ----
+            html += `<div style="color:#718096; font-size:0.75rem; margin-top:1rem;">
+                Stats computed from ${stats.n_dates} dates of history. Refreshed daily as the pipeline runs.
+            </div>`;
+
+            el.innerHTML = html;
+        }
+
         async function renderGrandTotal() {
             const cats = ["trends","runs","sp","bullpen","hitting","bullpen_fatigue"];
             let tally = _grandTotalCache;
@@ -983,6 +1171,8 @@
                 await renderPerfMetrics(dateStr);
             } else if (currentView === "grand_total") {
                 await renderGrandTotal();
+            } else if (currentView === "ai_analyzed") {
+                await renderAiAnalyzed();
             } else {
                 if (dateSel && dateSel.value) await renderDate(dateSel.value);
             }
