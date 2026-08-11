@@ -429,9 +429,16 @@ const LANE_COLORS = [
     '#92400e', '#0d9488', '#d946ef', '#84cc16',
 ];
 
+// Fantasy league roster — default fill for the 10 slots + the dropdown
+// options that appear on every name input.
+const DEFAULT_NAMES = [
+    'Nick', 'Michael', 'Connor', 'GL', 'JP',
+    'Hunter', 'Hank', 'Luke', 'RJ', 'Quinn',
+];
+
 const state = {
     count: 10,
-    names: [],
+    names: DEFAULT_NAMES.slice(),
     horses: [],     // built when race starts
     startTime: 0,
     currentT: 0,
@@ -449,12 +456,16 @@ const startBtn      = document.getElementById('startBtn');
 
 function renderNameFields() {
     const n = Number(racerCountSel.value);
-    let html = '';
+    // A single shared <datalist> that every input references — you get a
+    // dropdown of the 10 default names on click, and can still type any name.
+    const options = DEFAULT_NAMES.map(nm => `<option value="${nm}"></option>`).join('');
+    let html = `<datalist id="rosterOptions">${options}</datalist>`;
     for (let i = 0; i < n; i++) {
         const color = LANE_COLORS[i];
+        const fill = state.names[i] || '';
         html += `<div class="name-input">
             <span class="lane" style="background:${color};">${i+1}</span>
-            <input type="text" placeholder="Racer #${i+1}" value="${state.names[i] || ''}" data-i="${i}" />
+            <input type="text" list="rosterOptions" placeholder="Racer #${i+1}" value="${fill}" data-i="${i}" autocomplete="off" />
         </div>`;
     }
     nameFields.innerHTML = html;
