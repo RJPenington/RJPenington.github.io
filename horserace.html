@@ -179,6 +179,23 @@
         font-size: 1.1rem; color: var(--ink);
         letter-spacing: 0.05em;
     }
+    .view-toggle {
+        display: inline-flex; gap: 0; align-self: flex-start;
+        background: var(--card); border: 1px solid var(--gold);
+        border-radius: 6px; overflow: hidden;
+    }
+    .vbtn {
+        background: transparent; color: var(--dim);
+        border: none; padding: 6px 16px;
+        font-family: 'Copperplate Gothic Bold', serif;
+        font-size: 0.78rem; letter-spacing: 0.12em;
+        text-transform: uppercase; cursor: pointer;
+    }
+    .vbtn:hover { color: var(--ink); }
+    .vbtn.active {
+        background: var(--gold); color: #1a2f22;
+    }
+
     .track-wrap {
         flex: 1;
         display: flex; gap: 1rem;
@@ -378,6 +395,10 @@
             <span class="value" id="hudStatus">In the Gates</span>
         </div>
     </div>
+    <div class="view-toggle">
+        <button class="vbtn active" data-view="top">Bird's-Eye</button>
+        <button class="vbtn" data-view="side">Side View</button>
+    </div>
     <div class="track-wrap">
         <canvas id="trackCanvas"></canvas>
         <aside class="standings">
@@ -413,8 +434,10 @@ const state = {
     names: [],
     horses: [],     // built when race starts
     startTime: 0,
+    currentT: 0,
     running: false,
     finished: false,
+    view: 'top',    // 'top' (bird's-eye oval) or 'side' (running horses left→right)
 };
 
 // ============================================================
@@ -479,8 +502,8 @@ const RACE_MS = 60_000;   // 60 second race, per spec
 
 function buildHorses(n, names) {
     // Generate a random finish time for each horse in a plausible band
-    // (55.0s to 60.0s — fastest horse crosses just under a minute).
-    const jitter = () => 55 + Math.random() * 5;
+    // (50.0s to 58.0s — leaves headroom under the 60s race clock).
+    const jitter = () => 50 + Math.random() * 8;
     const finishTimes = Array.from({length: n}, () => jitter());
 
     // ------ THE WRINKLE ------
@@ -518,56 +541,47 @@ function buildHorses(n, names) {
 
     const horses = [];
     for (let i = 0; i < n; i++) {
-        // Give each horse a couple of speed-noise waves so the visual
-        // race has lead changes even though the final time is fixed.
+        // Waves add visual variation during the race that's ALWAYS 0 at the
+        // endpoints — so every horse still crosses at t == finishTime exactly.
+        // amp = deviation size (fraction of total progress), k = number of
+        // half-cycles across the race (higher = wigglier).
         const waves = [
-            { amp: 0.15 + Math.random() * 0.10, period: 12 + Math.random() * 8, phase: Math.random() * Math.PI * 2 },
-            { amp: 0.08 + Math.random() * 0.08, period: 4  + Math.random() * 4, phase: Math.random() * Math.PI * 2 },
+            { amp: 0.06 + Math.random() * 0.06, k: 1 + Math.floor(Math.random() * 3),
+              sign: Math.random() < 0.5 ? -1 : 1 },
+            { amp: 0.03 + Math.random() * 0.03, k: 2 + Math.floor(Math.random() * 4),
+              sign: Math.random() < 0.5 ? -1 : 1 },
         ];
         horses.push({
             lane: i + 1,
             name: names[i],
             color: LANE_COLORS[i],
-            finishTime: finishTimes[i],   // seconds to cover the full distance
+            finishTime: finishTimes[i],
             waves,
-            progress: 0,        // 0..1 fraction of race distance
+            progress: 0,
             finishedAt: null,
         });
     }
     return horses;
 }
 
-// Progress-at-time formula:
-//   base rate = 1 / finishTime  (fraction per second)
-//   speed(t) = baseRate * (1 + sum(waves))
-//   progress(t) = ∫ speed dt, clamped to [0, 1]
-// We use a numeric integration each frame (accumulate dt * speed).
-function computeSpeedFactor(horse, t) {
-    let f = 1;
-    for (const w of horse.waves) {
-        f += w.amp * Math.sin((t / w.period) * 2 * Math.PI + w.phase);
+// Deterministic progress-at-time formula:
+//   linear   = t / finishTime                        (0 at t=0, 1 at t=finishTime)
+//   wiggle_i = sign_i * amp_i * sin(k_i * π * u)     (always 0 at u=0 and u=1)
+//   progress = linear + Σ wiggle_i, clamped to [0, 0.999) mid-race
+// The clamp keeps a horse from "crossing" early if the waves push it above 1;
+// the finish check itself is time-based (t >= finishTime), so ordering matches
+// the pre-assigned finish times exactly — no integration drift.
+function positionAt(h, t) {
+    if (t >= h.finishTime) return 1;
+    if (t <= 0) return 0;
+    const u = t / h.finishTime;
+    let p = u;
+    for (const w of h.waves) {
+        p += w.sign * w.amp * Math.sin(w.k * Math.PI * u);
     }
-    return Math.max(0.35, f);   // never fully stop
+    return Math.max(0, Math.min(0.999, p));
 }
 
-// Normalize each horse so its total distance at finishTime equals 1
-// even with the sinusoidal waves. We do a quick 200-sample integration
-// once at start and store a per-horse "targetSpeedScale" so cumulative
-// noisy progress lands EXACTLY on 1.0 at finishTime.
-function calibrateHorses() {
-    for (const h of state.horses) {
-        const N = 200;
-        const dt = h.finishTime / N;
-        let sum = 0;
-        for (let i = 0; i < N; i++) {
-            const t = (i + 0.5) * dt;
-            sum += computeSpeedFactor(h, t) * dt;
-        }
-        h.speedScale = h.finishTime / sum;   // multiplier that makes ∫speed dt over finishTime = finishTime
-        // So progress(t) = ∫ [1/finishTime] * speedFactor(t) * speedScale dt
-        // At t = finishTime → progress = 1.0
-    }
-}
 
 // ============================================================
 // Countdown + main loop
@@ -594,7 +608,6 @@ function startCountdown() {
 }
 
 function beginRace() {
-    calibrateHorses();
     state.startTime = performance.now();
     state.running = true;
     state.finished = false;
@@ -604,64 +617,34 @@ function beginRace() {
 
 function tick(now) {
     const elapsedMs = now - state.startTime;
-    const t = elapsedMs / 1000;          // seconds since start
-    // Advance every horse
+    const t = elapsedMs / 1000;
+    state.currentT = t;
     let allDone = true;
     for (const h of state.horses) {
         if (h.finishedAt !== null) continue;
-        // progress = ∫ [1/finishTime * scale * speedFactor] dt evaluated at t
-        // We recompute progress each frame by numerical integration from 0..t
-        // (small horse count + short race makes this cheap).
-        h.progress = computeProgress(h, Math.min(t, h.finishTime));
-        if (h.progress >= 1.0) {
-            h.progress = 1.0;
+        if (t >= h.finishTime) {
             h.finishedAt = h.finishTime;
+            h.progress = 1.0;
         } else {
+            h.progress = positionAt(h, t);
             allDone = false;
         }
     }
     drawTrack();
     updateHUD(t);
     updateStandings();
-    if (t < 61 && !allDone) {
+    if (t < 62 && !allDone) {
         requestAnimationFrame(tick);
     } else {
-        // Force-finish any stragglers so we get a clean order
         for (const h of state.horses) {
             if (h.finishedAt === null) {
-                h.finishedAt = t;
+                h.finishedAt = h.finishTime;   // trust the pre-assigned time
                 h.progress = 1.0;
             }
         }
         drawTrack();
         finishRace();
     }
-}
-
-// Numerical integration of speed to produce progress up to time t.
-// Cached per horse to avoid recomputing from 0 each frame.
-function computeProgress(h, t) {
-    if (!h._integ) h._integ = { lastT: 0, lastProgress: 0 };
-    const step = 0.05;  // 50ms steps
-    let { lastT, lastProgress } = h._integ;
-    while (lastT + step <= t) {
-        const midT = lastT + step/2;
-        const speed = computeSpeedFactor(h, midT) * h.speedScale / h.finishTime;
-        lastProgress += speed * step;
-        lastT += step;
-        if (lastProgress >= 1) { lastProgress = 1; break; }
-    }
-    // Final partial step
-    if (lastT < t && lastProgress < 1) {
-        const dt = t - lastT;
-        const midT = lastT + dt/2;
-        const speed = computeSpeedFactor(h, midT) * h.speedScale / h.finishTime;
-        const p = lastProgress + speed * dt;
-        h._integ = { lastT, lastProgress };   // don't advance cache into the partial
-        return Math.min(1, p);
-    }
-    h._integ = { lastT, lastProgress };
-    return Math.min(1, lastProgress);
 }
 
 // ============================================================
@@ -745,8 +728,8 @@ function ovalPoint(lane, p) {
 
 function drawTrack() {
     if (!ctx) return;
+    if (state.view === 'side') { drawSide(); return; }
     ctx.clearRect(0, 0, cw, ch);
-    // Turf infield + surround
     const g = trackGeom();
     // Full background = darker grandstand green
     ctx.fillStyle = '#0f1e14';
@@ -859,6 +842,252 @@ function drawHorse(x, y, h) {
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(h.lane, x, y + 0.5);
 }
+
+// ============================================================
+// Side view — horses running left→right in horizontal lanes
+// with a proper gallop animation.
+// ============================================================
+function drawSide() {
+    ctx.clearRect(0, 0, cw, ch);
+    const n = state.horses.length;
+    const topPad = 20, botPad = 20, leftPad = 60, rightPad = 60;
+    const laneH = Math.floor((ch - topPad - botPad) / n);
+    const trackLeft = leftPad;
+    const trackRight = cw - rightPad;
+    const trackW = trackRight - trackLeft;
+
+    // Sky
+    const sky = ctx.createLinearGradient(0, 0, 0, ch);
+    sky.addColorStop(0, '#1a2f22');
+    sky.addColorStop(1, '#0a1310');
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, cw, ch);
+
+    // Distant grandstand silhouette across the top
+    ctx.fillStyle = '#0a1710';
+    ctx.beginPath();
+    ctx.moveTo(0, 0); ctx.lineTo(cw, 0); ctx.lineTo(cw, topPad - 6);
+    for (let x = cw; x >= 0; x -= 16) {
+        const h = 4 + ((x * 7) % 9);
+        ctx.lineTo(x, topPad - 6 - h);
+        ctx.lineTo(x - 8, topPad - 6 - h);
+    }
+    ctx.lineTo(0, topPad - 6); ctx.closePath();
+    ctx.fill();
+
+    // Each lane — dirt strip + rail + finish line
+    for (let i = 0; i < n; i++) {
+        const h = state.horses[i];
+        const laneTop = topPad + i * laneH;
+        const laneMid = laneTop + laneH / 2;
+
+        // Dirt lane
+        const dirtGrad = ctx.createLinearGradient(0, laneTop, 0, laneTop + laneH);
+        dirtGrad.addColorStop(0, '#7a5f3d');
+        dirtGrad.addColorStop(0.5, '#8b6f47');
+        dirtGrad.addColorStop(1, '#6d5535');
+        ctx.fillStyle = dirtGrad;
+        ctx.fillRect(trackLeft, laneTop, trackW, laneH - 2);
+        // Rail between lanes
+        ctx.fillStyle = 'rgba(255,255,255,0.35)';
+        ctx.fillRect(trackLeft, laneTop + laneH - 2, trackW, 1);
+        if (i === 0) ctx.fillRect(trackLeft, laneTop - 1, trackW, 1);
+
+        // Lane number badge on the left
+        ctx.fillStyle = h.color;
+        ctx.beginPath();
+        ctx.arc(leftPad - 22, laneMid, 12, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+        ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.fillStyle = 'white';
+        ctx.font = '900 12px "Copperplate Gothic Bold", serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(h.lane, leftPad - 22, laneMid + 0.5);
+
+        // Name label
+        ctx.fillStyle = '#f5efe0';
+        ctx.font = '600 10px "Copperplate Gothic Bold", serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(h.name.toUpperCase().slice(0, 12), trackLeft + 4, laneTop + 10);
+
+        // Position line (progress bar underlay)
+        const progressPx = h.progress * (trackW - 40);
+        ctx.fillStyle = h.color + '33';
+        ctx.fillRect(trackLeft, laneMid + 12, progressPx, 3);
+
+        // Horse
+        const horseX = trackLeft + 20 + progressPx;
+        drawHorseSide(horseX, laneMid + 4, h, state.currentT);
+    }
+
+    // Finish line — big checkered flag at right
+    const finX = trackRight - 30;
+    drawCheckerBand(finX, topPad, 8, ch - topPad - botPad, 8);
+    ctx.fillStyle = '#dc2626';
+    ctx.font = '900 12px "Copperplate Gothic Bold", serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText('FINISH', finX, topPad - 14);
+
+    // Start line at left
+    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(trackLeft + 4, topPad);
+    ctx.lineTo(trackLeft + 4, ch - botPad);
+    ctx.stroke();
+    ctx.setLineDash([]);
+}
+
+function drawCheckerBand(x, y, w, h, box) {
+    const cols = Math.max(1, Math.floor(w / box));
+    const rows = Math.floor(h / box);
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            ctx.fillStyle = (r + c) % 2 === 0 ? '#111' : '#fff';
+            ctx.fillRect(x + c * box, y + r * box, box, box);
+        }
+    }
+}
+
+// A stylized side-view horse with 4 gallop-animated legs, colored silks
+// blanket on the back, and a small jockey. Body color = a natural brown;
+// silks color = the horse's lane color so viewers can still identify by silks.
+function drawHorseSide(x, y, h, t) {
+    const isFinished = h.finishedAt !== null;
+    const gallopSpeed = isFinished ? 0 : 14;
+    const phase = t * gallopSpeed;
+
+    // Body bounce
+    const bounce = isFinished ? 0 : Math.abs(Math.sin(phase * 0.5)) * 1.5;
+    const cy = y - bounce;
+
+    // ---- Legs (behind body) ---- 4 legs w/ paired phases so it looks like a gallop
+    const legPairs = [
+        { xOff: -10, ph: 0 },              // rear left
+        { xOff:  -4, ph: Math.PI * 0.5 },  // rear right
+        { xOff:   6, ph: Math.PI },        // front left
+        { xOff:  12, ph: Math.PI * 1.5 },  // front right
+    ];
+    ctx.strokeStyle = '#3a2810';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    for (const leg of legPairs) {
+        const swing = Math.sin(phase + leg.ph);
+        const forward = swing * 5;
+        const lift = Math.max(0, swing) * 4;
+        ctx.beginPath();
+        ctx.moveTo(x + leg.xOff, cy + 3);
+        ctx.lineTo(x + leg.xOff + forward, cy + 12 - lift);
+        ctx.stroke();
+    }
+
+    // ---- Body ----
+    ctx.fillStyle = '#6b4a2b';   // horse brown
+    ctx.strokeStyle = '#3a2810';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.ellipse(x, cy, 16, 7, 0, 0, Math.PI * 2);
+    ctx.fill(); ctx.stroke();
+
+    // Muscular shading on body
+    ctx.fillStyle = 'rgba(255,255,255,0.08)';
+    ctx.beginPath();
+    ctx.ellipse(x, cy - 2, 14, 3, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Silks blanket (colored — lane color)
+    ctx.fillStyle = h.color;
+    ctx.beginPath();
+    ctx.ellipse(x - 2, cy - 3, 9, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Neck + head — extending forward
+    ctx.fillStyle = '#6b4a2b';
+    ctx.strokeStyle = '#3a2810';
+    ctx.beginPath();
+    ctx.moveTo(x + 12, cy - 4);
+    ctx.lineTo(x + 20, cy - 12);
+    ctx.lineTo(x + 26, cy - 12);
+    ctx.lineTo(x + 25, cy - 9);
+    ctx.lineTo(x + 27, cy - 7);   // muzzle
+    ctx.lineTo(x + 22, cy - 5);
+    ctx.lineTo(x + 15, cy - 1);
+    ctx.closePath();
+    ctx.fill(); ctx.stroke();
+
+    // Mane
+    ctx.fillStyle = '#2a1a08';
+    ctx.beginPath();
+    ctx.moveTo(x + 12, cy - 5);
+    ctx.lineTo(x + 18, cy - 12);
+    ctx.lineTo(x + 20, cy - 11);
+    ctx.lineTo(x + 15, cy - 3);
+    ctx.closePath();
+    ctx.fill();
+
+    // Ears
+    ctx.fillStyle = '#6b4a2b';
+    ctx.beginPath();
+    ctx.moveTo(x + 21, cy - 11);
+    ctx.lineTo(x + 22, cy - 15);
+    ctx.lineTo(x + 23, cy - 11);
+    ctx.closePath();
+    ctx.fill();
+
+    // Eye
+    ctx.fillStyle = '#000';
+    ctx.beginPath();
+    ctx.arc(x + 23, cy - 9, 0.8, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Tail — swishing
+    const tailSwing = Math.sin(phase * 0.5) * 3;
+    ctx.strokeStyle = '#2a1a08';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(x - 16, cy - 2);
+    ctx.quadraticCurveTo(x - 22, cy - 3 + tailSwing, x - 24, cy + 3 + tailSwing);
+    ctx.stroke();
+
+    // Jockey — small hunched figure on the blanket
+    ctx.fillStyle = h.color;
+    ctx.beginPath();
+    ctx.arc(x - 2, cy - 8, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    // Helmet stripe
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(x - 4, cy - 9, 4, 1);
+    // Jockey lane number
+    ctx.fillStyle = 'white';
+    ctx.font = '900 6px sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(h.lane, x - 2, cy - 7.5);
+
+    // Dust puff behind galloping horses
+    if (!isFinished && Math.random() < 0.3) {
+        ctx.fillStyle = 'rgba(160, 130, 90, 0.4)';
+        ctx.beginPath();
+        ctx.arc(x - 12 + (Math.random() - 0.5) * 4, cy + 14, 2 + Math.random() * 2, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+// ============================================================
+// View toggle wiring
+// ============================================================
+document.querySelectorAll('.vbtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.vbtn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.view = btn.dataset.view;
+        drawTrack();
+    });
+});
 
 // ============================================================
 // HUD + standings
