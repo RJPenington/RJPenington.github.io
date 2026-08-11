@@ -783,14 +783,13 @@ function drawTrack() {
     }
     ctx.setLineDash([]);
     // Finish line — big checkered vertical band at 3 o'clock
+    // Finish line — single checkered stripe on the top band where horses cross
+    // to end the race. (Horses race counterclockwise starting/ending at
+    // right-top, so the finish is only above the infield, not below it.)
     const finishX = g.cx + g.straight/2;
     const finishTop = g.cy - g.outerR;
     const finishBot = g.cy - g.innerR;
-    const finishBot2 = g.cy + g.innerR;
-    const finishBot3 = g.cy + g.outerR;
-    // Track surface finish line — checkered pattern across the dirt band above
     drawCheckerLine(finishX, finishTop, finishX, finishBot, 8);
-    drawCheckerLine(finishX, finishBot2, finishX, finishBot3, 8);
     // Finish flag inside infield
     ctx.fillStyle = '#dc2626';
     ctx.font = '900 14px "Copperplate Gothic Bold", serif';
@@ -808,7 +807,7 @@ function drawTrack() {
     // Horses
     for (const h of state.horses) {
         const pt = ovalPoint(h.lane, h.progress);
-        drawHorse(pt.x, pt.y, h);
+        drawHorse(pt.x, pt.y, pt.angle, h);
     }
 }
 
@@ -842,25 +841,77 @@ function drawCheckerLine(x1, y1, x2, y2, boxSize) {
     }
 }
 
-// Draw a horse as a colored jockey silks bubble with lane number
-function drawHorse(x, y, h) {
-    // Shadow
-    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+// Draw a horse from directly above — elongated body pointing the direction
+// of motion, colored jockey silks on the back, head + tail visible.
+// `angle` is the tangent-to-oval direction (0=right, PI=left).
+function drawHorse(x, y, angle, h) {
+    // Ground shadow (not rotated — sits under the horse)
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
     ctx.beginPath();
-    ctx.ellipse(x, y + 8, 10, 3, 0, 0, Math.PI * 2);
+    ctx.ellipse(x + 1, y + 3, 11, 4, angle, 0, Math.PI * 2);
     ctx.fill();
-    // Silks body
-    ctx.fillStyle = h.color;
-    ctx.strokeStyle = 'rgba(0,0,0,0.65)';
-    ctx.lineWidth = 1.5;
+
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+
+    // Horse body — brown elongated ellipse, head end at +x
+    ctx.fillStyle = '#6b4a2b';
+    ctx.strokeStyle = '#3a2810';
+    ctx.lineWidth = 0.6;
     ctx.beginPath();
-    ctx.arc(x, y, 9, 0, Math.PI * 2);
-    ctx.fill(); ctx.stroke();
-    // Lane number
+    ctx.ellipse(0, 0, 11, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Muscular top-side highlight
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx.beginPath();
+    ctx.ellipse(0, -1, 9, 1.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Head + neck extending forward
+    ctx.fillStyle = '#5a3d1e';
+    ctx.strokeStyle = '#2a1a08';
+    ctx.beginPath();
+    ctx.ellipse(8.5, 0, 3.8, 2.4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    // Muzzle tip
+    ctx.fillStyle = '#3d2a12';
+    ctx.beginPath();
+    ctx.arc(11.5, 0, 1, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Tail — thin stroke trailing back
+    ctx.strokeStyle = '#2a1a08';
+    ctx.lineWidth = 1.6;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-10, 0);
+    ctx.quadraticCurveTo(-13, 0.5, -14.5, -0.6);
+    ctx.stroke();
+
+    // Jockey silks — colored circle on the back (lane color for ID)
+    ctx.fillStyle = h.color;
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.65)';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.arc(-1, 0, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.restore();
+
+    // Lane number on top of the silks — unrotated so it always reads upright
     ctx.fillStyle = '#ffffff';
-    ctx.font = '900 10px "Copperplate Gothic Bold", serif';
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText(h.lane, x, y + 0.5);
+    ctx.font = '900 8px "Copperplate Gothic Bold", serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    // Jockey position in world coords: (-1, 0) in the rotated frame
+    const jx = x + Math.cos(angle) * -1;
+    const jy = y + Math.sin(angle) * -1;
+    ctx.fillText(h.lane, jx, jy + 0.3);
 }
 
 // ============================================================
