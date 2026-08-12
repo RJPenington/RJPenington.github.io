@@ -1,0 +1,117 @@
+{
+  "as_of": "2026-08-12",
+  "aggregates": {
+    "today": {
+      "picks": 5,
+      "wins": 0,
+      "losses": 0,
+      "pushes": 0,
+      "pending": 5,
+      "units_net": 0.0,
+      "hit_pct": null
+    },
+    "week": {
+      "picks": 5,
+      "wins": 0,
+      "losses": 0,
+      "pushes": 0,
+      "pending": 5,
+      "units_net": 0.0,
+      "hit_pct": null
+    },
+    "season": {
+      "picks": 5,
+      "wins": 0,
+      "losses": 0,
+      "pushes": 0,
+      "pending": 5,
+      "units_net": 0.0,
+      "hit_pct": null
+    }
+  },
+  "picks_by_date": {
+    "2026-08-12": {
+      "generated_at": "2026-08-12T08:12:02",
+      "model": "claude-opus-5",
+      "date": "2026-08-12",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "TBR",
+          "home_team": "ATH",
+          "away_team": "TBR",
+          "rating_source": "R3",
+          "delta": 3.07,
+          "units": 3,
+          "confidence": "high",
+          "reasoning": "All three ratings agree on Tampa Bay with huge deltas (R1 -3.82, R2 -3.10, R3 -3.07), and TBR is the best when-model-likes-them team on the board at 22-8 (73%) overall and 17-4 (81%, +20.0u) on strong plays. Opponent ATH is the worst: 1-5 (17%) when liked and 0-3 (0%, -4.0u) as a strong play, and R3 leads all ratings on strong plays (season 127-109, 54%, +32.0u; 30d +15.0u).",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "LAD",
+          "home_team": "LAD",
+          "away_team": "KCR",
+          "rating_source": "R1",
+          "delta": 1.34,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "Unanimous agreement (R1 +1.34, R2 +1.34, R3 +1.01) and the Dodgers are 10-2 (83%, +13.0u) on strong plays when the model likes them, 12-10 overall. KCR is just 5-7 (42%) when liked, giving a clean edge on the side the model is most profitable backing.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "CHC",
+          "home_team": "WSN",
+          "away_team": "CHC",
+          "rating_source": "R1",
+          "delta": 1.73,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "R1 (-1.73) and R2 (-1.46) both flag Chicago strong and R3 leans the same way (-0.98), so there is no cross-model disagreement. CHC is 17-6 (74%) when the model likes them with strong plays 7-4 (64%, +5.0u), while WSN is a mediocre 9-11 (45%) and 5-5 (50%) on strongs.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "DET",
+          "home_team": "DET",
+          "away_team": "CLE",
+          "rating_source": "R2",
+          "delta": 1.13,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "R2 crosses the strong threshold at +1.13 and R1 agrees at +0.78; Detroit is 18-9 (67%) when liked with strong plays 13-6 (68%, +14.0u), one of the most profitable teams in the sample. CLE is the weaker side at 4-5 (44%) overall and 2-4 (33%, -2.0u) on strongs, and the bullpen category driving edges here is HOT (14d 105-84, 56% vs 51% season).",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 5,
+          "pick": "ARI",
+          "home_team": "ARI",
+          "away_team": "COL",
+          "rating_source": "R2",
+          "delta": 1.87,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "Largest unanimous delta among the 1u tier (R1 +1.58, R2 +1.87, R3 +1.17), and Colorado is the worst-supported side on the slate at 2-7 (22%) when the model likes them and 1-3 (25%, -2.0u) on strongs. ARI is a modest 11-9 (55%) when liked, so the edge is mainly the fade of COL plus triple-model consensus.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 4494,
+        "output_tokens": 1977
+      },
+      "totals": {
+        "wins": 0,
+        "losses": 0,
+        "pushes": 0,
+        "pending": 5,
+        "units_net": 0.0
+      }
+    }
+  }
+}
