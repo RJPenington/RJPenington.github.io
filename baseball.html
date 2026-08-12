@@ -317,12 +317,23 @@
             return out;
         }
 
-        function renderGambling(roi) {
+        // Assume $100 per unit for the AI picks dollar figure — same scale as
+        // "flat $100/bet" in the R1/R2/R3 ROI cards below, so numbers compare
+        // apples-to-apples.
+        const AI_DOLLAR_PER_UNIT = 100;
+
+        async function renderGambling(roi) {
             if (!roi || !roi.by_rating) {
                 document.getElementById("content").innerHTML =
                     '<div class="empty">No ROI data yet — needs at least one completed day with odds + finals.</div>';
                 return;
             }
+            // Try to load the AI picks history so we can prepend an AI ROI card
+            let aiHist = null;
+            try {
+                const rp = await fetch("ratings/ai_picks_history.json" + CACHE_BUST, {cache: "no-store"});
+                if (rp.ok) aiHist = await rp.json();
+            } catch (e) { /* ignore */ }
             const fmt = n => (n >= 0 ? "+" : "") + n.toFixed(2);
             const pct = p => (p >= 0 ? "+" : "") + p.toFixed(1) + "%";
             // Color from the string itself — looks at whether it begins with "-"
@@ -366,8 +377,36 @@
                 };
             }
 
+            // ─── AI Picks ROI card — units P/L converted to $ at $100/unit ──
+            let html = "";
+            if (aiHist?.aggregates) {
+                const a = aiHist.aggregates;
+                const aiCell = (label, agg) => {
+                    const uColor = agg.units_net > 0 ? "#22c55e" : agg.units_net < 0 ? "#ef4444" : "#a0aec0";
+                    const dollars = agg.units_net * AI_DOLLAR_PER_UNIT;
+                    const bets = agg.wins + agg.losses;
+                    const roiPct = bets > 0 ? (agg.units_net / bets * 100) : 0;
+                    const record = `${agg.wins}-${agg.losses}${agg.pushes ? "-"+agg.pushes : ""}${agg.pending ? " +"+agg.pending+"p" : ""}`;
+                    return `<div style="flex:1; min-width:0; padding:0.4rem; text-align:center;">
+                        <div style="color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:2px;">${label}</div>
+                        <div style="color:${uColor}; font-weight:700; font-size:1.15rem;">${dollars > 0 ? "+" : ""}$${dollars.toFixed(0)} <span style="color:#a0aec0; font-size:0.72rem; font-weight:400;">(${roiPct > 0 ? "+" : ""}${roiPct.toFixed(1)}%)</span></div>
+                        <div style="color:#e2e8f0; font-size:0.82rem;">${record} · ${agg.units_net > 0 ? "+" : ""}${agg.units_net}u</div>
+                    </div>`;
+                };
+                html += `<div style="background:linear-gradient(180deg,#1e2a3d,#141c2b); padding:0.8rem 1rem; border-radius:6px; border:1px solid #4299e1; margin-bottom:1.25rem;">
+                    <div style="text-align:center; font-weight:700; font-size:1.05rem; margin-bottom:0.5rem; color:#63b3ed;">AI Best-5 Picks — daily card at $${AI_DOLLAR_PER_UNIT}/unit</div>
+                    <div style="display:flex; gap:0.4rem;">
+                        ${aiCell("Today", a.today)}
+                        <div style="width:1px; background:#4a5568; align-self:stretch;"></div>
+                        ${aiCell("Last 7 Days", a.week)}
+                        <div style="width:1px; background:#4a5568; align-self:stretch;"></div>
+                        ${aiCell("Season", a.season)}
+                    </div>
+                </div>`;
+            }
+
             // ─── Three OVERALL cards — split: "Bet every pick" | "Strong plays" ─
-            let html = '<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-bottom:1rem;">';
+            html += '<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-bottom:1rem;">';
             for (const r of [1, 2, 3]) {
                 const a = agg[r];
                 html += `<div style="background:#252932; padding:0.8rem; border-radius:6px; border:1px solid #4a5568;">
@@ -883,20 +922,23 @@
         let _grandTotalCache = null;
 
         // AI Analyzed tab — 5 client-consumable stat sections + a paragraph
-        // Claude wrote overnight. Both JSONs are refreshed by the daily
-        // baseball pipeline (statcast_db/compute_ai_stats.py + ai_summarize.py).
+        // Claude wrote overnight + a daily Best-5 picks card with running
+        // W-L + unit P/L. All JSONs refreshed by the daily baseball pipeline
+        // (compute_ai_stats.py + ai_summarize.py + compute_ai_picks.py).
         async function renderAiAnalyzed() {
             const el = document.getElementById("content");
             el.innerHTML = '<div class="empty">Loading AI analysis...</div>';
-            let stats, summary;
+            let stats, summary, picksHist;
             try {
-                const [rs, rm] = await Promise.all([
-                    fetch("ratings/ai_stats.json"   + CACHE_BUST, {cache: "no-store"}),
-                    fetch("ratings/ai_summary.json" + CACHE_BUST, {cache: "no-store"}),
+                const [rs, rm, rp] = await Promise.all([
+                    fetch("ratings/ai_stats.json"          + CACHE_BUST, {cache: "no-store"}),
+                    fetch("ratings/ai_summary.json"        + CACHE_BUST, {cache: "no-store"}),
+                    fetch("ratings/ai_picks_history.json"  + CACHE_BUST, {cache: "no-store"}),
                 ]);
                 if (!rs.ok) throw new Error("ai_stats.json not available");
                 stats = await rs.json();
                 summary = rm.ok ? await rm.json() : null;
+                picksHist = rp.ok ? await rp.json() : null;
             } catch (e) {
                 el.innerHTML = '<div class="empty">AI stats not published yet — will appear after the next daily run.</div>';
                 return;
@@ -926,6 +968,70 @@
             } else {
                 html += `<div style="background:#252932; border:1px solid #4a5568; border-radius:6px; padding:0.85rem 1rem; margin-bottom:1.5rem; color:#a0aec0; font-size:0.85rem;">
                     AI summary not yet generated for today. Charts below still reflect the latest stats.
+                </div>`;
+            }
+
+            // ---- Section 1b: AI Best-5 picks + running record ----
+            const todayStr = stats.as_of;
+            const todayPicks = picksHist?.picks_by_date?.[todayStr];
+            const agg = picksHist?.aggregates;
+            if (todayPicks && todayPicks.picks?.length) {
+                html += `<div style="background:linear-gradient(180deg,#1e2a3d,#141c2b); border:1px solid #4299e1; border-radius:8px; padding:1rem 1.25rem; margin-bottom:1.5rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+                        <h3 style="margin:0; color:#63b3ed; font-size:0.9rem; letter-spacing:0.08em; text-transform:uppercase;">AI Best 5 — Today (${todayPicks.date})</h3>
+                        <span style="color:#a0aec0; font-size:0.75rem;">via ${todayPicks.model || "Claude"}</span>
+                    </div>`;
+                // Ranked pick cards
+                for (const p of todayPicks.picks) {
+                    const confColor = p.confidence === "high" ? "#22c55e" : p.confidence === "medium" ? "#eab308" : "#a0aec0";
+                    const outcomeColor = p.outcome === "W" ? "#22c55e" : p.outcome === "L" ? "#ef4444" : "#a0aec0";
+                    const outcomeLabel = p.outcome === "W" ? `WIN +${p.net}u` : p.outcome === "L" ? `LOSS ${p.net}u` : p.outcome === "push" ? "PUSH 0u" : "Pending";
+                    html += `<div style="background:#252932; border-left:3px solid ${outcomeColor}; border-radius:4px; padding:0.7rem 0.9rem; margin-bottom:0.55rem;">
+                        <div style="display:flex; justify-content:space-between; align-items:baseline; gap:0.75rem; margin-bottom:0.35rem;">
+                            <div style="font-size:1rem;">
+                                <span style="color:#f6ad55; font-weight:700;">#${p.rank}</span>
+                                <span style="color:#e2e8f0; font-weight:700; margin-left:0.35rem;">${p.pick}</span>
+                                <span style="color:#a0aec0; font-size:0.85em; margin-left:0.5rem;">(${p.away_team} @ ${p.home_team})</span>
+                                <span style="color:#63b3ed; font-size:0.8em; margin-left:0.5rem;">${p.rating_source} · d=${p.delta > 0 ? "+" : ""}${p.delta.toFixed(2)} · ${p.units}u</span>
+                            </div>
+                            <div style="display:flex; gap:0.5rem; align-items:baseline;">
+                                <span style="color:${confColor}; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.05em;">${p.confidence}</span>
+                                <span style="color:${outcomeColor}; font-weight:700; font-size:0.85rem;">${outcomeLabel}</span>
+                            </div>
+                        </div>
+                        <div style="color:#cbd5e0; font-size:0.83rem; line-height:1.45;">${p.reasoning}</div>
+                    </div>`;
+                }
+                html += `</div>`;
+            } else if (picksHist) {
+                html += `<div style="background:#252932; border:1px solid #4a5568; border-radius:6px; padding:0.85rem 1rem; margin-bottom:1.5rem; color:#a0aec0; font-size:0.85rem;">
+                    Today's AI picks not yet generated — will appear after today's daily run.
+                </div>`;
+            }
+
+            // Running record — today / week / season
+            if (agg) {
+                const cell = (label, a) => {
+                    const uColor = a.units_net > 0 ? "#22c55e" : a.units_net < 0 ? "#ef4444" : "#a0aec0";
+                    const pct = a.hit_pct != null ? `${(a.hit_pct*100).toFixed(0)}%` : "-";
+                    const record = `${a.wins}-${a.losses}${a.pushes ? "-"+a.pushes : ""}`;
+                    const pend = a.pending ? ` <span style='color:#eab308; font-size:0.85em;'>+${a.pending} pending</span>` : "";
+                    return `<td style="padding:8px 12px; text-align:center;">
+                        <div style="color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:2px;">${label}</div>
+                        <div style="color:${uColor}; font-weight:700; font-size:1.15rem;">${a.units_net > 0 ? "+" : ""}${a.units_net}u</div>
+                        <div style="color:#e2e8f0; font-size:0.82rem;">${record} · ${pct}${pend}</div>
+                    </td>`;
+                };
+                html += `<div style="margin-bottom:1.75rem;">
+                    <h3 style="margin:0 0 0.35rem 0; color:#4299e1;">AI picks — running record</h3>
+                    <div style="color:#a0aec0; font-size:0.78rem; margin-bottom:0.5rem;">Unit P/L using 1u/2u/3u sizing. Pending picks are games not yet finalized.</div>
+                    <table style="width:100%; border-collapse:collapse; background:#1a202c; border:1px solid #2d3748; border-radius:6px;">
+                        <tr>
+                            ${cell("Today", agg.today)}
+                            ${cell("Last 7 Days", agg.week)}
+                            ${cell("Season", agg.season)}
+                        </tr>
+                    </table>
                 </div>`;
             }
 
@@ -1164,7 +1270,7 @@
             document.getElementById("content").innerHTML = '<div class="empty">Loading...</div>';
             if (currentView === "gambling") {
                 const roi = await loadRoi();
-                renderGambling(roi);
+                await renderGambling(roi);
             } else if (currentView === "postgame") {
                 await renderPostgame(dateStr);
             } else if (currentView === "perf_metrics") {
