@@ -954,8 +954,100 @@
                 return `<td style="padding:6px; text-align:center; color:${color}; font-weight:600;">${p.toFixed(0)}%${extra ? " <span style='color:#a0aec0; font-weight:400; font-size:0.85em;'>"+extra+"</span>" : ""}</td>`;
             };
 
-            // ---- Section 1: AI summary card ----
+            // ---- Section 0: Top tallies — running record + confidence breakdown ----
+            // These sit at the very top so the trust signal for the AI picks is
+            // the first thing on the tab.
+            const agg = picksHist?.aggregates;
             let html = "";
+
+            // Aggregate every pick in history by confidence level for the
+            // separate breakdown card. Same source of truth as the running
+            // record — every pick was graded during the daily rebuild.
+            const confBuckets = {
+                high:   {picks:0, wins:0, losses:0, pushes:0, pending:0, units_net:0},
+                medium: {picks:0, wins:0, losses:0, pushes:0, pending:0, units_net:0},
+                low:    {picks:0, wins:0, losses:0, pushes:0, pending:0, units_net:0},
+            };
+            if (picksHist?.picks_by_date) {
+                for (const day of Object.values(picksHist.picks_by_date)) {
+                    for (const p of (day.picks || [])) {
+                        const key = confBuckets[p.confidence] ? p.confidence : "medium";
+                        const b = confBuckets[key];
+                        b.picks++;
+                        if (p.outcome === "W")      { b.wins++;   b.units_net += p.net; }
+                        else if (p.outcome === "L") { b.losses++; b.units_net += p.net; }
+                        else if (p.outcome === "push") b.pushes++;
+                        else b.pending++;
+                    }
+                }
+            }
+            const totalGraded = Object.values(confBuckets).reduce((s, b) => s + b.wins + b.losses, 0);
+
+            // Running record card — Today / Week / Season
+            if (agg) {
+                const cell = (label, a) => {
+                    const uColor = a.units_net > 0 ? "#22c55e" : a.units_net < 0 ? "#ef4444" : "#a0aec0";
+                    const pct = a.hit_pct != null ? `${(a.hit_pct*100).toFixed(0)}%` : "-";
+                    const record = `${a.wins}-${a.losses}${a.pushes ? "-"+a.pushes : ""}`;
+                    const pend = a.pending ? ` <span style='color:#eab308; font-size:0.85em;'>+${a.pending} pending</span>` : "";
+                    return `<td style="padding:10px 14px; text-align:center;">
+                        <div style="color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:2px;">${label}</div>
+                        <div style="color:${uColor}; font-weight:700; font-size:1.25rem;">${a.units_net > 0 ? "+" : ""}${a.units_net}u</div>
+                        <div style="color:#e2e8f0; font-size:0.82rem;">${record} · ${pct}${pend}</div>
+                    </td>`;
+                };
+                html += `<div style="margin-bottom:1rem;">
+                    <h3 style="margin:0 0 0.35rem 0; color:#4299e1;">AI picks — running record</h3>
+                    <div style="color:#a0aec0; font-size:0.78rem; margin-bottom:0.5rem;">Unit P/L using 1u/2u/3u sizing. Pending picks are games not yet finalized.</div>
+                    <table style="width:100%; border-collapse:collapse; background:#1a202c; border:1px solid #2d3748; border-radius:6px;">
+                        <tr>
+                            ${cell("Today", agg.today)}
+                            ${cell("Last 7 Days", agg.week)}
+                            ${cell("Season", agg.season)}
+                        </tr>
+                    </table>
+                </div>`;
+            }
+
+            // Confidence breakdown card — how the AI's own self-rated confidence
+            // predicts actual results. Answers: "should I lean harder into high-
+            // conf picks and skip the low-conf ones?"
+            if (totalGraded > 0 || Object.values(confBuckets).some(b => b.pending > 0)) {
+                const confRow = (label, key, color) => {
+                    const b = confBuckets[key];
+                    const uColor = b.units_net > 0 ? "#22c55e" : b.units_net < 0 ? "#ef4444" : "#a0aec0";
+                    const graded = b.wins + b.losses;
+                    const pct = graded > 0 ? `${(b.wins/graded*100).toFixed(0)}%` : "—";
+                    return `<tr style="border-bottom:1px solid #2d3748;">
+                        <td style="padding:6px 10px; color:${color}; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; font-size:0.78rem;">${label}</td>
+                        <td style="padding:6px 10px; text-align:center; color:#e2e8f0;">${b.picks}</td>
+                        <td style="padding:6px 10px; text-align:center;">${b.wins}-${b.losses}${b.pushes ? "-"+b.pushes : ""}</td>
+                        <td style="padding:6px 10px; text-align:center; color:#e2e8f0; font-weight:600;">${pct}</td>
+                        <td style="padding:6px 10px; text-align:center; color:${uColor}; font-weight:700;">${b.units_net > 0 ? "+" : ""}${b.units_net}u</td>
+                        <td style="padding:6px 10px; text-align:center; color:#eab308;">${b.pending || ""}</td>
+                    </tr>`;
+                };
+                html += `<div style="margin-bottom:1.5rem;">
+                    <h3 style="margin:0 0 0.35rem 0; color:#4299e1;">AI picks by confidence — top 5</h3>
+                    <div style="color:#a0aec0; font-size:0.78rem; margin-bottom:0.5rem;">Track how each confidence tier actually performs. All-time across every daily card.</div>
+                    <table style="width:100%; border-collapse:collapse; background:#1a202c; border:1px solid #2d3748; border-radius:6px; font-size:0.85rem;">
+                        <thead><tr style="background:#252932;">
+                            <th style="padding:6px 10px; text-align:left; color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em;">Confidence</th>
+                            <th style="padding:6px 10px; text-align:center; color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em;">Picks</th>
+                            <th style="padding:6px 10px; text-align:center; color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em;">W-L</th>
+                            <th style="padding:6px 10px; text-align:center; color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em;">Hit %</th>
+                            <th style="padding:6px 10px; text-align:center; color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em;">Units</th>
+                            <th style="padding:6px 10px; text-align:center; color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em;">Pending</th>
+                        </tr></thead><tbody>
+                            ${confRow("High",   "high",   "#22c55e")}
+                            ${confRow("Medium", "medium", "#eab308")}
+                            ${confRow("Low",    "low",    "#a0aec0")}
+                        </tbody>
+                    </table>
+                </div>`;
+            }
+
+            // ---- Section 1: AI summary card ----
             if (summary?.summary) {
                 const genStr = summary.generated_at ? summary.generated_at.replace("T", " ") : "";
                 html += `<div style="background:linear-gradient(180deg,#2d3748,#1a202c); border:1px solid #d69e2e; border-radius:8px; padding:1rem 1.25rem; margin-bottom:1.5rem;">
@@ -971,10 +1063,10 @@
                 </div>`;
             }
 
-            // ---- Section 1b: AI Best-5 picks + running record ----
+            // ---- Section 1b: AI Best-5 picks card ----
+            // (Running record + confidence breakdown moved to Section 0 above.)
             const todayStr = stats.as_of;
             const todayPicks = picksHist?.picks_by_date?.[todayStr];
-            const agg = picksHist?.aggregates;
             if (todayPicks && todayPicks.picks?.length) {
                 html += `<div style="background:linear-gradient(180deg,#1e2a3d,#141c2b); border:1px solid #4299e1; border-radius:8px; padding:1rem 1.25rem; margin-bottom:1.5rem;">
                     <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
@@ -1006,32 +1098,6 @@
             } else if (picksHist) {
                 html += `<div style="background:#252932; border:1px solid #4a5568; border-radius:6px; padding:0.85rem 1rem; margin-bottom:1.5rem; color:#a0aec0; font-size:0.85rem;">
                     Today's AI picks not yet generated — will appear after today's daily run.
-                </div>`;
-            }
-
-            // Running record — today / week / season
-            if (agg) {
-                const cell = (label, a) => {
-                    const uColor = a.units_net > 0 ? "#22c55e" : a.units_net < 0 ? "#ef4444" : "#a0aec0";
-                    const pct = a.hit_pct != null ? `${(a.hit_pct*100).toFixed(0)}%` : "-";
-                    const record = `${a.wins}-${a.losses}${a.pushes ? "-"+a.pushes : ""}`;
-                    const pend = a.pending ? ` <span style='color:#eab308; font-size:0.85em;'>+${a.pending} pending</span>` : "";
-                    return `<td style="padding:8px 12px; text-align:center;">
-                        <div style="color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:2px;">${label}</div>
-                        <div style="color:${uColor}; font-weight:700; font-size:1.15rem;">${a.units_net > 0 ? "+" : ""}${a.units_net}u</div>
-                        <div style="color:#e2e8f0; font-size:0.82rem;">${record} · ${pct}${pend}</div>
-                    </td>`;
-                };
-                html += `<div style="margin-bottom:1.75rem;">
-                    <h3 style="margin:0 0 0.35rem 0; color:#4299e1;">AI picks — running record</h3>
-                    <div style="color:#a0aec0; font-size:0.78rem; margin-bottom:0.5rem;">Unit P/L using 1u/2u/3u sizing. Pending picks are games not yet finalized.</div>
-                    <table style="width:100%; border-collapse:collapse; background:#1a202c; border:1px solid #2d3748; border-radius:6px;">
-                        <tr>
-                            ${cell("Today", agg.today)}
-                            ${cell("Last 7 Days", agg.week)}
-                            ${cell("Season", agg.season)}
-                        </tr>
-                    </table>
                 </div>`;
             }
 
