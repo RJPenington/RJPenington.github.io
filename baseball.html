@@ -381,25 +381,46 @@
             let html = "";
             if (aiHist?.aggregates) {
                 const a = aiHist.aggregates;
+                // Same flat/scaled split as the R1/R2/R3 cards below.
+                // Flat = every pick $100 (units_net_flat = wins - losses).
+                // Scaled = pick's tier size (agg.units_net).
                 const aiCell = (label, agg) => {
-                    const uColor = agg.units_net > 0 ? "#22c55e" : agg.units_net < 0 ? "#ef4444" : "#a0aec0";
-                    const dollars = agg.units_net * AI_DOLLAR_PER_UNIT;
+                    const flatNet   = agg.wins - agg.losses;
+                    const scaledNet = agg.units_net;
+                    const flatColor   = flatNet   > 0 ? "#22c55e" : flatNet   < 0 ? "#ef4444" : "#a0aec0";
+                    const scaledColor = scaledNet > 0 ? "#22c55e" : scaledNet < 0 ? "#ef4444" : "#a0aec0";
+                    const flat$   = flatNet   * AI_DOLLAR_PER_UNIT;
+                    const scaled$ = scaledNet * AI_DOLLAR_PER_UNIT;
                     const bets = agg.wins + agg.losses;
-                    const roiPct = bets > 0 ? (agg.units_net / bets * 100) : 0;
+                    const flatRoi   = bets > 0 ? (flatNet / bets * 100) : 0;
+                    const scaledUnits = bets > 0
+                        ? Object.values(aiHist.picks_by_date || {})
+                            .flatMap(d => d.picks || [])
+                            .reduce((s, p) => s + (p.units || 0), 0)
+                        : 0;
+                    const scaledRoi = scaledUnits > 0 ? (scaledNet / scaledUnits * 100) : 0;
                     const record = `${agg.wins}-${agg.losses}${agg.pushes ? "-"+agg.pushes : ""}${agg.pending ? " +"+agg.pending+"p" : ""}`;
-                    return `<div style="flex:1; min-width:0; padding:0.4rem; text-align:center;">
-                        <div style="color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:2px;">${label}</div>
-                        <div style="color:${uColor}; font-weight:700; font-size:1.15rem;">${dollars > 0 ? "+" : ""}$${dollars.toFixed(0)} <span style="color:#a0aec0; font-size:0.72rem; font-weight:400;">(${roiPct > 0 ? "+" : ""}${roiPct.toFixed(1)}%)</span></div>
-                        <div style="color:#e2e8f0; font-size:0.82rem;">${record} · ${agg.units_net > 0 ? "+" : ""}${agg.units_net}u</div>
+                    const block = (subLabel, dollars, color, roi) => `
+                        <div style="text-align:center; padding:0 6px;">
+                            <div style="color:#a0aec0; font-size:0.62rem; text-transform:uppercase; letter-spacing:0.05em;">${subLabel}</div>
+                            <div style="color:${color}; font-weight:700; font-size:1.05rem;">${dollars > 0 ? "+" : ""}$${dollars.toFixed(0)}</div>
+                            <div style="color:#a0aec0; font-size:0.7rem;">${roi > 0 ? "+" : ""}${roi.toFixed(1)}%</div>
+                        </div>`;
+                    return `<div style="flex:1; min-width:0; padding:0.4rem; text-align:center; border-right:1px solid #4a5568;">
+                        <div style="color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:4px;">${label}</div>
+                        <div style="display:flex; justify-content:center; gap:6px; margin-bottom:4px;">
+                            ${block("Flat",   flat$,   flatColor,   flatRoi)}
+                            <div style="width:1px; background:#4a5568; align-self:stretch;"></div>
+                            ${block("Scaled", scaled$, scaledColor, scaledRoi)}
+                        </div>
+                        <div style="color:#e2e8f0; font-size:0.75rem;">${record}</div>
                     </div>`;
                 };
                 html += `<div style="background:linear-gradient(180deg,#1e2a3d,#141c2b); padding:0.8rem 1rem; border-radius:6px; border:1px solid #4299e1; margin-bottom:1.25rem;">
-                    <div style="text-align:center; font-weight:700; font-size:1.05rem; margin-bottom:0.5rem; color:#63b3ed;">AI Best-5 Picks — daily card at $${AI_DOLLAR_PER_UNIT}/unit</div>
+                    <div style="text-align:center; font-weight:700; font-size:1.05rem; margin-bottom:0.5rem; color:#63b3ed;">AI Best-5 Picks — $${AI_DOLLAR_PER_UNIT}/unit · flat + scaled</div>
                     <div style="display:flex; gap:0.4rem;">
                         ${aiCell("Today", a.today)}
-                        <div style="width:1px; background:#4a5568; align-self:stretch;"></div>
                         ${aiCell("Last 7 Days", a.week)}
-                        <div style="width:1px; background:#4a5568; align-self:stretch;"></div>
                         ${aiCell("Season", a.season)}
                     </div>
                 </div>`;
@@ -983,22 +1004,38 @@
             }
             const totalGraded = Object.values(confBuckets).reduce((s, b) => s + b.wins + b.losses, 0);
 
-            // Running record card — Today / Week / Season
+            // Running record card — Today / Week / Season with BOTH flat and
+            // scaled unit P/L side by side. Flat = every pick counts as 1u
+            // (ignores the AI's tier sizing); scaled = uses the 1u/2u/3u
+            // sizes the AI assigned.
             if (agg) {
+                const uColor = n => n > 0 ? "#22c55e" : n < 0 ? "#ef4444" : "#a0aec0";
                 const cell = (label, a) => {
-                    const uColor = a.units_net > 0 ? "#22c55e" : a.units_net < 0 ? "#ef4444" : "#a0aec0";
+                    const flatNet   = a.wins - a.losses;   // 1u per pick
+                    const scaledNet = a.units_net;         // AI-tier weighted
                     const pct = a.hit_pct != null ? `${(a.hit_pct*100).toFixed(0)}%` : "-";
                     const record = `${a.wins}-${a.losses}${a.pushes ? "-"+a.pushes : ""}`;
-                    const pend = a.pending ? ` <span style='color:#eab308; font-size:0.85em;'>+${a.pending} pending</span>` : "";
-                    return `<td style="padding:10px 14px; text-align:center;">
-                        <div style="color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:2px;">${label}</div>
-                        <div style="color:${uColor}; font-weight:700; font-size:1.25rem;">${a.units_net > 0 ? "+" : ""}${a.units_net}u</div>
-                        <div style="color:#e2e8f0; font-size:0.82rem;">${record} · ${pct}${pend}</div>
+                    const pend = a.pending ? ` · <span style='color:#eab308;'>+${a.pending} pending</span>` : "";
+                    return `<td style="padding:10px 14px; text-align:center; border-right:1px solid #2d3748;">
+                        <div style="color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:6px;">${label}</div>
+                        <div style="display:flex; justify-content:center; gap:14px; margin-bottom:4px;">
+                            <div>
+                                <div style="color:#a0aec0; font-size:0.62rem; text-transform:uppercase; letter-spacing:0.05em;">Flat</div>
+                                <div style="color:${uColor(flatNet)}; font-weight:700; font-size:1.1rem;">${flatNet > 0 ? "+" : ""}${flatNet}u</div>
+                            </div>
+                            <div style="border-left:1px solid #2d3748; padding-left:14px;">
+                                <div style="color:#a0aec0; font-size:0.62rem; text-transform:uppercase; letter-spacing:0.05em;">Scaled</div>
+                                <div style="color:${uColor(scaledNet)}; font-weight:700; font-size:1.1rem;">${scaledNet > 0 ? "+" : ""}${scaledNet}u</div>
+                            </div>
+                        </div>
+                        <div style="color:#e2e8f0; font-size:0.78rem;">${record} · ${pct}${pend}</div>
                     </td>`;
                 };
                 html += `<div style="margin-bottom:1rem;">
                     <h3 style="margin:0 0 0.35rem 0; color:#4299e1;">AI picks — running record</h3>
-                    <div style="color:#a0aec0; font-size:0.78rem; margin-bottom:0.5rem;">Unit P/L using 1u/2u/3u sizing. Pending picks are games not yet finalized.</div>
+                    <div style="color:#a0aec0; font-size:0.78rem; margin-bottom:0.5rem;">
+                        <strong>Flat</strong> = 1u per pick (ignore tier). <strong>Scaled</strong> = AI's 1u/2u/3u sizing. Pending = games not yet finalized.
+                    </div>
                     <table style="width:100%; border-collapse:collapse; background:#1a202c; border:1px solid #2d3748; border-radius:6px;">
                         <tr>
                             ${cell("Today", agg.today)}
@@ -1015,7 +1052,10 @@
             if (totalGraded > 0 || Object.values(confBuckets).some(b => b.pending > 0)) {
                 const confRow = (label, key, color) => {
                     const b = confBuckets[key];
-                    const uColor = b.units_net > 0 ? "#22c55e" : b.units_net < 0 ? "#ef4444" : "#a0aec0";
+                    const flatNet = b.wins - b.losses;
+                    const scaledNet = b.units_net;
+                    const flatColor   = flatNet   > 0 ? "#22c55e" : flatNet   < 0 ? "#ef4444" : "#a0aec0";
+                    const scaledColor = scaledNet > 0 ? "#22c55e" : scaledNet < 0 ? "#ef4444" : "#a0aec0";
                     const graded = b.wins + b.losses;
                     const pct = graded > 0 ? `${(b.wins/graded*100).toFixed(0)}%` : "—";
                     return `<tr style="border-bottom:1px solid #2d3748;">
@@ -1023,7 +1063,8 @@
                         <td style="padding:6px 10px; text-align:center; color:#e2e8f0;">${b.picks}</td>
                         <td style="padding:6px 10px; text-align:center;">${b.wins}-${b.losses}${b.pushes ? "-"+b.pushes : ""}</td>
                         <td style="padding:6px 10px; text-align:center; color:#e2e8f0; font-weight:600;">${pct}</td>
-                        <td style="padding:6px 10px; text-align:center; color:${uColor}; font-weight:700;">${b.units_net > 0 ? "+" : ""}${b.units_net}u</td>
+                        <td style="padding:6px 10px; text-align:center; color:${flatColor}; font-weight:700;">${flatNet > 0 ? "+" : ""}${flatNet}u</td>
+                        <td style="padding:6px 10px; text-align:center; color:${scaledColor}; font-weight:700;">${scaledNet > 0 ? "+" : ""}${scaledNet}u</td>
                         <td style="padding:6px 10px; text-align:center; color:#eab308;">${b.pending || ""}</td>
                     </tr>`;
                 };
@@ -1036,7 +1077,8 @@
                             <th style="padding:6px 10px; text-align:center; color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em;">Picks</th>
                             <th style="padding:6px 10px; text-align:center; color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em;">W-L</th>
                             <th style="padding:6px 10px; text-align:center; color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em;">Hit %</th>
-                            <th style="padding:6px 10px; text-align:center; color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em;">Units</th>
+                            <th style="padding:6px 10px; text-align:center; color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em;">Flat u</th>
+                            <th style="padding:6px 10px; text-align:center; color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em;">Scaled u</th>
                             <th style="padding:6px 10px; text-align:center; color:#a0aec0; font-size:0.7rem; letter-spacing:0.08em;">Pending</th>
                         </tr></thead><tbody>
                             ${confRow("High",   "high",   "#22c55e")}
