@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-08-12",
+  "as_of": "2026-08-13",
   "aggregates": {
     "today": {
       "picks": 5,
@@ -11,22 +11,22 @@
       "hit_pct": null
     },
     "week": {
-      "picks": 5,
-      "wins": 0,
-      "losses": 0,
+      "picks": 10,
+      "wins": 3,
+      "losses": 2,
       "pushes": 0,
       "pending": 5,
-      "units_net": 0.0,
-      "hit_pct": null
+      "units_net": 3.0,
+      "hit_pct": 0.6
     },
     "season": {
-      "picks": 5,
-      "wins": 0,
-      "losses": 0,
+      "picks": 10,
+      "wins": 3,
+      "losses": 2,
       "pushes": 0,
       "pending": 5,
-      "units_net": 0.0,
-      "hit_pct": null
+      "units_net": 3.0,
+      "hit_pct": 0.6
     }
   },
   "picks_by_date": {
@@ -45,8 +45,8 @@
           "units": 3,
           "confidence": "high",
           "reasoning": "All three ratings agree on Tampa Bay with huge deltas (R1 -3.82, R2 -3.10, R3 -3.07), and TBR is the best when-model-likes-them team on the board at 22-8 (73%) overall and 17-4 (81%, +20.0u) on strong plays. Opponent ATH is the worst: 1-5 (17%) when liked and 0-3 (0%, -4.0u) as a strong play, and R3 leads all ratings on strong plays (season 127-109, 54%, +32.0u; 30d +15.0u).",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 3
         },
         {
           "rank": 2,
@@ -58,8 +58,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "Unanimous agreement (R1 +1.34, R2 +1.34, R3 +1.01) and the Dodgers are 10-2 (83%, +13.0u) on strong plays when the model likes them, 12-10 overall. KCR is just 5-7 (42%) when liked, giving a clean edge on the side the model is most profitable backing.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 3,
@@ -71,8 +71,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R1 (-1.73) and R2 (-1.46) both flag Chicago strong and R3 leans the same way (-0.98), so there is no cross-model disagreement. CHC is 17-6 (74%) when the model likes them with strong plays 7-4 (64%, +5.0u), while WSN is a mediocre 9-11 (45%) and 5-5 (50%) on strongs.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 4,
@@ -84,8 +84,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R2 crosses the strong threshold at +1.13 and R1 agrees at +0.78; Detroit is 18-9 (67%) when liked with strong plays 13-6 (68%, +14.0u), one of the most profitable teams in the sample. CLE is the weaker side at 4-5 (44%) overall and 2-4 (33%, -2.0u) on strongs, and the bullpen category driving edges here is HOT (14d 105-84, 56% vs 51% season).",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 5,
@@ -97,13 +97,96 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "Largest unanimous delta among the 1u tier (R1 +1.58, R2 +1.87, R3 +1.17), and Colorado is the worst-supported side on the slate at 2-7 (22%) when the model likes them and 1-3 (25%, -2.0u) on strongs. ARI is a modest 11-9 (55%) when liked, so the edge is mainly the fade of COL plus triple-model consensus.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         }
       ],
       "usage": {
         "input_tokens": 4494,
         "output_tokens": 1977
+      },
+      "totals": {
+        "wins": 3,
+        "losses": 2,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": 3.0
+      }
+    },
+    "2026-08-13": {
+      "generated_at": "2026-08-13T06:33:31",
+      "model": "claude-opus-5",
+      "date": "2026-08-13",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "BOS",
+          "home_team": "TOR",
+          "away_team": "BOS",
+          "rating_source": "R3",
+          "delta": 1.36,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "R3 is the best strong-play rating (season 130-111, 54%, +35.0u; 30d 85-77, +18.0u) and it flips to BOS against R1/R2's mild TOR lean. Boston is the single best when-model-likes-them team on the slate at 25-8 (76%) overall and 13-6 (68%, +7.0u) on strong plays, while TOR has only a 5-4 (56%) sample.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "CHC",
+          "home_team": "WSN",
+          "away_team": "CHC",
+          "rating_source": "R1",
+          "delta": 1.0,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "All three ratings side with the Cubs (R1 -1.00 strong, R2 -0.48, R3 -0.34), and CHC is 18-6 (75%) when the model likes them with strong plays 8-4 (67%, +6.0u). WSN is a poor backing side at 9-11 (45%) and 5-5 on strong plays, and R1 strong plays are profitable on the season (139-126, +27.0u).",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "MIN",
+          "home_team": "MIN",
+          "away_team": "PHI",
+          "rating_source": "R2",
+          "delta": 1.9,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "Unanimous agreement with large edges (R1 +1.47, R2 +1.90, R3 +1.61) in a pick'em priced game (MIN -106), which is where the biggest EV sits. MIN is 3-1 (75%, +2.0u) on strong plays while PHI is a flat 12-12 (50%) and 6-5 (-1.0u) strong; R2 strong plays are 24-23 (+2.0u) over 7d.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "MIA",
+          "home_team": "MIA",
+          "away_team": "PIT",
+          "rating_source": "R1",
+          "delta": 1.78,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "Triple-rating agreement (R1 +1.78, R2 +1.51, R3 +1.22) all at strong-play thresholds, and the fade side is the slate's worst backing team: PIT 4-11 (27%) when liked, 1-3 (25%, -2.0u) strong. MIA is a modest but profitable 7-6 (54%, +5.0u) on strong plays and gets a plus price at +108.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 5,
+          "pick": "NYY",
+          "home_team": "NYY",
+          "away_team": "SEA",
+          "rating_source": "R1",
+          "delta": 1.93,
+          "units": 1,
+          "confidence": "low",
+          "reasoning": "Largest unanimous edge on the board (R1 +1.93, R2 +1.91, R3 +1.02) and Seattle is a proven fade at 5-11 (31%) when liked and 1-4 (20%, -3.0u) on strong plays. NYY's own strong-play record is soft (3-5, 38%, -2.0u), which caps this at a 1u low-confidence add rather than a headline play.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 3602,
+        "output_tokens": 2150
       },
       "totals": {
         "wins": 0,
