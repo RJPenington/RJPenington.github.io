@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-08-17",
+  "as_of": "2026-08-18",
   "aggregates": {
     "today": {
       "picks": 5,
@@ -11,22 +11,22 @@
       "hit_pct": null
     },
     "week": {
-      "picks": 30,
-      "wins": 8,
-      "losses": 17,
+      "picks": 35,
+      "wins": 11,
+      "losses": 19,
       "pushes": 0,
       "pending": 5,
-      "units_net": -10.0,
-      "hit_pct": 0.32
+      "units_net": -11.0,
+      "hit_pct": 0.36666666666666664
     },
     "season": {
-      "picks": 30,
-      "wins": 8,
-      "losses": 17,
+      "picks": 35,
+      "wins": 11,
+      "losses": 19,
       "pushes": 0,
       "pending": 5,
-      "units_net": -10.0,
-      "hit_pct": 0.32
+      "units_net": -11.0,
+      "hit_pct": 0.36666666666666664
     }
   },
   "picks_by_date": {
@@ -460,8 +460,8 @@
           "units": 3,
           "confidence": "high",
           "reasoning": "All three ratings agree on STL with the largest edge on the board (R1 -2.49, R2 -2.83, R3 -2.46), the only triple-strong game today. Fading Cincinnati is the sharpest angle in the team splits: CIN is just 6-12 (33%) when a model likes them and 3-7 (30%, -5.0u) on strong plays, while STL sits 9-7 (56%) when liked. R2 is the steadiest strong-play book recently (7d 23-26, 47% vs R1 40% and R3 36%) and is +21.0u for the season.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -3
         },
         {
           "rank": 2,
@@ -473,8 +473,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "LAD is the best when-liked team on the slate for strong plays at 11-2 (85%, +14.0u), and the counterparty COL is 3-7 (30%) when liked with a 1-3 (25%, -2.0u) strong record. R1 (-1.28) and R2 (-1.29) both flag it strong, and the edge leans on bullpen/hitting inputs that are hot at 14d 99-88 (53%) and 101-86 (54%) rather than the COLD sp bucket (43%, -6.2 pts).",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 3,
@@ -486,8 +486,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R3 is the strongest strong-play rating historically (season 136-125, 52%, +26.0u, and 30d 87-87 with +9.0u — the only positive 30-day unit line of the three) and it is the only book to flag PHI strong at +1.21. PHI is 8-5 (62%) on strong plays when liked versus MIA at 8-8 (50%), and all three ratings agree on the Phillies side (R1 +0.60, R2 +0.38).",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 4,
@@ -499,8 +499,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R2 has the largest strong edge here (+1.41) with R1 agreeing (+1.30) and R3 leaning the same way (+0.93). The fade side is the key: ATH is 3-6 (33%) when liked and a brutal 0-4 (0%, -5.0u) on strong plays, the worst mark on today's board, while R2's season strong ledger is +21.0u.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 5,
@@ -512,13 +512,96 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "R2 flags ATL strong at -1.26 with R1 (-0.99) and R3 (-0.60) on the same side; ATL is 10-8 (56%) when liked versus MIN at 8-10 (44%). Edge rests on the trends+bullpen combo, the second-best pairing at 53.5% (192-167), with both buckets running 52-53% over the last 14 days, so a small 1u exposure is appropriate given the even 4-4 ATL strong sample.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         }
       ],
       "usage": {
         "input_tokens": 3760,
         "output_tokens": 2163
+      },
+      "totals": {
+        "wins": 3,
+        "losses": 2,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": -1.0
+      }
+    },
+    "2026-08-18": {
+      "generated_at": "2026-08-18T05:26:28",
+      "model": "claude-opus-5",
+      "date": "2026-08-18",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "BOS",
+          "home_team": "BOS",
+          "away_team": "ARI",
+          "rating_source": "R3",
+          "delta": 1.98,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "All three ratings agree on Boston (R1 +1.31, R2 +1.31, R3 +1.98) and R3 has been the strongest strong-play rating on the season at 137-128 (52%, +22.0u). BOS when the model likes them is 26-10 (72%) overall and 13-6 (68%, +7.0u) as a strong play, while ARI strong plays are just 3-6 (33%, -4.0u), so the model's read on the underdog side has been poor.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "LAD",
+          "home_team": "COL",
+          "away_team": "LAD",
+          "rating_source": "R1",
+          "delta": 1.91,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "Unanimous strong play (R1 1.91, R2 1.59, R3 1.31) on the best profile in the database: LAD as a model strong play is 12-2 (86%, +15.0u) and 15-11 (58%) overall. COL when liked is 3-7 (30%) with strong plays 1-3 (25%, -2.0u), so the fade side is well supported.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "MIL",
+          "home_team": "MIL",
+          "away_team": "SEA",
+          "rating_source": "R2",
+          "delta": 1.71,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "Three-way agreement (R1 1.01, R2 1.71, R3 1.59) with the largest edge from R2. MIL is 24-14 (63%) when the model likes them and 13-7 (65%, +5.0u) on strong plays, while SEA is 5-11 (31%) when liked and 1-4 (20%, -3.0u) as a strong play — one of the worst fade profiles on the slate.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "PHI",
+          "home_team": "PHI",
+          "away_team": "MIA",
+          "rating_source": "R3",
+          "delta": 1.39,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "R1 (+1.08) and R3 (+1.39) both flag Philadelphia as a strong play with R2 leaning the same way (+0.84). PHI is 15-12 (56%) when liked with strong plays 8-5 (62%, +1.0u), and R3's season strong-play mark of 52% (+22.0u) is the best of the three engines; MIA strong plays are only break-even at 8-8 (50%).",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 5,
+          "pick": "KCR",
+          "home_team": "KCR",
+          "away_team": "ATH",
+          "rating_source": "R2",
+          "delta": 1.16,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "R2 (+1.16) and R3 (+1.06) both make Kansas City a strong play with R1 agreeing at +0.92, so all three sides line up. ATH is the worst fade profile in the sample at 3-6 (33%) when liked and 0-4 (0%, -5.0u) on strong plays, while KCR strong plays are 2-1 (67%, +1.0u).",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 4535,
+        "output_tokens": 2077
       },
       "totals": {
         "wins": 0,
