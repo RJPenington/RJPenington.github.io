@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-08-18",
+  "as_of": "2026-08-19",
   "aggregates": {
     "today": {
       "picks": 5,
@@ -11,22 +11,22 @@
       "hit_pct": null
     },
     "week": {
-      "picks": 35,
-      "wins": 11,
+      "picks": 40,
+      "wins": 16,
       "losses": 19,
       "pushes": 0,
       "pending": 5,
-      "units_net": -11.0,
-      "hit_pct": 0.36666666666666664
+      "units_net": -6.0,
+      "hit_pct": 0.45714285714285713
     },
     "season": {
-      "picks": 35,
-      "wins": 11,
+      "picks": 40,
+      "wins": 16,
       "losses": 19,
       "pushes": 0,
       "pending": 5,
-      "units_net": -11.0,
-      "hit_pct": 0.36666666666666664
+      "units_net": -6.0,
+      "hit_pct": 0.45714285714285713
     }
   },
   "picks_by_date": {
@@ -543,8 +543,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "All three ratings agree on Boston (R1 +1.31, R2 +1.31, R3 +1.98) and R3 has been the strongest strong-play rating on the season at 137-128 (52%, +22.0u). BOS when the model likes them is 26-10 (72%) overall and 13-6 (68%, +7.0u) as a strong play, while ARI strong plays are just 3-6 (33%, -4.0u), so the model's read on the underdog side has been poor.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 2,
@@ -556,8 +556,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "Unanimous strong play (R1 1.91, R2 1.59, R3 1.31) on the best profile in the database: LAD as a model strong play is 12-2 (86%, +15.0u) and 15-11 (58%) overall. COL when liked is 3-7 (30%) with strong plays 1-3 (25%, -2.0u), so the fade side is well supported.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 3,
@@ -569,8 +569,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "Three-way agreement (R1 1.01, R2 1.71, R3 1.59) with the largest edge from R2. MIL is 24-14 (63%) when the model likes them and 13-7 (65%, +5.0u) on strong plays, while SEA is 5-11 (31%) when liked and 1-4 (20%, -3.0u) as a strong play — one of the worst fade profiles on the slate.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 4,
@@ -582,8 +582,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R1 (+1.08) and R3 (+1.39) both flag Philadelphia as a strong play with R2 leaning the same way (+0.84). PHI is 15-12 (56%) when liked with strong plays 8-5 (62%, +1.0u), and R3's season strong-play mark of 52% (+22.0u) is the best of the three engines; MIA strong plays are only break-even at 8-8 (50%).",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 5,
@@ -595,13 +595,96 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R2 (+1.16) and R3 (+1.06) both make Kansas City a strong play with R1 agreeing at +0.92, so all three sides line up. ATH is the worst fade profile in the sample at 3-6 (33%) when liked and 0-4 (0%, -5.0u) on strong plays, while KCR strong plays are 2-1 (67%, +1.0u).",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
         "input_tokens": 4535,
         "output_tokens": 2077
+      },
+      "totals": {
+        "wins": 5,
+        "losses": 0,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": 5.0
+      }
+    },
+    "2026-08-19": {
+      "generated_at": "2026-08-19T05:31:15",
+      "model": "claude-opus-5",
+      "date": "2026-08-19",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "MIL",
+          "home_team": "MIL",
+          "away_team": "SEA",
+          "rating_source": "R2",
+          "delta": 2.78,
+          "units": 3,
+          "confidence": "high",
+          "reasoning": "R2 posts the largest edge here at +2.78 and MIL is one of the best when-model-likes-them teams on the board: 25-14 (64%) overall and 14-7 (67%, +6.0u) on strong plays. The other side is the worst possible endorsement — SEA is just 5-11 (31%) when liked and 1-4 (20%, -3.0u) on strongs — and all three ratings agree (R1 +2.33, R3 +2.37).",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "BOS",
+          "home_team": "BOS",
+          "away_team": "ARI",
+          "rating_source": "R3",
+          "delta": 1.76,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "Unanimous strong play (R1 +1.84, R2 +1.83, R3 +1.76) on the slate's best profile team: BOS is 27-10 (73%) when the model likes them and 14-6 (70%, +8.0u) on strong plays. ARI is the mirror image at 12-12 overall and 3-6 (33%, -4.0u) on strongs, and R3 leads all ratings on season strongs at 144-130 (53%, +27.0u).",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "TBR",
+          "home_team": "TBR",
+          "away_team": "TOR",
+          "rating_source": "R3",
+          "delta": 1.37,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "R3 is the only rating to flag this as strong (+1.37) and it is the top strong-play model on the season (144-130, 53%, +27.0u) plus best 30-day (90-89, +8.0u). TBR is 24-10 (71%) when liked and an outstanding 18-5 (78%, +22.0u) on strong plays, while TOR is only 1-2 on strongs; all three ratings lean the same way (R1 +0.29, R2 +0.78).",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "CLE",
+          "home_team": "CLE",
+          "away_team": "SFG",
+          "rating_source": "R3",
+          "delta": 3.29,
+          "units": 3,
+          "confidence": "medium",
+          "reasoning": "Biggest number on the card with full agreement (R1 +3.71, R2 +3.39, R3 +3.29) — a gap that large has to be respected even though CLE is only 5-6 (45%) when liked. The fade side supports it: SFG is 8-13 (38%) when the model likes them and 2-6 (25%, -7.0u) on strong plays, so the market side has been the losing side historically.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 5,
+          "pick": "KCR",
+          "home_team": "KCR",
+          "away_team": "ATH",
+          "rating_source": "R2",
+          "delta": 1.36,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "All three ratings make this a strong play in a tight band (+1.33/+1.36/+1.28), and KCR is 8-7 (53%) when liked with a 2-1 (67%, +1.0u) strong record. ATH is the worst fade profile on the slate at 3-6 (33%) when liked and 0-4 (0%, -5.0u) on strong plays.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 4477,
+        "output_tokens": 2129
       },
       "totals": {
         "wins": 0,
