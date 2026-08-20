@@ -1678,11 +1678,19 @@
                     // SP category can be excluded from the game's final rating
                     // when either starter is TBD — show a badge + strike delta.
                     const spExcluded = c === "sp" && v && v.excluded_from_final === true;
-                    const excludedBadge = spExcluded
-                        ? `<span style="font-size:0.6rem; color:#fbb040; font-weight:700; background:rgba(251,176,64,0.15); padding:1px 4px; border-radius:3px; margin-left:4px;">TBD · not in final</span>`
+                    // Red flag: a NAMED starter with no data in our exports.
+                    // Rating shows 0 but is excluded from the final combine.
+                    const spMissing = c === "sp" && v && (v.home_missing_data || v.away_missing_data);
+                    const missingWho = spMissing
+                        ? [v.home_missing_data ? g.home_pitcher : null, v.away_missing_data ? g.away_pitcher : null].filter(Boolean).join(", ")
                         : "";
+                    const excludedBadge = spMissing
+                        ? `<span style="font-size:0.6rem; color:#fff; font-weight:700; background:#c53030; padding:1px 4px; border-radius:3px; margin-left:4px;" title="No stats found for: ${missingWho}. SP excluded from final rating.">NO DATA · not in final</span>`
+                        : (spExcluded
+                            ? `<span style="font-size:0.6rem; color:#fbb040; font-weight:700; background:rgba(251,176,64,0.15); padding:1px 4px; border-radius:3px; margin-left:4px;">TBD · not in final</span>`
+                            : "");
                     const deltaStyle = spExcluded ? "text-decoration:line-through; opacity:0.55;" : "";
-                    return `<div class="cat-card" data-cat="${c}" data-row="${i}">
+                    return `<div class="cat-card" data-cat="${c}" data-row="${i}" style="${spMissing ? "border:1px solid #c53030;" : ""}">
                         <div class="label">${c.toUpperCase()} <span style="font-weight:400; font-size:0.7rem; color:#a0aec0;">${twLabel}</span>${excludedBadge}</div>
                         <div class="values"><span class="${awayCls}">${g.away_team}: ${fmt(a)}</span><span class="${homeCls}">${g.home_team}: ${fmt(h)}</span></div>
                         <div class="delta-row" style="${deltaStyle}">Δ ${d == null ? "—" : (d >= 0 ? "+" : "") + d.toFixed(2)}</div>
