@@ -946,7 +946,7 @@
         // Claude wrote overnight + a daily Best-5 picks card with running
         // W-L + unit P/L. All JSONs refreshed by the daily baseball pipeline
         // (compute_ai_stats.py + ai_summarize.py + compute_ai_picks.py).
-        async function renderAiAnalyzed() {
+        async function renderAiAnalyzed(dateStr) {
             const el = document.getElementById("content");
             el.innerHTML = '<div class="empty">Loading AI analysis...</div>';
             let stats, summary, picksHist;
@@ -963,6 +963,19 @@
             } catch (e) {
                 el.innerHTML = '<div class="empty">AI stats not published yet — will appear after the next daily run.</div>';
                 return;
+            }
+            // Date-aware: the tallies and stat sections are all-time, but the
+            // briefing + Best-5 card belong to a specific day. When the user
+            // browses a past date, swap in that day's archived briefing
+            // (ratings/ai_archive/<date>.json — archiving began 2026-08-20)
+            // and that day's picks from picks_by_date.
+            const selDate = dateStr || stats.as_of;
+            const isLatest = selDate === stats.as_of;
+            if (!isLatest) {
+                try {
+                    const ra = await fetch(`ratings/ai_archive/${selDate}.json` + CACHE_BUST, {cache: "no-store"});
+                    summary = ra.ok ? await ra.json() : null;
+                } catch (e) { summary = null; }
             }
             const CATS = stats.categories;
             const RATINGS = ["1", "2", "3"];
@@ -1094,10 +1107,14 @@
                 const genStr = summary.generated_at ? summary.generated_at.replace("T", " ") : "";
                 html += `<div style="background:linear-gradient(180deg,#2d3748,#1a202c); border:1px solid #d69e2e; border-radius:8px; padding:1rem 1.25rem; margin-bottom:1.5rem;">
                     <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.5rem;">
-                        <h3 style="margin:0; color:#f6ad55; font-size:0.9rem; letter-spacing:0.08em; text-transform:uppercase;">Today's briefing</h3>
+                        <h3 style="margin:0; color:#f6ad55; font-size:0.9rem; letter-spacing:0.08em; text-transform:uppercase;">${isLatest ? "Today's briefing" : "Briefing — " + selDate}</h3>
                         <span style="color:#a0aec0; font-size:0.75rem;">via ${summary.model || "Claude"} · ${genStr}</span>
                     </div>
                     <div style="color:#e2e8f0; line-height:1.55; font-size:0.95rem; white-space:pre-wrap;">${summary.summary.replace(/</g,'&lt;')}</div>
+                </div>`;
+            } else if (!isLatest) {
+                html += `<div style="background:#252932; border:1px solid #4a5568; border-radius:6px; padding:0.85rem 1rem; margin-bottom:1.5rem; color:#a0aec0; font-size:0.85rem;">
+                    No archived briefing for ${selDate}. Daily briefing archiving started 2026-08-20; earlier dates only kept the latest one.
                 </div>`;
             } else {
                 html += `<div style="background:#252932; border:1px solid #4a5568; border-radius:6px; padding:0.85rem 1rem; margin-bottom:1.5rem; color:#a0aec0; font-size:0.85rem;">
@@ -1107,12 +1124,11 @@
 
             // ---- Section 1b: AI Best-5 picks card ----
             // (Running record + confidence breakdown moved to Section 0 above.)
-            const todayStr = stats.as_of;
-            const todayPicks = picksHist?.picks_by_date?.[todayStr];
+            const todayPicks = picksHist?.picks_by_date?.[selDate];
             if (todayPicks && todayPicks.picks?.length) {
                 html += `<div style="background:linear-gradient(180deg,#1e2a3d,#141c2b); border:1px solid #4299e1; border-radius:8px; padding:1rem 1.25rem; margin-bottom:1.5rem;">
                     <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
-                        <h3 style="margin:0; color:#63b3ed; font-size:0.9rem; letter-spacing:0.08em; text-transform:uppercase;">AI Best 5 — Today (${todayPicks.date})</h3>
+                        <h3 style="margin:0; color:#63b3ed; font-size:0.9rem; letter-spacing:0.08em; text-transform:uppercase;">AI Best 5 — ${isLatest ? "Today" : selDate} (${todayPicks.date})</h3>
                         <span style="color:#a0aec0; font-size:0.75rem;">via ${todayPicks.model || "Claude"}</span>
                     </div>`;
                 // Ranked pick cards
@@ -1386,7 +1402,7 @@
             } else if (currentView === "grand_total") {
                 await renderGrandTotal();
             } else if (currentView === "ai_analyzed") {
-                await renderAiAnalyzed();
+                await renderAiAnalyzed(dateStr);
             } else {
                 if (dateSel && dateSel.value) await renderDate(dateSel.value);
             }
