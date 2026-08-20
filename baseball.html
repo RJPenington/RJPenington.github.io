@@ -700,8 +700,9 @@
                             for (const b of ["0-0.5", "0.5-1", "1-1.5", "1.5+"]) {
                                 const t = v[key][b];
                                 const n = t.wins + t.losses;
+                                const bpct = n ? (t.wins / n * 100).toFixed(0) : null;
                                 html += n
-                                    ? `<td style="padding:0.35rem; text-align:center;">${t.wins}-${t.losses}<br>${money(t.ml_profit)}</td>`
+                                    ? `<td style="padding:0.35rem; text-align:center;">${t.wins}-${t.losses} <span style="color:#a0aec0;">(${bpct}%)</span><br>${money(t.ml_profit)}</td>`
                                     : `<td style="padding:0.35rem; text-align:center; color:#a0aec0;">-</td>`;
                             }
                             html += `</tr>`;
