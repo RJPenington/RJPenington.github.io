@@ -7,9 +7,9 @@
       "away_team": "STL",
       "home_pitcher": "Brady Singer",
       "away_pitcher": "Michael McGreevy",
-      "home_total": 4.6675418995368565,
-      "away_total": 6.764576824734622,
-      "delta": -2.0970349251977654,
+      "home_total": 4.718404795684398,
+      "away_total": 6.77789537702775,
+      "delta": -2.0594905813433524,
       "pick": "STL",
       "odds": {
         "ml_home": "+102",
@@ -17093,12 +17093,12 @@
           ]
         },
         "hitting": {
-          "home": 2.50255640484261,
-          "away": 5.833022141987199,
+          "home": 2.8416423791595564,
+          "away": 5.9218124906080485,
           "home_details": [
             {
               "metric": "wRC+",
-              "metric_weight": 45,
+              "metric_weight": 30,
               "rating": 2.8581625166726776,
               "splits": [
                 {
@@ -17511,7 +17511,7 @@
             },
             {
               "metric": "OPS",
-              "metric_weight": 75,
+              "metric_weight": 20,
               "rating": 2.449720145752682,
               "splits": [
                 {
@@ -17924,7 +17924,7 @@
             },
             {
               "metric": "wOBA",
-              "metric_weight": 40,
+              "metric_weight": 20,
               "rating": 1.7487597703240987,
               "splits": [
                 {
@@ -18337,7 +18337,7 @@
             },
             {
               "metric": "BB/K",
-              "metric_weight": 35,
+              "metric_weight": 60,
               "rating": 3.472254983303367,
               "splits": [
                 {
@@ -18750,7 +18750,7 @@
             },
             {
               "metric": "BABIP",
-              "metric_weight": 25,
+              "metric_weight": 35,
               "rating": 1.8322356880101554,
               "splits": [
                 {
@@ -19989,7 +19989,7 @@
             },
             {
               "metric": "BB%",
-              "metric_weight": 10,
+              "metric_weight": 30,
               "rating": 4.883778983335262,
               "splits": [
                 {
@@ -20402,7 +20402,7 @@
             },
             {
               "metric": "ISO",
-              "metric_weight": 25,
+              "metric_weight": 10,
               "rating": 4.174625395125525,
               "splits": [
                 {
@@ -20815,7 +20815,7 @@
             },
             {
               "metric": "wRAA",
-              "metric_weight": 50,
+              "metric_weight": 15,
               "rating": 2.4373355091324242,
               "splits": [
                 {
@@ -21228,7 +21228,7 @@
             },
             {
               "metric": "OBP",
-              "metric_weight": 10,
+              "metric_weight": 15,
               "rating": 1.656862279553378,
               "splits": [
                 {
@@ -21641,7 +21641,7 @@
             },
             {
               "metric": "SLG",
-              "metric_weight": 10,
+              "metric_weight": 5,
               "rating": 2.7608720877180586,
               "splits": [
                 {
@@ -22054,7 +22054,7 @@
             },
             {
               "metric": "AVG",
-              "metric_weight": 55,
+              "metric_weight": 10,
               "rating": 1.6055654801028554,
               "splits": [
                 {
@@ -22469,7 +22469,7 @@
           "away_details": [
             {
               "metric": "wRC+",
-              "metric_weight": 45,
+              "metric_weight": 30,
               "rating": 7.360232982121443,
               "splits": [
                 {
@@ -23056,7 +23056,7 @@
             },
             {
               "metric": "OPS",
-              "metric_weight": 75,
+              "metric_weight": 20,
               "rating": 5.937831899989708,
               "splits": [
                 {
@@ -23643,7 +23643,7 @@
             },
             {
               "metric": "wOBA",
-              "metric_weight": 40,
+              "metric_weight": 20,
               "rating": 6.049166243981272,
               "splits": [
                 {
@@ -24230,7 +24230,7 @@
             },
             {
               "metric": "BB/K",
-              "metric_weight": 35,
+              "metric_weight": 60,
               "rating": 6.415357324291136,
               "splits": [
                 {
@@ -24817,7 +24817,7 @@
             },
             {
               "metric": "BABIP",
-              "metric_weight": 25,
+              "metric_weight": 35,
               "rating": 4.646109701135701,
               "splits": [
                 {
@@ -26578,7 +26578,7 @@
             },
             {
               "metric": "BB%",
-              "metric_weight": 10,
+              "metric_weight": 30,
               "rating": 6.10696902867036,
               "splits": [
                 {
@@ -27165,7 +27165,7 @@
             },
             {
               "metric": "ISO",
-              "metric_weight": 25,
+              "metric_weight": 10,
               "rating": 6.411328098226841,
               "splits": [
                 {
@@ -27752,7 +27752,7 @@
             },
             {
               "metric": "wRAA",
-              "metric_weight": 50,
+              "metric_weight": 15,
               "rating": 4.730897558887373,
               "splits": [
                 {
@@ -28339,7 +28339,7 @@
             },
             {
               "metric": "OBP",
-              "metric_weight": 10,
+              "metric_weight": 15,
               "rating": 6.466125808071534,
               "splits": [
                 {
@@ -28926,7 +28926,7 @@
             },
             {
               "metric": "SLG",
-              "metric_weight": 10,
+              "metric_weight": 5,
               "rating": 6.708956100008021,
               "splits": [
                 {
@@ -29513,7 +29513,7 @@
             },
             {
               "metric": "AVG",
-              "metric_weight": 55,
+              "metric_weight": 10,
               "rating": 5.395884114685095,
               "splits": [
                 {
@@ -30137,9 +30137,9 @@
       "away_team": "SFG",
       "home_pitcher": "Gavin Williams",
       "away_pitcher": "Landen Roupp",
-      "home_total": 5.776198284233092,
-      "away_total": 5.200833651049111,
-      "delta": 0.5753646331839812,
+      "home_total": 5.856051372248924,
+      "away_total": 5.202115778721261,
+      "delta": 0.6539355935276632,
       "pick": "CLE",
       "odds": {
         "ml_home": "-187",
@@ -45445,12 +45445,12 @@
           ]
         },
         "hitting": {
-          "home": 3.9618177474001803,
-          "away": 4.239685176917268,
+          "home": 4.494171667505729,
+          "away": 4.2482326947316045,
           "home_details": [
             {
               "metric": "wRC+",
-              "metric_weight": 45,
+              "metric_weight": 30,
               "rating": 4.57240546346893,
               "splits": [
                 {
@@ -45805,7 +45805,7 @@
             },
             {
               "metric": "OPS",
-              "metric_weight": 75,
+              "metric_weight": 20,
               "rating": 3.5252628881037658,
               "splits": [
                 {
@@ -46160,7 +46160,7 @@
             },
             {
               "metric": "wOBA",
-              "metric_weight": 40,
+              "metric_weight": 20,
               "rating": 2.983853602493759,
               "splits": [
                 {
@@ -46515,7 +46515,7 @@
             },
             {
               "metric": "BB/K",
-              "metric_weight": 35,
+              "metric_weight": 60,
               "rating": 5.980489668581269,
               "splits": [
                 {
@@ -46870,7 +46870,7 @@
             },
             {
               "metric": "BABIP",
-              "metric_weight": 25,
+              "metric_weight": 35,
               "rating": 4.637441136230421,
               "splits": [
                 {
@@ -47935,7 +47935,7 @@
             },
             {
               "metric": "BB%",
-              "metric_weight": 10,
+              "metric_weight": 30,
               "rating": 4.974746515209143,
               "splits": [
                 {
@@ -48290,7 +48290,7 @@
             },
             {
               "metric": "ISO",
-              "metric_weight": 25,
+              "metric_weight": 10,
               "rating": 2.6401282788776195,
               "splits": [
                 {
@@ -48645,7 +48645,7 @@
             },
             {
               "metric": "wRAA",
-              "metric_weight": 50,
+              "metric_weight": 15,
               "rating": 3.068705422636132,
               "splits": [
                 {
@@ -49000,7 +49000,7 @@
             },
             {
               "metric": "OBP",
-              "metric_weight": 10,
+              "metric_weight": 15,
               "rating": 3.4479687137882546,
               "splits": [
                 {
@@ -49355,7 +49355,7 @@
             },
             {
               "metric": "SLG",
-              "metric_weight": 10,
+              "metric_weight": 5,
               "rating": 3.603571016453371,
               "splits": [
                 {
@@ -49710,7 +49710,7 @@
             },
             {
               "metric": "AVG",
-              "metric_weight": 55,
+              "metric_weight": 10,
               "rating": 4.4312636306378055,
               "splits": [
                 {
@@ -50067,7 +50067,7 @@
           "away_details": [
             {
               "metric": "wRC+",
-              "metric_weight": 45,
+              "metric_weight": 30,
               "rating": 5.002833155934368,
               "splits": [
                 {
@@ -50567,7 +50567,7 @@
             },
             {
               "metric": "OPS",
-              "metric_weight": 75,
+              "metric_weight": 20,
               "rating": 3.8687595568313813,
               "splits": [
                 {
@@ -51067,7 +51067,7 @@
             },
             {
               "metric": "wOBA",
-              "metric_weight": 40,
+              "metric_weight": 20,
               "rating": 3.4460300558911143,
               "splits": [
                 {
@@ -51567,7 +51567,7 @@
             },
             {
               "metric": "BB/K",
-              "metric_weight": 35,
+              "metric_weight": 60,
               "rating": 3.5609518654762162,
               "splits": [
                 {
@@ -52067,7 +52067,7 @@
             },
             {
               "metric": "BABIP",
-              "metric_weight": 25,
+              "metric_weight": 35,
               "rating": 6.9690090465478125,
               "splits": [
                 {
@@ -53567,7 +53567,7 @@
             },
             {
               "metric": "BB%",
-              "metric_weight": 10,
+              "metric_weight": 30,
               "rating": 3.0659818517206228,
               "splits": [
                 {
@@ -54067,7 +54067,7 @@
             },
             {
               "metric": "ISO",
-              "metric_weight": 25,
+              "metric_weight": 10,
               "rating": 3.9629983584247594,
               "splits": [
                 {
@@ -54567,7 +54567,7 @@
             },
             {
               "metric": "wRAA",
-              "metric_weight": 50,
+              "metric_weight": 15,
               "rating": 3.8699101791889783,
               "splits": [
                 {
@@ -55067,7 +55067,7 @@
             },
             {
               "metric": "OBP",
-              "metric_weight": 10,
+              "metric_weight": 15,
               "rating": 4.012907666161159,
               "splits": [
                 {
@@ -55567,7 +55567,7 @@
             },
             {
               "metric": "SLG",
-              "metric_weight": 10,
+              "metric_weight": 5,
               "rating": 4.347816177379217,
               "splits": [
                 {
@@ -56067,7 +56067,7 @@
             },
             {
               "metric": "AVG",
-              "metric_weight": 55,
+              "metric_weight": 10,
               "rating": 4.791472369524489,
               "splits": [
                 {
@@ -56604,9 +56604,9 @@
       "away_team": "TOR",
       "home_pitcher": "Ian Seymour",
       "away_pitcher": "Shane Bieber",
-      "home_total": 6.627162264629706,
-      "away_total": 5.499563740490903,
-      "delta": 1.1275985241388033,
+      "home_total": 6.600298724492665,
+      "away_total": 5.524911789535954,
+      "delta": 1.0753869349567111,
       "pick": "TBR",
       "odds": {
         "ml_home": "-164",
@@ -69560,12 +69560,12 @@
           ]
         },
         "hitting": {
-          "home": 5.7585443473839115,
-          "away": 5.5823276979706,
+          "home": 5.579454079803645,
+          "away": 5.751314691604279,
           "home_details": [
             {
               "metric": "wRC+",
-              "metric_weight": 45,
+              "metric_weight": 30,
               "rating": 6.44648528803726,
               "splits": [
                 {
@@ -69920,7 +69920,7 @@
             },
             {
               "metric": "OPS",
-              "metric_weight": 75,
+              "metric_weight": 20,
               "rating": 5.289636331569174,
               "splits": [
                 {
@@ -70275,7 +70275,7 @@
             },
             {
               "metric": "wOBA",
-              "metric_weight": 40,
+              "metric_weight": 20,
               "rating": 5.21433762809115,
               "splits": [
                 {
@@ -70630,7 +70630,7 @@
             },
             {
               "metric": "BB/K",
-              "metric_weight": 35,
+              "metric_weight": 60,
               "rating": 5.620425501817149,
               "splits": [
                 {
@@ -70985,7 +70985,7 @@
             },
             {
               "metric": "BABIP",
-              "metric_weight": 25,
+              "metric_weight": 35,
               "rating": 7.184120277844799,
               "splits": [
                 {
@@ -72050,7 +72050,7 @@
             },
             {
               "metric": "BB%",
-              "metric_weight": 10,
+              "metric_weight": 30,
               "rating": 3.3077001594225983,
               "splits": [
                 {
@@ -72405,7 +72405,7 @@
             },
             {
               "metric": "ISO",
-              "metric_weight": 25,
+              "metric_weight": 10,
               "rating": 3.480102983974673,
               "splits": [
                 {
@@ -72760,7 +72760,7 @@
             },
             {
               "metric": "wRAA",
-              "metric_weight": 50,
+              "metric_weight": 15,
               "rating": 4.903624264352833,
               "splits": [
                 {
@@ -73115,7 +73115,7 @@
             },
             {
               "metric": "OBP",
-              "metric_weight": 10,
+              "metric_weight": 15,
               "rating": 6.2084147088052815,
               "splits": [
                 {
@@ -73470,7 +73470,7 @@
             },
             {
               "metric": "SLG",
-              "metric_weight": 10,
+              "metric_weight": 5,
               "rating": 5.614082553020794,
               "splits": [
                 {
@@ -73825,7 +73825,7 @@
             },
             {
               "metric": "AVG",
-              "metric_weight": 55,
+              "metric_weight": 10,
               "rating": 8.0401059162061,
               "splits": [
                 {
@@ -74182,7 +74182,7 @@
           "away_details": [
             {
               "metric": "wRC+",
-              "metric_weight": 45,
+              "metric_weight": 30,
               "rating": 6.430286967951983,
               "splits": [
                 {
@@ -74508,7 +74508,7 @@
             },
             {
               "metric": "OPS",
-              "metric_weight": 75,
+              "metric_weight": 20,
               "rating": 5.4224790569055985,
               "splits": [
                 {
@@ -74834,7 +74834,7 @@
             },
             {
               "metric": "wOBA",
-              "metric_weight": 40,
+              "metric_weight": 20,
               "rating": 5.273069102382599,
               "splits": [
                 {
@@ -75160,7 +75160,7 @@
             },
             {
               "metric": "BB/K",
-              "metric_weight": 35,
+              "metric_weight": 60,
               "rating": 6.430375534425038,
               "splits": [
                 {
@@ -75486,7 +75486,7 @@
             },
             {
               "metric": "BABIP",
-              "metric_weight": 25,
+              "metric_weight": 35,
               "rating": 6.609949544277136,
               "splits": [
                 {
@@ -76464,7 +76464,7 @@
             },
             {
               "metric": "BB%",
-              "metric_weight": 10,
+              "metric_weight": 30,
               "rating": 4.461845351657999,
               "splits": [
                 {
@@ -76790,7 +76790,7 @@
             },
             {
               "metric": "ISO",
-              "metric_weight": 25,
+              "metric_weight": 10,
               "rating": 4.124281253967096,
               "splits": [
                 {
@@ -77116,7 +77116,7 @@
             },
             {
               "metric": "wRAA",
-              "metric_weight": 50,
+              "metric_weight": 15,
               "rating": 3.393897789422718,
               "splits": [
                 {
@@ -77442,7 +77442,7 @@
             },
             {
               "metric": "OBP",
-              "metric_weight": 10,
+              "metric_weight": 15,
               "rating": 6.671492440003705,
               "splits": [
                 {
@@ -77768,7 +77768,7 @@
             },
             {
               "metric": "SLG",
-              "metric_weight": 10,
+              "metric_weight": 5,
               "rating": 5.730366427573683,
               "splits": [
                 {
@@ -78094,7 +78094,7 @@
             },
             {
               "metric": "AVG",
-              "metric_weight": 55,
+              "metric_weight": 10,
               "rating": 7.131550937464878,
               "splits": [
                 {
@@ -78457,9 +78457,9 @@
       "away_team": "ATH",
       "home_pitcher": "Randy Dobnak",
       "away_pitcher": "Gage Jump",
-      "home_total": 5.710576310928294,
-      "away_total": 5.09663568888624,
-      "delta": 0.6139406220420547,
+      "home_total": 5.753736739111812,
+      "away_total": 5.143060110754915,
+      "delta": 0.610676628356897,
       "pick": "KCR",
       "odds": {
         "ml_home": "-136",
@@ -92463,12 +92463,12 @@
           ]
         },
         "hitting": {
-          "home": 6.5311103001516395,
-          "away": 5.056717254352836,
+          "home": 6.818846488041756,
+          "away": 5.366213400144005,
           "home_details": [
             {
               "metric": "wRC+",
-              "metric_weight": 45,
+              "metric_weight": 30,
               "rating": 7.495835096843934,
               "splits": [
                 {
@@ -92997,7 +92997,7 @@
             },
             {
               "metric": "OPS",
-              "metric_weight": 75,
+              "metric_weight": 20,
               "rating": 6.515058518782247,
               "splits": [
                 {
@@ -93526,7 +93526,7 @@
             },
             {
               "metric": "wOBA",
-              "metric_weight": 40,
+              "metric_weight": 20,
               "rating": 6.680738345712959,
               "splits": [
                 {
@@ -94055,7 +94055,7 @@
             },
             {
               "metric": "BB/K",
-              "metric_weight": 35,
+              "metric_weight": 60,
               "rating": 7.98871267335467,
               "splits": [
                 {
@@ -94584,7 +94584,7 @@
             },
             {
               "metric": "BABIP",
-              "metric_weight": 25,
+              "metric_weight": 35,
               "rating": 6.94141584088553,
               "splits": [
                 {
@@ -96171,7 +96171,7 @@
             },
             {
               "metric": "BB%",
-              "metric_weight": 10,
+              "metric_weight": 30,
               "rating": 6.062741340646836,
               "splits": [
                 {
@@ -96700,7 +96700,7 @@
             },
             {
               "metric": "ISO",
-              "metric_weight": 25,
+              "metric_weight": 10,
               "rating": 4.743332043274516,
               "splits": [
                 {
@@ -97229,7 +97229,7 @@
             },
             {
               "metric": "wRAA",
-              "metric_weight": 50,
+              "metric_weight": 15,
               "rating": 4.586061028868141,
               "splits": [
                 {
@@ -97758,7 +97758,7 @@
             },
             {
               "metric": "OBP",
-              "metric_weight": 10,
+              "metric_weight": 15,
               "rating": 7.374439695429202,
               "splits": [
                 {
@@ -98287,7 +98287,7 @@
             },
             {
               "metric": "SLG",
-              "metric_weight": 10,
+              "metric_weight": 5,
               "rating": 6.742727584309187,
               "splits": [
                 {
@@ -98816,7 +98816,7 @@
             },
             {
               "metric": "AVG",
-              "metric_weight": 55,
+              "metric_weight": 10,
               "rating": 7.339932961792156,
               "splits": [
                 {
@@ -99347,7 +99347,7 @@
           "away_details": [
             {
               "metric": "wRC+",
-              "metric_weight": 45,
+              "metric_weight": 30,
               "rating": 6.143288824334891,
               "splits": [
                 {
@@ -99876,7 +99876,7 @@
             },
             {
               "metric": "OPS",
-              "metric_weight": 75,
+              "metric_weight": 20,
               "rating": 4.839431152939722,
               "splits": [
                 {
@@ -100405,7 +100405,7 @@
             },
             {
               "metric": "wOBA",
-              "metric_weight": 40,
+              "metric_weight": 20,
               "rating": 4.519783186537043,
               "splits": [
                 {
@@ -100934,7 +100934,7 @@
             },
             {
               "metric": "BB/K",
-              "metric_weight": 35,
+              "metric_weight": 60,
               "rating": 7.979540817316889,
               "splits": [
                 {
@@ -101463,7 +101463,7 @@
             },
             {
               "metric": "BABIP",
-              "metric_weight": 25,
+              "metric_weight": 35,
               "rating": 2.455270415928656,
               "splits": [
                 {
@@ -103050,7 +103050,7 @@
             },
             {
               "metric": "BB%",
-              "metric_weight": 10,
+              "metric_weight": 30,
               "rating": 4.741675257576002,
               "splits": [
                 {
@@ -103579,7 +103579,7 @@
             },
             {
               "metric": "ISO",
-              "metric_weight": 25,
+              "metric_weight": 10,
               "rating": 5.048229940514397,
               "splits": [
                 {
@@ -104108,7 +104108,7 @@
             },
             {
               "metric": "wRAA",
-              "metric_weight": 50,
+              "metric_weight": 15,
               "rating": 3.9492435255467555,
               "splits": [
                 {
@@ -104637,7 +104637,7 @@
             },
             {
               "metric": "OBP",
-              "metric_weight": 10,
+              "metric_weight": 15,
               "rating": 4.870879463447317,
               "splits": [
                 {
@@ -105166,7 +105166,7 @@
             },
             {
               "metric": "SLG",
-              "metric_weight": 10,
+              "metric_weight": 5,
               "rating": 5.369069630900252,
               "splits": [
                 {
@@ -105695,7 +105695,7 @@
             },
             {
               "metric": "AVG",
-              "metric_weight": 55,
+              "metric_weight": 10,
               "rating": 5.090663585074935,
               "splits": [
                 {
@@ -106261,9 +106261,9 @@
       "away_team": "ATL",
       "home_pitcher": "Anthony Kay",
       "away_pitcher": "Grant Holmes",
-      "home_total": 6.089195570859085,
-      "away_total": 5.580404844331904,
-      "delta": 0.5087907265271809,
+      "home_total": 6.125073399769743,
+      "away_total": 5.64716270191175,
+      "delta": 0.4779106978579932,
       "pick": "CHW",
       "odds": {
         "ml_home": "-102",
@@ -121975,12 +121975,12 @@
           ]
         },
         "hitting": {
-          "home": 5.738831510578219,
-          "away": 3.1297838928882085,
+          "home": 5.978017036649279,
+          "away": 3.5748362767538464,
           "home_details": [
             {
               "metric": "wRC+",
-              "metric_weight": 45,
+              "metric_weight": 30,
               "rating": 6.8391555369785415,
               "splits": [
                 {
@@ -122335,7 +122335,7 @@
             },
             {
               "metric": "OPS",
-              "metric_weight": 75,
+              "metric_weight": 20,
               "rating": 5.619127087600753,
               "splits": [
                 {
@@ -122690,7 +122690,7 @@
             },
             {
               "metric": "wOBA",
-              "metric_weight": 40,
+              "metric_weight": 20,
               "rating": 5.711553584599359,
               "splits": [
                 {
@@ -123045,7 +123045,7 @@
             },
             {
               "metric": "BB/K",
-              "metric_weight": 35,
+              "metric_weight": 60,
               "rating": 6.726711389964385,
               "splits": [
                 {
@@ -123400,7 +123400,7 @@
             },
             {
               "metric": "BABIP",
-              "metric_weight": 25,
+              "metric_weight": 35,
               "rating": 5.273251797559329,
               "splits": [
                 {
@@ -124465,7 +124465,7 @@
             },
             {
               "metric": "BB%",
-              "metric_weight": 10,
+              "metric_weight": 30,
               "rating": 6.195569375901892,
               "splits": [
                 {
@@ -124820,7 +124820,7 @@
             },
             {
               "metric": "ISO",
-              "metric_weight": 25,
+              "metric_weight": 10,
               "rating": 5.956833052436746,
               "splits": [
                 {
@@ -125175,7 +125175,7 @@
             },
             {
               "metric": "wRAA",
-              "metric_weight": 50,
+              "metric_weight": 15,
               "rating": 4.643754471983688,
               "splits": [
                 {
@@ -125530,7 +125530,7 @@
             },
             {
               "metric": "OBP",
-              "metric_weight": 10,
+              "metric_weight": 15,
               "rating": 6.3874879277023995,
               "splits": [
                 {
@@ -125885,7 +125885,7 @@
             },
             {
               "metric": "SLG",
-              "metric_weight": 10,
+              "metric_weight": 5,
               "rating": 6.264837172614202,
               "splits": [
                 {
@@ -126240,7 +126240,7 @@
             },
             {
               "metric": "AVG",
-              "metric_weight": 55,
+              "metric_weight": 10,
               "rating": 5.562990646974041,
               "splits": [
                 {
@@ -126597,7 +126597,7 @@
           "away_details": [
             {
               "metric": "wRC+",
-              "metric_weight": 45,
+              "metric_weight": 30,
               "rating": 3.734677665386627,
               "splits": [
                 {
@@ -126952,7 +126952,7 @@
             },
             {
               "metric": "OPS",
-              "metric_weight": 75,
+              "metric_weight": 20,
               "rating": 2.778545098480974,
               "splits": [
                 {
@@ -127307,7 +127307,7 @@
             },
             {
               "metric": "wOBA",
-              "metric_weight": 40,
+              "metric_weight": 20,
               "rating": 2.1093596339720566,
               "splits": [
                 {
@@ -127662,7 +127662,7 @@
             },
             {
               "metric": "BB/K",
-              "metric_weight": 35,
+              "metric_weight": 60,
               "rating": 4.245038290192039,
               "splits": [
                 {
@@ -128017,7 +128017,7 @@
             },
             {
               "metric": "BABIP",
-              "metric_weight": 25,
+              "metric_weight": 35,
               "rating": 3.60593976622358,
               "splits": [
                 {
@@ -129082,7 +129082,7 @@
             },
             {
               "metric": "BB%",
-              "metric_weight": 10,
+              "metric_weight": 30,
               "rating": 4.902266850521216,
               "splits": [
                 {
@@ -129437,7 +129437,7 @@
             },
             {
               "metric": "ISO",
-              "metric_weight": 25,
+              "metric_weight": 10,
               "rating": 2.885235880984759,
               "splits": [
                 {
@@ -129792,7 +129792,7 @@
             },
             {
               "metric": "wRAA",
-              "metric_weight": 50,
+              "metric_weight": 15,
               "rating": 3.066803230240629,
               "splits": [
                 {
@@ -130147,7 +130147,7 @@
             },
             {
               "metric": "OBP",
-              "metric_weight": 10,
+              "metric_weight": 15,
               "rating": 2.7944035125835116,
               "splits": [
                 {
@@ -130502,7 +130502,7 @@
             },
             {
               "metric": "SLG",
-              "metric_weight": 10,
+              "metric_weight": 5,
               "rating": 2.7980715673452963,
               "splits": [
                 {
@@ -130857,7 +130857,7 @@
             },
             {
               "metric": "AVG",
-              "metric_weight": 55,
+              "metric_weight": 10,
               "rating": 2.8333641478852813,
               "splits": [
                 {
@@ -131249,9 +131249,9 @@
       "away_team": "SEA",
       "home_pitcher": "Robert Gasser",
       "away_pitcher": "George Kirby",
-      "home_total": 7.450435624709428,
-      "away_total": 5.128681135144296,
-      "delta": 2.321754489565132,
+      "home_total": 7.486838270524728,
+      "away_total": 5.2179941389890585,
+      "delta": 2.268844131535669,
       "pick": "MIL",
       "odds": {
         "ml_home": "-127",
@@ -147369,12 +147369,12 @@
           ]
         },
         "hitting": {
-          "home": 6.906462642534467,
-          "away": 5.122864810876741,
+          "home": 7.149146947969803,
+          "away": 5.71828483650849,
           "home_details": [
             {
               "metric": "wRC+",
-              "metric_weight": 45,
+              "metric_weight": 30,
               "rating": 7.770635660505348,
               "splits": [
                 {
@@ -147729,7 +147729,7 @@
             },
             {
               "metric": "OPS",
-              "metric_weight": 75,
+              "metric_weight": 20,
               "rating": 6.967969019655059,
               "splits": [
                 {
@@ -148084,7 +148084,7 @@
             },
             {
               "metric": "wOBA",
-              "metric_weight": 40,
+              "metric_weight": 20,
               "rating": 6.9058452484503245,
               "splits": [
                 {
@@ -148439,7 +148439,7 @@
             },
             {
               "metric": "BB/K",
-              "metric_weight": 35,
+              "metric_weight": 60,
               "rating": 8.012005873126235,
               "splits": [
                 {
@@ -148794,7 +148794,7 @@
             },
             {
               "metric": "BABIP",
-              "metric_weight": 25,
+              "metric_weight": 35,
               "rating": 7.487827291078704,
               "splits": [
                 {
@@ -149859,7 +149859,7 @@
             },
             {
               "metric": "BB%",
-              "metric_weight": 10,
+              "metric_weight": 30,
               "rating": 6.85913314408105,
               "splits": [
                 {
@@ -150214,7 +150214,7 @@
             },
             {
               "metric": "ISO",
-              "metric_weight": 25,
+              "metric_weight": 10,
               "rating": 5.8188689882244935,
               "splits": [
                 {
@@ -150569,7 +150569,7 @@
             },
             {
               "metric": "wRAA",
-              "metric_weight": 50,
+              "metric_weight": 15,
               "rating": 5.748095776096586,
               "splits": [
                 {
@@ -150924,7 +150924,7 @@
             },
             {
               "metric": "OBP",
-              "metric_weight": 10,
+              "metric_weight": 15,
               "rating": 7.9098846693376865,
               "splits": [
                 {
@@ -151279,7 +151279,7 @@
             },
             {
               "metric": "SLG",
-              "metric_weight": 10,
+              "metric_weight": 5,
               "rating": 6.894977817767405,
               "splits": [
                 {
@@ -151634,7 +151634,7 @@
             },
             {
               "metric": "AVG",
-              "metric_weight": 55,
+              "metric_weight": 10,
               "rating": 7.2129621449593015,
               "splits": [
                 {
@@ -151991,7 +151991,7 @@
           "away_details": [
             {
               "metric": "wRC+",
-              "metric_weight": 45,
+              "metric_weight": 30,
               "rating": 6.443956910326187,
               "splits": [
                 {
@@ -152346,7 +152346,7 @@
             },
             {
               "metric": "OPS",
-              "metric_weight": 75,
+              "metric_weight": 20,
               "rating": 4.733683174872704,
               "splits": [
                 {
@@ -152701,7 +152701,7 @@
             },
             {
               "metric": "wOBA",
-              "metric_weight": 40,
+              "metric_weight": 20,
               "rating": 4.782011325081775,
               "splits": [
                 {
@@ -153056,7 +153056,7 @@
             },
             {
               "metric": "BB/K",
-              "metric_weight": 35,
+              "metric_weight": 60,
               "rating": 6.539734831010914,
               "splits": [
                 {
@@ -153411,7 +153411,7 @@
             },
             {
               "metric": "BABIP",
-              "metric_weight": 25,
+              "metric_weight": 35,
               "rating": 6.479346774497564,
               "splits": [
                 {
@@ -154476,7 +154476,7 @@
             },
             {
               "metric": "BB%",
-              "metric_weight": 10,
+              "metric_weight": 30,
               "rating": 6.498604123869652,
               "splits": [
                 {
@@ -154831,7 +154831,7 @@
             },
             {
               "metric": "ISO",
-              "metric_weight": 25,
+              "metric_weight": 10,
               "rating": 3.8075366310777383,
               "splits": [
                 {
@@ -155186,7 +155186,7 @@
             },
             {
               "metric": "wRAA",
-              "metric_weight": 50,
+              "metric_weight": 15,
               "rating": 3.6913551656585737,
               "splits": [
                 {
@@ -155541,7 +155541,7 @@
             },
             {
               "metric": "OBP",
-              "metric_weight": 10,
+              "metric_weight": 15,
               "rating": 6.288471790617528,
               "splits": [
                 {
@@ -155896,7 +155896,7 @@
             },
             {
               "metric": "SLG",
-              "metric_weight": 10,
+              "metric_weight": 5,
               "rating": 4.333996167698018,
               "splits": [
                 {
@@ -156251,7 +156251,7 @@
             },
             {
               "metric": "AVG",
-              "metric_weight": 55,
+              "metric_weight": 10,
               "rating": 5.272328504334642,
               "splits": [
                 {
@@ -156643,9 +156643,9 @@
       "away_team": "NYY",
       "home_pitcher": "Kyle Bradish",
       "away_pitcher": "Gerrit Cole",
-      "home_total": 5.788013246914196,
-      "away_total": 6.373641152331236,
-      "delta": -0.5856279054170397,
+      "home_total": 5.841636048694788,
+      "away_total": 6.427004405361569,
+      "delta": -0.5853683566667813,
       "pick": "NYY",
       "odds": {
         "ml_home": "+108",
@@ -174625,12 +174625,12 @@
           ]
         },
         "hitting": {
-          "home": 3.6508036648033704,
-          "away": 3.583597902642209,
+          "home": 4.008289010007317,
+          "away": 3.939352922844436,
           "home_details": [
             {
               "metric": "wRC+",
-              "metric_weight": 45,
+              "metric_weight": 30,
               "rating": 4.423064578363532,
               "splits": [
                 {
@@ -175043,7 +175043,7 @@
             },
             {
               "metric": "OPS",
-              "metric_weight": 75,
+              "metric_weight": 20,
               "rating": 3.4157595996145376,
               "splits": [
                 {
@@ -175456,7 +175456,7 @@
             },
             {
               "metric": "wOBA",
-              "metric_weight": 40,
+              "metric_weight": 20,
               "rating": 2.7496953320938413,
               "splits": [
                 {
@@ -175869,7 +175869,7 @@
             },
             {
               "metric": "BB/K",
-              "metric_weight": 35,
+              "metric_weight": 60,
               "rating": 5.104452056899726,
               "splits": [
                 {
@@ -176282,7 +176282,7 @@
             },
             {
               "metric": "BABIP",
-              "metric_weight": 25,
+              "metric_weight": 35,
               "rating": 1.9576365092741224,
               "splits": [
                 {
@@ -177521,7 +177521,7 @@
             },
             {
               "metric": "BB%",
-              "metric_weight": 10,
+              "metric_weight": 30,
               "rating": 6.196054881355701,
               "splits": [
                 {
@@ -177934,7 +177934,7 @@
             },
             {
               "metric": "ISO",
-              "metric_weight": 25,
+              "metric_weight": 10,
               "rating": 6.082257914894704,
               "splits": [
                 {
@@ -178347,7 +178347,7 @@
             },
             {
               "metric": "wRAA",
-              "metric_weight": 50,
+              "metric_weight": 15,
               "rating": 3.7670853694674213,
               "splits": [
                 {
@@ -178760,7 +178760,7 @@
             },
             {
               "metric": "OBP",
-              "metric_weight": 10,
+              "metric_weight": 15,
               "rating": 2.510204591822502,
               "splits": [
                 {
@@ -179173,7 +179173,7 @@
             },
             {
               "metric": "SLG",
-              "metric_weight": 10,
+              "metric_weight": 5,
               "rating": 3.9000038159569295,
               "splits": [
                 {
@@ -179586,7 +179586,7 @@
             },
             {
               "metric": "AVG",
-              "metric_weight": 55,
+              "metric_weight": 10,
               "rating": 2.483158178136861,
               "splits": [
                 {
@@ -180001,7 +180001,7 @@
           "away_details": [
             {
               "metric": "wRC+",
-              "metric_weight": 45,
+              "metric_weight": 30,
               "rating": 4.6396928530620265,
               "splits": [
                 {
@@ -180588,7 +180588,7 @@
             },
             {
               "metric": "OPS",
-              "metric_weight": 75,
+              "metric_weight": 20,
               "rating": 3.436726125304519,
               "splits": [
                 {
@@ -181175,7 +181175,7 @@
             },
             {
               "metric": "wOBA",
-              "metric_weight": 40,
+              "metric_weight": 20,
               "rating": 2.902563436081218,
               "splits": [
                 {
@@ -181762,7 +181762,7 @@
             },
             {
               "metric": "BB/K",
-              "metric_weight": 35,
+              "metric_weight": 60,
               "rating": 3.9073001008158292,
               "splits": [
                 {
@@ -182349,7 +182349,7 @@
             },
             {
               "metric": "BABIP",
-              "metric_weight": 25,
+              "metric_weight": 35,
               "rating": 4.636250972521856,
               "splits": [
                 {
@@ -184110,7 +184110,7 @@
             },
             {
               "metric": "BB%",
-              "metric_weight": 10,
+              "metric_weight": 30,
               "rating": 5.300045773341485,
               "splits": [
                 {
@@ -184697,7 +184697,7 @@
             },
             {
               "metric": "ISO",
-              "metric_weight": 25,
+              "metric_weight": 10,
               "rating": 3.1031183658430237,
               "splits": [
                 {
@@ -185284,7 +185284,7 @@
             },
             {
               "metric": "wRAA",
-              "metric_weight": 50,
+              "metric_weight": 15,
               "rating": 3.1940165798654823,
               "splits": [
                 {
@@ -185871,7 +185871,7 @@
             },
             {
               "metric": "OBP",
-              "metric_weight": 10,
+              "metric_weight": 15,
               "rating": 3.9024896701467737,
               "splits": [
                 {
@@ -186458,7 +186458,7 @@
             },
             {
               "metric": "SLG",
-              "metric_weight": 10,
+              "metric_weight": 5,
               "rating": 2.990339139536115,
               "splits": [
                 {
@@ -187045,7 +187045,7 @@
             },
             {
               "metric": "AVG",
-              "metric_weight": 55,
+              "metric_weight": 10,
               "rating": 3.3598971814034173,
               "splits": [
                 {
@@ -187669,9 +187669,9 @@
       "away_team": "WSN",
       "home_pitcher": "Jacob deGrom",
       "away_pitcher": "Andrew Alvarez",
-      "home_total": 5.217473725201007,
-      "away_total": 6.107947370557025,
-      "delta": -0.8904736453560185,
+      "home_total": 5.256036815066413,
+      "away_total": 6.055226483962872,
+      "delta": -0.7991896688964584,
       "pick": "WSN",
       "odds": {
         "ml_home": "-166",
@@ -204349,12 +204349,12 @@
           ]
         },
         "hitting": {
-          "home": 4.33865957717465,
-          "away": 4.30534425613481,
+          "home": 4.595746842944028,
+          "away": 3.953871678840454,
           "home_details": [
             {
               "metric": "wRC+",
-              "metric_weight": 45,
+              "metric_weight": 30,
               "rating": 4.90491089989895,
               "splits": [
                 {
@@ -204941,7 +204941,7 @@
             },
             {
               "metric": "OPS",
-              "metric_weight": 75,
+              "metric_weight": 20,
               "rating": 4.074974451167718,
               "splits": [
                 {
@@ -205528,7 +205528,7 @@
             },
             {
               "metric": "wOBA",
-              "metric_weight": 40,
+              "metric_weight": 20,
               "rating": 3.4333671947811975,
               "splits": [
                 {
@@ -206115,7 +206115,7 @@
             },
             {
               "metric": "BB/K",
-              "metric_weight": 35,
+              "metric_weight": 60,
               "rating": 4.301751375755539,
               "splits": [
                 {
@@ -206702,7 +206702,7 @@
             },
             {
               "metric": "BABIP",
-              "metric_weight": 25,
+              "metric_weight": 35,
               "rating": 7.48154316046163,
               "splits": [
                 {
@@ -208463,7 +208463,7 @@
             },
             {
               "metric": "BB%",
-              "metric_weight": 10,
+              "metric_weight": 30,
               "rating": 4.750328787118148,
               "splits": [
                 {
@@ -209050,7 +209050,7 @@
             },
             {
               "metric": "ISO",
-              "metric_weight": 25,
+              "metric_weight": 10,
               "rating": 2.9033182974815075,
               "splits": [
                 {
@@ -209637,7 +209637,7 @@
             },
             {
               "metric": "wRAA",
-              "metric_weight": 50,
+              "metric_weight": 15,
               "rating": 3.600120052427185,
               "splits": [
                 {
@@ -210224,7 +210224,7 @@
             },
             {
               "metric": "OBP",
-              "metric_weight": 10,
+              "metric_weight": 15,
               "rating": 3.966749069606656,
               "splits": [
                 {
@@ -210811,7 +210811,7 @@
             },
             {
               "metric": "SLG",
-              "metric_weight": 10,
+              "metric_weight": 5,
               "rating": 3.6037064439703834,
               "splits": [
                 {
@@ -211398,7 +211398,7 @@
             },
             {
               "metric": "AVG",
-              "metric_weight": 55,
+              "metric_weight": 10,
               "rating": 5.314667688163605,
               "splits": [
                 {
@@ -211987,7 +211987,7 @@
           "away_details": [
             {
               "metric": "wRC+",
-              "metric_weight": 45,
+              "metric_weight": 30,
               "rating": 5.2572230482886475,
               "splits": [
                 {
@@ -212574,7 +212574,7 @@
             },
             {
               "metric": "OPS",
-              "metric_weight": 75,
+              "metric_weight": 20,
               "rating": 4.355688742055335,
               "splits": [
                 {
@@ -213161,7 +213161,7 @@
             },
             {
               "metric": "wOBA",
-              "metric_weight": 40,
+              "metric_weight": 20,
               "rating": 3.7045287349873735,
               "splits": [
                 {
@@ -213748,7 +213748,7 @@
             },
             {
               "metric": "BB/K",
-              "metric_weight": 35,
+              "metric_weight": 60,
               "rating": 4.322855049961227,
               "splits": [
                 {
@@ -214335,7 +214335,7 @@
             },
             {
               "metric": "BABIP",
-              "metric_weight": 25,
+              "metric_weight": 35,
               "rating": 2.430043994303687,
               "splits": [
                 {
@@ -216096,7 +216096,7 @@
             },
             {
               "metric": "BB%",
-              "metric_weight": 10,
+              "metric_weight": 30,
               "rating": 3.0989202137591723,
               "splits": [
                 {
@@ -216683,7 +216683,7 @@
             },
             {
               "metric": "ISO",
-              "metric_weight": 25,
+              "metric_weight": 10,
               "rating": 5.572413510075661,
               "splits": [
                 {
@@ -217270,7 +217270,7 @@
             },
             {
               "metric": "wRAA",
-              "metric_weight": 50,
+              "metric_weight": 15,
               "rating": 4.45086643688973,
               "splits": [
                 {
@@ -217857,7 +217857,7 @@
             },
             {
               "metric": "OBP",
-              "metric_weight": 10,
+              "metric_weight": 15,
               "rating": 2.277031163775708,
               "splits": [
                 {
@@ -218444,7 +218444,7 @@
             },
             {
               "metric": "SLG",
-              "metric_weight": 10,
+              "metric_weight": 5,
               "rating": 5.218759286838214,
               "splits": [
                 {
@@ -219031,7 +219031,7 @@
             },
             {
               "metric": "AVG",
-              "metric_weight": 55,
+              "metric_weight": 10,
               "rating": 4.457738598957163,
               "splits": [
                 {
@@ -219655,9 +219655,9 @@
       "away_team": "LAA",
       "home_pitcher": "Peter Lambert",
       "away_pitcher": "Grayson Rodriguez",
-      "home_total": 5.79906739478034,
-      "away_total": 4.854597057324014,
-      "delta": 0.9444703374563259,
+      "home_total": 5.80542272111474,
+      "away_total": 4.927744082092268,
+      "delta": 0.8776786390224718,
       "pick": "HOU",
       "odds": {
         "ml_home": "-178",
@@ -238365,12 +238365,12 @@
           ]
         },
         "hitting": {
-          "home": 3.2404674424681863,
-          "away": 3.0823022905983652,
+          "home": 3.2828362846975208,
+          "away": 3.569949122386718,
           "home_details": [
             {
               "metric": "wRC+",
-              "metric_weight": 45,
+              "metric_weight": 30,
               "rating": 3.960971232189114,
               "splits": [
                 {
@@ -238783,7 +238783,7 @@
             },
             {
               "metric": "OPS",
-              "metric_weight": 75,
+              "metric_weight": 20,
               "rating": 3.2343980284466483,
               "splits": [
                 {
@@ -239196,7 +239196,7 @@
             },
             {
               "metric": "wOBA",
-              "metric_weight": 40,
+              "metric_weight": 20,
               "rating": 2.4258531552464917,
               "splits": [
                 {
@@ -239609,7 +239609,7 @@
             },
             {
               "metric": "BB/K",
-              "metric_weight": 35,
+              "metric_weight": 60,
               "rating": 3.684276802007691,
               "splits": [
                 {
@@ -240022,7 +240022,7 @@
             },
             {
               "metric": "BABIP",
-              "metric_weight": 25,
+              "metric_weight": 35,
               "rating": 1.5627163372218447,
               "splits": [
                 {
@@ -241261,7 +241261,7 @@
             },
             {
               "metric": "BB%",
-              "metric_weight": 10,
+              "metric_weight": 30,
               "rating": 4.535523709568609,
               "splits": [
                 {
@@ -241674,7 +241674,7 @@
             },
             {
               "metric": "ISO",
-              "metric_weight": 25,
+              "metric_weight": 10,
               "rating": 5.724937118931122,
               "splits": [
                 {
@@ -242087,7 +242087,7 @@
             },
             {
               "metric": "wRAA",
-              "metric_weight": 50,
+              "metric_weight": 15,
               "rating": 3.7559165819918894,
               "splits": [
                 {
@@ -242500,7 +242500,7 @@
             },
             {
               "metric": "OBP",
-              "metric_weight": 10,
+              "metric_weight": 15,
               "rating": 1.9843706008609916,
               "splits": [
                 {
@@ -242913,7 +242913,7 @@
             },
             {
               "metric": "SLG",
-              "metric_weight": 10,
+              "metric_weight": 5,
               "rating": 4.151278841705532,
               "splits": [
                 {
@@ -243326,7 +243326,7 @@
             },
             {
               "metric": "AVG",
-              "metric_weight": 55,
+              "metric_weight": 10,
               "rating": 2.099741787414129,
               "splits": [
                 {
@@ -243741,7 +243741,7 @@
           "away_details": [
             {
               "metric": "wRC+",
-              "metric_weight": 45,
+              "metric_weight": 30,
               "rating": 3.9542137247612454,
               "splits": [
                 {
@@ -244328,7 +244328,7 @@
             },
             {
               "metric": "OPS",
-              "metric_weight": 75,
+              "metric_weight": 20,
               "rating": 2.734488447914352,
               "splits": [
                 {
@@ -244915,7 +244915,7 @@
             },
             {
               "metric": "wOBA",
-              "metric_weight": 40,
+              "metric_weight": 20,
               "rating": 2.2187836167698083,
               "splits": [
                 {
@@ -245502,7 +245502,7 @@
             },
             {
               "metric": "BB/K",
-              "metric_weight": 35,
+              "metric_weight": 60,
               "rating": 4.465445166353091,
               "splits": [
                 {
@@ -246089,7 +246089,7 @@
             },
             {
               "metric": "BABIP",
-              "metric_weight": 25,
+              "metric_weight": 35,
               "rating": 3.2722327119818457,
               "splits": [
                 {
@@ -247850,7 +247850,7 @@
             },
             {
               "metric": "BB%",
-              "metric_weight": 10,
+              "metric_weight": 30,
               "rating": 5.181068442376436,
               "splits": [
                 {
@@ -248437,7 +248437,7 @@
             },
             {
               "metric": "ISO",
-              "metric_weight": 25,
+              "metric_weight": 10,
               "rating": 2.2666216450202072,
               "splits": [
                 {
@@ -249024,7 +249024,7 @@
             },
             {
               "metric": "wRAA",
-              "metric_weight": 50,
+              "metric_weight": 15,
               "rating": 3.365394941842736,
               "splits": [
                 {
@@ -249611,7 +249611,7 @@
             },
             {
               "metric": "OBP",
-              "metric_weight": 10,
+              "metric_weight": 15,
               "rating": 2.489279535361365,
               "splits": [
                 {
@@ -250198,7 +250198,7 @@
             },
             {
               "metric": "SLG",
-              "metric_weight": 10,
+              "metric_weight": 5,
               "rating": 2.280743135519813,
               "splits": [
                 {
@@ -250785,7 +250785,7 @@
             },
             {
               "metric": "AVG",
-              "metric_weight": 55,
+              "metric_weight": 10,
               "rating": 2.5471445332745204,
               "splits": [
                 {
