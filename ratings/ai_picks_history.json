@@ -12,21 +12,21 @@
     },
     "week": {
       "picks": 40,
-      "wins": 15,
-      "losses": 20,
+      "wins": 16,
+      "losses": 19,
       "pushes": 0,
       "pending": 5,
-      "units_net": -14.0,
-      "hit_pct": 0.42857142857142855
+      "units_net": -8.0,
+      "hit_pct": 0.45714285714285713
     },
     "season": {
       "picks": 45,
-      "wins": 18,
-      "losses": 22,
+      "wins": 19,
+      "losses": 21,
       "pushes": 0,
       "pending": 5,
-      "units_net": -11.0,
-      "hit_pct": 0.45
+      "units_net": -5.0,
+      "hit_pct": 0.475
     }
   },
   "picks_by_date": {
@@ -460,8 +460,8 @@
           "units": 3,
           "confidence": "high",
           "reasoning": "All three ratings agree on STL with the largest edge on the board (R1 -2.49, R2 -2.83, R3 -2.46), the only triple-strong game today. Fading Cincinnati is the sharpest angle in the team splits: CIN is just 6-12 (33%) when a model likes them and 3-7 (30%, -5.0u) on strong plays, while STL sits 9-7 (56%) when liked. R2 is the steadiest strong-play book recently (7d 23-26, 47% vs R1 40% and R3 36%) and is +21.0u for the season.",
-          "outcome": "L",
-          "net": -3
+          "outcome": "W",
+          "net": 3
         },
         {
           "rank": 2,
@@ -521,11 +521,11 @@
         "output_tokens": 2163
       },
       "totals": {
-        "wins": 3,
-        "losses": 2,
+        "wins": 4,
+        "losses": 1,
         "pushes": 0,
         "pending": 0,
-        "units_net": -1.0
+        "units_net": 5.0
       }
     },
     "2026-08-18": {
