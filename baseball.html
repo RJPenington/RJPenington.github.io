@@ -639,6 +639,78 @@
                 html += `</tbody></table>`;
             }
 
+            // --- Model vs Market: fav/dog record of each rating's picks ---
+            // Data precomputed server-side (compute_model_market.py). ML P/L
+            // is flat $100 on the model's pick at its listed moneyline, so a
+            // dog record below 50% can still be profitable.
+            try {
+                const mmR = await fetch("ratings/model_market.json" + CACHE_BUST, {cache: "no-store"});
+                if (mmR.ok) {
+                    const mm = await mmR.json();
+                    const money = n => `<span style="color:${n > 0 ? "#22c55e" : n < 0 ? "#ef4444" : "#a0aec0"}; font-weight:600;">${n >= 0 ? "+" : "-"}$${Math.abs(n).toFixed(0)}</span>`;
+                    const recCellMM = t => {
+                        const n = t.wins + t.losses;
+                        if (!n) return `<td style="padding:0.4rem; text-align:center; color:#a0aec0;">-</td>`;
+                        const pct = (t.wins / n * 100).toFixed(1);
+                        return `<td style="padding:0.4rem; text-align:center;">${t.wins}-${t.losses} <span style="color:#a0aec0;">(${pct}%)</span></td>`;
+                    };
+                    html += `<h4 style="margin:1.5rem 0 0.4rem 0; color:#e2e8f0;">Model vs Market: favorite/underdog record (moneyline)</h4>
+                        <div style="color:#a0aec0; font-size:0.8rem; margin-bottom:0.6rem;">
+                            Underdogs won ${(mm.dog_win_rate * 100).toFixed(1)}% of all ${mm.n_games_with_line} lined games.
+                            ML P/L = flat $100 on the model's pick at its listed moneyline, so an underdog record under 50% can still profit.
+                        </div>
+                        <table style="width:100%; border-collapse:collapse; font-size:0.85rem; margin-bottom:1rem;">
+                        <thead><tr style="background:#252932; color:#a0aec0; font-size:0.75rem;">
+                            <th style="padding:0.4rem; text-align:left;">Rating</th>
+                            <th style="padding:0.4rem; text-align:center;">Picked favorite</th>
+                            <th style="padding:0.4rem; text-align:center; border-right:1px solid #4a5568;">Fav ML P/L</th>
+                            <th style="padding:0.4rem; text-align:center;">Picked underdog</th>
+                            <th style="padding:0.4rem; text-align:center;">Dog ML P/L</th>
+                        </tr></thead><tbody>`;
+                    for (const r of ALL_RATINGS) {
+                        const v = mm.by_rating[String(r)];
+                        if (!v) continue;
+                        const pf = v.picked_fav, pd = v.picked_dog;
+                        if (!(pf.wins + pf.losses + pd.wins + pd.losses)) continue;
+                        html += `<tr style="border-bottom:1px solid #2d3748;">
+                            <td style="padding:0.4rem; font-weight:600;">R${r}</td>
+                            ${recCellMM(pf)}
+                            <td style="padding:0.4rem; text-align:center; border-right:1px solid #4a5568;">${money(pf.ml_profit)}</td>
+                            ${recCellMM(pd)}
+                            <td style="padding:0.4rem; text-align:center;">${money(pd.ml_profit)}</td>
+                        </tr>`;
+                    }
+                    html += `</tbody></table>`;
+                    // delta-bucket breakdown: does a bigger rating spread mean more trust?
+                    html += `<table style="width:100%; border-collapse:collapse; font-size:0.8rem; margin-bottom:1.5rem;">
+                        <thead><tr style="background:#252932; color:#a0aec0; font-size:0.72rem;">
+                            <th style="padding:0.35rem; text-align:left;">By rating spread (|delta|)</th>
+                            <th style="padding:0.35rem; text-align:center;">0-0.5</th>
+                            <th style="padding:0.35rem; text-align:center;">0.5-1</th>
+                            <th style="padding:0.35rem; text-align:center;">1-1.5</th>
+                            <th style="padding:0.35rem; text-align:center;">1.5+</th>
+                        </tr></thead><tbody>`;
+                    for (const r of ALL_RATINGS) {
+                        const v = mm.by_rating[String(r)];
+                        if (!v) continue;
+                        if (!(v.picked_fav.wins + v.picked_fav.losses + v.picked_dog.wins + v.picked_dog.losses)) continue;
+                        for (const [label, key] of [["fav picks", "fav_by_delta"], ["dog picks", "dog_by_delta"]]) {
+                            html += `<tr style="border-bottom:1px solid #2d3748;">
+                                <td style="padding:0.35rem;"><strong>R${r}</strong> <span style="color:#a0aec0;">${label}</span></td>`;
+                            for (const b of ["0-0.5", "0.5-1", "1-1.5", "1.5+"]) {
+                                const t = v[key][b];
+                                const n = t.wins + t.losses;
+                                html += n
+                                    ? `<td style="padding:0.35rem; text-align:center;">${t.wins}-${t.losses}<br>${money(t.ml_profit)}</td>`
+                                    : `<td style="padding:0.35rem; text-align:center; color:#a0aec0;">-</td>`;
+                            }
+                            html += `</tr>`;
+                        }
+                    }
+                    html += `</tbody></table>`;
+                }
+            } catch (e) { /* section is optional; tab still renders */ }
+
             document.getElementById("content").innerHTML = html;
             // Bind click handler for expand/collapse
             document.querySelectorAll(".roi-day").forEach(row => {
