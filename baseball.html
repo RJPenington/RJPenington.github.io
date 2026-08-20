@@ -149,6 +149,7 @@
                 <button class="model-tab active" data-rating="1" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#3182ce; color:#fff; cursor:pointer; font-size:0.85rem;">Rating 1</button>
                 <button class="model-tab" data-rating="2" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Rating 2</button>
                 <button class="model-tab" data-rating="3" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Rating 3</button>
+                <button class="model-tab" data-rating="4" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#252932; color:#a0aec0; cursor:pointer; font-size:0.85rem;">Rating 4</button>
             </div>
             <div class="view-tabs" id="viewTabs" style="display:inline-flex; gap:4px; margin-left:1rem; border-left:1px solid #4a5568; padding-left:1rem; flex-wrap:wrap;">
                 <button class="view-tab active" data-view="picks" style="padding:4px 12px; border-radius:4px; border:1px solid #4a5568; background:#48bb78; color:#fff; cursor:pointer; font-size:0.85rem;">Picks</button>
@@ -189,6 +190,7 @@
         // affects the browser, not the upstream CDN. Append a per-load nonce
         // so each request is a unique URL the CDN can't have cached.
         const CACHE_BUST = "?v=" + Date.now();
+        const ALL_RATINGS = [1, 2, 3, 4];  // every rating model the site knows about
 
         async function loadOverallSummary() {
             try {
@@ -365,7 +367,7 @@
             const weekStart = thisWeekMondayStr();
             const weekEnd   = sundayAfter(weekStart);
             const agg = {};
-            for (const r of [1, 2, 3]) {
+            for (const r of ALL_RATINGS) {
                 const rData = roi.by_rating[r] || {};
                 const allGames  = gamesFor(rData);
                 const weekGames = gamesFor(rData, weekStart, weekEnd);
@@ -427,8 +429,8 @@
             }
 
             // ─── Three OVERALL cards — split: "Bet every pick" | "Strong plays" ─
-            html += '<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-bottom:1rem;">';
-            for (const r of [1, 2, 3]) {
+            html += `<div style="display:grid; grid-template-columns:repeat(${ALL_RATINGS.length}, minmax(0,1fr)); gap:1rem; margin-bottom:1rem;">`;
+            for (const r of ALL_RATINGS) {
                 const a = agg[r];
                 html += `<div style="background:#252932; padding:0.8rem; border-radius:6px; border:1px solid #4a5568;">
                     <div style="text-align:center; font-weight:700; font-size:1.05rem; margin-bottom:0.5rem;">Rating ${r}</div>
@@ -443,8 +445,8 @@
 
             // ─── Three WEEKLY cards (Mon–Sun containing today) ─────────────
             html += `<h4 style="margin:1.2rem 0 0.4rem 0; color:#e2e8f0;">This week (Mon ${shortDate(weekStart)} – Sun ${shortDate(weekEnd)})</h4>`;
-            html += '<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-bottom:1rem;">';
-            for (const r of [1, 2, 3]) {
+            html += `<div style="display:grid; grid-template-columns:repeat(${ALL_RATINGS.length}, minmax(0,1fr)); gap:1rem; margin-bottom:1rem;">`;
+            for (const r of ALL_RATINGS) {
                 const a = agg[r];
                 html += `<div style="background:#252932; padding:0.8rem; border-radius:6px; border:1px solid #4a5568;">
                     <div style="text-align:center; font-weight:700; font-size:1.05rem; margin-bottom:0.5rem;">Rating ${r}</div>
@@ -470,33 +472,29 @@
                 <thead>
                   <tr style="background:#252932;">
                     <th rowspan="2" style="text-align:left; padding:0.4rem; border-right:1px solid #4a5568;">Unit</th>
-                    <th colspan="6" style="text-align:center; padding:0.4rem; border-right:1px solid #4a5568; color:#cbd5e0;">Bet every pick</th>
-                    <th colspan="6" style="text-align:center; padding:0.4rem; color:#cbd5e0;">Strong plays</th>
+                    <th colspan="${ALL_RATINGS.length*2}" style="text-align:center; padding:0.4rem; border-right:1px solid #4a5568; color:#cbd5e0;">Bet every pick</th>
+                    <th colspan="${ALL_RATINGS.length*2}" style="text-align:center; padding:0.4rem; color:#cbd5e0;">Strong plays</th>
                   </tr>
                   <tr style="background:#252932; font-size:0.72rem;">
-                    <th style="padding:0.3rem; text-align:right;">R1 P/L</th><th style="text-align:right;">R1 W-L</th>
-                    <th style="text-align:right;">R2 P/L</th><th style="text-align:right;">R2 W-L</th>
-                    <th style="text-align:right; border-right:1px solid #4a5568; padding-right:0.4rem;">R3 P/L</th><th style="text-align:right; padding-right:0.4rem;">R3 W-L</th>
-                    <th style="text-align:right;">R1 P/L</th><th style="text-align:right;">R1 W-L</th>
-                    <th style="text-align:right;">R2 P/L</th><th style="text-align:right;">R2 W-L</th>
-                    <th style="text-align:right;">R3 P/L</th><th style="text-align:right;">R3 W-L</th>
+                    ${ALL_RATINGS.map((r, i) => `<th style="padding:0.3rem; text-align:right;">R${r} P/L</th><th style="text-align:right;${i === ALL_RATINGS.length-1 ? " border-right:1px solid #4a5568; padding-right:0.4rem;" : ""}">R${r} W-L</th>`).join("")}
+                    ${ALL_RATINGS.map(r => `<th style="text-align:right;">R${r} P/L</th><th style="text-align:right;">R${r} W-L</th>`).join("")}
                   </tr>
                 </thead><tbody>`;
             for (const uKey of ["1.0u","1.5u","2.0u","2.5u","3.0u"]) {
                 html += `<tr style="border-bottom:1px solid #2d3748;">
                     <td style="padding:0.4rem; border-right:1px solid #4a5568;">${uKey}</td>`;
                 // Bet every pick: use server-side overall_by_units (already correct)
-                for (const r of [1,2,3]) {
+                for (const r of ALL_RATINGS) {
                     const u = ((roi.by_rating[r] || {}).overall_by_units || {})[uKey] || {};
                     const p = u.profit ?? 0, w = u.wins ?? 0, l = u.losses ?? 0;
                     const pStr = (p >= 0 ? "+" : "") + p.toFixed(0);
                     const rec  = (w+l) ? `${w}-${l}` : "—";
-                    const rightBorder = r === 3 ? "border-right:1px solid #4a5568; padding-right:0.4rem;" : "";
+                    const rightBorder = r === ALL_RATINGS[ALL_RATINGS.length-1] ? "border-right:1px solid #4a5568; padding-right:0.4rem;" : "";
                     html += `<td style="padding:0.3rem; text-align:right; ${rightBorder}">${cell(`$${pStr}`)}</td>
                              <td style="padding:0.3rem; text-align:right; color:#a0aec0; ${rightBorder}">${rec}</td>`;
                 }
                 // Strong plays: pull from client-computed agg
-                for (const r of [1,2,3]) {
+                for (const r of ALL_RATINGS) {
                     const u = (agg[r].overall_strong.by_units || {})[uKey] || {};
                     const p = u.profit ?? 0, w = u.wins ?? 0, l = u.losses ?? 0;
                     const pStr = (p >= 0 ? "+" : "") + p.toFixed(0);
@@ -512,43 +510,39 @@
             html += `<table class="games-table" style="width:100%; border-collapse:collapse; font-size:0.85rem;">
                 <thead><tr style="background:#252932;">
                   <th style="text-align:left;padding:0.5rem;">Date</th>
-                  <th style="text-align:right;padding:0.5rem;">R1 Flat</th>
-                  <th style="text-align:right;padding:0.5rem;">R2 Flat</th>
-                  <th style="text-align:right;padding:0.5rem;">R3 Flat</th>
-                  <th style="text-align:right;padding:0.5rem;">R1 Scaled</th>
-                  <th style="text-align:right;padding:0.5rem;">R2 Scaled</th>
-                  <th style="text-align:right;padding:0.5rem;">R3 Scaled</th>
+                  ${ALL_RATINGS.map(r => `<th style="text-align:right;padding:0.5rem;">R${r} Flat</th>`).join("")}
+                  ${ALL_RATINGS.map(r => `<th style="text-align:right;padding:0.5rem;">R${r} Scaled</th>`).join("")}
                 </tr></thead><tbody>`;
             // Collect all unique dates across the 3 rating per_day arrays
             const dateSet = new Set();
-            for (const r of [1,2,3]) {
+            for (const r of ALL_RATINGS) {
                 ((roi.by_rating[r] || {}).per_day || []).forEach(d => dateSet.add(d.date));
             }
             const datesSorted = [...dateSet].sort().reverse();
             const indexByR = {};
-            for (const r of [1,2,3]) {
+            for (const r of ALL_RATINGS) {
                 indexByR[r] = {};
                 ((roi.by_rating[r] || {}).per_day || []).forEach(d => { indexByR[r][d.date] = d; });
             }
             for (const date of datesSorted) {
                 html += `<tr class="roi-day" data-date="${date}" style="border-bottom:1px solid #2d3748; cursor:pointer;">
                     <td style="padding:0.5rem;"><span class="roi-arrow">▸</span> ${date}</td>`;
-                for (const r of [1,2,3]) {
+                for (const r of ALL_RATINGS) {
                     const day = indexByR[r][date];
                     html += `<td style="padding:0.5rem; text-align:right;">${day ? cell(`$${fmt(day.flat.profit)}`) : "—"}</td>`;
                 }
-                for (const r of [1,2,3]) {
+                for (const r of ALL_RATINGS) {
                     const day = indexByR[r][date];
                     html += `<td style="padding:0.5rem; text-align:right;">${day ? cell(`$${fmt(day.scaled.profit)}`) : "—"}</td>`;
                 }
                 html += `</tr>`;
                 // Per-game expansion (hidden by default)
                 html += `<tr class="roi-detail" data-date="${date}" style="display:none; background:#1f242c;">
-                    <td colspan="7" style="padding:0.5rem 1rem;">`;
+                    <td colspan="${1 + 2*ALL_RATINGS.length}" style="padding:0.5rem 1rem;">`;
                 // For each game on this date, show row per rating with profit
                 // Build a unified list of (matchup, R1 row, R2 row, R3 row)
                 const matchups = {};
-                for (const r of [1,2,3]) {
+                for (const r of ALL_RATINGS) {
                     const day = indexByR[r][date];
                     if (!day) continue;
                     for (const game of (day.games || [])) {
@@ -559,13 +553,11 @@
                 html += `<table style="width:100%; border-collapse:collapse; font-size:0.8rem;">
                     <thead><tr style="color:#a0aec0;">
                         <th style="text-align:left; padding:0.3rem;">Game</th>
-                        <th style="text-align:center; padding:0.3rem;">R1 pick / Δ / units / O / P/L</th>
-                        <th style="text-align:center; padding:0.3rem;">R2 pick / Δ / units / O / P/L</th>
-                        <th style="text-align:center; padding:0.3rem;">R3 pick / Δ / units / O / P/L</th>
+                        ${ALL_RATINGS.map(r => `<th style="text-align:center; padding:0.3rem;">R${r} pick / Δ / units / O / P/L</th>`).join("")}
                     </tr></thead><tbody>`;
                 for (const matchup of Object.keys(matchups)) {
                     html += `<tr><td style="padding:0.3rem;">${matchup}</td>`;
-                    for (const r of [1,2,3]) {
+                    for (const r of ALL_RATINGS) {
                         const g = matchups[matchup][r];
                         if (!g) { html += `<td style="text-align:center; padding:0.3rem;">—</td>`; continue; }
                         const outColor = g.outcome === "W" ? "#48bb78" : (g.outcome === "L" ? "#f56565" : "#a0aec0");
@@ -590,7 +582,7 @@
             // each rating's bet-every and strong totals.
             const weekKeys = new Set();
             const weekRows = {};  // weekKey -> {r: {every, strong}}
-            for (const r of [1,2,3]) {
+            for (const r of ALL_RATINGS) {
                 const rd = roi.by_rating[r] || {};
                 const byWeek = {};
                 for (const day of (rd.per_day || [])) {
@@ -614,37 +606,27 @@
                     <thead>
                       <tr style="background:#252932;">
                         <th rowspan="2" style="text-align:left; padding:0.4rem; border-right:1px solid #4a5568;">Week (Mon)</th>
-                        <th colspan="4" style="text-align:center; padding:0.4rem; border-right:1px solid #4a5568;">R1</th>
-                        <th colspan="4" style="text-align:center; padding:0.4rem; border-right:1px solid #4a5568;">R2</th>
-                        <th colspan="4" style="text-align:center; padding:0.4rem;">R3</th>
+                        ${ALL_RATINGS.map((r, i) => `<th colspan="4" style="text-align:center; padding:0.4rem;${i < ALL_RATINGS.length-1 ? " border-right:1px solid #4a5568;" : ""}">R${r}</th>`).join("")}
                       </tr>
                       <tr style="background:#252932; font-size:0.72rem; color:#cbd5e0;">
-                        <th style="text-align:right; padding:0.3rem;">Every (flat)</th>
+                        ${ALL_RATINGS.map((r, i) => `<th style="text-align:right; padding:0.3rem;">Every (flat)</th>
                         <th style="text-align:right;">Every (scaled)</th>
                         <th style="text-align:right;">Strong (flat)</th>
-                        <th style="text-align:right; border-right:1px solid #4a5568; padding-right:0.4rem;">Strong (scaled)</th>
-                        <th style="text-align:right;">Every (flat)</th>
-                        <th style="text-align:right;">Every (scaled)</th>
-                        <th style="text-align:right;">Strong (flat)</th>
-                        <th style="text-align:right; border-right:1px solid #4a5568; padding-right:0.4rem;">Strong (scaled)</th>
-                        <th style="text-align:right;">Every (flat)</th>
-                        <th style="text-align:right;">Every (scaled)</th>
-                        <th style="text-align:right;">Strong (flat)</th>
-                        <th style="text-align:right;">Strong (scaled)</th>
+                        <th style="text-align:right;${i < ALL_RATINGS.length-1 ? " border-right:1px solid #4a5568; padding-right:0.4rem;" : ""}">Strong (scaled)</th>`).join("")}
                       </tr>
                     </thead><tbody>`;
                 for (const wk of weeksSorted) {
                     const sun = sundayAfter(wk);
                     html += `<tr style="border-bottom:1px solid #2d3748;">
                         <td style="padding:0.4rem; border-right:1px solid #4a5568;">${shortDate(wk)}–${shortDate(sun)}</td>`;
-                    for (const r of [1,2,3]) {
+                    for (const r of ALL_RATINGS) {
                         const rw = (weekRows[wk] || {})[r];
                         const empty = {profit:0, wins:0, losses:0, bets:0};
                         const f  = rw ? rw.every.flat    : empty;
                         const s  = rw ? rw.every.scaled  : empty;
                         const sf = rw ? rw.strong.flat   : empty;
                         const ss = rw ? rw.strong.scaled : empty;
-                        const tail = r === 3 ? "" : "border-right:1px solid #4a5568; padding-right:0.4rem;";
+                        const tail = r === ALL_RATINGS[ALL_RATINGS.length-1] ? "" : "border-right:1px solid #4a5568; padding-right:0.4rem;";
                         const fmt2 = n => (n>=0?"+":"") + n.toFixed(0);
                         const recCell = (b) => `<span style="color:#a0aec0; font-size:0.7rem;"> (${b.wins}-${b.losses})</span>`;
                         html += `<td style="padding:0.3rem; text-align:right;">${cell(`$${fmt2(f.profit)}`)}${recCell(f)}</td>
@@ -675,7 +657,7 @@
         // Load all 3 ratings JSON for a specific date — used by postgame/perf views.
         async function loadAllRatingsForDate(dateStr) {
             const out = {};
-            for (const r of [1,2,3]) {
+            for (const r of ALL_RATINGS) {
                 try {
                     const resp = await fetch(`ratings/${dateStr}_r${r}.json` + CACHE_BUST);
                     if (resp.ok) out[r] = await resp.json();
@@ -738,7 +720,7 @@
                 const sched = schedule.find(s => s.home === g.home_team && s.away === g.away_team) || {};
                 if (sched.state !== "Final" || sched.homeScore == null) continue;
                 const winner = sched.homeScore > sched.awayScore ? g.home_team : g.away_team;
-                for (const r of [1,2,3]) {
+                for (const r of ALL_RATINGS) {
                     const game = (all[r]?.games || []).find(x => x.home_team === g.home_team && x.away_team === g.away_team);
                     if (!game) continue;
                     if (game.pick === winner) todayTally[r].w += 1;
@@ -748,15 +730,15 @@
             // Overall record per rating — from the summary file
             const overallTally = {1:{w:0,l:0}, 2:{w:0,l:0}, 3:{w:0,l:0}};
             if (overallSummary?.by_rating) {
-                for (const r of [1,2,3]) {
+                for (const r of ALL_RATINGS) {
                     const t = overallSummary.by_rating[r]?.totals || {};
                     overallTally[r] = {w: t.wins||0, l: t.losses||0};
                 }
             }
 
-            let html = `<h3 style="margin:0.5rem 0;">Postgame: each game shows R1/R2/R3 picks + final score</h3>`;
-            html += `<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-bottom:1rem;">`;
-            for (const r of [1,2,3]) {
+            let html = `<h3 style="margin:0.5rem 0;">Postgame: each game shows every rating's pick + final score</h3>`;
+            html += `<div style="display:grid; grid-template-columns:repeat(${ALL_RATINGS.length}, minmax(0,1fr)); gap:1rem; margin-bottom:1rem;">`;
+            for (const r of ALL_RATINGS) {
                 const tT = todayTally[r], tO = overallTally[r];
                 const tdayPct = (tT.w+tT.l) ? Math.round(tT.w/(tT.w+tT.l)*100) : "—";
                 const ovPct = (tO.w+tO.l) ? Math.round(tO.w/(tO.w+tO.l)*100) : "—";
@@ -774,9 +756,7 @@
                 <thead><tr style="background:#252932;">
                   <th style="text-align:left;padding:0.5rem;">Game</th>
                   <th style="text-align:center;padding:0.5rem;">Final</th>
-                  <th style="text-align:center;padding:0.5rem;">R1 pick</th>
-                  <th style="text-align:center;padding:0.5rem;">R2 pick</th>
-                  <th style="text-align:center;padding:0.5rem;">R3 pick</th>
+                  ${ALL_RATINGS.map(r => `<th style="text-align:center;padding:0.5rem;">R${r} pick</th>`).join("")}
                   <th style="text-align:center;padding:0.5rem;">Box</th>
                 </tr></thead><tbody>`;
             for (const g of games) {
@@ -822,7 +802,7 @@
 
             // Compute today's per-(rating, category) tallies
             const todayCat = {1:{}, 2:{}, 3:{}};
-            for (const r of [1,2,3]) for (const c of cats) todayCat[r][c] = {w:0,l:0};
+            for (const r of ALL_RATINGS) for (const c of cats) todayCat[r][c] = {w:0,l:0};
             // Compute overall per-(rating, category) by walking every date in index
             // (use what's already there, but build async + cache)
             const recordFor = (catPick, winner, r, c) => {
@@ -848,7 +828,7 @@
             });
 
             for (const {g, winner, matchup} of gameInfo) {
-                for (const r of [1,2,3]) {
+                for (const r of ALL_RATINGS) {
                     const game = (all[r]?.games || []).find(x => x.home_team === g.home_team && x.away_team === g.away_team);
                     if (!game) continue;
                     for (const c of cats) {
@@ -871,13 +851,11 @@
                 <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
                 <thead><tr style="color:#a0aec0;">
                   <th style="text-align:left;padding:0.3rem;">Category</th>
-                  <th style="text-align:center;padding:0.3rem;">Rating 1</th>
-                  <th style="text-align:center;padding:0.3rem;">Rating 2</th>
-                  <th style="text-align:center;padding:0.3rem;">Rating 3</th>
+                  ${ALL_RATINGS.map(r => `<th style="text-align:center;padding:0.3rem;">Rating ${r}</th>`).join("")}
                 </tr></thead><tbody>`;
             for (const c of cats) {
                 html += `<tr><td style="padding:0.3rem;">${c.toUpperCase()}</td>`;
-                for (const r of [1,2,3]) {
+                for (const r of ALL_RATINGS) {
                     const t = todayCat[r][c];
                     const tot = t.w+t.l;
                     const pct = tot ? Math.round(t.w/tot*100) : "—";
@@ -896,13 +874,11 @@
                     <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
                     <thead><tr style="color:#a0aec0;">
                       <th style="text-align:left;padding:0.3rem;">Category</th>
-                      <th style="text-align:center;padding:0.3rem;">R1 pick</th>
-                      <th style="text-align:center;padding:0.3rem;">R2 pick</th>
-                      <th style="text-align:center;padding:0.3rem;">R3 pick</th>
+                      ${ALL_RATINGS.map(r => `<th style="text-align:center;padding:0.3rem;">R${r} pick</th>`).join("")}
                     </tr></thead><tbody>`;
                 for (const c of cats) {
                     html += `<tr><td style="padding:0.3rem;">${c}</td>`;
-                    for (const r of [1,2,3]) {
+                    for (const r of ALL_RATINGS) {
                         const game = (all[r]?.games || []).find(x => x.home_team === g.home_team && x.away_team === g.away_team);
                         if (!game || !game.categories?.[c]) { html += `<td style="text-align:center;padding:0.3rem;">—</td>`; continue; }
                         const v = game.categories[c];
@@ -917,7 +893,7 @@
                 }
                 // Game-level tally row
                 html += `<tr style="border-top:1px solid #2d3748;"><td style="padding:0.3rem; font-weight:600;">GAME 6-CAT</td>`;
-                for (const r of [1,2,3]) {
+                for (const r of ALL_RATINGS) {
                     const t = gameTally[matchup][r];
                     const tot = t.w+t.l;
                     const color = tot ? (t.w >= t.l ? "#48bb78" : "#f56565") : "#a0aec0";
@@ -967,7 +943,7 @@
             // Date-aware: the tallies and stat sections are all-time, but the
             // briefing + Best-5 card belong to a specific day. When the user
             // browses a past date, swap in that day's archived briefing
-            // (ratings/ai_archive/<date>.json — archiving began 2026-08-20)
+            // (ratings/ai_archive/<date>.json, archiving began 2026-08-20)
             // and that day's picks from picks_by_date.
             const selDate = dateStr || stats.as_of;
             const isLatest = selDate === stats.as_of;
@@ -978,7 +954,7 @@
                 } catch (e) { summary = null; }
             }
             const CATS = stats.categories;
-            const RATINGS = ["1", "2", "3"];
+            const RATINGS = ["1", "2", "3", "4"];
 
             // Helper: format a hit% cell with a colored background based on how far from 50%
             const pctCell = (pct, extra="") => {
@@ -1311,7 +1287,7 @@
                     // Rehydrate to the shape the render code below expects:
                     // tally[ratingInt][cat] = {wins, losses, pending}
                     tally = {1:{}, 2:{}, 3:{}};
-                    for (const r of [1,2,3]) {
+                    for (const r of ALL_RATINGS) {
                         for (const c of cats) {
                             tally[r][c] = (data.by_rating[r] || {})[c] || {wins:0, losses:0, pending:0};
                         }
@@ -1327,14 +1303,12 @@
                         <table style="width:100%; border-collapse:collapse;">
                 <thead><tr style="background:#252932;">
                   <th style="text-align:left;padding:0.5rem;">Category</th>
-                  <th style="text-align:center;padding:0.5rem;">Rating 1</th>
-                  <th style="text-align:center;padding:0.5rem;">Rating 2</th>
-                  <th style="text-align:center;padding:0.5rem;">Rating 3</th>
+                  ${ALL_RATINGS.map(r => `<th style="text-align:center;padding:0.5rem;">Rating ${r}</th>`).join("")}
                 </tr></thead><tbody>`;
             for (const c of cats) {
                 html += `<tr class="gt-row" data-cat="${c}" style="border-bottom:1px solid #2d3748; cursor:pointer;">
                     <td style="padding:0.5rem; font-weight:600;"><span class="gt-arrow">▸</span> ${c.toUpperCase()}</td>`;
-                for (const r of [1,2,3]) {
+                for (const r of ALL_RATINGS) {
                     const t = tally[r][c];
                     const games = t.wins + t.losses;
                     const pct = games > 0 ? (t.wins / games * 100).toFixed(1) : "—";
@@ -1345,7 +1319,7 @@
                 // Expanded detail row: time frames per rating
                 html += `<tr class="gt-detail" data-cat="${c}" style="display:none; background:#1f242c;">
                     <td style="padding:0.5rem 1rem; color:#a0aec0; font-style:italic;">Time frames used →</td>`;
-                for (const r of [1,2,3]) {
+                for (const r of ALL_RATINGS) {
                     const tf = (TIME_FRAMES[r] || {})[c] || "—";
                     html += `<td style="padding:0.5rem; text-align:center; color:#63b3ed;"><strong>${tf}</strong></td>`;
                 }
