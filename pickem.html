@@ -370,6 +370,63 @@
     }
     .banner-warn strong { color: var(--accent); }
 
+    /* Grading buttons on the Week Picks table (current season only) */
+    .grade-cell { white-space: nowrap; }
+    .grade-btns { display: inline-flex; gap: 4px; align-items: center; }
+    .grade-btn {
+        min-width: 28px; height: 28px; padding: 0 7px;
+        background: var(--card); color: var(--dim);
+        border: 1px solid var(--line); border-radius: 5px;
+        font-size: 0.8rem; font-weight: 700; cursor: pointer;
+        line-height: 1; transition: all 0.12s;
+    }
+    .grade-btn:hover { color: var(--ink); border-color: var(--accent); }
+    .grade-btn.w.on { background: rgba(74, 222, 128, 0.22); color: var(--good); border-color: var(--accent); box-shadow: 0 0 8px rgba(74, 222, 128, 0.4); }
+    .grade-btn.l.on { background: rgba(239, 68, 68, 0.20); color: var(--bad); border-color: var(--bad); box-shadow: 0 0 8px rgba(239, 68, 68, 0.35); }
+    .grade-btn.p.on { background: rgba(255, 255, 255, 0.10); color: var(--ink); border-color: #6b7280; }
+    .grade-btn.del:hover { color: var(--bad); border-color: var(--bad); }
+
+    /* Save bar on the Enter Picks panels */
+    .save-bar { display: flex; gap: 0.7rem; align-items: center; flex-wrap: wrap; }
+    .save-bar label {
+        color: var(--dim); font-size: 0.85rem; font-weight: 600;
+        letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    .save-bar input[type="number"] {
+        width: 72px; background: var(--card); color: var(--ink);
+        border: 1px solid var(--line); padding: 7px 9px; border-radius: 4px;
+        font-size: 0.95rem;
+    }
+    .save-bar input[type="number"]:focus { outline: 1px solid var(--accent); }
+    .btn-save {
+        background: linear-gradient(135deg, #0d3b1e, #164a2b);
+        color: var(--accent-bright); border: 1px solid var(--accent);
+        padding: 9px 20px; border-radius: 6px; cursor: pointer;
+        font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em;
+        text-transform: uppercase;
+        box-shadow: 0 0 14px rgba(74, 222, 128, 0.35);
+    }
+    .btn-save:hover { box-shadow: 0 0 20px rgba(74, 222, 128, 0.55); }
+    .btn-save:disabled { opacity: 0.5; cursor: default; box-shadow: none; }
+    .save-status { color: var(--dim); font-size: 0.85rem; }
+    .save-status.ok { color: var(--good); }
+    .save-status.err { color: var(--bad); }
+
+    /* Dismissible live-data warning bar */
+    .live-warn {
+        position: relative;
+        background: rgba(239, 68, 68, 0.10);
+        border: 1px solid rgba(239, 68, 68, 0.45);
+        color: var(--ink); padding: 0.65rem 2.4rem 0.65rem 1rem;
+        border-radius: 8px; margin-bottom: 1rem; font-size: 0.85rem;
+    }
+    .live-warn .dismiss {
+        position: absolute; right: 6px; top: 4px;
+        background: none; border: none; color: var(--dim);
+        font-size: 1.05rem; cursor: pointer; padding: 4px 8px;
+    }
+    .live-warn .dismiss:hover { color: var(--ink); }
+
     footer {
         margin-top: 3rem; text-align: center;
         color: var(--accent); font-size: 0.82rem;
@@ -434,7 +491,7 @@
      Structure per week: { week, nick: {picks:[...], total_net}, rj: {...} }
      Each pick: { pick, units, net, mortal_lock }
      ========================================================= -->
-<script id="pickemData" type="application/json">{"season":"2026-2027","weeks":[{"week":0,"nick":{"picks":[],"total_net":null},"rj":{"picks":[],"total_net":null}}]}</script>
+<script id="pickemData" type="application/json">{"season":"2026-2027","weeks":[]}</script>
 <!-- Archived seasons: frozen snapshots, the weekly pipeline NEVER touches this tag -->
 <script id="pickemArchive" type="application/json">{"seasons":[{"season":"2025-2026","weeks":[{"week":0,"nick":{"picks":[{"pick":"K State -3","units":2,"net":-2,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Sam Houston/WKU Over 60.5","units":2,"net":2,"mortal_lock":false,"bet_type":"O/U"},{"pick":"UNLV Over 48.5 Team Total","units":1,"net":-1,"mortal_lock":false,"bet_type":"TTO"},{"pick":"Stanford","units":1,"net":-1,"mortal_lock":false,"bet_type":"ML"}],"total_net":-2.0},"rj":{"picks":[{"pick":"K State -3","units":2,"net":-2,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Fresno St +14.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Hawaii","units":1.5,"net":1.5,"mortal_lock":false,"bet_type":"ML"}],"total_net":-1.5}},{"week":1,"nick":{"picks":[{"pick":"NC State -14","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"NC State/ECU Over 61.5","units":0.5,"net":-0.5,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Nebraska -5.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Boise St TTO","units":0.5,"net":-0.5,"mortal_lock":false,"bet_type":"TTO"},{"pick":"Army/Tartlton over 47.5","units":0.5,"net":0.5,"mortal_lock":false,"bet_type":"O/U"},{"pick":"GT -4.5","units":0.5,"net":0.5,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Tulane TTO 25.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"TTO"},{"pick":"Miss St/Southern Miss Over 61.5","units":2,"net":-2,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Alabama FSU Over","units":3,"net":3,"mortal_lock":false,"bet_type":"ML"},{"pick":"Utep/USU Over","units":3,"net":-3,"mortal_lock":false,"bet_type":"ML"},{"pick":"ASU -28.5","units":2,"net":-2,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Miami ND Over","units":1,"net":1,"mortal_lock":false,"bet_type":"ML"},{"pick":"TCU UNC OVer","units":1,"net":1,"mortal_lock":false,"bet_type":"ML"}],"total_net":-5.0},"rj":{"picks":[{"pick":"LSU +4","units":4,"net":4,"mortal_lock":false,"bet_type":"Spread"},{"pick":"ND-2.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Syracuse +14","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Texas +2.5","units":2,"net":-2,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Georgia Tech -4","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Buffalo +17.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"South Florida +5.5","units":2,"net":2,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Baylor","units":2,"net":-2,"mortal_lock":false,"bet_type":"ML"},{"pick":"Sam Houston +9.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Oregon -28.5","units":1,"net":null,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Utsa +23.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Utah -6.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Vt + 7.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Tcu -2.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"}],"total_net":3.0}},{"week":2,"nick":{"picks":[{"pick":"Louisville -14.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Iowa TTO 19.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"TTO"},{"pick":"Florida -17.5","units":2,"net":-2,"mortal_lock":false,"bet_type":"Spread"},{"pick":"ASU -6.5","units":2,"net":-3,"mortal_lock":true,"bet_type":"Spread"},{"pick":"ASU TTO","units":1,"net":-1,"mortal_lock":false,"bet_type":"TTO"},{"pick":"NM St +3.5","units":3,"net":null,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Ole Miss / Kentucky Over","units":1,"net":1,"mortal_lock":false,"bet_type":"ML"},{"pick":"NC State / Viirginia Over","units":2,"net":2,"mortal_lock":false,"bet_type":"ML"}],"total_net":-5.0},"rj":{"picks":[{"pick":"USF +17.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"VT ML","units":0.5,"net":-0.5,"mortal_lock":false,"bet_type":"ML"},{"pick":"Iowa state -3.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Miss state +6.5","units":1.5,"net":2.25,"mortal_lock":true,"bet_type":"Spread"},{"pick":"Oregon -27.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Maryland -16.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Michigan OU over 44.5","units":0.5,"net":-0.5,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Kansas mizzou over 49.5","units":1,"net":1,"mortal_lock":false,"bet_type":"O/U"}],"total_net":2.25}},{"week":3,"nick":{"picks":[{"pick":"Clemson -3.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Nc State / Wake over 52.5","units":2,"net":2,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Soouth Carolina -3.5","units":3,"net":-4.5,"mortal_lock":true,"bet_type":"Spread"},{"pick":"Colorado +4.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Michigan TTO 35.5","units":2,"net":2,"mortal_lock":false,"bet_type":"TTO"},{"pick":"Alabama / Wisconsin Over 45.5","units":2,"net":2,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Backyard Brawl over 54.5","units":3,"net":3,"mortal_lock":false,"bet_type":"O/U"},{"pick":"USF Miami over 55.5","units":2,"net":2,"mortal_lock":false,"bet_type":"O/U"},{"pick":"LSU -4.5","units":2,"net":2,"mortal_lock":false,"bet_type":"Spread"}],"total_net":6.5},"rj":{"picks":[{"pick":"USF +18.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Florida +8.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Clemson -3.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Tennessee +3.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"A&M +7","units":1,"net":1.5,"mortal_lock":true,"bet_type":"Spread"},{"pick":"Nc state -7","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Nc state -6.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Arizona +1.5","units":0.5,"net":0.5,"mortal_lock":false,"bet_type":"Spread"},{"pick":"New Mexico +14.5","units":0.5,"net":0.5,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Georgia tennensee under 24.5 first half","units":0.5,"net":-0.5,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Texas state +17.5","units":0.5,"net":-0.5,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Arkansas +4","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"}],"total_net":0.5}},{"week":4,"nick":{"picks":[{"pick":"Rice Charolette under 42.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"O/U"},{"pick":"SMU TCU Over 63.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"O/U"},{"pick":"ASU Baylor Over 60.5","units":3,"net":-4.5,"mortal_lock":true,"bet_type":"O/U"},{"pick":"Rutgers TTO 22.5","units":2,"net":2,"mortal_lock":false,"bet_type":"TTO"},{"pick":"Clemson Syracuse Over 54.5","units":2,"net":2,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Arkansas TTO 33.5","units":2,"net":-2,"mortal_lock":false,"bet_type":"TTO"},{"pick":"Michigan ML","units":1,"net":1,"mortal_lock":false,"bet_type":"ML"},{"pick":"ND TTO","units":2,"net":2,"mortal_lock":false,"bet_type":"TTO"}],"total_net":-1.5},"rj":{"picks":[{"pick":"Illinois +4.5","units":2,"net":-2,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Tulane +12.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Nebraska +2.5","units":1.5,"net":-2.25,"mortal_lock":true,"bet_type":"Spread"},{"pick":"Tulsa +11.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Florida +7.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Maryland +10.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Rice ML","units":1,"net":1,"mortal_lock":false,"bet_type":"ML"},{"pick":"Smu tcu over 63.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Illinois +7.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"ASU Baylor over 60.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"O/U"}],"total_net":-6.25}},{"week":5,"nick":{"picks":[{"pick":"Asu TCU over 54.5","units":2,"net":-2,"mortal_lock":false,"bet_type":"O/U"},{"pick":"ND-4.5","units":2,"net":2,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Ucf k state over 49.5","units":3,"net":3,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Army ECU over 52.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Pitt TTO 26.5","units":1,"net":1,"mortal_lock":false,"bet_type":"TTO"},{"pick":"Texas A&M -6.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"BC Cal over 53.5","units":2,"net":-3,"mortal_lock":true,"bet_type":"O/U"},{"pick":"Indiana TTO 28.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"TTO"},{"pick":"UofA Iowa st over 48.5","units":3,"net":3,"mortal_lock":false,"bet_type":"O/U"}],"total_net":1.0},"rj":{"picks":[{"pick":"Ole Miss ML","units":3,"net":4.5,"mortal_lock":true,"bet_type":"ML"},{"pick":"Oregon +3.5","units":3,"net":3,"mortal_lock":false,"bet_type":"Spread"},{"pick":"UGA,Tenn ML 2 teamer","units":2,"net":-2,"mortal_lock":false,"bet_type":"ML"},{"pick":"ASU -2.5","units":2,"net":2,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Uw-9.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"UGA -2","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"}],"total_net":5.5}},{"week":6,"nick":{"picks":[{"pick":"UVA +6.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"WKU Delaware over 61.5","units":2,"net":-2,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Ohio sdsu over 40.5","units":1,"net":1,"mortal_lock":false,"bet_type":"O/U"},{"pick":"SJSU unm over 58.5","units":1,"net":1,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Clemson TTO 32.5","units":1,"net":1,"mortal_lock":false,"bet_type":"TTO"},{"pick":"Texas tech ISU under 55.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"O/U"},{"pick":"KSU Baylor over 60.5","units":2,"net":2,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Florida Texas over 42.5","units":2,"net":3,"mortal_lock":true,"bet_type":"O/U"}],"total_net":6.0},"rj":{"picks":[{"pick":"Cincy ML","units":2,"net":3,"mortal_lock":true,"bet_type":"ML"},{"pick":"Texas vs Florida under 42.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Vandy +10.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Miss state +14.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Shsu ML","units":1,"net":-1,"mortal_lock":false,"bet_type":"ML"},{"pick":"Charlotte +28.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"UNM ml","units":1,"net":-1,"mortal_lock":false,"bet_type":"ML"},{"pick":"Over 40.5 sdsu sjsu","units":1,"net":1,"mortal_lock":false,"bet_type":"O/U"},{"pick":"BYU -18.5","units":0.5,"net":-0.5,"mortal_lock":false,"bet_type":"Spread"}],"total_net":-0.5}},{"week":7,"nick":{"picks":[{"pick":"MTSU Mo ST over 51.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Alabama mizzou over 51.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Ucf +10.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Texas ML","units":1,"net":1,"mortal_lock":false,"bet_type":"ML"},{"pick":"Penn state TTO 33.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"TTO"},{"pick":"Iowa Wisconsin over 35.5","units":1,"net":1,"mortal_lock":false,"bet_type":"O/U"},{"pick":"ASU Utah over 48.5","units":2,"net":3,"mortal_lock":true,"bet_type":"O/U"},{"pick":"Tulane ECU over 53.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"O/U"}],"total_net":2.0},"rj":{"picks":[{"pick":"USC ML","units":1.5,"net":1.5,"mortal_lock":false,"bet_type":"ML"},{"pick":"South Carolina +9.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"LSUvSC over 44.5","units":2,"net":-2,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Nc state +21.5","units":2,"net":-2,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Wsu +32.5","units":2,"net":3,"mortal_lock":true,"bet_type":"Spread"},{"pick":"Florida +7.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Auburn +4.5","units":2,"net":-2,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Mizzou +3.5","units":2,"net":2,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Texas ML","units":1,"net":1,"mortal_lock":false,"bet_type":"ML"}],"total_net":-0.5}},{"week":8,"nick":{"picks":[{"pick":"Wku FIU Over 55.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"O/U"},{"pick":"USA -7.5","units":2,"net":-2,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Miami Louisville under 50.5","units":2,"net":2,"mortal_lock":false,"bet_type":"O/U"},{"pick":"ASU +7","units":2,"net":3,"mortal_lock":true,"bet_type":"Spread"},{"pick":"Wash Mich over 50.5","units":2,"net":-2,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Asu Texas tech over52.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"ML"},{"pick":"Clemson TTO 26.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"TTO"},{"pick":"Utah TTO 26.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"TTO"},{"pick":"Alabama Tennessee under 59.5","units":1,"net":1,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Penn state +3.5","units":2,"net":2,"mortal_lock":false,"bet_type":"Spread"}],"total_net":0.0},"rj":{"picks":[{"pick":"Nmsu +10.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"USA -7.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Wku fiu over 55.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Louisville +14","units":2,"net":3,"mortal_lock":true,"bet_type":"Spread"},{"pick":"Duke ML","units":1.5,"net":-1.5,"mortal_lock":false,"bet_type":"ML"},{"pick":"Uw +4.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"ASU +7.5","units":1.5,"net":1.5,"mortal_lock":false,"bet_type":"Spread"},{"pick":"USC +10.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Tennessee +8.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"LSU +2.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"UNC +7.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Wisconsin +25.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"}],"total_net":0.0}},{"week":9,"nick":{"picks":[{"pick":"VT -5.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"VT / Cal over 50.5","units":1,"net":1,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Mizzou +2.5","units":2,"net":-3,"mortal_lock":true,"bet_type":"Spread"},{"pick":"Kansas -3.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Ole Miss +5","units":2,"net":2,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Rutgers TTO 27.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"TTO"},{"pick":"UVA unc over 51","units":1,"net":-1,"mortal_lock":false,"bet_type":"O/U"}],"total_net":-2.0},"rj":{"picks":[{"pick":"Unc +10.5","units":1.5,"net":1.5,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Kennesaw state -2.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"South Carolina +14","units":2,"net":3,"mortal_lock":true,"bet_type":"Spread"},{"pick":"Msu +14.5","units":2,"net":2,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Memphis +4.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Miss state +7.5","units":1.5,"net":1.5,"mortal_lock":false,"bet_type":"Spread"},{"pick":"VT -5.5","units":1.5,"net":1.5,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Iowa state -2.5","units":2,"net":-2,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Missouri vandy over 52.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Minnesota +7.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"LSU +2.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"}],"total_net":6.5}},{"week":10,"nick":{"picks":[{"pick":"Texas St +7","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Cuse -2.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Penn at +18.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Texas -2.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"UGA Florida under 50.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Pitt Stanford over 51.5","units":1,"net":1,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Tennessee -3.5","units":2,"net":-3,"mortal_lock":true,"bet_type":"Spread"},{"pick":"Va tech Louisville over 52.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"O/U"}],"total_net":-6.0},"rj":{"picks":[{"pick":"Maryland +21.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Kennesaw State -10.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"UNC +2.5","units":1.5,"net":1.5,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Kansas state +7.5","units":2,"net":-2,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Smu +12.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"VT +10.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Cal +4.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Nebraska +7","units":1.5,"net":2.25,"mortal_lock":true,"bet_type":"Spread"},{"pick":"Candy+3.5","units":1.5,"net":1.5,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Tennessee -3.5","units":2,"net":-2,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Florida +6.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"}],"total_net":1.25}},{"week":11,"nick":{"picks":[{"pick":"Kent st +3","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Tulane Memphis over 53.5","units":"3(I'm due)","net":3,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Kent St Ball St over 47.5","units":2,"net":-2,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Mizzou +6.5","units":2,"net":-3,"mortal_lock":true,"bet_type":"Spread"},{"pick":"BYU TTU over 50.5","units":2,"net":-2,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Smu bc over 54.5","units":1,"net":1,"mortal_lock":false,"bet_type":"O/U"}],"total_net":-4.0},"rj":{"picks":[{"pick":"Ohio -2.5","units":0.5,"net":0.5,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Over 51.5 Ohio mac","units":0.5,"net":-0.5,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Over 51.5 Akron Mac play","units":0.5,"net":0.5,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Kent state +2.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"BYU +10.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"NIU +14.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Texas A&M -6.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Mizzou +6.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"LSU +10.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Nebraska ML","units":1,"net":1,"mortal_lock":false,"bet_type":"ML"},{"pick":"Penn state +14.5","units":1,"net":1.5,"mortal_lock":true,"bet_type":"Spread"},{"pick":"Tulane +3.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"UCF ML","units":1,"net":-1,"mortal_lock":false,"bet_type":"ML"}],"total_net":-1.0}},{"week":12,"nick":{"picks":[{"pick":"Under 49.5 Akron Kent","units":2,"net":-2,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Ohio +1.5","units":2,"net":-2,"mortal_lock":false,"bet_type":"Spread"}],"total_net":-4.0},"rj":{"picks":[{"pick":"Clemson +3.5","units":2.5,"net":2.5,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Western Michigan ML","units":1,"net":1,"mortal_lock":false,"bet_type":"ML"},{"pick":"Oklahoma +7.5","units":2,"net":3,"mortal_lock":true,"bet_type":"Spread"},{"pick":"Northwestern +12.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"TCU +3.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Georgia Texas over 49.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"O/U"}],"total_net":5.5}},{"week":13,"nick":{"picks":[],"total_net":0.0},"rj":{"picks":[{"pick":"Akron +3.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Buffalos ML","units":0.5,"net":-0.5,"mortal_lock":false,"bet_type":"ML"},{"pick":"Cincy +2.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"GT -2.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Maryland +14.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Missouri +6.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"}],"total_net":-1.5}},{"week":14,"nick":{"picks":[],"total_net":0.0},"rj":{"picks":[{"pick":"Kansas +11.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Miss State +7.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Gt +14.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Texas +2.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Arizona ML","units":1,"net":1,"mortal_lock":false,"bet_type":"ML"},{"pick":"UCF +17.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Wisconsin ml","units":1,"net":-1,"mortal_lock":false,"bet_type":"ML"},{"pick":"FSU","units":1,"net":-1,"mortal_lock":false,"bet_type":"ML"},{"pick":"Unc +7.5","units":1,"net":-1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Duke +4.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Tulane","units":2,"net":2,"mortal_lock":false,"bet_type":"ML"},{"pick":"Georgia -2.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Indiana +4.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Indiana under 46.5","units":1,"net":1,"mortal_lock":false,"bet_type":"O/U"},{"pick":"Troy +24.5","units":1,"net":1,"mortal_lock":false,"bet_type":"Spread"},{"pick":"Kennesaw state -2.5","units":1.5,"net":1.5,"mortal_lock":false,"bet_type":"Spread"}],"total_net":7.5}}]}]}</script>
 
@@ -1159,6 +1216,103 @@
         if (!(s.season in SEASONS)) SEASONS[s.season] = s.weeks;
     }
 
+    /* ===== Supabase live layer (current season only) =====
+       The CURRENT season's picks live in the pickem_picks table and are
+       fetched fresh on every page load. Archived seasons stay embedded in
+       the pickemArchive tag and are never fetched. Plain fetch(), no SDK. */
+    const SUPABASE_URL = 'https://buxisircszylyiblcqkx.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ1eGlzaXJjc3p5bHlpYmxjcWt4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgyNDk2MjUsImV4cCI6MjA4MzgyNTYyNX0.QW72iIDQ-ANtchDc0h_vjBr1zlwk2K86TyZMkm3uong';
+
+    // Thin REST helper. Adds auth headers, JSON-encodes the body, throws on
+    // any non-2xx response, and JSON-parses the reply (null when empty).
+    async function sb(path, opts) {
+        opts = opts || {};
+        const res = await fetch(SUPABASE_URL + path, {
+            method: opts.method || 'GET',
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation',
+            },
+            body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
+        });
+        if (!res.ok) {
+            let detail = '';
+            try { detail = (await res.text()).slice(0, 200); } catch (e) { /* body unreadable */ }
+            throw new Error('Supabase ' + res.status + (detail ? ': ' + detail : ''));
+        }
+        const text = await res.text();
+        return text ? JSON.parse(text) : null;
+    }
+
+    // Small dismissible warning bar under the toolbar. One at a time.
+    function showLiveWarn(msg) {
+        let bar = document.getElementById('liveWarnBar');
+        if (!bar) {
+            bar = document.createElement('div');
+            bar.id = 'liveWarnBar';
+            bar.className = 'live-warn';
+            const toolbar = document.querySelector('.toolbar');
+            toolbar.after(bar);
+        }
+        bar.innerHTML = '<button class="dismiss" title="Dismiss" onclick="this.parentElement.remove()">&times;</button>';
+        bar.appendChild(document.createTextNode(msg));
+    }
+
+    // Fetch every current-season row and rebuild SEASONS[RAW.season] in the
+    // same weeks shape the renderers already read. Each pick keeps its DB id
+    // as _id (plus outcome) so the grading and delete buttons can target it.
+    async function refreshLiveSeason() {
+        let rows;
+        try {
+            rows = await sb('/rest/v1/pickem_picks?season=eq.' + encodeURIComponent(RAW.season)
+                            + '&select=*&order=week.asc,id.asc');
+        } catch (e) {
+            showLiveWarn('Live picks unavailable, check Supabase setup. ('
+                         + (e && e.message ? e.message : e) + ')');
+            return;
+        }
+        const byWeek = new Map();
+        for (const r of rows || []) {
+            const wk = Number(r.week);
+            if (!byWeek.has(wk)) {
+                byWeek.set(wk, { week: wk,
+                                 nick: { picks: [], total_net: 0 },
+                                 rj:   { picks: [], total_net: 0 } });
+            }
+            const who = r.person === 'nick' ? 'nick' : 'rj';
+            byWeek.get(wk)[who].picks.push({
+                _id: r.id,
+                pick: r.pick,
+                units: Number(r.units),
+                net: (r.net === null || r.net === undefined) ? null : Number(r.net),
+                mortal_lock: !!r.mortal_lock,
+                bet_type: r.bet_type,
+                outcome: r.outcome || null,
+            });
+        }
+        const weeks = [...byWeek.values()].sort((a, b) => a.week - b.week);
+        for (const w of weeks) {
+            for (const who of ['nick', 'rj']) {
+                // Ungraded picks (net null) count as 0, they are pending
+                w[who].total_net = w[who].picks.reduce(
+                    (sum, p) => sum + (p.net === null ? 0 : Number(p.net)), 0);
+            }
+        }
+        SEASONS[RAW.season] = weeks;
+        const note = document.getElementById('emptySeasonNote');
+        if (note && weeks.length) note.remove();
+        if (seasonSel.value === RAW.season) {
+            const prevWeek = weekSel.value;
+            fillWeekSelector();
+            if (prevWeek !== '' && [...weekSel.options].some(o => o.value === prevWeek)) {
+                weekSel.value = prevWeek;
+            }
+            renderAll();
+        }
+    }
+
     // ===== Utility: parse team name(s) out of a pick string =====
     // Common abbreviations RJ uses in the sheet, so short forms match FBS names.
     const TEAM_ABBR = {
@@ -1287,6 +1441,7 @@
     // instead of blank panels.
     if (!(SEASONS[seasonSel.value] || []).length) {
         const note = document.createElement('div');
+        note.id = 'emptySeasonNote';
         note.style.cssText = 'margin:8px 0; padding:10px 14px; background:#2e3648; border:1px solid #3a4152; border-radius:6px; color:#9aa3b5;';
         note.textContent = 'The ' + seasonSel.value + ' season has not started yet. Flip to the previous season tab to browse last year.';
         document.querySelector('.toolbar').after(note);
@@ -1304,7 +1459,7 @@
     }
     fillWeekSelector();
 
-    seasonSel.addEventListener('change', () => { fillWeekSelector(); renderAll(); });
+    seasonSel.addEventListener('change', () => { fillWeekSelector(); updateEnterTabsForSeason(); renderAll(); });
     weekSel.addEventListener('change', renderAll);
 
     /* ===== Tab wiring ===== */
@@ -1317,6 +1472,22 @@
         });
     });
 
+    // Entering picks is only allowed for the CURRENT season. On archived
+    // seasons hide the two Enter tabs; if one of them was active, jump the
+    // view over to Week Picks.
+    function updateEnterTabsForSeason() {
+        const isCur = seasonSel.value === RAW.season;
+        const enterPanels = ['enter-rj', 'enter-nick'];
+        document.querySelectorAll('.tab').forEach(t => {
+            if (enterPanels.includes(t.dataset.panel)) t.style.display = isCur ? '' : 'none';
+        });
+        const active = document.querySelector('.tab.active');
+        if (!isCur && active && enterPanels.includes(active.dataset.panel)) {
+            const picksTab = document.querySelector('.tab[data-panel="picks"]');
+            if (picksTab) picksTab.click();
+        }
+    }
+
     /* ===== Render — Week Picks tab ===== */
     function renderPicks() {
         const wk = Number(weekSel.value);
@@ -1325,18 +1496,37 @@
         const el = document.getElementById('picks');
         if (!w) { el.innerHTML = '<div class="panel-card">No picks for that week.</div>'; return; }
 
+        // Grading buttons only appear on the CURRENT season, whose picks come
+        // from Supabase and carry a _id. Archived rows render exactly as before.
+        const liveSeason = seasonSel.value === RAW.season;
+
         const personCard = (label, person) => {
             const net = person.total_net;
             const netCls = classForNet(net);
             const netTag = (net === null || net === undefined || net === '' || Number(net) === 0)
                 ? '' : (Number(net) > 0 ? 'good' : 'bad');
+            const cols = liveSeason ? 4 : 3;
             let rows = '';
             for (const p of person.picks) {
                 const netHtml = `<span class="${classForNet(p.net)}">${fmtNet(p.net)}</span>`;
+                let actions = '';
+                if (liveSeason && p._id !== undefined && p._id !== null) {
+                    const u = numOrZero(p.units);
+                    const lk = p.mortal_lock ? 'true' : 'false';
+                    const btn = (act, txt, title, onCls) =>
+                        `<button class="grade-btn ${act.toLowerCase()}${onCls ? ' on' : ''}" title="${title}" onclick="gradePick('${p._id}','${act}',${u},${lk})">${txt}</button>`;
+                    actions = `<td class="grade-cell"><span class="grade-btns">` +
+                        btn('W', 'W', 'Mark win',   p.outcome === 'W') +
+                        btn('L', 'L', 'Mark loss',  p.outcome === 'L') +
+                        btn('P', 'P', 'Mark push',  p.outcome === 'push') +
+                        btn('X', 'X', 'Clear grade (back to pending)', false) +
+                        `<button class="grade-btn del" title="Delete pick" onclick="deletePick('${p._id}')">🗑</button>` +
+                        `</span></td>`;
+                }
                 rows += `<tr class="${p.mortal_lock ? 'mortal-lock' : ''}">
                     <td>${p.pick}</td>
                     <td>${p.units ?? '—'}</td>
-                    <td>${netHtml}</td>
+                    <td>${netHtml}</td>${actions}
                 </tr>`;
             }
             return `<div class="person-card">
@@ -1345,8 +1535,8 @@
                     <span class="net ${netTag}">${fmtNet(net)} u</span>
                 </div>
                 <table>
-                    <thead><tr><th>Pick</th><th>Units</th><th>Net</th></tr></thead>
-                    <tbody>${rows || '<tr><td colspan="3" style="color:var(--dim); text-align:center; padding:1rem;">No picks entered.</td></tr>'}</tbody>
+                    <thead><tr><th>Pick</th><th>Units</th><th>Net</th>${liveSeason ? '<th>Grade</th>' : ''}</tr></thead>
+                    <tbody>${rows || `<tr><td colspan="${cols}" style="color:var(--dim); text-align:center; padding:1rem;">No picks entered.</td></tr>`}</tbody>
                 </table>
             </div>`;
         };
@@ -2012,11 +2202,16 @@
                 ${rows}
             </div>`;
         }
+        // Default the week number to the highest week already saved for the
+        // current season, or 0 when the season has no weeks yet.
+        const curWeeks = SEASONS[RAW.season] || [];
+        const defaultWeek = curWeeks.length ? curWeeks[curWeeks.length - 1].week : 0;
+
         el.innerHTML = `
             ${teamDatalist}
             <h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; font-size:1.05rem; margin:0.25rem 0 0.75rem;">${nameLabel}'s Picks</h2>
             <div class="banner-warn">
-                <strong>Heads up:</strong> this form is UI-only right now — picks don't save to a database or lock at the deadline yet. Live saving + time-based locks land in Phase 2 (requires a small backend). Use it as a mockup for now to confirm the layout.
+                <strong>Live:</strong> filled rows save to the shared database when you hit <strong>Save Picks</strong> at the bottom. Set the week number there first. Saved picks show up on the Week Picks tab for both of you, from any browser.
             </div>
             <div class="banner-warn" style="border-color: rgba(74, 222, 128, 0.35);">
                 <strong style="color: var(--accent);">🔒 Mortal Lock rules:</strong> pays 1.5× the units placed on either a win or a loss. <strong>Only one mortal lock per week</strong> — checking a new one auto-unchecks the previous.
@@ -2024,8 +2219,13 @@
             ${formSection('wd',  'Weekday Games',      5, 'Locks Saturday 9:00 AM')}
             ${formSection('main','Main Slate',        15, 'Locks Saturday 9:00 AM')}
             ${formSection('day', 'Gameday Additions', 10, 'Locks Sunday night')}
-            <div class="banner-warn" style="text-align:center;">
-                <em>Phase 2 will wire this to Supabase for saving + a scheduled job for auto-locking.</em>
+            <div class="panel-card">
+                <div class="save-bar">
+                    <label for="week-input-${who}">Week</label>
+                    <input type="number" id="week-input-${who}" min="0" step="1" value="${defaultWeek}" />
+                    <button class="btn-save" id="save-btn-${who}" onclick="savePicks('${who}')">Save Picks</button>
+                    <span class="save-status" id="save-status-${who}"></span>
+                </div>
             </div>`;
 
         // Initialize every row's visible fields to match its default bet type.
@@ -2132,6 +2332,137 @@
         }
     };
 
+    /* ===== Saving picks to Supabase ===== */
+    // Turn one form row into {pick, bet_type, units, mortal_lock} the way a
+    // human would write the pick string in the sheet:
+    //   Spread: "K State -3"
+    //   O/U:    "Sam Houston/WKU Over 60.5"
+    //   TTO:    "UNLV Over 48.5 Team Total"
+    //   ML:     "Stanford"
+    // Returns null when the row has no team at all (never saves an empty pick).
+    function buildPickFromRow(row) {
+        const bt = row.querySelector('.bet-type').value;
+        const home = (row.querySelector('.home').value || '').trim();
+        const away = (row.querySelector('.away').value || '').trim();
+        if (!home && !away) return null;
+
+        const sideEl = row.querySelector('input[name^="side-"]:checked');
+        const side = sideEl ? sideEl.value : null;
+        const signEl = row.querySelector('.sign-slot input:checked');
+        const sign = signEl ? signEl.value : null;
+        const ptsRaw = (row.querySelector('.points').value || '').trim();
+        const pts = ptsRaw === '' ? null : Number(ptsRaw);
+        const hasPts = pts !== null && !isNaN(pts);
+        const units = Number(row.querySelector('.units').value);
+        const lock = row.querySelector('.lock-cell input.lock').checked;
+
+        // Picked team: follow the H/A bubble; degrade to whichever field is filled
+        let team;
+        if (side === 'A') team = away || home;
+        else team = home || away;
+
+        let pick = '';
+        if (bt === 'ML') {
+            pick = team;
+        } else if (bt === 'Spread') {
+            if (!hasPts) pick = team;
+            else if (sign === '-' || sign === '+') pick = team + ' ' + sign + Math.abs(pts);
+            else pick = team + ' ' + (pts >= 0 ? '+' : '') + pts;   // no bubble chosen, keep the typed sign
+        } else if (bt === 'O/U') {
+            const teams = [home, away].filter(Boolean).join('/');
+            const ou = sign === 'U' ? 'Under' : 'Over';
+            pick = teams + ' ' + ou + (hasPts ? ' ' + pts : '');
+        } else if (bt === 'TTO') {
+            const ou = sign === 'U' ? 'Under' : 'Over';
+            pick = team + ' ' + ou + (hasPts ? ' ' + pts : '') + ' Team Total';
+        }
+        pick = pick.trim();
+        if (!pick) return null;
+        return { pick, bet_type: bt, units: isNaN(units) ? 0 : units, mortal_lock: lock };
+    }
+
+    // Collect every filled row in the person's panel, POST them all in one
+    // request, then re-fetch the live season and re-render (which clears the
+    // form). Rows with a team but no units are skipped and reported.
+    window.savePicks = async function(who) {
+        const panel = document.getElementById('enter-' + who);
+        const weekInput = document.getElementById('week-input-' + who);
+        const saveBtn = document.getElementById('save-btn-' + who);
+        // The status span is re-created when the panel re-renders after a
+        // save, so always look it up fresh instead of caching the element.
+        const setStatus = (msg, cls) => {
+            const el = document.getElementById('save-status-' + who);
+            if (el) { el.textContent = msg; el.className = 'save-status' + (cls ? ' ' + cls : ''); }
+        };
+        const week = Math.max(0, Math.floor(Number(weekInput && weekInput.value) || 0));
+
+        const rows = [];
+        let skippedNoUnits = 0;
+        panel.querySelectorAll('.form-row').forEach(r => {
+            const built = buildPickFromRow(r);
+            if (!built) return;                       // empty row
+            if (!(built.units > 0)) { skippedNoUnits++; return; }
+            rows.push({
+                season: RAW.season,
+                week: week,
+                person: who,
+                pick: built.pick,
+                bet_type: built.bet_type,
+                units: built.units,
+                mortal_lock: built.mortal_lock,
+            });
+        });
+
+        if (!rows.length) {
+            setStatus(skippedNoUnits
+                ? 'Nothing saved: ' + skippedNoUnits + ' row(s) have a team but no units.'
+                : 'Nothing to save, fill in at least one row.', 'err');
+            return;
+        }
+
+        if (saveBtn) saveBtn.disabled = true;
+        setStatus('Saving ' + rows.length + ' pick(s)...', '');
+        try {
+            await sb('/rest/v1/pickem_picks', { method: 'POST', body: rows });
+            await refreshLiveSeason();   // re-renders the panel, clearing the form
+            const wkIn = document.getElementById('week-input-' + who);
+            if (wkIn) wkIn.value = week;
+            setStatus('Saved ' + rows.length + ' pick(s) to week ' + week + '.'
+                      + (skippedNoUnits ? ' Skipped ' + skippedNoUnits + ' row(s) with no units.' : ''), 'ok');
+        } catch (e) {
+            if (saveBtn) saveBtn.disabled = false;
+            setStatus('Save failed: ' + (e && e.message ? e.message : e), 'err');
+        }
+    };
+
+    /* ===== Grading picks (Week Picks tab, current season only) ===== */
+    // W and L pay 1x the units, or 1.5x on a mortal lock. P is a push, net 0.
+    // X clears the grade back to pending (outcome and net both null).
+    window.gradePick = async function(id, action, units, isLock) {
+        const mult = isLock ? 1.5 : 1;
+        let body;
+        if (action === 'W') body = { outcome: 'W', net: units * mult };
+        else if (action === 'L') body = { outcome: 'L', net: -units * mult };
+        else if (action === 'P') body = { outcome: 'push', net: 0 };
+        else body = { outcome: null, net: null };
+        try {
+            await sb('/rest/v1/pickem_picks?id=eq.' + encodeURIComponent(id), { method: 'PATCH', body: body });
+            await refreshLiveSeason();
+        } catch (e) {
+            showLiveWarn('Could not save the grade: ' + (e && e.message ? e.message : e));
+        }
+    };
+
+    window.deletePick = async function(id) {
+        if (!confirm('Delete this pick? This removes it from the database for both of you.')) return;
+        try {
+            await sb('/rest/v1/pickem_picks?id=eq.' + encodeURIComponent(id), { method: 'DELETE' });
+            await refreshLiveSeason();
+        } catch (e) {
+            showLiveWarn('Could not delete the pick: ' + (e && e.message ? e.message : e));
+        }
+    };
+
     /* ===== Summary badge in toolbar (updates with week change) =====
        Layout left-to-right: Week Winner  ·  Season Tally (cumulative)  ·  Week Stats */
     function renderSummary() {
@@ -2189,7 +2520,11 @@
             });
         });
     }
+    updateEnterTabsForSeason();
     renderAll();
+    // Kick off the live fetch for the current season. When it resolves it
+    // swaps SEASONS[RAW.season] and re-renders; archived seasons never fetch.
+    refreshLiveSeason();
 </script>
 </body>
 </html>
