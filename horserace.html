@@ -526,7 +526,9 @@ function buildHorses(n, names) {
         // Sort a copy of the times to find rank positions.
         const sorted = [...finishTimes].sort((a,b) => a - b);
         const fastest = sorted[0];                          // 1st place time
-        const targetPlace = 2 + Math.floor(Math.random() * 3);  // 2, 3, or 4
+        // Weighted place pick: 42% 2nd, 42% 3rd, 16% 4th (per RJ 2026-08-21)
+        const roll = Math.random();
+        const targetPlace = roll < 0.42 ? 2 : roll < 0.84 ? 3 : 4;
         const riggedTime = sorted[targetPlace - 1];         // going to horse #6
         // Remove those two from consideration and re-assign the rest at random.
         const remaining = sorted.filter((_, idx) => idx !== 0 && idx !== targetPlace - 1);
