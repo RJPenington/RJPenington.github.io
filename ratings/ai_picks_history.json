@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-08-20",
+  "as_of": "2026-08-21",
   "aggregates": {
     "today": {
       "picks": 5,
@@ -12,21 +12,21 @@
     },
     "week": {
       "picks": 40,
-      "wins": 16,
-      "losses": 19,
+      "wins": 18,
+      "losses": 17,
       "pushes": 0,
       "pending": 5,
-      "units_net": -8.0,
-      "hit_pct": 0.45714285714285713
+      "units_net": -3.0,
+      "hit_pct": 0.5142857142857142
     },
     "season": {
-      "picks": 45,
-      "wins": 19,
-      "losses": 21,
+      "picks": 50,
+      "wins": 22,
+      "losses": 23,
       "pushes": 0,
       "pending": 5,
-      "units_net": -5.0,
-      "hit_pct": 0.475
+      "units_net": -3.0,
+      "hit_pct": 0.4888888888888889
     }
   },
   "picks_by_date": {
@@ -709,8 +709,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "All three ratings agree on Milwaukee (R1 +1.31, R2 +1.52, R3 +1.99), the largest consensus edge on the board. MIL is 25-15 (62%) when the model likes them and 14-8 (64%, +4.0u) on strong plays, while SEA is just 5-11 (31%) when liked and 1-4 (20%) on strongs. R3 remains the best strong-play rating at 148-134 (52%, +23.0u) on the season and +3.0u over 30 days.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 2,
@@ -722,8 +722,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "Tampa Bay is the single best team profile on the slate when the model backs them: 25-10 (71%) overall and 18-5 (78%, +22.0u) on strong plays. R3 is the only rating pushing this to strong-play territory (+1.29) but R1 (+0.48) and R2 (+0.88) lean the same way, and R3 leads all ratings at +23.0u season. TOR is only 6-6 (50%) when liked and 1-2 on strongs, so no counter-signal.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 3,
@@ -735,8 +735,8 @@
           "units": 2,
           "confidence": "medium",
           "reasoning": "Unanimous three-rating agreement on St. Louis (R1 -2.00, R2 -1.72, R3 -1.86) and the biggest absolute delta on the slate, sizing to 2u. Cincinnati is the worst-supported home side here at 6-12 (33%) when the model likes them and 3-7 (30%, -5.0u) on strongs, while STL is a neutral 10-10 (50%). Getting a near-pick'em price (-112) on a two-run rating edge is the value.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 2
         },
         {
           "rank": 4,
@@ -748,8 +748,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "All three ratings tag Washington (R1 -1.26, R2 -1.39, R3 -1.10) as a strong play despite a +148 price. WSN is a modest 10-12 (45%) when liked but actually profitable on strongs at 5-6 (+1.0u), while TEX is 11-12 (48%) overall and just 2-4 (33%, -3.0u) on strong plays. R2 is the steadiest rating recently (14d 46-49, 48%) and leads season P/L at 153-144 (+13.0u).",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 5,
@@ -761,13 +761,96 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "R1 (+1.01) and R2 (+1.17) both flag Cleveland as a strong play, with R3 (+0.48) agreeing on side. The main driver is the opponent: SFG is 8-13 (38%) when the model likes them and a dismal 2-6 (25%, -7.0u) on strong plays, the worst fade profile among today's teams; CLE's own 5-7 (42%) mark caps this at low confidence and 1u.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
         "input_tokens": 3515,
         "output_tokens": 1865
+      },
+      "totals": {
+        "wins": 3,
+        "losses": 2,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": 2.0
+      }
+    },
+    "2026-08-21": {
+      "generated_at": "2026-08-21T05:32:57",
+      "model": "claude-opus-5",
+      "date": "2026-08-21",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "MIL",
+          "home_team": "MIL",
+          "away_team": "ATL",
+          "rating_source": "R3",
+          "delta": 2.13,
+          "units": 2,
+          "confidence": "high",
+          "reasoning": "All three ratings agree on Milwaukee (R1 +1.95, R2 +1.87, R3 +2.13), and R3 is the strongest strong-play rating on the board at 153-130 (54%, +42.0u) for the season and 94-81 (54%, +27.0u) over 30 days. MIL when the model likes them is 26-15 (63%) overall and 15-8 (65%, +5.0u) on strong plays, while ATL is only 10-10 (50%) and 4-5 (44%, -3.0u) on strongs.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "BOS",
+          "home_team": "BOS",
+          "away_team": "SFG",
+          "rating_source": "R3",
+          "delta": 1.0,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "Boston is the best when-model-likes-them team on the slate at 29-9 (76%) and 16-5 (76%, +15.0u) on strong plays, and all three ratings land on the same side (R1 +0.94, R2 +0.92, R3 +1.00 strong). The fade side is equally supportive: SFG is 8-13 (38%) when liked and a dismal 2-6 (25%, -7.0u) on strong plays.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "LAD",
+          "home_team": "LAD",
+          "away_team": "PIT",
+          "rating_source": "R1",
+          "delta": 0.66,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "Unanimous lean (R1 +0.66, R2 +0.49, R3 +0.45) on the team with the best strong-play record in the pool: LAD 14-2 (88%, +17.0u) on strongs and 19-9 (68%) overall when the model likes them. Pittsburgh is 7-10 (41%) when liked and 1-3 (25%, -2.0u) on strongs, so the edge stacks on both ends.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "TEX",
+          "home_team": "TEX",
+          "away_team": "LAA",
+          "rating_source": "R2",
+          "delta": 1.64,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "R2 is the hottest rating in the short windows (7d 27-21, 56%, +4.0u; 14d 48-44, 52%, +3.0u) and it produces the biggest non-MIL strong edge here at 1.64 toward Texas, with R1 (1.16) and R3 (1.55) agreeing. LAA is only 6-7 (46%) when the model likes them and 3-3 (50%, -2.0u) on strongs, so there is no fade-side warning against the Rangers.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 5,
+          "pick": "KCR",
+          "home_team": "KCR",
+          "away_team": "DET",
+          "rating_source": "R2",
+          "delta": 0.68,
+          "units": 1,
+          "confidence": "low",
+          "reasoning": "R2 posts the largest edge on Kansas City (+0.68 vs R1 +0.59, R3 +0.33) and is the rating with the best recent P/L (7d 56%, +4.0u; 30d 95-85, 53%, +18.0u). KCR is 10-7 (59%) when liked and 3-1 (75%, +2.0u) on strong plays, and the pick sits with the hot bullpen (14d 101-87, 54%) and trends (14d 102-86, 54%) categories that anchor the top combo trends+bullpen at 55.4%.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 4144,
+        "output_tokens": 2663
       },
       "totals": {
         "wins": 0,
