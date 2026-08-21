@@ -505,9 +505,9 @@ startBtn.addEventListener('click', () => {
 //     the race look natural — leads change, closers come from behind
 //   - a pre-determined finishTime so the FINAL ORDER is decided
 //     before the race starts and the animation just plays it out.
-// This lets us rig slot #6 to always finish 2nd without any
-// last-second "clamp to 2nd" hack — the finish time is set that
-// way from t=0.
+// This lets us rig slot #6 to always finish 2nd, 3rd, or 4th (chosen at
+// random each race) without any last-second clamp hack, the finish time
+// is set that way from t=0.
 // ============================================================
 const RACE_MS = 60_000;   // 60 second race, per spec
 
@@ -518,17 +518,18 @@ function buildHorses(n, names) {
     const finishTimes = Array.from({length: n}, () => jitter());
 
     // ------ THE WRINKLE ------
-    // If there are at least 6 racers, force slot #6 (index 5) to
-    // finish SECOND. We do this by sorting the generated times and
-    // assigning the second-fastest to horse #6, then leaving the
-    // rest of the field in their generated order.
+    // If there are at least 6 racers, force slot #6 (index 5) to finish
+    // 2nd, 3rd, or 4th, chosen at random each race. Sort the generated
+    // times to find rank positions, hand horse #6 the time for its target
+    // place, and scatter the rest of the field at random.
     if (n >= 6) {
         // Sort a copy of the times to find rank positions.
         const sorted = [...finishTimes].sort((a,b) => a - b);
-        const fastest = sorted[0];        // 1st place time
-        const secondFastest = sorted[1];  // 2nd place time — going to horse #6
-        // Remove them from consideration and re-assign the rest at random.
-        const remaining = sorted.slice(2);
+        const fastest = sorted[0];                          // 1st place time
+        const targetPlace = 2 + Math.floor(Math.random() * 3);  // 2, 3, or 4
+        const riggedTime = sorted[targetPlace - 1];         // going to horse #6
+        // Remove those two from consideration and re-assign the rest at random.
+        const remaining = sorted.filter((_, idx) => idx !== 0 && idx !== targetPlace - 1);
         // Shuffle remaining across the non-1st, non-6th slots
         for (let i = remaining.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -541,7 +542,7 @@ function buildHorses(n, names) {
         // Assign
         const out = new Array(n);
         out[winnerSlot] = fastest;
-        out[5] = secondFastest;
+        out[5] = riggedTime;
         let k = 0;
         for (let i = 0; i < n; i++) {
             if (i === winnerSlot || i === 5) continue;
