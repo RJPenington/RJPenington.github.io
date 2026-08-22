@@ -254,10 +254,10 @@
     table.data tr:hover { background: #121620; }
 
     /* Fixed column widths so the header grid + row grids stay perfectly aligned.
-       Widths: lock | bet-type | H | Home | A | Away | ±/OU | Pts | Units | # */
+       Widths: lock | bet-type | H | Home | A | Away | ±/OU | Pts | Units | # | save status */
     .form-row {
         display: grid;
-        grid-template-columns: 28px 80px 30px 1fr 30px 1fr 60px 75px 65px 30px;
+        grid-template-columns: 28px 80px 30px 1fr 30px 1fr 60px 75px 65px 30px 58px;
         gap: 0.45rem; align-items: center; margin: 0.45rem 0;
     }
     /* Pin every row item to its explicit column so display:none on a hidden
@@ -273,6 +273,20 @@
     .form-row > .points     { grid-column: 8; }
     .form-row > .units      { grid-column: 9; }
     .form-row > .idx        { grid-column: 10; }
+    .form-row > .row-status { grid-column: 11; }
+    /* Per-row autosave indicator: idle (empty), saving (dim), saved (green
+       check), retry (red, tappable to re-attempt the save) */
+    .row-status {
+        font-size: 0.72rem; text-align: center; justify-self: center;
+        min-height: 24px; display: inline-flex; align-items: center;
+        justify-content: center; padding: 2px 4px;
+    }
+    .row-status.saving { color: var(--dim); }
+    .row-status.saved  { color: var(--good); font-size: 0.95rem; text-shadow: 0 0 6px rgba(74, 222, 128, 0.6); }
+    .row-status.retry  {
+        color: var(--bad); cursor: pointer; font-weight: 700;
+        text-decoration: underline; text-underline-offset: 2px;
+    }
     .lock-cell {
         display: inline-flex; align-items: center; justify-content: center;
         width: 28px; height: 28px;
@@ -309,7 +323,7 @@
     }
     .form-col-header {
         display: grid;
-        grid-template-columns: 28px 80px 30px 1fr 30px 1fr 60px 75px 65px 30px;
+        grid-template-columns: 28px 80px 30px 1fr 30px 1fr 60px 75px 65px 30px 58px;
         gap: 0.45rem; align-items: center;
         color: var(--dim); font-size: 0.72rem; text-transform: uppercase;
         letter-spacing: 0.08em; padding: 0 0 0.35rem;
@@ -1263,7 +1277,10 @@
     // Fetch every current-season row and rebuild SEASONS[RAW.season] in the
     // same weeks shape the renderers already read. Each pick keeps its DB id
     // as _id (plus outcome) so the grading and delete buttons can target it.
-    async function refreshLiveSeason() {
+    // Pass quiet=true to update the data and toolbar WITHOUT re-rendering the
+    // active panel. Autosave uses that so a save never wipes the enter form
+    // mid-typing; the other tabs pick up fresh data on their next render.
+    async function refreshLiveSeason(quiet) {
         let rows;
         try {
             rows = await sb('/rest/v1/pickem_picks?season=eq.' + encodeURIComponent(RAW.season)
@@ -1309,7 +1326,8 @@
             if (prevWeek !== '' && [...weekSel.options].some(o => o.value === prevWeek)) {
                 weekSel.value = prevWeek;
             }
-            renderAll();
+            if (quiet) renderSummary();
+            else renderAll();
         }
     }
 
@@ -2178,6 +2196,7 @@
                 <input class="points" placeholder="Pts" type="number" step="0.5" />
                 <input class="units" placeholder="Units" type="number" step="0.5" min="0.5" />
                 <span class="idx">#${i}</span>
+                <span class="row-status"></span>
             </div>`;
         }
 
@@ -2195,6 +2214,7 @@
                 <span>Pts</span>
                 <span>Units</span>
                 <span>#</span>
+                <span></span>
             </div>`;
             return `<div class="panel-card">
                 <div class="form-section-title">${title}<span class="lock">${lockNote}</span></div>
@@ -2211,7 +2231,7 @@
             ${teamDatalist}
             <h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; font-size:1.05rem; margin:0.25rem 0 0.75rem;">${nameLabel}'s Picks</h2>
             <div class="banner-warn">
-                <strong>Live:</strong> filled rows save to the shared database when you hit <strong>Save Picks</strong> at the bottom. Set the week number there first. Saved picks show up on the Week Picks tab for both of you, from any browser.
+                <strong>Live:</strong> picks save automatically as you type. A row saves once it has a team and units (watch for the green check), and edits to a saved row update it in place. Clearing a saved row's teams deletes that pick. Rows land in the week set in the <strong>Week</strong> box at the bottom; <strong>Save all now</strong> is a backstop that pushes anything unsaved.
             </div>
             <div class="banner-warn" style="border-color: rgba(74, 222, 128, 0.35);">
                 <strong style="color: var(--accent);">🔒 Mortal Lock rules:</strong> pays 1.5× the units placed on either a win or a loss. <strong>Only one mortal lock per week</strong> — checking a new one auto-unchecks the previous.
@@ -2223,13 +2243,28 @@
                 <div class="save-bar">
                     <label for="week-input-${who}">Week</label>
                     <input type="number" id="week-input-${who}" min="0" step="1" value="${defaultWeek}" />
-                    <button class="btn-save" id="save-btn-${who}" onclick="savePicks('${who}')">Save Picks</button>
+                    <button class="btn-save" id="save-btn-${who}" onclick="savePicks('${who}')">Save all now</button>
                     <span class="save-status" id="save-status-${who}"></span>
                 </div>
             </div>`;
 
         // Initialize every row's visible fields to match its default bet type.
         el.querySelectorAll('.form-row').forEach(r => onBetTypeChange(r.dataset.uid));
+
+        // Autosave wiring: one delegated listener pair per panel (assigned as
+        // properties so re-renders never stack duplicates). Any typing (input)
+        // or field commit (change: selects, radios, the lock checkbox, blur of
+        // a text field) schedules that row's own debounced save. The week
+        // input is outside any .form-row, so changing it never fires a save
+        // and never retro-moves rows that already saved.
+        el.oninput = (e) => {
+            const row = e.target.closest('.form-row');
+            if (row) scheduleRowSave(row, who);
+        };
+        el.onchange = (e) => {
+            const row = e.target.closest('.form-row');
+            if (row) scheduleRowSave(row, who);
+        };
     }
 
     // ===== Spread / O-U / TTO grading rules =====
@@ -2288,8 +2323,15 @@
         if (!inputEl.checked) return;   // unchecking is always allowed
         const panel = inputEl.closest('.panel');
         if (!panel) return;
+        const who = panel.id === 'enter-nick' ? 'nick' : 'rj';
         panel.querySelectorAll('.lock-cell input.lock').forEach(cb => {
-            if (cb !== inputEl) cb.checked = false;
+            if (cb !== inputEl && cb.checked) {
+                cb.checked = false;
+                // A programmatic uncheck fires no change event, so schedule
+                // that row's autosave here to keep its saved pick in sync.
+                const otherRow = cb.closest('.form-row');
+                if (otherRow) scheduleRowSave(otherRow, who);
+            }
         });
     };
 
@@ -2381,57 +2423,156 @@
         return { pick, bet_type: bt, units: isNaN(units) ? 0 : units, mortal_lock: lock };
     }
 
-    // Collect every filled row in the person's panel, POST them all in one
-    // request, then re-fetch the live season and re-render (which clears the
-    // form). Rows with a team but no units are skipped and reported.
+    /* ===== Autosave engine =====
+       A row saves itself once it is COMPLETE (at least one team + units),
+       debounced per row so mid-typing never fires a request. The first save
+       POSTs and remembers the DB id on the row (data-saved-id); every later
+       edit to that row PATCHes the same id, so tweaking a field can never
+       duplicate a pick. Clearing a saved row's team fields DELETEs it.
+       Saves refresh SEASONS quietly (no panel re-render), so typing in one
+       row never wipes another row's in-progress input; Week Picks and the
+       analytics tabs pick up the new data next time they render. */
+    const AUTOSAVE_DEBOUNCE_MS = 800;
+
+    function setRowStatus(row, state, who) {
+        const el = row.querySelector('.row-status');
+        if (!el) return;
+        el.classList.remove('saving', 'saved', 'retry');
+        el.onclick = null;
+        el.title = '';
+        if (state === 'saving') {
+            el.textContent = 'saving...';
+            el.classList.add('saving');
+        } else if (state === 'saved') {
+            el.textContent = '✓';
+            el.classList.add('saved');
+            el.title = 'Saved';
+        } else if (state === 'retry') {
+            el.textContent = 'retry';
+            el.classList.add('retry');
+            el.title = 'Save failed, tap to try again';
+            el.onclick = () => autosaveRow(row, who);
+        } else {
+            el.textContent = '';
+        }
+    }
+
+    // Debounce is per row: each row carries its own timer, so typing in row 3
+    // never delays or triggers row 5. Never schedules on archived seasons.
+    function scheduleRowSave(row, who) {
+        if (seasonSel.value !== RAW.season) return;
+        row._pendingSave = true;
+        clearTimeout(row._saveTimer);
+        row._saveTimer = setTimeout(() => autosaveRow(row, who), AUTOSAVE_DEBOUNCE_MS);
+    }
+
+    // Save one row now. Returns true on success, false on failure, null when
+    // there was nothing to do. Serialized per row: if a save is already in
+    // flight the new edit is marked dirty and re-runs when the first finishes,
+    // so an in-flight POST can never race a second POST into a duplicate.
+    async function autosaveRow(row, who) {
+        if (seasonSel.value !== RAW.season) return null;
+        if (row._saving) { row._dirty = true; return null; }
+        row._pendingSave = false;
+        clearTimeout(row._saveTimer);
+
+        const built = buildPickFromRow(row);
+        const savedId = row.dataset.savedId || '';
+
+        if (!built && !savedId) { setRowStatus(row, '', who); return null; }   // empty, never saved
+        if (built && !(built.units > 0)) {
+            // Incomplete: has a team but no units. Not ready to save; if a
+            // saved version exists keep it untouched until the row is complete.
+            if (!savedId) setRowStatus(row, '', who);
+            return null;
+        }
+
+        row._saving = true;
+        setRowStatus(row, 'saving', who);
+        let ok = false;
+        try {
+            if (!built) {
+                // Saved row whose team fields were cleared: that is the
+                // natural way to remove a just-entered pick, so delete it.
+                await sb('/rest/v1/pickem_picks?id=eq.' + encodeURIComponent(savedId), { method: 'DELETE' });
+                delete row.dataset.savedId;
+                setRowStatus(row, '', who);
+            } else if (savedId) {
+                // Later edit of an already-saved row: PATCH the same id.
+                // Week and person never change here; only new saves use the
+                // current Week box value.
+                await sb('/rest/v1/pickem_picks?id=eq.' + encodeURIComponent(savedId), {
+                    method: 'PATCH',
+                    body: { pick: built.pick, bet_type: built.bet_type,
+                            units: built.units, mortal_lock: built.mortal_lock },
+                });
+                setRowStatus(row, 'saved', who);
+            } else {
+                // First save of this row: POST and remember the returned id.
+                const weekInput = document.getElementById('week-input-' + who);
+                const week = Math.max(0, Math.floor(Number(weekInput && weekInput.value) || 0));
+                const res = await sb('/rest/v1/pickem_picks', {
+                    method: 'POST',
+                    body: [{ season: RAW.season, week: week, person: who,
+                             pick: built.pick, bet_type: built.bet_type,
+                             units: built.units, mortal_lock: built.mortal_lock }],
+                });
+                const id = res && res[0] && res[0].id;
+                if (id !== undefined && id !== null) row.dataset.savedId = String(id);
+                setRowStatus(row, 'saved', who);
+            }
+            ok = true;
+            refreshLiveSeason(true);   // quiet: update data + toolbar, no panel re-render
+        } catch (e) {
+            setRowStatus(row, 'retry', who);
+        } finally {
+            row._saving = false;
+            if (row._dirty) { row._dirty = false; scheduleRowSave(row, who); }
+        }
+        return ok;
+    }
+
+    // Backstop button ("Save all now"): force-saves every complete row that
+    // has not saved yet, flushes rows with pending debounced edits, and
+    // re-attempts rows sitting in the red retry state.
     window.savePicks = async function(who) {
+        if (seasonSel.value !== RAW.season) return;
         const panel = document.getElementById('enter-' + who);
-        const weekInput = document.getElementById('week-input-' + who);
         const saveBtn = document.getElementById('save-btn-' + who);
-        // The status span is re-created when the panel re-renders after a
-        // save, so always look it up fresh instead of caching the element.
         const setStatus = (msg, cls) => {
             const el = document.getElementById('save-status-' + who);
             if (el) { el.textContent = msg; el.className = 'save-status' + (cls ? ' ' + cls : ''); }
         };
-        const week = Math.max(0, Math.floor(Number(weekInput && weekInput.value) || 0));
-
-        const rows = [];
-        let skippedNoUnits = 0;
-        panel.querySelectorAll('.form-row').forEach(r => {
-            const built = buildPickFromRow(r);
-            if (!built) return;                       // empty row
-            if (!(built.units > 0)) { skippedNoUnits++; return; }
-            rows.push({
-                season: RAW.season,
-                week: week,
-                person: who,
-                pick: built.pick,
-                bet_type: built.bet_type,
-                units: built.units,
-                mortal_lock: built.mortal_lock,
-            });
-        });
-
-        if (!rows.length) {
-            setStatus(skippedNoUnits
-                ? 'Nothing saved: ' + skippedNoUnits + ' row(s) have a team but no units.'
-                : 'Nothing to save, fill in at least one row.', 'err');
-            return;
-        }
 
         if (saveBtn) saveBtn.disabled = true;
-        setStatus('Saving ' + rows.length + ' pick(s)...', '');
-        try {
-            await sb('/rest/v1/pickem_picks', { method: 'POST', body: rows });
-            await refreshLiveSeason();   // re-renders the panel, clearing the form
-            const wkIn = document.getElementById('week-input-' + who);
-            if (wkIn) wkIn.value = week;
-            setStatus('Saved ' + rows.length + ' pick(s) to week ' + week + '.'
-                      + (skippedNoUnits ? ' Skipped ' + skippedNoUnits + ' row(s) with no units.' : ''), 'ok');
-        } catch (e) {
-            if (saveBtn) saveBtn.disabled = false;
-            setStatus('Save failed: ' + (e && e.message ? e.message : e), 'err');
+        setStatus('Saving...', '');
+        let saved = 0, failed = 0, skippedNoUnits = 0;
+        for (const row of panel.querySelectorAll('.form-row')) {
+            const built = buildPickFromRow(row);
+            const savedId = row.dataset.savedId || '';
+            if (!built && !savedId) continue;                              // empty row
+            if (built && !(built.units > 0)) {
+                if (!savedId) skippedNoUnits++;                            // team but no units
+                continue;
+            }
+            const statusEl = row.querySelector('.row-status');
+            const needsSave = !savedId || row._pendingSave || !built
+                              || (statusEl && statusEl.classList.contains('retry'));
+            if (!needsSave) continue;                                      // saved and clean
+            const ok = await autosaveRow(row, who);
+            if (ok === true) saved++;
+            else if (ok === false) failed++;
+        }
+        if (saveBtn) saveBtn.disabled = false;
+        if (saved || failed) {
+            setStatus('Saved ' + saved + ' pick(s).'
+                + (failed ? ' ' + failed + ' failed, tap retry on the row or press again.' : '')
+                + (skippedNoUnits ? ' ' + skippedNoUnits + ' row(s) missing units.' : ''),
+                failed ? 'err' : 'ok');
+        } else {
+            setStatus(skippedNoUnits
+                ? skippedNoUnits + ' row(s) have a team but no units.'
+                : 'Everything is already saved.', skippedNoUnits ? 'err' : 'ok');
         }
     };
 
