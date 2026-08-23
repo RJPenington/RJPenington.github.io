@@ -1,53 +1,53 @@
 {
-  "as_of": "2026-08-22",
-  "n_games_with_line": 663,
-  "dog_win_rate": 0.4133,
+  "as_of": "2026-08-23",
+  "n_games_with_line": 677,
+  "dog_win_rate": 0.4121,
   "by_rating": {
     "1": {
       "picked_fav": {
-        "wins": 267,
-        "losses": 178,
-        "ml_profit": 442.1,
-        "hit_pct": 0.6
+        "wins": 275,
+        "losses": 183,
+        "ml_profit": 450.2,
+        "hit_pct": 0.6004
       },
       "picked_dog": {
         "wins": 96,
-        "losses": 122,
-        "ml_profit": 1825.9,
-        "hit_pct": 0.4404
+        "losses": 123,
+        "ml_profit": 1725.9,
+        "hit_pct": 0.4384
       },
       "fav_by_delta": {
         "0-0.5": {
           "wins": 74,
-          "losses": 48,
-          "ml_profit": 585.5,
-          "hit_pct": 0.6066
+          "losses": 50,
+          "ml_profit": 385.5,
+          "hit_pct": 0.5968
         },
         "0.5-1": {
-          "wins": 58,
-          "losses": 38,
-          "ml_profit": 283.9,
-          "hit_pct": 0.6042
+          "wins": 60,
+          "losses": 40,
+          "ml_profit": 225.0,
+          "hit_pct": 0.6
         },
         "1-1.5": {
-          "wins": 61,
+          "wins": 64,
           "losses": 39,
-          "ml_profit": 48.2,
-          "hit_pct": 0.61
+          "ml_profit": 229.9,
+          "hit_pct": 0.6214
         },
         "1.5+": {
-          "wins": 74,
-          "losses": 53,
-          "ml_profit": -475.5,
-          "hit_pct": 0.5827
+          "wins": 77,
+          "losses": 54,
+          "ml_profit": -390.1,
+          "hit_pct": 0.5878
         }
       },
       "dog_by_delta": {
         "0-0.5": {
           "wins": 44,
-          "losses": 36,
-          "ml_profit": 4000.5,
-          "hit_pct": 0.55
+          "losses": 37,
+          "ml_profit": 3900.5,
+          "hit_pct": 0.5432
         },
         "0.5-1": {
           "wins": 26,
@@ -71,49 +71,49 @@
     },
     "2": {
       "picked_fav": {
-        "wins": 263,
-        "losses": 182,
-        "ml_profit": -121.0,
-        "hit_pct": 0.591
+        "wins": 271,
+        "losses": 186,
+        "ml_profit": -12.9,
+        "hit_pct": 0.593
       },
       "picked_dog": {
-        "wins": 92,
-        "losses": 126,
-        "ml_profit": 1086.4,
-        "hit_pct": 0.422
+        "wins": 93,
+        "losses": 127,
+        "ml_profit": 1136.4,
+        "hit_pct": 0.4227
       },
       "fav_by_delta": {
         "0-0.5": {
           "wins": 68,
-          "losses": 52,
-          "ml_profit": -151.1,
-          "hit_pct": 0.5667
+          "losses": 53,
+          "ml_profit": -251.1,
+          "hit_pct": 0.562
         },
         "0.5-1": {
-          "wins": 66,
-          "losses": 38,
-          "ml_profit": 774.2,
-          "hit_pct": 0.6346
+          "wins": 67,
+          "losses": 40,
+          "ml_profit": 635.9,
+          "hit_pct": 0.6262
         },
         "1-1.5": {
-          "wins": 55,
+          "wins": 58,
           "losses": 42,
-          "ml_profit": -730.2,
-          "hit_pct": 0.567
+          "ml_profit": -561.8,
+          "hit_pct": 0.58
         },
         "1.5+": {
-          "wins": 74,
-          "losses": 50,
-          "ml_profit": -13.9,
-          "hit_pct": 0.5968
+          "wins": 78,
+          "losses": 51,
+          "ml_profit": 164.1,
+          "hit_pct": 0.6047
         }
       },
       "dog_by_delta": {
         "0-0.5": {
-          "wins": 43,
-          "losses": 37,
-          "ml_profit": 4490.0,
-          "hit_pct": 0.5375
+          "wins": 44,
+          "losses": 38,
+          "ml_profit": 4540.0,
+          "hit_pct": 0.5366
         },
         "0.5-1": {
           "wins": 23,
@@ -137,41 +137,41 @@
     },
     "3": {
       "picked_fav": {
-        "wins": 268,
-        "losses": 196,
-        "ml_profit": -1294.3,
-        "hit_pct": 0.5776
+        "wins": 276,
+        "losses": 201,
+        "ml_profit": -1286.2,
+        "hit_pct": 0.5786
       },
       "picked_dog": {
         "wins": 78,
-        "losses": 121,
-        "ml_profit": -338.0,
-        "hit_pct": 0.392
+        "losses": 122,
+        "ml_profit": -438.0,
+        "hit_pct": 0.39
       },
       "fav_by_delta": {
         "0-0.5": {
           "wins": 67,
-          "losses": 54,
-          "ml_profit": -562.9,
-          "hit_pct": 0.5537
+          "losses": 56,
+          "ml_profit": -762.9,
+          "hit_pct": 0.5447
         },
         "0.5-1": {
           "wins": 70,
-          "losses": 49,
-          "ml_profit": 51.3,
-          "hit_pct": 0.5882
+          "losses": 50,
+          "ml_profit": -48.7,
+          "hit_pct": 0.5833
         },
         "1-1.5": {
-          "wins": 54,
-          "losses": 46,
-          "ml_profit": -979.4,
-          "hit_pct": 0.54
+          "wins": 60,
+          "losses": 47,
+          "ml_profit": -685.3,
+          "hit_pct": 0.5607
         },
         "1.5+": {
-          "wins": 77,
-          "losses": 47,
-          "ml_profit": 196.6,
-          "hit_pct": 0.621
+          "wins": 79,
+          "losses": 48,
+          "ml_profit": 210.6,
+          "hit_pct": 0.622
         }
       },
       "dog_by_delta": {
@@ -183,9 +183,9 @@
         },
         "0.5-1": {
           "wins": 23,
-          "losses": 38,
-          "ml_profit": 1147.7,
-          "hit_pct": 0.377
+          "losses": 39,
+          "ml_profit": 1047.7,
+          "hit_pct": 0.371
         },
         "1-1.5": {
           "wins": 11,
@@ -203,16 +203,16 @@
     },
     "4": {
       "picked_fav": {
-        "wins": 16,
-        "losses": 2,
-        "ml_profit": 826.7,
-        "hit_pct": 0.8889
+        "wins": 24,
+        "losses": 7,
+        "ml_profit": 834.8,
+        "hit_pct": 0.7742
       },
       "picked_dog": {
         "wins": 1,
-        "losses": 5,
-        "ml_profit": -400.0,
-        "hit_pct": 0.1667
+        "losses": 6,
+        "ml_profit": -500.0,
+        "hit_pct": 0.1429
       },
       "fav_by_delta": {
         "0-0.5": {
@@ -223,29 +223,29 @@
         },
         "0.5-1": {
           "wins": 8,
-          "losses": 1,
-          "ml_profit": 423.4,
-          "hit_pct": 0.8889
-        },
-        "1-1.5": {
-          "wins": 2,
-          "losses": 1,
-          "ml_profit": -0.6,
+          "losses": 4,
+          "ml_profit": 123.4,
           "hit_pct": 0.6667
         },
+        "1-1.5": {
+          "wins": 5,
+          "losses": 1,
+          "ml_profit": 211.3,
+          "hit_pct": 0.8333
+        },
         "1.5+": {
-          "wins": 3,
-          "losses": 0,
-          "ml_profit": 240.5,
-          "hit_pct": 1.0
+          "wins": 8,
+          "losses": 2,
+          "ml_profit": 336.6,
+          "hit_pct": 0.8
         }
       },
       "dog_by_delta": {
         "0-0.5": {
           "wins": 1,
-          "losses": 2,
-          "ml_profit": -100.0,
-          "hit_pct": 0.3333
+          "losses": 3,
+          "ml_profit": -200.0,
+          "hit_pct": 0.25
         },
         "0.5-1": {
           "wins": 0,
