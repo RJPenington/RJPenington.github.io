@@ -138,6 +138,24 @@
         box-shadow: 0 0 14px rgba(74, 222, 128, 0.45);
     }
 
+    /* Sub-tabs inside the Enter Picks panels: smaller cousins of .tab that
+       switch between the three form sections with pure show/hide */
+    .enter-subtabs { display: flex; gap: 5px; margin: 0 0 1rem; }
+    .subtab {
+        flex: 1 1 0; padding: 9px 6px; min-width: 0;
+        background: var(--surface); color: var(--dim);
+        border: 1px solid var(--line); border-radius: 6px; cursor: pointer;
+        font-size: 0.78rem; font-weight: 600; letter-spacing: 0.03em;
+        text-transform: uppercase; text-align: center; line-height: 1.25;
+        transition: all 0.15s;
+    }
+    .subtab:hover { background: #1a1d24; color: var(--ink); }
+    .subtab.active {
+        background: linear-gradient(135deg, #0d3b1e, #164a2b);
+        color: var(--accent-bright); border-color: var(--accent);
+        box-shadow: 0 0 10px rgba(74, 222, 128, 0.35);
+    }
+
     section.panel { display: none; }
     section.panel.active { display: block; }
 
@@ -484,6 +502,7 @@
         .season-tabs { flex-wrap: wrap; margin-right: 6px; }
         .season-tab { padding: 8px 12px; font-size: 0.9rem; }
         .tab { padding: 10px 8px; font-size: 0.75rem; flex: 1 1 auto; text-align: center; }
+        .subtab { padding: 8px 4px; font-size: 0.7rem; min-height: 42px; }
 
         /* Cards and tables: tighter padding; dense tables keep their natural
            width (nowrap cells) and scroll horizontally inside the card */
@@ -521,7 +540,16 @@
         .form-row > .units      { order: 9; flex: 1 1 64px; max-width: 100px; }
         .form-row > .lock-cell  { order: 10; width: 40px; height: 40px; }
         .form-row > .row-status { order: 11; margin-left: auto; }
-        .form-row > .idx        { display: none; }
+        /* Row number as a small notch badge riding the card's top border.
+           Absolutely positioned, so it takes no space from either line and
+           never crowds the inputs at 390px. */
+        .form-row { position: relative; }
+        .form-row > .idx {
+            display: block; position: absolute; top: -9px; right: 10px;
+            width: auto; padding: 0 5px;
+            font-size: 0.65rem; text-align: center;
+            color: var(--dim); background: var(--surface);
+        }
         /* 42px tall + 16px font: comfortable taps, and iOS Safari does not
            auto-zoom on focus at 16px or larger */
         .form-row select, .form-row .home, .form-row .away,
@@ -2293,7 +2321,7 @@
             </div>`;
         }
 
-        function formSection(sectionKey, title, count, lockNote) {
+        function formSection(sectionKey, title, count, lockNote, hidden) {
             let rows = '';
             for (let i = 1; i <= count; i++) rows += formRow(sectionKey, i);
             const header = `<div class="form-col-header">
@@ -2309,7 +2337,7 @@
                 <span>#</span>
                 <span></span>
             </div>`;
-            return `<div class="panel-card">
+            return `<div class="panel-card form-section-card" data-section="${sectionKey}"${hidden ? ' style="display:none"' : ''}>
                 <div class="form-section-title">${title}<span class="lock">${lockNote}</span></div>
                 ${header}
                 ${rows}
@@ -2328,9 +2356,14 @@
             <div class="banner-warn" style="border-color: rgba(74, 222, 128, 0.35);">
                 <strong style="color: var(--accent);">🔒 Mortal Lock rules:</strong> pays 1.5× the units placed on either a win or a loss. <strong>Only one mortal lock per week</strong> — checking a new one auto-unchecks the previous.
             </div>
+            <div class="enter-subtabs">
+                <button type="button" class="subtab active" onclick="showEnterSection('${who}','wd',this)">Weekday Games</button>
+                <button type="button" class="subtab" onclick="showEnterSection('${who}','main',this)">Main Slate</button>
+                <button type="button" class="subtab" onclick="showEnterSection('${who}','day',this)">Gameday Additions</button>
+            </div>
             ${formSection('wd',  'Weekday Games',      5, 'Locks Saturday 9:00 AM')}
-            ${formSection('main','Main Slate',        15, 'Locks Saturday 9:00 AM')}
-            ${formSection('day', 'Gameday Additions', 10, 'Locks Sunday night')}
+            ${formSection('main','Main Slate',        15, 'Locks Saturday 9:00 AM', true)}
+            ${formSection('day', 'Gameday Additions', 10, 'Locks Sunday night', true)}
             <div class="panel-card">
                 <div class="save-bar">
                     <label for="week-input-${who}">Week</label>
@@ -2406,6 +2439,23 @@
             if (grade === 'loss') return -units * multiplier;
             return 0;
         },
+    };
+
+    // Switch which form section (Weekday / Main Slate / Gameday) is visible
+    // in one person's Enter panel. Pure show/hide via style.display, never a
+    // re-render, so half-typed input, saved ids, pending autosave timers, and
+    // every row's state in the hidden sections are fully preserved. Each
+    // person's panel has its own sub-tab bar, so RJ and Nick switch
+    // independently. The save bar sits outside the section cards and stays
+    // visible on every sub-tab.
+    window.showEnterSection = function(who, sec, btn) {
+        const panel = document.getElementById('enter-' + who);
+        if (!panel) return;
+        panel.querySelectorAll('.enter-subtabs .subtab').forEach(b =>
+            b.classList.toggle('active', b === btn));
+        panel.querySelectorAll('.form-section-card').forEach(card => {
+            card.style.display = card.dataset.section === sec ? '' : 'none';
+        });
     };
 
     // Enforce one mortal lock per week PER PERSON — clicking a new lock
