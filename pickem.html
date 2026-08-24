@@ -28,7 +28,11 @@
            from RJ's near-black cards but still in the dark family */
         --nick-bg: #353b47;
         --nick-line: #4a5261;
+        /* Monochrome padlock shape for CSS pseudo-elements, painted through
+           a mask so it always renders in the current context's color */
+        --lock-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 0 1 6 0v3H9z"/></svg>');
     }
+    .lock-icon { width: 1em; height: 1em; display: inline-block; vertical-align: -0.12em; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -237,8 +241,14 @@
     }
     .person-card tr.mortal-lock td { color: #d6e6ff; }
     .person-card tr.mortal-lock td:first-child::before {
-        content: "🔒 "; color: var(--lock-blue-bright); font-size: 0.85em;
-        text-shadow: 0 0 6px rgba(37, 99, 235, 0.8);
+        content: "";
+        display: inline-block;
+        width: 0.85em; height: 0.85em;
+        margin-right: 5px;
+        vertical-align: -0.06em;
+        background-color: var(--lock-blue-bright);
+        -webkit-mask: var(--lock-mask) center / contain no-repeat;
+        mask: var(--lock-mask) center / contain no-repeat;
     }
     @keyframes lock-pulse {
         0%,100% { box-shadow: inset 3px 0 0 0 var(--lock-blue), 0 0 8px  rgba(37, 99, 235, 0.20); }
@@ -263,9 +273,6 @@
         background: rgba(255, 200, 90, 0.08);
         box-shadow: inset 3px 0 0 0 rgba(255, 200, 90, 0.55);
     }
-    .lock-slot.nick .grade-btn {
-        background: #3e4552; border-color: #525a6e;
-    }
     /* Small result badge on lock rows (the row itself stays blue) */
     .lock-badge {
         display: inline-block; margin-left: 8px; padding: 0 6px;
@@ -282,24 +289,18 @@
         border-radius: 8px; padding: 0.7rem 0.9rem;
         box-shadow: 0 0 10px rgba(37, 99, 235, 0.20);
     }
-    .lock-slot.nick { background: var(--nick-bg); border-color: #7f9cc7; }
     .lock-slot .slot-title {
         font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
         letter-spacing: 0.07em; color: var(--lock-blue-bright); margin-bottom: 0.35rem;
     }
     .lock-slot .slot-pick { font-weight: 600; }
     .lock-slot .slot-meta { font-size: 0.8rem; color: var(--dim); margin-top: 2px; }
-    .lock-slot.nick .slot-meta { color: #aab2c0; }
     .lock-slot .slot-empty { color: var(--dim); font-style: italic; }
-    .lock-slot.nick .slot-empty { color: #aab2c0; }
     .lock-slot .slot-btns { margin-top: 0.5rem; }
     /* Graded slot takes the result treatment (the row keeps its blue) */
     .lock-slot.graded-w { background: rgba(74, 222, 128, 0.10); border-color: var(--good); box-shadow: 0 0 12px rgba(74, 222, 128, 0.28); }
-    .lock-slot.nick.graded-w { background: #3d5347; border-color: var(--good); }
     .lock-slot.graded-l { background: rgba(239, 68, 68, 0.10); border-color: var(--bad); box-shadow: 0 0 12px rgba(239, 68, 68, 0.25); }
-    .lock-slot.nick.graded-l { background: #55434a; border-color: var(--bad); }
     .lock-slot.graded-p { background: rgba(255, 200, 90, 0.08); border-color: #b48a2f; box-shadow: 0 0 10px rgba(255, 200, 90, 0.18); }
-    .lock-slot.nick.graded-p { background: #53503f; }
     .net-good { color: var(--good); font-weight: 700; }
     .net-bad  { color: var(--bad);  font-weight: 700; }
     .net-zero { color: var(--dim); }
@@ -401,15 +402,25 @@
         width: 100%; height: 100%; margin: 0;
         border: none; background: transparent; cursor: pointer;
     }
+    /* Keyboard hardening: the styled checkbox is otherwise invisible when
+       focused, so a stray Space could toggle a lock with zero feedback */
+    .lock-cell input[type="checkbox"]:focus-visible {
+        outline: 2px solid var(--lock-blue-bright);
+        outline-offset: 2px;
+        border-radius: 50%;
+    }
     .lock-cell:has(input:checked) {
         background: rgba(37, 99, 235, 0.40);
         border-color: var(--lock-blue);
         box-shadow: 0 0 12px rgba(37, 99, 235, 0.80);
     }
     .lock-cell:has(input:checked)::after {
-        content: "🔒";
+        content: "";
         position: absolute;
-        font-size: 13px;
+        width: 14px; height: 14px;
+        background-color: #eaf2ff;
+        -webkit-mask: var(--lock-mask) center / contain no-repeat;
+        mask: var(--lock-mask) center / contain no-repeat;
         pointer-events: none;
     }
     /* The locked card SHOULD pop: deep royal-blue wash, highlighted edges
@@ -642,7 +653,7 @@
         .form-row select, .form-row .home, .form-row .away,
         .form-row .points, .form-row .units { min-height: 42px; font-size: 16px; }
         .sign-group label { min-width: 32px; height: 38px; font-size: 0.95rem; }
-        .lock-cell:has(input:checked)::after { font-size: 16px; }
+        .lock-cell:has(input:checked)::after { width: 16px; height: 16px; }
         /* Keep the card padding even when the lock highlight adds its own
            left border (the base rule shrinks padding-left for the grid),
            and paint the card's own border in the deep lock blue too */
@@ -1430,6 +1441,9 @@
     /* ===== Data + rendering ===== */
     const RAW = JSON.parse(document.getElementById('pickemData').textContent);
     const FBS_TEAMS = JSON.parse(document.getElementById('fbsTeams').textContent);
+    // Monochrome padlock, inline SVG with currentColor so every context can
+    // tint it via CSS. Replaces the emoji, which rendered gold on phones.
+    const LOCK_ICON = '<svg class="lock-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 0 1 6 0v3H9z"/></svg>';
     // Multi-season: the pickemData tag holds the CURRENT season (refreshed by
     // the weekly pipeline); pickemArchive holds frozen past seasons. Current
     // season is selected by default; every view and tally already reads
@@ -1602,7 +1616,7 @@
             if (prevWeek !== '' && [...weekSel.options].some(o => o.value === prevWeek)) {
                 weekSel.value = prevWeek;
             }
-            if (quiet) { renderSummary(); updateEnterLockSlots(); }
+            if (quiet) { renderSummary(); rehydrateEnterIfIdle(); updateEnterLockSlots(); }
             else renderAll();
         }
     }
@@ -1834,7 +1848,7 @@
             const lock = (w[who].picks || []).find(p => p.mortal_lock);
             if (!lock) {
                 return `<div class="lock-slot ${who}">
-                    <div class="slot-title">${label} Mortal Lock 🔒</div>
+                    <div class="slot-title">${label} Mortal Lock ${LOCK_ICON}</div>
                     <div class="slot-empty">no lock yet</div>
                 </div>`;
             }
@@ -1844,7 +1858,7 @@
             const btns = (liveSeason && lock._id !== undefined && lock._id !== null)
                 ? `<div class="grade-btns slot-btns">${gradeBtnsFor(lock)}</div>` : '';
             return `<div class="lock-slot ${who}${cls}">
-                <div class="slot-title">${label} Mortal Lock 🔒</div>
+                <div class="slot-title">${label} Mortal Lock ${LOCK_ICON}</div>
                 <div class="slot-pick">${lock.pick}</div>
                 <div class="slot-meta">${lock.units ?? '—'} u · ${stateWord} · ${fmtNet(lock.net)}</div>
                 ${btns}
@@ -2556,7 +2570,7 @@
                 rows += formRow('rj', sectionKey, i) + formRow('nick', sectionKey, i);
             }
             const header = `<div class="form-col-header">
-                <span title="Mortal Lock">🔒</span>
+                <span title="Mortal Lock">${LOCK_ICON}</span>
                 <span>Bet Type</span>
                 <span>H</span>
                 <span>Home Team</span>
@@ -2584,7 +2598,7 @@
                 <strong>Live:</strong> picks save automatically as you type. Cards alternate person, <strong>RJ on the dark cards, Nick on the light cards</strong> (each card is tagged). A card saves once it has a team and units (watch for the check), and edits to a saved card update it in place. Clearing a saved card's teams deletes that pick. Cards land in the week set in the <strong>Week</strong> box at the bottom; <strong>Save all now</strong> is a backstop that pushes anything unsaved.
             </div>
             <div class="banner-warn" style="border-color: rgba(37, 99, 235, 0.45);">
-                <strong style="color: var(--lock-blue-bright);">🔒 Mortal Lock rules:</strong> pays 1.5× the units placed on either a win or a loss. <strong>Only one mortal lock per person per week</strong> — checking a new one auto-unchecks that person's previous lock.
+                <strong style="color: var(--lock-blue-bright);">${LOCK_ICON} Mortal Lock rules:</strong> pays 1.5× the units placed on either a win or a loss. <strong>Only one mortal lock per person per week</strong> — checking a new one auto-unchecks that person's previous lock.
             </div>
             <div class="lock-slots" id="enter-lock-slots"></div>
             <div class="enter-subtabs">
@@ -2621,14 +2635,18 @@
         el.oninput = (e) => {
             const row = e.target.closest('.form-row');
             if (row) scheduleRowSave(row);
+            else if (e.target.id === 'week-input' && !enterPanelHasUnsavedWork()) hydrateEnterForm();
             updateEnterLockSlots();
         };
         el.onchange = (e) => {
             const row = e.target.closest('.form-row');
             if (row) scheduleRowSave(row);
+            else if (e.target.id === 'week-input' && !enterPanelHasUnsavedWork()) hydrateEnterForm();
             updateEnterLockSlots();
         };
-        updateEnterLockSlots();
+        // Populate the cards with this week's saved picks (also paints the
+        // live lock slots), so returning to the tab never shows blank cards.
+        hydrateEnterForm();
     }
 
     // ===== Spread / O-U / TTO grading rules =====
@@ -3037,7 +3055,13 @@
                 // natural way to remove a just-entered pick, so delete it.
                 await sb('/rest/v1/pickem_picks?id=eq.' + encodeURIComponent(savedId), { method: 'DELETE' });
                 delete row.dataset.savedId;
+                // Phantom-lock fix: fully disarm the cleared card. A checked
+                // lock left behind here would silently ride along on the
+                // NEXT pick typed into this same card.
+                const lockCb = row.querySelector('.lock-cell input.lock');
+                if (lockCb) lockCb.checked = false;
                 setRowStatus(row, '');
+                updateEnterLockSlots();
             } else if (savedId) {
                 // Later edit of an already-saved row: PATCH the same id.
                 // Week and person never change here; only new saves use the
@@ -3118,6 +3142,137 @@
         }
     };
 
+    /* ===== Enter form hydration =====
+       The form used to rebuild BLANK on every visit, so returning to the
+       Enter tab after a save showed empty cards even though the picks were
+       safe in the DB. Hydration rebuilds the cards from the saved picks for
+       the week in the Week box. The DB does not record which SECTION a pick
+       was entered in, so saved picks hydrate sequentially into the currently
+       ACTIVE section's cards, per person (documented choice: simplest
+       correct behavior; the data itself is untouched). Every hydrated card
+       carries its data-saved-id, so edits PATCH and clearing DELETEs, and a
+       re-typed pick can never duplicate. */
+
+    // Best-effort inverse of buildPickFromRow. Strings our own builder wrote
+    // round-trip exactly; anything unrecognized lands raw in the home field,
+    // which ML rebuilds verbatim and other types keep visible and editable.
+    function parsePickToFields(pick, betType) {
+        const s = (pick || '').trim();
+        if (betType === 'Spread') {
+            const m = s.match(/^(.+?)\s+([+-])(\d+(?:\.\d+)?)$/);
+            if (m) return { home: m[1], sign: m[2], pts: m[3] };
+            return { home: s };
+        }
+        if (betType === 'O/U') {
+            const m = s.match(/^(.+?)\s+(Over|Under)(?:\s+(\d+(?:\.\d+)?))?$/i);
+            if (m) {
+                const teams = m[1].split('/');
+                return { home: (teams[0] || '').trim(), away: (teams[1] || '').trim(),
+                         sign: m[2].toLowerCase() === 'under' ? 'U' : 'O', pts: m[3] || '' };
+            }
+            return { home: s };
+        }
+        if (betType === 'TTO') {
+            const m = s.match(/^(.+?)\s+(Over|Under)(?:\s+(\d+(?:\.\d+)?))?\s+Team\s+Total$/i);
+            if (m) return { home: m[1], sign: m[2].toLowerCase() === 'under' ? 'U' : 'O', pts: m[3] || '' };
+            return { home: s };
+        }
+        return { home: s };   // ML: the whole string is the team
+    }
+
+    // Blank one card completely: fields, radios, lock, saved id, timers.
+    // Programmatic value changes fire no events, so this never autosaves.
+    function resetFormRow(row) {
+        delete row.dataset.savedId;
+        row._pendingSave = false;
+        row._dirty = false;
+        clearTimeout(row._saveTimer);
+        row.querySelector('.bet-type').value = 'ML';
+        row.querySelector('.home').value = '';
+        row.querySelector('.away').value = '';
+        row.querySelector('.points').value = '';
+        row.querySelector('.units').value = '';
+        row.querySelector('.lock-cell input.lock').checked = false;
+        row.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; });
+        onBetTypeChange(row.dataset.uid);
+        setRowStatus(row, '');
+    }
+
+    function fillFormRowFromPick(row, p) {
+        if (p._id !== undefined && p._id !== null) row.dataset.savedId = String(p._id);
+        const betSel = row.querySelector('.bet-type');
+        const bt = ['ML', 'Spread', 'O/U', 'TTO'].includes(p.bet_type) ? p.bet_type : 'ML';
+        betSel.value = bt;
+        onBetTypeChange(row.dataset.uid);
+        const f = parsePickToFields(p.pick, bt);
+        row.querySelector('.home').value = f.home || '';
+        row.querySelector('.away').value = f.away || '';
+        if (f.sign) {
+            const radio = row.querySelector('.sign-slot input[value="' + f.sign + '"]');
+            if (radio) radio.checked = true;
+        }
+        row.querySelector('.points').value = f.pts || '';
+        row.querySelector('.units').value = (p.units === null || p.units === undefined) ? '' : p.units;
+        row.querySelector('.lock-cell input.lock').checked = !!p.mortal_lock;
+        setRowStatus(row, 'saved');
+    }
+
+    function hydrateEnterForm() {
+        const panel = document.getElementById('enter');
+        if (!panel) return;
+        const weekInput = document.getElementById('week-input');
+        const wk = Math.max(0, Math.floor(Number(weekInput && weekInput.value) || 0));
+        const wData = (SEASONS[RAW.season] || []).find(x => x.week === wk);
+        panel.querySelectorAll('.form-row').forEach(resetFormRow);
+        if (wData) {
+            const activeSection = [...panel.querySelectorAll('.form-section-card')]
+                .find(c => c.style.display !== 'none');
+            if (activeSection) {
+                for (const who of ['rj', 'nick']) {
+                    const rows = activeSection.querySelectorAll('.form-row[data-person="' + who + '"]');
+                    const picks = wData[who].picks;
+                    for (let i = 0; i < picks.length && i < rows.length; i++) {
+                        fillFormRowFromPick(rows[i], picks[i]);
+                    }
+                }
+            }
+        }
+        updateEnterLockSlots();
+    }
+
+    // True when the cards already show exactly the saved ids the data holds
+    // for that week. Stops the form from reshuffling right after one of our
+    // own autosaves (the new id is already sitting on its card).
+    function enterFormMatchesData(wData) {
+        const panel = document.getElementById('enter');
+        if (!panel) return true;
+        const domIds = [...panel.querySelectorAll('.form-row')]
+            .map(r => r.dataset.savedId).filter(Boolean).sort();
+        const dataIds = [];
+        if (wData) {
+            for (const who of ['rj', 'nick']) {
+                for (const p of wData[who].picks) {
+                    if (p._id !== undefined && p._id !== null) dataIds.push(String(p._id));
+                }
+            }
+        }
+        dataIds.sort();
+        return domIds.length === dataIds.length && domIds.every((v, i) => v === dataIds[i]);
+    }
+
+    // After fresh data lands: rebuild the form only when the Enter tab is
+    // active, nothing is unsaved (never clobber in-progress typing), and the
+    // data actually differs from what the cards already show.
+    function rehydrateEnterIfIdle() {
+        const activeTab = document.querySelector('.tab.active');
+        if (!activeTab || activeTab.dataset.panel !== 'enter') return;
+        if (enterPanelHasUnsavedWork()) return;
+        const weekInput = document.getElementById('week-input');
+        const wk = Math.max(0, Math.floor(Number(weekInput && weekInput.value) || 0));
+        const wData = (SEASONS[RAW.season] || []).find(x => x.week === wk);
+        if (!enterFormMatchesData(wData)) hydrateEnterForm();
+    }
+
     /* ===== Live lock slots on the Enter tab =====
        Pure status display, never any grading buttons. Priority per person:
        1) a lock CHECKED on a form card right now, shown live from the row's
@@ -3151,7 +3306,7 @@
         }
         if (bodyHtml === null) bodyHtml = '<div class="slot-empty">no lock yet</div>';
         return `<div class="lock-slot ${who}">
-            <div class="slot-title">${label} Mortal Lock 🔒</div>
+            <div class="slot-title">${label} Mortal Lock ${LOCK_ICON}</div>
             ${bodyHtml}
         </div>`;
     }
