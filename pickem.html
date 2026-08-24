@@ -32,7 +32,7 @@
            a mask so it always renders in the current context's color */
         --lock-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 0 1 6 0v3H9z"/></svg>');
     }
-    .lock-icon { width: 1em; height: 1em; display: inline-block; vertical-align: -0.12em; }
+    .lock-icon, .trash-icon { width: 1em; height: 1em; display: inline-block; vertical-align: -0.12em; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -355,6 +355,25 @@
         background: #3e4552; border-color: #525a6e;
     }
     .form-row.person-nick .idx { color: #a7aebb; }
+    /* Nick's selector bubbles match RJ's dark unselected look; checked
+       states keep their existing active colors */
+    .form-row.person-nick .sign-group label:not(:has(input:checked)),
+    .form-row.person-nick .lock-cell:not(:has(input:checked)) {
+        background: #0b0e12;
+        border-color: rgba(255, 255, 255, 0.10);
+    }
+    .form-row.person-nick .sign-group label:not(:has(input:checked)):hover,
+    .form-row.person-nick .lock-cell:not(:has(input:checked)):hover {
+        background: #161b22;
+        color: var(--ink);
+    }
+    /* Text centers inside the enter card controls. Selects rely on
+       text-align-last, which a few mobile browsers ignore; that is the
+       best CSS can do short of replacing the native control. */
+    .form-row input { text-align: center; }
+    .form-row select { text-align: center; text-align-last: center; }
+    /* Hydrated cards past their lock time render read-only and dimmed */
+    .form-row[data-locked] { opacity: 0.55; }
     /* Pin every row item to its explicit column so display:none on a hidden
        cell (e.g. H/A bubbles on O/U bets, Pts input on ML bets) doesn't cause
        subsequent items to auto-place and shift the layout left. */
@@ -503,14 +522,17 @@
         color: var(--dim); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.05em; text-transform: none;
     }
 
+    /* Rules and note cards are fully neutral: standard card background and
+       border, standard ink, and emphasis rendered as the strongest neutral
+       ink the dark scheme has (near-white bold), never an accent color */
     .banner-warn {
-        background: rgba(74, 222, 128, 0.06);
-        border: 1px solid rgba(74, 222, 128, 0.3);
+        background: var(--surface);
+        border: 1px solid var(--line);
         color: var(--ink); padding: 0.9rem 1.1rem;
         border-radius: 8px; margin-bottom: 1rem;
         font-size: 0.88rem;
     }
-    .banner-warn strong { color: var(--accent); }
+    .banner-warn strong { color: #f7f9fb; }
 
     /* Grading buttons on the Week Picks table (current season only) */
     .grade-cell { white-space: nowrap; }
@@ -719,7 +741,7 @@
                 <li>Line on any pick must be equal to or lower than <strong>-130</strong>.</li>
                 <li>Weekday games + Main Slate lock at <strong>Saturday 12:00 PM EST</strong>.</li>
                 <li>Gameday Additions lock <strong>Sunday night</strong>.</li>
-                <li style="color: var(--lock-blue-bright);">One <strong>mortal lock</strong> per person per week (highlighted glowing blue) — pays <strong>1.5×</strong> the units placed on either a win or a loss.</li>
+                <li>One <strong>mortal lock</strong> per person per week (highlighted glowing blue) — pays <strong>1.5×</strong> the units placed on either a win or a loss.</li>
             </ul>
         </div>
 
@@ -1471,6 +1493,9 @@
     // Monochrome padlock, inline SVG with currentColor so every context can
     // tint it via CSS. Replaces the emoji, which rendered gold on phones.
     const LOCK_ICON = '<svg class="lock-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 0 1 6 0v3H9z"/></svg>';
+    // Minimal outline trash can, same currentColor approach as LOCK_ICON,
+    // tinted per context by CSS. No emoji anywhere.
+    const TRASH_ICON = '<svg class="trash-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
     // Multi-season: the pickemData tag holds the CURRENT season (refreshed by
     // the weekly pipeline); pickemArchive holds frozen past seasons. Current
     // season is selected by default; every view and tally already reads
@@ -1501,6 +1526,37 @@
         const days = Math.floor((Date.now() - start.getTime()) / 86400000);
         const wk = Math.floor(days / 7);
         return Math.min(CURRENT_SEASON_TOTAL_WEEKS - 1, Math.max(0, wk));
+    }
+
+    /* ===== Pick lock windows (house rules, current season only) =====
+       A pick created BEFORE its week's Saturday 12:00 PM Eastern belongs to
+       Weekday/Main Slate and locks at that Saturday noon; a pick created
+       AFTER Saturday noon is a Gameday Addition and locks Sunday 11:59 PM
+       Eastern. Cutoffs are built as UTC timestamps from the Eastern wall
+       time; the CFB season runs on daylight time, so Eastern is UTC-4. */
+    const ET_OFFSET_HOURS = 4;
+    function weekLockTimes(week) {
+        const parts = CURRENT_SEASON_WEEK0_MONDAY.split('-').map(Number);
+        const week0MondayUtc = Date.UTC(parts[0], parts[1] - 1, parts[2]);
+        const weekMondayUtc = week0MondayUtc + week * 7 * 86400000;
+        return {
+            // Saturday 12:00 PM ET, as UTC ms
+            saturdayNoonEt: weekMondayUtc + 5 * 86400000 + (12 + ET_OFFSET_HOURS) * 3600000,
+            // Sunday 11:59 PM ET, as UTC ms
+            sundayNightEt: weekMondayUtc + 6 * 86400000 + (23 + ET_OFFSET_HOURS) * 3600000 + 59 * 60000,
+        };
+    }
+    function pickLockTime(p, week) {
+        const cut = weekLockTimes(week);
+        const created = p && p.created_at ? Date.parse(p.created_at) : NaN;
+        // Created after Saturday noon: a Gameday Addition with the later
+        // cutoff. Missing/unparseable created_at falls back to the earlier
+        // Saturday cutoff, the conservative choice.
+        if (!isNaN(created) && created > cut.saturdayNoonEt) return cut.sundayNightEt;
+        return cut.saturdayNoonEt;
+    }
+    function pickIsLocked(p, week) {
+        return Date.now() > pickLockTime(p, week);
     }
 
     // Ensure every week 0..14 exists in the current season's weeks array
@@ -1626,6 +1682,8 @@
                 // Structured form state (jsonb), present once the fields
                 // column exists; hydration restores it verbatim
                 fields: (r.fields && typeof r.fields === 'object') ? r.fields : null,
+                // Creation time decides the pick's lock window
+                created_at: r.created_at || null,
             });
         }
         const weeks = padCurrentSeasonWeeks([...byWeek.values()]);
@@ -1907,9 +1965,15 @@
                 if (liveSeason && p._id !== undefined && p._id !== null) {
                     // Locks grade in their slot above, so their row carries
                     // only the delete button; other picks grade right here.
+                    // The trash disappears once the pick's lock time passes
+                    // (Saturday noon ET, or Sunday night for Gameday adds);
+                    // deletePick double-checks against stale DOM.
+                    const lockMs = pickLockTime(p, w.week);
+                    const delBtn = Date.now() > lockMs ? ''
+                        : `<button class="grade-btn del" title="Delete pick" onclick="deletePick('${p._id}', ${lockMs})">${TRASH_ICON}</button>`;
                     actions = `<td class="grade-cell"><span class="grade-btns">`
                         + (isLock ? '' : gradeBtnsFor(p))
-                        + `<button class="grade-btn del" title="Delete pick" onclick="deletePick('${p._id}')">🗑</button>`
+                        + delBtn
                         + `</span></td>`;
                 } else if (liveSeason) {
                     actions = `<td class="grade-cell"></td>`;
@@ -2623,9 +2687,9 @@
         el.innerHTML = `
             <h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; font-size:1.05rem; margin:0.25rem 0 0.75rem;">Enter Picks</h2>
             <div class="banner-warn">
-                <strong>Live:</strong> picks save automatically as you type. Cards alternate person, <strong>RJ on the dark cards, Nick on the light cards</strong> (each card is tagged). A card saves once it has a team and units (watch for the check), and edits to a saved card update it in place. Clearing a saved card's teams deletes that pick. Cards land in the week set in the <strong>Week</strong> box at the bottom; <strong>Save all now</strong> is a backstop that pushes anything unsaved.
+                <strong>Live:</strong> picks save automatically as you type. Cards alternate person, <strong>RJ on the dark cards, Nick on the steel cards</strong> (each card is tagged). A card saves once it has a team and units (watch for the check), and edits to a saved card update it in place. Clearing a saved card's teams deletes that pick. Cards land in the week set in the <strong>Week</strong> box at the bottom; <strong>Save all now</strong> is a backstop that pushes anything unsaved.
             </div>
-            <div class="banner-warn" style="border-color: rgba(37, 99, 235, 0.45); color: var(--lock-blue-bright);">
+            <div class="banner-warn">
                 <strong>${LOCK_ICON} Mortal Lock rules:</strong> pays 1.5× the units placed on either a win or a loss. <strong>Only one mortal lock per person per week</strong> — checking a new one auto-unchecks that person's previous lock.
             </div>
             <div class="lock-slots" id="enter-lock-slots"></div>
@@ -3068,6 +3132,9 @@
             el.classList.add('retry');
             el.title = 'Save failed, tap to try again';
             el.onclick = () => autosaveRow(row);
+        } else if (state === 'locked') {
+            el.textContent = 'locked';
+            el.title = 'Lock time passed, this pick can no longer be edited';
         } else {
             el.textContent = '';
         }
@@ -3081,9 +3148,11 @@
     }
 
     // Debounce is per row: each row carries its own timer, so typing in row 3
-    // never delays or triggers row 5. Never schedules on archived seasons.
+    // never delays or triggers row 5. Never schedules on archived seasons or
+    // on rows hydrated as locked (past their lock time).
     function scheduleRowSave(row) {
         if (seasonSel.value !== RAW.season) return;
+        if (row.dataset.locked) return;
         row._pendingSave = true;
         clearTimeout(row._saveTimer);
         row._saveTimer = setTimeout(() => autosaveRow(row), AUTOSAVE_DEBOUNCE_MS);
@@ -3095,6 +3164,7 @@
     // so an in-flight POST can never race a second POST into a duplicate.
     async function autosaveRow(row) {
         if (seasonSel.value !== RAW.season) return null;
+        if (row.dataset.locked) return null;   // past lock time: read-only
         if (row._saving) { row._dirty = true; return null; }
         row._pendingSave = false;
         clearTimeout(row._saveTimer);
@@ -3250,11 +3320,22 @@
 
     // Blank one card completely: fields, radios, lock, saved id, timers.
     // Programmatic value changes fire no events, so this never autosaves.
+    // Every editable control in one card, for enabling and disabling
+    function rowControls(row) {
+        return [row.querySelector('.bet-type'), row.querySelector('.home'),
+                row.querySelector('.away'), row.querySelector('.points'),
+                row.querySelector('.units'), row.querySelector('.lock-cell input.lock')]
+            .concat([...row.querySelectorAll('input[type="radio"]')])
+            .filter(Boolean);
+    }
+
     function resetFormRow(row) {
         delete row.dataset.savedId;
+        delete row.dataset.locked;
         row._pendingSave = false;
         row._dirty = false;
         clearTimeout(row._saveTimer);
+        rowControls(row).forEach(c => { c.disabled = false; });
         row.querySelector('.bet-type').value = 'ML';
         row.querySelector('.home').value = '';
         row.querySelector('.away').value = '';
@@ -3266,7 +3347,18 @@
         setRowStatus(row, '');
     }
 
-    function fillFormRowFromPick(row, p) {
+    // Marks a hydrated card read-only once its lock time has passed: inputs
+    // disabled (so no events, so autosave cannot PATCH), card dimmed, and a
+    // small locked note in the status column. The save path also refuses
+    // rows carrying data-locked as a second line of defense.
+    function applyRowLockState(row, locked) {
+        if (!locked) return;
+        row.dataset.locked = '1';
+        rowControls(row).forEach(c => { c.disabled = true; });
+        setRowStatus(row, 'locked');
+    }
+
+    function fillFormRowFromPick(row, p, locked) {
         if (p._id !== undefined && p._id !== null) row.dataset.savedId = String(p._id);
         const betSel = row.querySelector('.bet-type');
 
@@ -3291,6 +3383,7 @@
             row.querySelector('.units').value = sf.units || '';
             row.querySelector('.lock-cell input.lock').checked = !!sf.lock;
             setRowStatus(row, 'saved');
+            applyRowLockState(row, locked);
             return;
         }
 
@@ -3308,6 +3401,7 @@
         row.querySelector('.units').value = (p.units === null || p.units === undefined) ? '' : p.units;
         row.querySelector('.lock-cell input.lock').checked = !!p.mortal_lock;
         setRowStatus(row, 'saved');
+        applyRowLockState(row, locked);
     }
 
     function hydrateEnterForm() {
@@ -3325,7 +3419,7 @@
                     const rows = activeSection.querySelectorAll('.form-row[data-person="' + who + '"]');
                     const picks = wData[who].picks;
                     for (let i = 0; i < picks.length && i < rows.length; i++) {
-                        fillFormRowFromPick(rows[i], picks[i]);
+                        fillFormRowFromPick(rows[i], picks[i], pickIsLocked(picks[i], wk));
                     }
                 }
             }
@@ -3427,7 +3521,13 @@
         }
     };
 
-    window.deletePick = async function(id) {
+    window.deletePick = async function(id, lockMs) {
+        // Refuse past the pick's lock time even if a stale tab still shows
+        // the trash button
+        if (lockMs && Date.now() > lockMs) {
+            alert('Locked since ' + new Date(lockMs).toLocaleString() + '. Picks cannot be deleted after their lock time.');
+            return;
+        }
         if (!confirm('Delete this pick? This removes it from the database for both of you.')) return;
         try {
             await sb('/rest/v1/pickem_picks?id=eq.' + encodeURIComponent(id), { method: 'DELETE' });
