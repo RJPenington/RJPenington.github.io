@@ -118,7 +118,11 @@
         display: flex; justify-content: center;
         background: var(--surface); padding: 0.9rem 1rem;
         border-radius: 8px; margin-bottom: 1rem;
-        border: 1px solid var(--line);
+        /* Scoreboard identity: glowing green frame using the site accent */
+        border: 1px solid var(--accent);
+        box-shadow: 0 0 12px var(--accent-glow),
+                    0 0 30px rgba(74, 222, 128, 0.18),
+                    inset 0 0 10px rgba(74, 222, 128, 0.06);
     }
     /* Summary: tidy stacked rows (winner, season totals, week totals),
        each locked to a single line, centered, scaled up as the page's
