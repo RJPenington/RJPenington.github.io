@@ -1354,6 +1354,41 @@
         if (!(s.season in SEASONS)) SEASONS[s.season] = s.weeks;
     }
 
+    /* ===== Current season week config =====
+       The current season always shows the fixed slate of weeks 0 through 14,
+       and the site's idea of "this week" advances automatically every Monday
+       based on the visitor's local date, so no republish is ever needed as
+       the season rolls on. Archived seasons keep deriving their week list
+       purely from their embedded data. */
+    const CURRENT_SEASON_TOTAL_WEEKS = 15;              // weeks 0 through 14
+    const CURRENT_SEASON_WEEK0_MONDAY = '2026-08-24';   // Monday starting CFB Week 0's game week
+
+    // floor(days since Week 0 Monday / 7), clamped to 0..14. Local time, so
+    // it ticks over at the visitor's local midnight each Monday.
+    function computeCurrentWeek() {
+        const start = new Date(CURRENT_SEASON_WEEK0_MONDAY + 'T00:00:00');
+        const days = Math.floor((Date.now() - start.getTime()) / 86400000);
+        const wk = Math.floor(days / 7);
+        return Math.min(CURRENT_SEASON_TOTAL_WEEKS - 1, Math.max(0, wk));
+    }
+
+    // Ensure every week 0..14 exists in the current season's weeks array
+    // (missing ones get empty pick lists), sorted ascending. Any week outside
+    // the fixed range that somehow carries data is kept.
+    function padCurrentSeasonWeeks(weeks) {
+        const have = new Set(weeks.map(w => w.week));
+        for (let n = 0; n < CURRENT_SEASON_TOTAL_WEEKS; n++) {
+            if (!have.has(n)) {
+                weeks.push({ week: n,
+                             nick: { picks: [], total_net: 0 },
+                             rj:   { picks: [], total_net: 0 } });
+            }
+        }
+        weeks.sort((a, b) => a.week - b.week);
+        return weeks;
+    }
+    padCurrentSeasonWeeks(SEASONS[RAW.season]);
+
     /* ===== Supabase live layer (current season only) =====
        The CURRENT season's picks live in the pickem_picks table and are
        fetched fresh on every page load. Archived seasons stay embedded in
@@ -1433,7 +1468,7 @@
                 outcome: r.outcome || null,
             });
         }
-        const weeks = [...byWeek.values()].sort((a, b) => a.week - b.week);
+        const weeks = padCurrentSeasonWeeks([...byWeek.values()]);
         for (const w of weeks) {
             for (const who of ['nick', 'rj']) {
                 // Ungraded picks (net null) count as 0, they are pending
@@ -1442,8 +1477,6 @@
             }
         }
         SEASONS[RAW.season] = weeks;
-        const note = document.getElementById('emptySeasonNote');
-        if (note && weeks.length) note.remove();
         if (seasonSel.value === RAW.season) {
             const prevWeek = weekSel.value;
             fillWeekSelector();
@@ -1579,15 +1612,9 @@
         });
         seasonTabs.appendChild(btn);
     });
-    // Empty current season (new year not started yet): show a friendly note
-    // instead of blank panels.
-    if (!(SEASONS[seasonSel.value] || []).length) {
-        const note = document.createElement('div');
-        note.id = 'emptySeasonNote';
-        note.style.cssText = 'margin:8px 0; padding:10px 14px; background:#2e3648; border:1px solid #3a4152; border-radius:6px; color:#9aa3b5;';
-        note.textContent = 'The ' + seasonSel.value + ' season has not started yet. Flip to the previous season tab to browse last year.';
-        document.querySelector('.toolbar').after(note);
-    }
+    // Note: the old "season has not started yet" banner is gone. The current
+    // season always carries weeks 0..14 now, so the empty person cards on
+    // Week Picks tell the story on their own.
     function fillWeekSelector() {
         const weeks = SEASONS[seasonSel.value] || [];
         weekSel.innerHTML = '';
@@ -1596,8 +1623,13 @@
             opt.value = w.week; opt.textContent = 'Week ' + w.week;
             weekSel.appendChild(opt);
         }
-        // Default to latest week
-        if (weeks.length) weekSel.value = weeks[weeks.length - 1].week;
+        if (!weeks.length) return;
+        // Default: the current season lands on the auto-computed week (ticks
+        // forward each Monday); archived seasons land on their latest week.
+        // A manual week choice is preserved across quiet autosave refreshes
+        // by refreshLiveSeason's save-and-restore around this call.
+        if (seasonSel.value === RAW.season) weekSel.value = String(computeCurrentWeek());
+        else weekSel.value = weeks[weeks.length - 1].week;
     }
     fillWeekSelector();
 
@@ -2343,10 +2375,9 @@
                 ${rows}
             </div>`;
         }
-        // Default the week number to the highest week already saved for the
-        // current season, or 0 when the season has no weeks yet.
-        const curWeeks = SEASONS[RAW.season] || [];
-        const defaultWeek = curWeeks.length ? curWeeks[curWeeks.length - 1].week : 0;
+        // Default the week number to the auto-computed current week; it
+        // advances on its own every Monday and stays overridable per save.
+        const defaultWeek = computeCurrentWeek();
 
         el.innerHTML = `
             <h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; font-size:1.05rem; margin:0.25rem 0 0.75rem;">${nameLabel}'s Picks</h2>
@@ -2906,14 +2937,22 @@
         if (!w) { el.innerHTML = ''; return; }
         const n = numOrZero(w.nick.total_net);
         const r = numOrZero(w.rj.total_net);
-        const winner = n > r ? 'Nick' : (r > n ? 'RJ' : 'Tie');
+        // A week with no picks at all has no winner yet (archived seasons
+        // never hit this, every archived week has at least one pick)
+        const hasPicks = (w.nick.picks.length + w.rj.picks.length) > 0;
+        const winner = !hasPicks ? '—' : (n > r ? 'Nick' : (r > n ? 'RJ' : 'Tie'));
         // Season-to-date tallies (all weeks in the season, not just current)
         let nSeason = 0, rSeason = 0;
         for (const wk of weeks) {
             nSeason += numOrZero(wk.nick.total_net);
             rSeason += numOrZero(wk.rj.total_net);
         }
+        // Subtle "what week does the site think it is" pill, current season only
+        const wkPill = seasonSel.value === RAW.season
+            ? `<span class="pill" title="Season week, advances automatically every Monday">Wk ${computeCurrentWeek()}</span>`
+            : '';
         el.innerHTML = `
+            ${wkPill}
             <span class="pill">Week winner: <strong style="color:var(--accent)">${winner}</strong></span>
             <span class="pill" style="border-color:rgba(74,222,128,0.4);">
                 Season: <strong class="${nSeason >= 0 ? 'net-good' : 'net-bad'}">Nick ${fmtNet(nSeason)}u</strong>
