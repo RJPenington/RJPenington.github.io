@@ -87,6 +87,10 @@
     }
     header h1 .apostrophe { -webkit-text-fill-color: #fff; color: #fff; }
 
+    /* Notes at the bottom of each enter section */
+    .section-notes { margin-top: 1.1rem; }
+    .section-notes .banner-warn:last-child { margin-bottom: 0; }
+
     /* Rules tab prose: rules cards stay left-aligned per convention */
     .rules-prose { text-align: left; }
     .rules-prose ul { margin: 0.2rem 0 0 1.3rem; }
@@ -102,24 +106,20 @@
     }
     .season-tab.active { background: #2e3648; color: var(--accent, #ffd54a); border-bottom-color: var(--accent, #ffd54a); }
     .season-tab:hover { color: #e6e9f0; }
+    /* Season tab row: the tabs plus the week selector inline at the end */
+    .season-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+    .season-row select {
+        background: var(--card); color: var(--ink); border: 1px solid var(--line);
+        padding: 6px 12px; border-radius: 6px; font-size: 0.95rem; cursor: pointer;
+    }
+    .season-row select:focus { outline: 1px solid var(--accent); }
+    /* Scoreboard card: nothing but the three stat rows, centered */
     .toolbar {
-        display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;
-        background: var(--surface); padding: 0.8rem 1rem;
+        display: flex; justify-content: center;
+        background: var(--surface); padding: 0.9rem 1rem;
         border-radius: 8px; margin-bottom: 1rem;
         border: 1px solid var(--line);
     }
-    /* Week selector centered above the summary stats, which are the page's
-       headline numbers and get sized to fill the card */
-    .toolbar-main {
-        flex-basis: 100%;
-        display: flex; flex-direction: column; align-items: center;
-        gap: 0.6rem; padding-top: 0.35rem;
-    }
-    .toolbar select {
-        background: var(--card); color: var(--ink); border: 1px solid var(--line);
-        padding: 6px 12px; border-radius: 5px; font-size: 0.95rem; cursor: pointer;
-    }
-    .toolbar select:focus { outline: 1px solid var(--accent); }
     /* Summary: tidy stacked rows (winner, season totals, week totals),
        each locked to a single line, centered, scaled up as the page's
        headline numbers with the winner row largest */
@@ -645,7 +645,7 @@
 
         /* Toolbar and tabs: wrap cleanly, tap-friendly, summary drops below */
         .toolbar { padding: 0.6rem 0.7rem; gap: 0.5rem; }
-        .toolbar select { min-height: 40px; font-size: 16px; }
+        .season-row select { min-height: 40px; font-size: 16px; }
         .toolbar .summary { font-size: 1rem; }
         .toolbar .summary .sum-row:first-child { font-size: 1.2rem; }
         .season-tabs { flex-wrap: wrap; margin-right: 6px; }
@@ -736,13 +736,15 @@
         </header>
 
         <!-- Toolbar: season + week -->
-        <div class="toolbar">
+        <!-- Season tabs with the week selector inline at the end of the row,
+             then the scoreboard card holding only the three stat rows -->
+        <div class="season-row">
             <div class="season-tabs" id="seasonTabs"></div>
+            <select id="weekSel" aria-label="Week"></select>
             <select id="seasonSel" style="display:none;"></select>
-            <div class="toolbar-main">
-                <select id="weekSel" aria-label="Week"></select>
-                <div class="summary" id="summary"></div>
-            </div>
+        </div>
+        <div class="toolbar">
+            <div class="summary" id="summary"></div>
         </div>
 
         <!-- Tabs -->
@@ -2722,20 +2724,28 @@
                 <div class="form-section-title">${title}<span class="lock">${lockNote}</span></div>
                 ${header}
                 ${rows}
+                ${enterNotes}
             </div>`;
         }
+
+        // The two note cards render at the BOTTOM of every section, after
+        // its last entry card, so whichever sub-tab is open shows them
+        // beneath its cards. Defined before the sections are built.
+        const enterNotes = `
+            <div class="section-notes">
+                <div class="banner-warn">
+                    <strong>Live:</strong> picks save automatically as you type. Cards alternate person, <strong>RJ on the dark cards, Nick on the steel cards</strong> (each card is tagged). A card saves once it has a team and units (watch for the check), and edits to a saved card update it in place. Clearing a saved card's teams deletes that pick. Cards land in the week set in the <strong>Week</strong> box at the bottom; <strong>Save all now</strong> is a backstop that pushes anything unsaved.
+                </div>
+                <div class="banner-warn">
+                    <strong>${LOCK_ICON} Mortal Lock rules:</strong> pays 1.5× the units placed on either a win or a loss. <strong>Only one mortal lock per person per week</strong> — checking a new one auto-unchecks that person's previous lock.
+                </div>
+            </div>`;
         // Default the week number to the auto-computed current week; it
         // advances on its own every Monday and stays overridable per save.
         const defaultWeek = computeCurrentWeek();
 
         el.innerHTML = `
             <h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; font-size:1.05rem; margin:0.25rem 0 0.75rem;">Enter Picks</h2>
-            <div class="banner-warn">
-                <strong>Live:</strong> picks save automatically as you type. Cards alternate person, <strong>RJ on the dark cards, Nick on the steel cards</strong> (each card is tagged). A card saves once it has a team and units (watch for the check), and edits to a saved card update it in place. Clearing a saved card's teams deletes that pick. Cards land in the week set in the <strong>Week</strong> box at the bottom; <strong>Save all now</strong> is a backstop that pushes anything unsaved.
-            </div>
-            <div class="banner-warn">
-                <strong>${LOCK_ICON} Mortal Lock rules:</strong> pays 1.5× the units placed on either a win or a loss. <strong>Only one mortal lock per person per week</strong> — checking a new one auto-unchecks that person's previous lock.
-            </div>
             <div class="lock-slots" id="enter-lock-slots"></div>
             <div class="enter-subtabs">
                 <button type="button" class="subtab active" onclick="showEnterSection('wd',this)">Weekday Games</button>
