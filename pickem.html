@@ -234,6 +234,25 @@
         0%,100% { box-shadow: inset 3px 0 0 0 var(--accent), 0 0 8px  rgba(74, 222, 128, 0.18); }
         50%     { box-shadow: inset 3px 0 0 0 var(--accent), 0 0 18px rgba(74, 222, 128, 0.35); }
     }
+    /* Graded pick rows (current season, once an outcome is set): the whole
+       row glows green for a win, red for a loss, soft amber for a push.
+       Ungraded rows keep the default look. Defined after the mortal-lock
+       rules so a graded lock shows its result color, not the idle pulse. */
+    .person-card tr.graded-w,
+    .person-card tr.graded-l,
+    .person-card tr.graded-p { animation: none; }
+    .person-card tr.graded-w {
+        background: rgba(74, 222, 128, 0.10);
+        box-shadow: inset 3px 0 0 0 var(--good), 0 0 12px rgba(74, 222, 128, 0.25);
+    }
+    .person-card tr.graded-l {
+        background: rgba(239, 68, 68, 0.10);
+        box-shadow: inset 3px 0 0 0 var(--bad), 0 0 12px rgba(239, 68, 68, 0.22);
+    }
+    .person-card tr.graded-p {
+        background: rgba(255, 200, 90, 0.08);
+        box-shadow: inset 3px 0 0 0 rgba(255, 200, 90, 0.55);
+    }
     .net-good { color: var(--good); font-weight: 700; }
     .net-bad  { color: var(--bad);  font-weight: 700; }
     .net-zero { color: var(--dim); }
@@ -587,7 +606,7 @@
             <div class="head">House Rules</div>
             <ul>
                 <li>Line on any pick must be equal to or lower than <strong>-130</strong>.</li>
-                <li>Weekday games + Main Slate lock at <strong>Saturday 9:00 AM ET</strong>.</li>
+                <li>Weekday games + Main Slate lock at <strong>Saturday 12:00 PM EST</strong>.</li>
                 <li>Gameday Additions lock <strong>Sunday night</strong>.</li>
                 <li>One <strong>mortal lock</strong> per person per week (highlighted glowing green) — pays <strong>1.5×</strong> the units placed on either a win or a loss.</li>
             </ul>
@@ -1612,9 +1631,9 @@
         });
         seasonTabs.appendChild(btn);
     });
-    // Note: the old "season has not started yet" banner is gone. The current
-    // season always carries weeks 0..14 now, so the empty person cards on
-    // Week Picks tell the story on their own.
+    // The old empty-season banner is gone. The current season always carries
+    // weeks 0..14 now, so the empty person cards on Week Picks are all the
+    // signal a fresh year needs.
     function fillWeekSelector() {
         const weeks = SEASONS[seasonSel.value] || [];
         weekSel.innerHTML = '';
@@ -1697,7 +1716,12 @@
                         `<button class="grade-btn del" title="Delete pick" onclick="deletePick('${p._id}')">🗑</button>` +
                         `</span></td>`;
                 }
-                rows += `<tr class="${p.mortal_lock ? 'mortal-lock' : ''}">
+                // Outcome only exists on live current-season picks, so
+                // archived rows never pick up a grade class
+                const gradeCls = p.outcome === 'W' ? ' graded-w'
+                               : p.outcome === 'L' ? ' graded-l'
+                               : p.outcome === 'push' ? ' graded-p' : '';
+                rows += `<tr class="${p.mortal_lock ? 'mortal-lock' : ''}${gradeCls}">
                     <td>${p.pick}</td>
                     <td>${p.units ?? '—'}</td>
                     <td>${netHtml}</td>${actions}
@@ -2392,8 +2416,8 @@
                 <button type="button" class="subtab" onclick="showEnterSection('${who}','main',this)">Main Slate</button>
                 <button type="button" class="subtab" onclick="showEnterSection('${who}','day',this)">Gameday Additions</button>
             </div>
-            ${formSection('wd',  'Weekday Games',      5, 'Locks Saturday 9:00 AM')}
-            ${formSection('main','Main Slate',        15, 'Locks Saturday 9:00 AM', true)}
+            ${formSection('wd',  'Weekday Games',      5, 'Locks Saturday 12:00 PM EST')}
+            ${formSection('main','Main Slate',        15, 'Locks Saturday 12:00 PM EST', true)}
             ${formSection('day', 'Gameday Additions', 10, 'Locks Sunday night', true)}
             <div class="panel-card">
                 <div class="save-bar">
@@ -2993,6 +3017,60 @@
             });
         });
     }
+    /* ===== Stale tab defense =====
+       Phone browsers keep serving days-old tabs (bfcache and frozen tabs),
+       which resurrects retired versions of this page. When an old tab comes
+       back after more than 6 hours we hard-reload it once to pick up the
+       latest published page, UNLESS the enter form holds unsaved work, in
+       which case we only refresh data quietly and never risk the input.
+       Every return to visibility also quietly refreshes so the other
+       person's fresh picks appear. */
+    const PAGE_LOADED_AT = Date.now();
+    const STALE_PAGE_MS = 6 * 60 * 60 * 1000;
+    let stalePageReloaded = false;   // one attempt ever, so no reload loop
+
+    // True when any enter-form row has content that never saved, a pending
+    // debounced save, a save in flight, or a failed save waiting on retry.
+    function enterPanelHasUnsavedWork() {
+        for (const row of document.querySelectorAll('#enter-rj .form-row, #enter-nick .form-row')) {
+            if (row._pendingSave || row._saving) return true;
+            const statusEl = row.querySelector('.row-status');
+            if (statusEl && statusEl.classList.contains('retry')) return true;
+            if (!row.dataset.savedId && buildPickFromRow(row)) return true;
+        }
+        return false;
+    }
+
+    // Refresh data without ever wiping form input: quiet (no panel render)
+    // when an Enter tab is active, full otherwise. renderAll only re-renders
+    // the ACTIVE panel, so a hidden enter panel's rows are safe either way.
+    function refreshRespectingEnterPanel() {
+        const active = document.querySelector('.tab.active');
+        const onEnter = !!active && (active.dataset.panel === 'enter-rj' || active.dataset.panel === 'enter-nick');
+        refreshLiveSeason(onEnter);
+    }
+
+    function maybeReloadStalePage() {
+        if (stalePageReloaded) return;
+        if (Date.now() - PAGE_LOADED_AT <= STALE_PAGE_MS) return;
+        if (enterPanelHasUnsavedWork()) { refreshRespectingEnterPanel(); return; }
+        stalePageReloaded = true;
+        location.reload();
+    }
+
+    window.addEventListener('pageshow', (e) => {
+        // Only bfcache restores matter here; on a normal load PAGE_LOADED_AT
+        // was just set, so there is nothing to do.
+        if (!e.persisted) return;
+        maybeReloadStalePage();
+        refreshRespectingEnterPanel();
+    });
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState !== 'visible') return;
+        maybeReloadStalePage();
+        refreshRespectingEnterPanel();
+    });
+
     updateEnterTabsForSeason();
     renderAll();
     // Kick off the live fetch for the current season. When it resolves it
