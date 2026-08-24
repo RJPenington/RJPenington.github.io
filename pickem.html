@@ -371,6 +371,20 @@
     .form-row > .units      { grid-column: 9; }
     .form-row > .idx        { grid-column: 10; }
     .form-row > .row-status { grid-column: 11; }
+    /* Desktop adaptivity: O/U rows hide the H/A side bubbles, so their grid
+       drops those two tracks and re-pins the later cells. The row reflows
+       exactly like the phone layout does when fields hide. The mobile flex
+       layout ignores grid templates, so phone behavior is untouched. */
+    .form-row.bt-ou {
+        grid-template-columns: 28px 80px minmax(0, 1fr) minmax(0, 1fr) 60px 75px 65px 56px 58px;
+    }
+    .form-row.bt-ou > .home       { grid-column: 3; }
+    .form-row.bt-ou > .away       { grid-column: 4; }
+    .form-row.bt-ou > .sign-slot  { grid-column: 5; }
+    .form-row.bt-ou > .points     { grid-column: 6; }
+    .form-row.bt-ou > .units      { grid-column: 7; }
+    .form-row.bt-ou > .idx        { grid-column: 8; }
+    .form-row.bt-ou > .row-status { grid-column: 9; }
     /* Per-row autosave indicator: idle (empty), saving (dim), saved (green
        check), retry (red, tappable to re-attempt the save) */
     .row-status {
@@ -1596,6 +1610,9 @@
                 mortal_lock: !!r.mortal_lock,
                 bet_type: r.bet_type,
                 outcome: r.outcome || null,
+                // Structured form state (jsonb), present once the fields
+                // column exists; hydration restores it verbatim
+                fields: (r.fields && typeof r.fields === 'object') ? r.fields : null,
             });
         }
         const weeks = padCurrentSeasonWeeks([...byWeek.values()]);
@@ -2742,6 +2759,10 @@
         const row = document.querySelector(`.form-row[data-uid="${uid}"]`);
         if (!row) return;
         const bt = row.querySelector('.bet-type').value;
+        // Per-type class so the desktop grid can reflow the row per bet type
+        // exactly like the phone flex layout does
+        row.classList.remove('bt-ml', 'bt-spread', 'bt-ou', 'bt-tto');
+        row.classList.add(bt === 'O/U' ? 'bt-ou' : 'bt-' + bt.toLowerCase());
         const signGroup = row.querySelector('.sign-slot');
         const sideH = row.querySelector('.side-h');
         const sideA = row.querySelector('.side-a');
@@ -2975,6 +2996,38 @@
         return { pick, bet_type: bt, units: isNaN(units) ? 0 : units, mortal_lock: lock };
     }
 
+    /* ===== Structured fields persistence =====
+       The pick STRING is lossy (an ML pick never mentions the away team, so
+       side and opponent information cannot round-trip through it). Every
+       write therefore also stores the raw form state in a jsonb column
+       named fields, and hydration restores it verbatim. Feature-detected so
+       the site keeps working in legacy mode until the column exists. */
+    let FIELDS_COLUMN_OK = false;
+    async function probeFieldsColumn() {
+        try {
+            await sb('/rest/v1/pickem_picks?select=fields&limit=1');
+            FIELDS_COLUMN_OK = true;
+        } catch (e) {
+            FIELDS_COLUMN_OK = false;   // column missing: omit fields from writes
+        }
+    }
+
+    // The raw row state exactly as the form holds it right now
+    function captureRowFields(row) {
+        const sideEl = row.querySelector('input[name^="side-"]:checked');
+        const signEl = row.querySelector('.sign-slot input:checked');
+        return {
+            bet_type: row.querySelector('.bet-type').value,
+            side: sideEl ? sideEl.value : null,
+            home: row.querySelector('.home').value,
+            away: row.querySelector('.away').value,
+            sign: signEl ? signEl.value : null,
+            points: row.querySelector('.points').value,
+            units: row.querySelector('.units').value,
+            lock: row.querySelector('.lock-cell input.lock').checked,
+        };
+    }
+
     /* ===== Autosave engine =====
        A row saves itself once it is COMPLETE (at least one team + units),
        debounced per row so mid-typing never fires a request. The first save
@@ -3066,10 +3119,12 @@
                 // Later edit of an already-saved row: PATCH the same id.
                 // Week and person never change here; only new saves use the
                 // current Week box value.
+                const patchBody = { pick: built.pick, bet_type: built.bet_type,
+                                    units: built.units, mortal_lock: built.mortal_lock };
+                if (FIELDS_COLUMN_OK) patchBody.fields = captureRowFields(row);
                 await sb('/rest/v1/pickem_picks?id=eq.' + encodeURIComponent(savedId), {
                     method: 'PATCH',
-                    body: { pick: built.pick, bet_type: built.bet_type,
-                            units: built.units, mortal_lock: built.mortal_lock },
+                    body: patchBody,
                 });
                 setRowStatus(row, 'saved');
             } else {
@@ -3077,11 +3132,13 @@
                 // remember the returned id.
                 const weekInput = document.getElementById('week-input');
                 const week = Math.max(0, Math.floor(Number(weekInput && weekInput.value) || 0));
+                const postBody = { season: RAW.season, week: week, person: rowPerson(row),
+                                   pick: built.pick, bet_type: built.bet_type,
+                                   units: built.units, mortal_lock: built.mortal_lock };
+                if (FIELDS_COLUMN_OK) postBody.fields = captureRowFields(row);
                 const res = await sb('/rest/v1/pickem_picks', {
                     method: 'POST',
-                    body: [{ season: RAW.season, week: week, person: rowPerson(row),
-                             pick: built.pick, bet_type: built.bet_type,
-                             units: built.units, mortal_lock: built.mortal_lock }],
+                    body: [postBody],
                 });
                 const id = res && res[0] && res[0].id;
                 if (id !== undefined && id !== null) row.dataset.savedId = String(id);
@@ -3201,6 +3258,31 @@
     function fillFormRowFromPick(row, p) {
         if (p._id !== undefined && p._id !== null) row.dataset.savedId = String(p._id);
         const betSel = row.querySelector('.bet-type');
+
+        // Preferred path: the stored structured fields restore every input
+        // verbatim, home and away teams included, so nothing can shift
+        // columns. Legacy rows without fields fall back to text parsing.
+        const sf = (p.fields && typeof p.fields === 'object') ? p.fields : null;
+        if (sf) {
+            betSel.value = ['ML', 'Spread', 'O/U', 'TTO'].includes(sf.bet_type) ? sf.bet_type : 'ML';
+            onBetTypeChange(row.dataset.uid);
+            row.querySelector('.home').value = sf.home || '';
+            row.querySelector('.away').value = sf.away || '';
+            if (sf.side === 'H' || sf.side === 'A') {
+                const sideRadio = row.querySelector(sf.side === 'A' ? '.side-a input' : '.side-h input');
+                if (sideRadio) sideRadio.checked = true;
+            }
+            if (sf.sign) {
+                const signRadio = row.querySelector('.sign-slot input[value="' + sf.sign + '"]');
+                if (signRadio) signRadio.checked = true;
+            }
+            row.querySelector('.points').value = sf.points || '';
+            row.querySelector('.units').value = sf.units || '';
+            row.querySelector('.lock-cell input.lock').checked = !!sf.lock;
+            setRowStatus(row, 'saved');
+            return;
+        }
+
         const bt = ['ML', 'Spread', 'O/U', 'TTO'].includes(p.bet_type) ? p.bet_type : 'ML';
         betSel.value = bt;
         onBetTypeChange(row.dataset.uid);
@@ -3466,6 +3548,9 @@
     renderAll();
     // Kick off the live fetch for the current season. When it resolves it
     // swaps SEASONS[RAW.season] and re-renders; archived seasons never fetch.
+    // The fields-column probe runs alongside so writes know whether the
+    // structured fields column exists yet.
+    probeFieldsColumn();
     refreshLiveSeason();
 </script>
 </body>
