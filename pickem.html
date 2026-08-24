@@ -21,8 +21,9 @@
         --accent-glow-strong: rgba(34, 255, 154, 0.75);
         --good: #4ade80;
         --bad: #ef4444;
-        --lock-blue: #3b82f6;
-        --lock-blue-bright: #60a5fa;
+        --lock-blue: #2563eb;        /* deep royal blue, the mortal lock family */
+        --lock-blue-deep: #1e40af;   /* deepest shade, used for card washes */
+        --lock-blue-bright: #60a5fa; /* readable light blue for lock text on dark */
         /* Nick's cards: muted steel gray with a cool cast, clearly apart
            from RJ's near-black cards but still in the dark family */
         --nick-bg: #424a59;
@@ -229,19 +230,19 @@
        light Nick rows). Locks keep this blue even after grading; the result
        shows in the lock slot and as a small W/L badge on the row. */
     .person-card tr.mortal-lock {
-        background: rgba(59, 130, 246, 0.14);
-        box-shadow: inset 3px 0 0 0 var(--lock-blue), 0 0 12px rgba(59, 130, 246, 0.22);
+        background: rgba(37, 99, 235, 0.14);
+        box-shadow: inset 3px 0 0 0 var(--lock-blue), 0 0 12px rgba(37, 99, 235, 0.22);
         position: relative;
         animation: lock-pulse 2.4s ease-in-out infinite;
     }
     .person-card tr.mortal-lock td { color: #d6e6ff; }
     .person-card tr.mortal-lock td:first-child::before {
         content: "🔒 "; color: var(--lock-blue-bright); font-size: 0.85em;
-        text-shadow: 0 0 6px rgba(59, 130, 246, 0.8);
+        text-shadow: 0 0 6px rgba(37, 99, 235, 0.8);
     }
     @keyframes lock-pulse {
-        0%,100% { box-shadow: inset 3px 0 0 0 var(--lock-blue), 0 0 8px  rgba(59, 130, 246, 0.20); }
-        50%     { box-shadow: inset 3px 0 0 0 var(--lock-blue), 0 0 18px rgba(59, 130, 246, 0.40); }
+        0%,100% { box-shadow: inset 3px 0 0 0 var(--lock-blue), 0 0 8px  rgba(37, 99, 235, 0.20); }
+        50%     { box-shadow: inset 3px 0 0 0 var(--lock-blue), 0 0 18px rgba(37, 99, 235, 0.40); }
     }
     /* Graded pick rows (current season, once an outcome is set): the whole
        row glows green for a win, red for a loss, soft amber for a push.
@@ -279,7 +280,7 @@
     .lock-slot {
         background: var(--surface); border: 1px solid var(--lock-blue);
         border-radius: 8px; padding: 0.7rem 0.9rem;
-        box-shadow: 0 0 10px rgba(59, 130, 246, 0.20);
+        box-shadow: 0 0 10px rgba(37, 99, 235, 0.20);
     }
     .lock-slot.nick { background: var(--nick-bg); border-color: #7f9cc7; }
     .lock-slot .slot-title {
@@ -401,9 +402,9 @@
         border: none; background: transparent; cursor: pointer;
     }
     .lock-cell:has(input:checked) {
-        background: rgba(59, 130, 246, 0.26);
+        background: rgba(37, 99, 235, 0.40);
         border-color: var(--lock-blue);
-        box-shadow: 0 0 10px rgba(59, 130, 246, 0.55);
+        box-shadow: 0 0 12px rgba(37, 99, 235, 0.80);
     }
     .lock-cell:has(input:checked)::after {
         content: "🔒";
@@ -411,13 +412,20 @@
         font-size: 13px;
         pointer-events: none;
     }
+    /* The locked card SHOULD pop: deep royal-blue wash, highlighted edges
+       (a 2px ring drawn with box-shadow so the grid never shifts), and a
+       layered outer glow. Text stays the site's light ink over the deep blue. */
     .form-row:has(.lock-cell input:checked) {
-        background: rgba(59, 130, 246, 0.08);
+        background: rgba(30, 64, 175, 0.30);
         border-left: 3px solid var(--lock-blue);
         padding-left: 3px;
+        border-radius: 6px;
+        box-shadow: 0 0 0 2px var(--lock-blue),
+                    0 0 14px rgba(37, 99, 235, 0.65),
+                    0 0 32px rgba(30, 64, 175, 0.45);
     }
-    /* Lock-checked Nick card: blue-shifted steel wash */
-    .form-row.person-nick:has(.lock-cell input:checked) { background: #44506e; }
+    /* Lock-checked Nick card: the steel deepens toward royal blue */
+    .form-row.person-nick:has(.lock-cell input:checked) { background: #3b4c79; }
     .form-col-header {
         display: grid;
         grid-template-columns: 28px 80px 30px 1fr 30px 1fr 60px 75px 65px 56px 58px;
@@ -636,12 +644,13 @@
         .sign-group label { min-width: 32px; height: 38px; font-size: 0.95rem; }
         .lock-cell:has(input:checked)::after { font-size: 16px; }
         /* Keep the card padding even when the lock highlight adds its own
-           left border (the base rule shrinks padding-left for the grid) */
-        .form-row:has(.lock-cell input:checked) { padding-left: 8px; }
+           left border (the base rule shrinks padding-left for the grid),
+           and paint the card's own border in the deep lock blue too */
+        .form-row:has(.lock-cell input:checked) { padding-left: 8px; border-color: var(--lock-blue); }
         /* Nick's steel cards, restated here because the mobile .form-row
            rule above resets the background later in the cascade */
         .form-row.person-nick { background: var(--nick-bg); border-color: var(--nick-line); }
-        .form-row.person-nick:has(.lock-cell input:checked) { background: #44506e; border-color: var(--lock-blue); }
+        .form-row.person-nick:has(.lock-cell input:checked) { background: #3b4c79; border-color: var(--lock-blue); }
 
         /* Save bar */
         .save-bar input[type="number"] { min-height: 44px; font-size: 16px; }
@@ -1593,7 +1602,7 @@
             if (prevWeek !== '' && [...weekSel.options].some(o => o.value === prevWeek)) {
                 weekSel.value = prevWeek;
             }
-            if (quiet) renderSummary();
+            if (quiet) { renderSummary(); updateEnterLockSlots(); }
             else renderAll();
         }
     }
@@ -2574,9 +2583,10 @@
             <div class="banner-warn">
                 <strong>Live:</strong> picks save automatically as you type. Cards alternate person, <strong>RJ on the dark cards, Nick on the light cards</strong> (each card is tagged). A card saves once it has a team and units (watch for the check), and edits to a saved card update it in place. Clearing a saved card's teams deletes that pick. Cards land in the week set in the <strong>Week</strong> box at the bottom; <strong>Save all now</strong> is a backstop that pushes anything unsaved.
             </div>
-            <div class="banner-warn" style="border-color: rgba(59, 130, 246, 0.45);">
+            <div class="banner-warn" style="border-color: rgba(37, 99, 235, 0.45);">
                 <strong style="color: var(--lock-blue-bright);">🔒 Mortal Lock rules:</strong> pays 1.5× the units placed on either a win or a loss. <strong>Only one mortal lock per person per week</strong> — checking a new one auto-unchecks that person's previous lock.
             </div>
+            <div class="lock-slots" id="enter-lock-slots"></div>
             <div class="enter-subtabs">
                 <button type="button" class="subtab active" onclick="showEnterSection('wd',this)">Weekday Games</button>
                 <button type="button" class="subtab" onclick="showEnterSection('main',this)">Main Slate</button>
@@ -2604,14 +2614,21 @@
         // save; the row itself knows its person. The week input is outside
         // any .form-row, so changing it never fires a save and never
         // retro-moves rows that already saved.
+        // Every keystroke and field commit also repaints the live lock slots
+        // at the top of the panel (cheap, pure display). Events from the week
+        // input have no row but still refresh the slots, since the saved-lock
+        // fallback depends on the week number.
         el.oninput = (e) => {
             const row = e.target.closest('.form-row');
             if (row) scheduleRowSave(row);
+            updateEnterLockSlots();
         };
         el.onchange = (e) => {
             const row = e.target.closest('.form-row');
             if (row) scheduleRowSave(row);
+            updateEnterLockSlots();
         };
+        updateEnterLockSlots();
     }
 
     // ===== Spread / O-U / TTO grading rules =====
@@ -3100,6 +3117,49 @@
                 : 'Everything is already saved.', skippedNoUnits ? 'err' : 'ok');
         }
     };
+
+    /* ===== Live lock slots on the Enter tab =====
+       Pure status display, never any grading buttons. Priority per person:
+       1) a lock CHECKED on a form card right now, shown live from the row's
+          current fields (however partial) and rebuilt on every keystroke;
+       2) otherwise the already-saved lock for the week in the Week box;
+       3) otherwise "no lock yet". */
+    function enterSlotHtml(who, label) {
+        const panel = document.getElementById('enter');
+        let bodyHtml = null;
+        if (panel) {
+            for (const row of panel.querySelectorAll('.form-row[data-person="' + who + '"]')) {
+                const cb = row.querySelector('.lock-cell input.lock');
+                if (!cb || !cb.checked) continue;
+                const built = buildPickFromRow(row);
+                const pickHtml = built ? built.pick : '<span class="slot-empty">no team yet</span>';
+                const uVal = (row.querySelector('.units').value || '').trim();
+                bodyHtml = `<div class="slot-pick">${pickHtml}</div>
+                    <div class="slot-meta">${uVal ? uVal + ' u' : 'no units yet'}</div>`;
+                break;
+            }
+        }
+        if (bodyHtml === null) {
+            const weekInput = document.getElementById('week-input');
+            const wk = Math.max(0, Math.floor(Number(weekInput && weekInput.value) || 0));
+            const wData = (SEASONS[RAW.season] || []).find(x => x.week === wk);
+            const saved = wData ? wData[who].picks.find(p => p.mortal_lock) : null;
+            if (saved) {
+                bodyHtml = `<div class="slot-pick">${saved.pick}</div>
+                    <div class="slot-meta">${saved.units ?? '—'} u · saved</div>`;
+            }
+        }
+        if (bodyHtml === null) bodyHtml = '<div class="slot-empty">no lock yet</div>';
+        return `<div class="lock-slot ${who}">
+            <div class="slot-title">${label} Mortal Lock 🔒</div>
+            ${bodyHtml}
+        </div>`;
+    }
+    function updateEnterLockSlots() {
+        const box = document.getElementById('enter-lock-slots');
+        if (!box) return;
+        box.innerHTML = enterSlotHtml('rj', 'RJ') + enterSlotHtml('nick', 'Nick');
+    }
 
     /* ===== Grading picks (Week Picks tab, current season only) ===== */
     // W and L pay 1x the units, or 1.5x on a mortal lock. P is a push, net 0.
