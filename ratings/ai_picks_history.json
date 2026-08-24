@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-08-23",
+  "as_of": "2026-08-24",
   "aggregates": {
     "today": {
       "picks": 5,
@@ -12,21 +12,21 @@
     },
     "week": {
       "picks": 40,
-      "wins": 26,
-      "losses": 9,
+      "wins": 28,
+      "losses": 7,
       "pushes": 0,
       "pending": 5,
-      "units_net": 17.0,
-      "hit_pct": 0.7428571428571429
+      "units_net": 22.0,
+      "hit_pct": 0.8
     },
     "season": {
-      "picks": 60,
-      "wins": 31,
+      "picks": 65,
+      "wins": 36,
       "losses": 24,
       "pushes": 0,
       "pending": 5,
-      "units_net": 5.0,
-      "hit_pct": 0.5636363636363636
+      "units_net": 12.0,
+      "hit_pct": 0.6
     }
   },
   "picks_by_date": {
@@ -958,8 +958,8 @@
           "units": 2,
           "confidence": "high",
           "reasoning": "All three ratings flag LAD strong (R1 +1.84, R2 +2.06, R3 +2.02), and R3 is the best strong-play rating historically at 163-133 (55%, +50.0u season) and 28-11 (72%, +19.0u) over 7 days. LAD when the model likes them is 21-9 (70%) overall and a slate-best 15-2 (88%, +18.0u) on strong plays, while PIT is just 7-10 (41%) and 1-3 on strongs.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 2
         },
         {
           "rank": 2,
@@ -971,8 +971,8 @@
           "units": 2,
           "confidence": "medium",
           "reasoning": "R2 posts the largest edge on the board here (2.06, 2u strong) and is the hottest rating short-term at 31-11 (74%, +19.0u) in the last 7 days and 51-38 (57%) over 14. Fade side matters: COL when liked is only 3-7 (30%) with strong 1-3 (25%, -2.0u), while CLE sits at 8-7 with an even 5-5 strong record — the price and delta carry it.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 2
         },
         {
           "rank": 3,
@@ -984,8 +984,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "Unanimous strong play (R1 +1.19, R2 +1.21, R3 +1.19) — multi-rating agreement is exactly the filter that has worked, and R3 strongs are 98-81 (55%, +34.0u) over 30 days. SDP when liked is 15-12 (56%) with strongs 5-4 (+1.0u) versus MIN at 9-10 (47%), and the hot trends/bullpen categories (both 57%/56% over 14d) drive the edge.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 4,
@@ -997,8 +997,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "Another unanimous strong (R1 +1.19, R2 +1.06, R3 +1.24) with R3 the top-performing strong-play engine (55% season, +50.0u). MIA on model-liked spots is 14-13 with strongs 9-8 (+7.0u), while WSN is a poor 10-14 (42%) overall and 5-6 on strongs.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 5,
@@ -1010,13 +1010,96 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "All three ratings side with Boston (R1 +0.67, R2 +0.47, R3 +0.54) and BOS has the best when-liked profile on the slate at 31-9 (78%) with strongs 17-5 (77%, +16.0u). SFG is the opposite extreme at 8-13 (38%) and 2-6 (25%, -7.0u) on strongs, and R1's 7-day form is 26-12 (68%, +13.0u).",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
         "input_tokens": 4493,
         "output_tokens": 2153
+      },
+      "totals": {
+        "wins": 5,
+        "losses": 0,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": 7.0
+      }
+    },
+    "2026-08-24": {
+      "generated_at": "2026-08-24T05:31:22",
+      "model": "claude-opus-5",
+      "date": "2026-08-24",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "TBR",
+          "home_team": "DET",
+          "away_team": "TBR",
+          "rating_source": "R2",
+          "delta": 2.04,
+          "units": 2,
+          "confidence": "high",
+          "reasoning": "All three ratings flag Tampa Bay as a strong play (R1 -1.93, R2 -2.04, R3 -1.46), and TBR is the best-supported side in the pool when the model likes them: 25-12 (68%) overall and 18-5 (78%, +22.0u) on strong plays. R2 is the hottest strong-play rating short-term at 30-9 (77%, +21.0u) over 7 days and 53-35 (60%) over 14 days, and the -137 price is roughly fair to the 2.04 edge.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "WSN",
+          "home_team": "WSN",
+          "away_team": "COL",
+          "rating_source": "R3",
+          "delta": 2.55,
+          "units": 3,
+          "confidence": "medium",
+          "reasoning": "R3 posts the largest edge on the board at +2.55 with R1 (+2.23) and R2 (+2.34) both agreeing, and R3 is the top strong-play rating historically (season 168-133, 56%, +56.0u; 30d 99-76, 57%, +42.0u). The counterweight is COL, which is just 3-7 (30%) when the model likes them and 1-3 (-2.0u) on strong plays, so fading Colorado has been profitable even though WSN's own 10-14 when-liked mark is soft.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "PHI",
+          "home_team": "SEA",
+          "away_team": "PHI",
+          "rating_source": "R3",
+          "delta": 1.49,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "Unanimous strong play (R1 -1.29, R2 -1.35, R3 -1.49) with PHI 20-12 (62%) when the model likes them, while the other side, SEA, is a dismal 5-11 (31%) when liked and 1-4 (20%, -3.0u) on strong plays. R3's 7-day 31-10 (76%, +23.0u) run supports leaning on its largest read of the three.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "CHC",
+          "home_team": "ARI",
+          "away_team": "CHC",
+          "rating_source": "R2",
+          "delta": 1.68,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "R2 has the biggest number on Chicago (-1.68) with R1 (-1.26) and R3 (-1.21) also strong; CHC is 20-10 (67%) when the model likes them. ARI is the worst strong-play team on the slate at 3-7 (30%, -7.0u), and R2's 14-day strong record of 53-35 (60%, +17.0u) is the best of the three ratings.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 5,
+          "pick": "MIN",
+          "home_team": "ATH",
+          "away_team": "MIN",
+          "rating_source": "R3",
+          "delta": 1.23,
+          "units": 1,
+          "confidence": "low",
+          "reasoning": "Only R3 tags this as strong (-1.23 vs R1 -0.84, R2 -0.59), but R3 is the strongest strong-play engine (season +56.0u, 30d 57%) and the fade side is ideal: ATH is 4-7 (36%) when liked and 1-4 (20%, -4.0u) on strong plays. MIN is modest at 9-10 overall but 3-2 (+1.0u) on strong plays, so this is a smaller 1u lean.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 3629,
+        "output_tokens": 2014
       },
       "totals": {
         "wins": 0,
