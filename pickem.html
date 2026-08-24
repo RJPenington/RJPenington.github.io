@@ -23,10 +23,10 @@
         --bad: #ef4444;
         --lock-blue: #3b82f6;
         --lock-blue-bright: #60a5fa;
-        --nick-bg: #eae8e2;
-        --nick-line: #c9c5ba;
-        --nick-ink: #1a1d24;
-        --nick-dim: #6f6a5e;
+        /* Nick's cards: muted steel gray with a cool cast, clearly apart
+           from RJ's near-black cards but still in the dark family */
+        --nick-bg: #424a59;
+        --nick-line: #5c6577;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -263,7 +263,7 @@
         box-shadow: inset 3px 0 0 0 rgba(255, 200, 90, 0.55);
     }
     .lock-slot.nick .grade-btn {
-        background: #f7f5f0; color: #5a564c; border-color: #b5b1a6;
+        background: #4d5666; border-color: #67718a;
     }
     /* Small result badge on lock rows (the row itself stays blue) */
     .lock-badge {
@@ -281,25 +281,24 @@
         border-radius: 8px; padding: 0.7rem 0.9rem;
         box-shadow: 0 0 10px rgba(59, 130, 246, 0.20);
     }
-    .lock-slot.nick { background: var(--nick-bg); color: var(--nick-ink); border-color: #8fb2e0; }
+    .lock-slot.nick { background: var(--nick-bg); border-color: #7f9cc7; }
     .lock-slot .slot-title {
         font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
         letter-spacing: 0.07em; color: var(--lock-blue-bright); margin-bottom: 0.35rem;
     }
-    .lock-slot.nick .slot-title { color: #1d4ed8; }
     .lock-slot .slot-pick { font-weight: 600; }
     .lock-slot .slot-meta { font-size: 0.8rem; color: var(--dim); margin-top: 2px; }
-    .lock-slot.nick .slot-meta { color: var(--nick-dim); }
+    .lock-slot.nick .slot-meta { color: #aab2c0; }
     .lock-slot .slot-empty { color: var(--dim); font-style: italic; }
-    .lock-slot.nick .slot-empty { color: var(--nick-dim); }
+    .lock-slot.nick .slot-empty { color: #aab2c0; }
     .lock-slot .slot-btns { margin-top: 0.5rem; }
     /* Graded slot takes the result treatment (the row keeps its blue) */
     .lock-slot.graded-w { background: rgba(74, 222, 128, 0.10); border-color: var(--good); box-shadow: 0 0 12px rgba(74, 222, 128, 0.28); }
-    .lock-slot.nick.graded-w { background: #d7e8d3; border-color: #16a34a; }
+    .lock-slot.nick.graded-w { background: #3d5347; border-color: var(--good); }
     .lock-slot.graded-l { background: rgba(239, 68, 68, 0.10); border-color: var(--bad); box-shadow: 0 0 12px rgba(239, 68, 68, 0.25); }
-    .lock-slot.nick.graded-l { background: #f0d9d5; border-color: #dc2626; }
+    .lock-slot.nick.graded-l { background: #55434a; border-color: var(--bad); }
     .lock-slot.graded-p { background: rgba(255, 200, 90, 0.08); border-color: #b48a2f; box-shadow: 0 0 10px rgba(255, 200, 90, 0.18); }
-    .lock-slot.nick.graded-p { background: #ece2c8; }
+    .lock-slot.nick.graded-p { background: #53503f; }
     .net-good { color: var(--good); font-weight: 700; }
     .net-bad  { color: var(--bad);  font-weight: 700; }
     .net-zero { color: var(--dim); }
@@ -344,33 +343,18 @@
         grid-template-columns: 28px 80px 30px 1fr 30px 1fr 60px 75px 65px 56px 58px;
         gap: 0.45rem; align-items: center; margin: 0.45rem 0;
     }
-    /* Nick's cards: off-white with dark text and light-styled inputs, so the
-       alternating RJ (dark) / Nick (light) rhythm is obvious at a glance */
+    /* Nick's cards: steel gray, so the alternating RJ (near-black) / Nick
+       (steel) rhythm is obvious at a glance. Text, bubbles, lock circle,
+       and status colors keep the site's normal light-on-dark styling; the
+       inputs just sit a touch lighter than the steel so fields stay visible. */
     .form-row.person-nick {
         background: var(--nick-bg);
         border-radius: 6px; padding: 3px 0;
     }
     .form-row.person-nick select, .form-row.person-nick input {
-        background: #f7f5f0; color: var(--nick-ink); border-color: #b5b1a6;
+        background: #4d5666; border-color: #67718a;
     }
-    .form-row.person-nick select:focus, .form-row.person-nick input:focus { outline: 1px solid #4a7dc4; }
-    .form-row.person-nick .idx { color: var(--nick-dim); }
-    .form-row.person-nick .sign-group label {
-        background: rgba(0, 0, 0, 0.07); color: #5a564c;
-        border-color: rgba(0, 0, 0, 0.18);
-    }
-    .form-row.person-nick .sign-group label:hover { background: rgba(0, 0, 0, 0.14); color: var(--nick-ink); }
-    .form-row.person-nick .sign-group label:has(input:checked) {
-        background: rgba(13, 92, 46, 0.14); border-color: #15803d; color: #15803d;
-        box-shadow: none;
-    }
-    .form-row.person-nick .lock-cell {
-        background: rgba(0, 0, 0, 0.07);
-        border-color: rgba(0, 0, 0, 0.18);
-    }
-    .form-row.person-nick .row-status.saving { color: #8a8578; }
-    .form-row.person-nick .row-status.saved { color: #15803d; text-shadow: none; }
-    .form-row.person-nick .row-status.retry { color: #b91c1c; }
+    .form-row.person-nick .idx { color: #a7aebb; }
     /* Pin every row item to its explicit column so display:none on a hidden
        cell (e.g. H/A bubbles on O/U bets, Pts input on ML bets) doesn't cause
        subsequent items to auto-place and shift the layout left. */
@@ -432,8 +416,8 @@
         border-left: 3px solid var(--lock-blue);
         padding-left: 3px;
     }
-    /* Lock-checked Nick card: pale blue wash over the light background */
-    .form-row.person-nick:has(.lock-cell input:checked) { background: #dce8fa; }
+    /* Lock-checked Nick card: blue-shifted steel wash */
+    .form-row.person-nick:has(.lock-cell input:checked) { background: #44506e; }
     .form-col-header {
         display: grid;
         grid-template-columns: 28px 80px 30px 1fr 30px 1fr 60px 75px 65px 56px 58px;
@@ -654,10 +638,10 @@
         /* Keep the card padding even when the lock highlight adds its own
            left border (the base rule shrinks padding-left for the grid) */
         .form-row:has(.lock-cell input:checked) { padding-left: 8px; }
-        /* Nick's light cards, restated here because the mobile .form-row
+        /* Nick's steel cards, restated here because the mobile .form-row
            rule above resets the background later in the cascade */
         .form-row.person-nick { background: var(--nick-bg); border-color: var(--nick-line); }
-        .form-row.person-nick:has(.lock-cell input:checked) { background: #dce8fa; border-color: var(--lock-blue); }
+        .form-row.person-nick:has(.lock-cell input:checked) { background: #44506e; border-color: var(--lock-blue); }
 
         /* Save bar */
         .save-bar input[type="number"] { min-height: 44px; font-size: 16px; }
