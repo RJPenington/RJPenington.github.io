@@ -7,6 +7,9 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
+<!-- Page-only favicon: a simple leather football with laces, inline SVG so
+     no shared favicon file lands in the repo -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cg transform='rotate(-30 16 16)'%3E%3Cellipse cx='16' cy='16' rx='13' ry='8.5' fill='%238B4A2B' stroke='%235C2E14' stroke-width='1'/%3E%3Cpath d='M10 16h12' stroke='white' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M12 13.5v5M14.7 13.5v5M17.3 13.5v5M20 13.5v5' stroke='white' stroke-width='1.2' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E">
 <style>
     :root {
         --bg: #0b0d10;
@@ -84,23 +87,11 @@
     }
     header h1 .apostrophe { -webkit-text-fill-color: #fff; color: #fff; }
 
-    /* Rules banner */
-    .rules {
-        background: var(--surface);
-        border: 1px solid var(--line);
-        border-left: 4px solid var(--accent);
-        border-radius: 8px;
-        padding: 0.85rem 1.1rem;
-        margin-bottom: 1.25rem;
-        font-size: 0.88rem;
-        color: var(--ink);
-    }
-    .rules .head {
-        color: var(--accent); font-weight: 700;
-        letter-spacing: 0.08em; text-transform: uppercase;
-        font-size: 0.75rem; margin-bottom: 0.35rem;
-    }
-    .rules ul { margin: 0 0 0 1.2rem; color: var(--ink); }
+    /* Rules tab prose: rules cards stay left-aligned per convention */
+    .rules-prose { text-align: left; }
+    .rules-prose ul { margin: 0.2rem 0 0 1.3rem; }
+    .rules-prose li { margin: 0.35rem 0; }
+    .rules-prose strong { color: #f7f9fb; }
 
     /* Toolbar */
     .season-tabs { display: inline-flex; gap: 6px; margin-right: 12px; }
@@ -117,21 +108,29 @@
         border-radius: 8px; margin-bottom: 1rem;
         border: 1px solid var(--line);
     }
-    .toolbar label { color: var(--dim); font-size: 0.85rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+    /* Week selector centered above the summary stats, which are the page's
+       headline numbers and get sized to fill the card */
+    .toolbar-main {
+        flex-basis: 100%;
+        display: flex; flex-direction: column; align-items: center;
+        gap: 0.6rem; padding-top: 0.35rem;
+    }
     .toolbar select {
         background: var(--card); color: var(--ink); border: 1px solid var(--line);
         padding: 6px 12px; border-radius: 5px; font-size: 0.95rem; cursor: pointer;
     }
     .toolbar select:focus { outline: 1px solid var(--accent); }
     /* Summary: tidy stacked rows (winner, season totals, week totals),
-       each locked to a single line */
+       each locked to a single line, centered, scaled up as the page's
+       headline numbers with the winner row largest */
     .toolbar .summary {
-        margin-left: auto; display: flex; flex-direction: column;
-        gap: 3px; align-items: flex-end;
-        color: var(--dim); font-size: 0.85rem;
+        display: flex; flex-direction: column;
+        gap: 5px; align-items: center;
+        color: var(--dim); font-size: 1.08rem;
     }
     .summary .sum-row { white-space: nowrap; }
-    .summary .sum-sep { color: var(--dim); margin: 0 5px; }
+    .summary .sum-row:first-child { font-size: 1.3rem; }
+    .summary .sum-sep { color: var(--dim); margin: 0 7px; }
 
     /* Tabs */
     .tabs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 1rem; }
@@ -645,7 +644,8 @@
         /* Toolbar and tabs: wrap cleanly, tap-friendly, summary drops below */
         .toolbar { padding: 0.6rem 0.7rem; gap: 0.5rem; }
         .toolbar select { min-height: 40px; font-size: 16px; }
-        .toolbar .summary { margin-left: 0; flex-basis: 100%; align-items: center; }
+        .toolbar .summary { font-size: 1rem; }
+        .toolbar .summary .sum-row:first-child { font-size: 1.2rem; }
         .season-tabs { flex-wrap: wrap; margin-right: 6px; }
         .season-tab { padding: 8px 12px; font-size: 0.9rem; }
         .tab { padding: 10px 8px; font-size: 0.75rem; flex: 1 1 auto; text-align: center; }
@@ -734,24 +734,14 @@
             </div>
         </header>
 
-        <!-- Rules -->
-        <div class="rules">
-            <div class="head">House Rules</div>
-            <ul>
-                <li>Line on any pick must be equal to or lower than <strong>-130</strong>.</li>
-                <li>Weekday games + Main Slate lock at <strong>Saturday 12:00 PM EST</strong>.</li>
-                <li>Gameday Additions lock <strong>Sunday night</strong>.</li>
-                <li>One <strong>mortal lock</strong> per person per week (highlighted glowing blue) — pays <strong>1.5×</strong> the units placed on either a win or a loss.</li>
-            </ul>
-        </div>
-
         <!-- Toolbar: season + week -->
         <div class="toolbar">
             <div class="season-tabs" id="seasonTabs"></div>
             <select id="seasonSel" style="display:none;"></select>
-            <label for="weekSel">Week:</label>
-            <select id="weekSel"></select>
-            <div class="summary" id="summary"></div>
+            <div class="toolbar-main">
+                <select id="weekSel" aria-label="Week"></select>
+                <div class="summary" id="summary"></div>
+            </div>
         </div>
 
         <!-- Tabs -->
@@ -761,6 +751,7 @@
             <button class="tab" data-panel="h2h">Breakdown</button>
             <button class="tab" data-panel="teams">Team Performance</button>
             <button class="tab" data-panel="locks">Mortal Locks</button>
+            <button class="tab" data-panel="rules">Rules</button>
         </div>
 
         <section class="panel active" id="enter"></section>
@@ -768,6 +759,7 @@
         <section class="panel" id="h2h"></section>
         <section class="panel" id="teams"></section>
         <section class="panel" id="locks"></section>
+        <section class="panel" id="rules"></section>
 
         <footer>
             <p>Pick'em · Pigskin, points, and the perpetual attempt to outsmart the other guy.</p>
@@ -2603,6 +2595,56 @@
             ${lockTable('RJ', stats.rj)}`;
     }
 
+    /* ===== Rules tab (static content) =====
+       Compiled rules and notes; no data behind it, so it works identically
+       on every season including All. */
+    function renderRules() {
+        const el = document.getElementById('rules');
+        el.innerHTML = `
+            <div class="panel-card rules-prose">
+                <h3>House Rules</h3>
+                <ul>
+                    <li>Line on any pick must be equal to or lower than <strong>-130</strong>.</li>
+                    <li>One mortal lock per person per week.</li>
+                    <li>Both people enter picks on the shared Enter Picks tab, <strong>RJ on the dark cards, Nick on the steel cards</strong>.</li>
+                </ul>
+            </div>
+            <div class="panel-card rules-prose">
+                <h3>Lock Schedule</h3>
+                <ul>
+                    <li><strong>Weekday Games + Main Slate</strong> lock at <strong>Saturday 12:00 PM EST</strong>.</li>
+                    <li><strong>Gameday Additions</strong> (anything entered after Saturday noon) lock <strong>Sunday night</strong>.</li>
+                    <li>Once a pick's lock time passes, deleting and editing are disabled; its card shows dimmed with a small locked note.</li>
+                </ul>
+            </div>
+            <div class="panel-card rules-prose">
+                <h3>Mortal Locks</h3>
+                <ul>
+                    <li><strong>One per person per week</strong>; checking a new one auto-unchecks that person's previous lock.</li>
+                    <li>Pays <strong>1.5×</strong> the units placed, on either a win or a loss.</li>
+                    <li>Lock picks glow <strong>blue</strong> on the entry cards and in the Week Picks list.</li>
+                    <li>Each person's lock shows in its slot at the top of Enter Picks and Week Picks; the slots are graded automatically.</li>
+                </ul>
+            </div>
+            <div class="panel-card rules-prose">
+                <h3>Saving Picks</h3>
+                <ul>
+                    <li>Picks <strong>autosave as you type</strong>: a card saves once it has a team and units, then shows a green check.</li>
+                    <li>Edits to a saved card update that same pick, never a duplicate.</li>
+                    <li>Clearing a saved card's team fields deletes the pick.</li>
+                    <li>Cards land in the week set in the Week box; <strong>Save all now</strong> is a backstop for anything unsaved.</li>
+                </ul>
+            </div>
+            <div class="panel-card rules-prose">
+                <h3>Grading</h3>
+                <ul>
+                    <li>Picks grade <strong>automatically each morning</strong>.</li>
+                    <li>Manual <strong>W / L / P</strong> buttons stay available on regular picks in Week Picks; <strong>X</strong> clears a grade back to pending.</li>
+                    <li>Mortal locks grade automatically in their slots.</li>
+                </ul>
+            </div>`;
+    }
+
     /* ===== Render — Enter Picks tab =====
        Bet types:
          ML       — team only
@@ -3581,6 +3623,7 @@
         else if (active === 'h2h') renderH2H();
         else if (active === 'teams') renderTeams();
         else if (active === 'locks') renderLocks();
+        else if (active === 'rules') renderRules();
         else if (active === 'enter') renderEnter();
         makeCollapsible(document.querySelector('.panel.active'));
     }
