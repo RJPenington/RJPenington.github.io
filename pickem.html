@@ -533,14 +533,16 @@
     }
     .banner-warn strong { color: #f7f9fb; }
 
-    /* Grading buttons on the Week Picks table (current season only) */
+    /* Grading buttons on the Week Picks table (current season only):
+       compact, all five controls on one row that never wraps, so every
+       pick reads as a single dense line */
     .grade-cell { white-space: nowrap; }
-    .grade-btns { display: inline-flex; gap: 4px; align-items: center; }
+    .grade-btns { display: inline-flex; gap: 3px; align-items: center; flex-wrap: nowrap; }
     .grade-btn {
-        min-width: 28px; height: 28px; padding: 0 7px;
+        min-width: 24px; height: 24px; padding: 0 5px;
         background: var(--card); color: var(--dim);
         border: 1px solid var(--line); border-radius: 5px;
-        font-size: 0.8rem; font-weight: 700; cursor: pointer;
+        font-size: 0.72rem; font-weight: 700; cursor: pointer;
         line-height: 1; transition: all 0.12s;
     }
     .grade-btn:hover { color: var(--ink); border-color: var(--accent); }
@@ -657,10 +659,9 @@
         .person-card { overflow-x: auto; }
         table.data th, table.data td { white-space: nowrap; }
 
-        /* Grade buttons: 36px tap targets, wrapping into rows of three */
-        .grade-cell { white-space: normal; }
-        .grade-btns { flex-wrap: wrap; row-gap: 4px; max-width: 128px; justify-content: flex-end; }
-        .grade-btn { min-width: 36px; height: 36px; }
+        /* Grade buttons stay one compact single-line row on phones too;
+           26px is still comfortably tappable for this use */
+        .grade-btn { min-width: 26px; height: 26px; }
 
         /* Enter form: the 11-column grid cannot fit a phone, so each row
            reflows into a two-line card.
@@ -1897,8 +1898,9 @@
         // from Supabase and carry a _id. Archived rows render read-only.
         const liveSeason = seasonSel.value === RAW.season;
 
-        // W/L/P/X button strip for the non-lock rows in the person cards.
-        // Lock slots are pure display; the morning auto-grader grades locks.
+        // W/L/P/X button strip for every pick row, locks included (the
+        // manual fallback for anything the morning auto-grader skips).
+        // Lock slots stay pure display.
         const gradeBtnsFor = (p) => {
             const u = numOrZero(p.units);
             const lk = p.mortal_lock ? 'true' : 'false';
@@ -1955,8 +1957,8 @@
                 const isLock = !!p.mortal_lock;
                 let actions = '';
                 if (liveSeason && p._id !== undefined && p._id !== null) {
-                    // Locks grade in their slot above, so their row carries
-                    // only the delete button; other picks grade right here.
+                    // Every row grades here, lock rows included (gradePick
+                    // pays lock nets at 1.5x, same math as the auto-grader).
                     // The trash disappears once the pick's lock time passes
                     // (Saturday noon ET, or Sunday night for Gameday adds);
                     // deletePick double-checks against stale DOM.
@@ -1964,7 +1966,7 @@
                     const delBtn = Date.now() > lockMs ? ''
                         : `<button class="grade-btn del" title="Delete pick" onclick="deletePick('${p._id}', ${lockMs})">${TRASH_ICON}</button>`;
                     actions = `<td class="grade-cell"><span class="grade-btns">`
-                        + (isLock ? '' : gradeBtnsFor(p))
+                        + gradeBtnsFor(p)
                         + delBtn
                         + `</span></td>`;
                 } else if (liveSeason) {
@@ -2639,8 +2641,8 @@
                 <h3>Grading</h3>
                 <ul>
                     <li>Picks grade <strong>automatically each morning</strong>.</li>
-                    <li>Manual <strong>W / L / P</strong> buttons stay available on regular picks in Week Picks; <strong>X</strong> clears a grade back to pending.</li>
-                    <li>Mortal locks grade automatically in their slots.</li>
+                    <li>Manual <strong>W / L / P</strong> buttons stay available on every pick in Week Picks, locks included; <strong>X</strong> clears a grade back to pending.</li>
+                    <li>Mortal lock results also show automatically in their slots; a manually graded lock pays the same <strong>1.5×</strong>.</li>
                 </ul>
             </div>`;
     }
