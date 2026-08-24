@@ -358,18 +358,6 @@
         background: #3e4552; border-color: #525a6e;
     }
     .form-row.person-nick .idx { color: #a7aebb; }
-    /* Nick's selector bubbles match RJ's dark unselected look; checked
-       states keep their existing active colors */
-    .form-row.person-nick .sign-group label:not(:has(input:checked)),
-    .form-row.person-nick .lock-cell:not(:has(input:checked)) {
-        background: #0b0e12;
-        border-color: rgba(255, 255, 255, 0.10);
-    }
-    .form-row.person-nick .sign-group label:not(:has(input:checked)):hover,
-    .form-row.person-nick .lock-cell:not(:has(input:checked)):hover {
-        background: #161b22;
-        color: var(--ink);
-    }
     /* Text centers inside the enter card controls. Selects rely on
        text-align-last, which a few mobile browsers ignore; that is the
        best CSS can do short of replacing the native control. */
