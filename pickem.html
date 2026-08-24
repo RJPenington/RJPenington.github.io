@@ -21,6 +21,12 @@
         --accent-glow-strong: rgba(34, 255, 154, 0.75);
         --good: #4ade80;
         --bad: #ef4444;
+        --lock-blue: #3b82f6;
+        --lock-blue-bright: #60a5fa;
+        --nick-bg: #eae8e2;
+        --nick-line: #c9c5ba;
+        --nick-ink: #1a1d24;
+        --nick-dim: #6f6a5e;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -219,20 +225,23 @@
         padding: 0.55rem 1rem; border-bottom: 1px solid #12161d;
         color: var(--ink); font-variant-numeric: tabular-nums;
     }
+    /* Mortal lock rows glow BLUE (works over both the dark RJ rows and the
+       light Nick rows). Locks keep this blue even after grading; the result
+       shows in the lock slot and as a small W/L badge on the row. */
     .person-card tr.mortal-lock {
-        background: rgba(74, 222, 128, 0.10);
-        box-shadow: inset 3px 0 0 0 var(--accent), 0 0 12px rgba(74, 222, 128, 0.20);
+        background: rgba(59, 130, 246, 0.14);
+        box-shadow: inset 3px 0 0 0 var(--lock-blue), 0 0 12px rgba(59, 130, 246, 0.22);
         position: relative;
         animation: lock-pulse 2.4s ease-in-out infinite;
     }
-    .person-card tr.mortal-lock td { color: #d5ffdd; }
+    .person-card tr.mortal-lock td { color: #d6e6ff; }
     .person-card tr.mortal-lock td:first-child::before {
-        content: "🔒 "; color: var(--accent); font-size: 0.85em;
-        text-shadow: 0 0 6px rgba(74, 222, 128, 0.8);
+        content: "🔒 "; color: var(--lock-blue-bright); font-size: 0.85em;
+        text-shadow: 0 0 6px rgba(59, 130, 246, 0.8);
     }
     @keyframes lock-pulse {
-        0%,100% { box-shadow: inset 3px 0 0 0 var(--accent), 0 0 8px  rgba(74, 222, 128, 0.18); }
-        50%     { box-shadow: inset 3px 0 0 0 var(--accent), 0 0 18px rgba(74, 222, 128, 0.35); }
+        0%,100% { box-shadow: inset 3px 0 0 0 var(--lock-blue), 0 0 8px  rgba(59, 130, 246, 0.20); }
+        50%     { box-shadow: inset 3px 0 0 0 var(--lock-blue), 0 0 18px rgba(59, 130, 246, 0.40); }
     }
     /* Graded pick rows (current season, once an outcome is set): the whole
        row glows green for a win, red for a loss, soft amber for a push.
@@ -253,6 +262,44 @@
         background: rgba(255, 200, 90, 0.08);
         box-shadow: inset 3px 0 0 0 rgba(255, 200, 90, 0.55);
     }
+    .lock-slot.nick .grade-btn {
+        background: #f7f5f0; color: #5a564c; border-color: #b5b1a6;
+    }
+    /* Small result badge on lock rows (the row itself stays blue) */
+    .lock-badge {
+        display: inline-block; margin-left: 8px; padding: 0 6px;
+        border-radius: 4px; font-size: 0.7rem; font-weight: 800;
+    }
+    .lock-badge.w { background: rgba(74, 222, 128, 0.18); color: var(--good); border: 1px solid var(--good); }
+    .lock-badge.l { background: rgba(239, 68, 68, 0.16); color: var(--bad); border: 1px solid var(--bad); }
+    .lock-badge.p { background: rgba(255, 200, 90, 0.16); color: #d3a63f; border: 1px solid #b48a2f; }
+
+    /* Designated mortal lock slots */
+    .lock-slots { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem; }
+    .lock-slot {
+        background: var(--surface); border: 1px solid var(--lock-blue);
+        border-radius: 8px; padding: 0.7rem 0.9rem;
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.20);
+    }
+    .lock-slot.nick { background: var(--nick-bg); color: var(--nick-ink); border-color: #8fb2e0; }
+    .lock-slot .slot-title {
+        font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.07em; color: var(--lock-blue-bright); margin-bottom: 0.35rem;
+    }
+    .lock-slot.nick .slot-title { color: #1d4ed8; }
+    .lock-slot .slot-pick { font-weight: 600; }
+    .lock-slot .slot-meta { font-size: 0.8rem; color: var(--dim); margin-top: 2px; }
+    .lock-slot.nick .slot-meta { color: var(--nick-dim); }
+    .lock-slot .slot-empty { color: var(--dim); font-style: italic; }
+    .lock-slot.nick .slot-empty { color: var(--nick-dim); }
+    .lock-slot .slot-btns { margin-top: 0.5rem; }
+    /* Graded slot takes the result treatment (the row keeps its blue) */
+    .lock-slot.graded-w { background: rgba(74, 222, 128, 0.10); border-color: var(--good); box-shadow: 0 0 12px rgba(74, 222, 128, 0.28); }
+    .lock-slot.nick.graded-w { background: #d7e8d3; border-color: #16a34a; }
+    .lock-slot.graded-l { background: rgba(239, 68, 68, 0.10); border-color: var(--bad); box-shadow: 0 0 12px rgba(239, 68, 68, 0.25); }
+    .lock-slot.nick.graded-l { background: #f0d9d5; border-color: #dc2626; }
+    .lock-slot.graded-p { background: rgba(255, 200, 90, 0.08); border-color: #b48a2f; box-shadow: 0 0 10px rgba(255, 200, 90, 0.18); }
+    .lock-slot.nick.graded-p { background: #ece2c8; }
     .net-good { color: var(--good); font-weight: 700; }
     .net-bad  { color: var(--bad);  font-weight: 700; }
     .net-zero { color: var(--dim); }
@@ -291,12 +338,39 @@
     table.data tr:hover { background: #121620; }
 
     /* Fixed column widths so the header grid + row grids stay perfectly aligned.
-       Widths: lock | bet-type | H | Home | A | Away | ±/OU | Pts | Units | # | save status */
+       Widths: lock | bet-type | H | Home | A | Away | ±/OU | Pts | Units | who# | save status */
     .form-row {
         display: grid;
-        grid-template-columns: 28px 80px 30px 1fr 30px 1fr 60px 75px 65px 30px 58px;
+        grid-template-columns: 28px 80px 30px 1fr 30px 1fr 60px 75px 65px 56px 58px;
         gap: 0.45rem; align-items: center; margin: 0.45rem 0;
     }
+    /* Nick's cards: off-white with dark text and light-styled inputs, so the
+       alternating RJ (dark) / Nick (light) rhythm is obvious at a glance */
+    .form-row.person-nick {
+        background: var(--nick-bg);
+        border-radius: 6px; padding: 3px 0;
+    }
+    .form-row.person-nick select, .form-row.person-nick input {
+        background: #f7f5f0; color: var(--nick-ink); border-color: #b5b1a6;
+    }
+    .form-row.person-nick select:focus, .form-row.person-nick input:focus { outline: 1px solid #4a7dc4; }
+    .form-row.person-nick .idx { color: var(--nick-dim); }
+    .form-row.person-nick .sign-group label {
+        background: rgba(0, 0, 0, 0.07); color: #5a564c;
+        border-color: rgba(0, 0, 0, 0.18);
+    }
+    .form-row.person-nick .sign-group label:hover { background: rgba(0, 0, 0, 0.14); color: var(--nick-ink); }
+    .form-row.person-nick .sign-group label:has(input:checked) {
+        background: rgba(13, 92, 46, 0.14); border-color: #15803d; color: #15803d;
+        box-shadow: none;
+    }
+    .form-row.person-nick .lock-cell {
+        background: rgba(0, 0, 0, 0.07);
+        border-color: rgba(0, 0, 0, 0.18);
+    }
+    .form-row.person-nick .row-status.saving { color: #8a8578; }
+    .form-row.person-nick .row-status.saved { color: #15803d; text-shadow: none; }
+    .form-row.person-nick .row-status.retry { color: #b91c1c; }
     /* Pin every row item to its explicit column so display:none on a hidden
        cell (e.g. H/A bubbles on O/U bets, Pts input on ML bets) doesn't cause
        subsequent items to auto-place and shift the layout left. */
@@ -343,9 +417,9 @@
         border: none; background: transparent; cursor: pointer;
     }
     .lock-cell:has(input:checked) {
-        background: rgba(74, 222, 128, 0.24);
-        border-color: var(--accent);
-        box-shadow: 0 0 10px rgba(74, 222, 128, 0.55);
+        background: rgba(59, 130, 246, 0.26);
+        border-color: var(--lock-blue);
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.55);
     }
     .lock-cell:has(input:checked)::after {
         content: "🔒";
@@ -354,13 +428,15 @@
         pointer-events: none;
     }
     .form-row:has(.lock-cell input:checked) {
-        background: rgba(74, 222, 128, 0.06);
-        border-left: 3px solid var(--accent);
+        background: rgba(59, 130, 246, 0.08);
+        border-left: 3px solid var(--lock-blue);
         padding-left: 3px;
     }
+    /* Lock-checked Nick card: pale blue wash over the light background */
+    .form-row.person-nick:has(.lock-cell input:checked) { background: #dce8fa; }
     .form-col-header {
         display: grid;
-        grid-template-columns: 28px 80px 30px 1fr 30px 1fr 60px 75px 65px 30px 58px;
+        grid-template-columns: 28px 80px 30px 1fr 30px 1fr 60px 75px 65px 56px 58px;
         gap: 0.45rem; align-items: center;
         color: var(--dim); font-size: 0.72rem; text-transform: uppercase;
         letter-spacing: 0.08em; padding: 0 0 0.35rem;
@@ -578,6 +654,10 @@
         /* Keep the card padding even when the lock highlight adds its own
            left border (the base rule shrinks padding-left for the grid) */
         .form-row:has(.lock-cell input:checked) { padding-left: 8px; }
+        /* Nick's light cards, restated here because the mobile .form-row
+           rule above resets the background later in the cascade */
+        .form-row.person-nick { background: var(--nick-bg); border-color: var(--nick-line); }
+        .form-row.person-nick:has(.lock-cell input:checked) { background: #dce8fa; border-color: var(--lock-blue); }
 
         /* Save bar */
         .save-bar input[type="number"] { min-height: 44px; font-size: 16px; }
@@ -608,7 +688,7 @@
                 <li>Line on any pick must be equal to or lower than <strong>-130</strong>.</li>
                 <li>Weekday games + Main Slate lock at <strong>Saturday 12:00 PM EST</strong>.</li>
                 <li>Gameday Additions lock <strong>Sunday night</strong>.</li>
-                <li>One <strong>mortal lock</strong> per person per week (highlighted glowing green) — pays <strong>1.5×</strong> the units placed on either a win or a loss.</li>
+                <li>One <strong>mortal lock</strong> per person per week (highlighted glowing blue) — pays <strong>1.5×</strong> the units placed on either a win or a loss.</li>
             </ul>
         </div>
 
@@ -623,16 +703,14 @@
 
         <!-- Tabs -->
         <div class="tabs">
-            <button class="tab active" data-panel="enter-rj">Enter Picks — RJ</button>
-            <button class="tab" data-panel="enter-nick">Enter Picks — Nick</button>
+            <button class="tab active" data-panel="enter">Enter Picks</button>
             <button class="tab" data-panel="picks">Week Picks</button>
             <button class="tab" data-panel="h2h">Breakdown</button>
             <button class="tab" data-panel="teams">Team Performance</button>
             <button class="tab" data-panel="locks">Mortal Locks</button>
         </div>
 
-        <section class="panel active" id="enter-rj"></section>
-        <section class="panel" id="enter-nick"></section>
+        <section class="panel active" id="enter"></section>
         <section class="panel" id="picks"></section>
         <section class="panel" id="h2h"></section>
         <section class="panel" id="teams"></section>
@@ -1707,16 +1785,15 @@
     });
 
     // Entering picks is only allowed for the CURRENT season. On archived
-    // seasons hide the two Enter tabs; if one of them was active, jump the
-    // view over to Week Picks.
+    // seasons and the All view hide the Enter tab; if it was active, jump
+    // the view over to Week Picks.
     function updateEnterTabsForSeason() {
         const isCur = seasonSel.value === RAW.season;
-        const enterPanels = ['enter-rj', 'enter-nick'];
         document.querySelectorAll('.tab').forEach(t => {
-            if (enterPanels.includes(t.dataset.panel)) t.style.display = isCur ? '' : 'none';
+            if (t.dataset.panel === 'enter') t.style.display = isCur ? '' : 'none';
         });
         const active = document.querySelector('.tab.active');
-        if (!isCur && active && enterPanels.includes(active.dataset.panel)) {
+        if (!isCur && active && active.dataset.panel === 'enter') {
             const picksTab = document.querySelector('.tab[data-panel="picks"]');
             if (picksTab) picksTab.click();
         }
@@ -1730,8 +1807,56 @@
         if (!w) { el.innerHTML = '<div class="panel-card">No picks for that week.</div>'; return; }
 
         // Grading buttons only appear on the CURRENT season, whose picks come
-        // from Supabase and carry a _id. Archived rows render exactly as before.
+        // from Supabase and carry a _id. Archived rows render read-only.
         const liveSeason = seasonSel.value === RAW.season;
+
+        // W/L/P/X button strip, shared by the lock slots (locks grade THERE)
+        // and by the non-lock rows in the person cards below.
+        const gradeBtnsFor = (p) => {
+            const u = numOrZero(p.units);
+            const lk = p.mortal_lock ? 'true' : 'false';
+            const btn = (act, txt, title, on) =>
+                `<button class="grade-btn ${act.toLowerCase()}${on ? ' on' : ''}" title="${title}" onclick="gradePick('${p._id}','${act}',${u},${lk})">${txt}</button>`;
+            return btn('W', 'W', 'Mark win',   p.outcome === 'W')
+                 + btn('L', 'L', 'Mark loss',  p.outcome === 'L')
+                 + btn('P', 'P', 'Mark push',  p.outcome === 'push')
+                 + btn('X', 'X', 'Clear grade (back to pending)', false);
+        };
+
+        // Result state for a lock: live picks carry outcome; archived locks
+        // derive it from their net so old seasons' slots still show results.
+        const lockStateOf = (p) => {
+            if (p.outcome === 'W') return 'W';
+            if (p.outcome === 'L') return 'L';
+            if (p.outcome === 'push') return 'P';
+            if (p.net === null || p.net === undefined) return null;
+            const n = Number(p.net);
+            if (isNaN(n)) return null;
+            return n > 0 ? 'W' : (n < 0 ? 'L' : 'P');
+        };
+
+        // Designated mortal lock slot: finds the person's lock for this week
+        // straight from the week's pick list. Grading a lock happens here.
+        const slotFor = (who, label) => {
+            const lock = (w[who].picks || []).find(p => p.mortal_lock);
+            if (!lock) {
+                return `<div class="lock-slot ${who}">
+                    <div class="slot-title">${label} Mortal Lock 🔒</div>
+                    <div class="slot-empty">no lock yet</div>
+                </div>`;
+            }
+            const state = lockStateOf(lock);
+            const cls = state === 'W' ? ' graded-w' : state === 'L' ? ' graded-l' : state === 'P' ? ' graded-p' : '';
+            const stateWord = state === 'W' ? 'Won' : state === 'L' ? 'Lost' : state === 'P' ? 'Push' : 'Pending';
+            const btns = (liveSeason && lock._id !== undefined && lock._id !== null)
+                ? `<div class="grade-btns slot-btns">${gradeBtnsFor(lock)}</div>` : '';
+            return `<div class="lock-slot ${who}${cls}">
+                <div class="slot-title">${label} Mortal Lock 🔒</div>
+                <div class="slot-pick">${lock.pick}</div>
+                <div class="slot-meta">${lock.units ?? '—'} u · ${stateWord} · ${fmtNet(lock.net)}</div>
+                ${btns}
+            </div>`;
+        };
 
         const personCard = (label, person) => {
             const net = person.total_net;
@@ -1742,27 +1867,31 @@
             let rows = '';
             for (const p of person.picks) {
                 const netHtml = `<span class="${classForNet(p.net)}">${fmtNet(p.net)}</span>`;
+                const isLock = !!p.mortal_lock;
                 let actions = '';
                 if (liveSeason && p._id !== undefined && p._id !== null) {
-                    const u = numOrZero(p.units);
-                    const lk = p.mortal_lock ? 'true' : 'false';
-                    const btn = (act, txt, title, onCls) =>
-                        `<button class="grade-btn ${act.toLowerCase()}${onCls ? ' on' : ''}" title="${title}" onclick="gradePick('${p._id}','${act}',${u},${lk})">${txt}</button>`;
-                    actions = `<td class="grade-cell"><span class="grade-btns">` +
-                        btn('W', 'W', 'Mark win',   p.outcome === 'W') +
-                        btn('L', 'L', 'Mark loss',  p.outcome === 'L') +
-                        btn('P', 'P', 'Mark push',  p.outcome === 'push') +
-                        btn('X', 'X', 'Clear grade (back to pending)', false) +
-                        `<button class="grade-btn del" title="Delete pick" onclick="deletePick('${p._id}')">🗑</button>` +
-                        `</span></td>`;
+                    // Locks grade in their slot above, so their row carries
+                    // only the delete button; other picks grade right here.
+                    actions = `<td class="grade-cell"><span class="grade-btns">`
+                        + (isLock ? '' : gradeBtnsFor(p))
+                        + `<button class="grade-btn del" title="Delete pick" onclick="deletePick('${p._id}')">🗑</button>`
+                        + `</span></td>`;
+                } else if (liveSeason) {
+                    actions = `<td class="grade-cell"></td>`;
                 }
                 // Outcome only exists on live current-season picks, so
-                // archived rows never pick up a grade class
-                const gradeCls = p.outcome === 'W' ? ' graded-w'
-                               : p.outcome === 'L' ? ' graded-l'
-                               : p.outcome === 'push' ? ' graded-p' : '';
-                rows += `<tr class="${p.mortal_lock ? 'mortal-lock' : ''}${gradeCls}">
-                    <td>${p.pick}</td>
+                // archived rows never pick up a grade class. Lock rows keep
+                // their blue glow instead of the result tint; a small badge
+                // carries the W/L/P story in the list.
+                const gradeCls = isLock ? '' : (
+                    p.outcome === 'W' ? ' graded-w'
+                    : p.outcome === 'L' ? ' graded-l'
+                    : p.outcome === 'push' ? ' graded-p' : '');
+                const lockBadge = isLock && p.outcome
+                    ? `<span class="lock-badge ${p.outcome === 'push' ? 'p' : p.outcome.toLowerCase()}">${p.outcome === 'push' ? 'P' : p.outcome}</span>`
+                    : '';
+                rows += `<tr class="${isLock ? 'mortal-lock' : ''}${gradeCls}">
+                    <td>${p.pick}${lockBadge}</td>
                     <td>${p.units ?? '—'}</td>
                     <td>${netHtml}</td>${actions}
                 </tr>`;
@@ -1779,7 +1908,12 @@
             </div>`;
         };
 
-        el.innerHTML = `<div class="picks-grid">
+        el.innerHTML = `
+        <div class="lock-slots">
+            ${slotFor('rj', 'RJ')}
+            ${slotFor('nick', 'Nick')}
+        </div>
+        <div class="picks-grid">
             ${personCard('Nick', w.nick)}
             ${personCard('RJ',   w.rj)}
         </div>`;
@@ -2377,16 +2511,20 @@
          O/U      — team (game reference OK) + O/U + total points
          TTO      — team + O/U + team-total points
        Every bet has an Opponent so we can track "how well do we do vs Team X". */
-    function renderEnter(who) {
-        const el = document.getElementById(`enter-${who}`);
-        const nameLabel = who === 'rj' ? 'RJ' : 'Nick';
+    function renderEnter() {
+        const el = document.getElementById('enter');
         // Team inputs use the custom typeahead dropdown (see the Team
         // typeahead section), wired globally to every .team-input.
 
-        function formRow(sectionKey, i) {
-            // Scope uid by person so RJ's row #1 doesn't collide with Nick's row #1
-            const uid = `${who}-${sectionKey}-${i}`;
-            return `<div class="form-row" data-uid="${uid}">
+        // One row belongs to one person; the card's data-person attribute is
+        // what autosave reads, so attribution can never depend on which panel
+        // or section the row sits in. RJ cards keep the dark look, Nick cards
+        // go off-white via the person-nick class.
+        function formRow(person, sectionKey, i) {
+            const personLabel = person === 'nick' ? 'Nick' : 'RJ';
+            // Scope uid by person so RJ's row #1 does not collide with Nick's row #1
+            const uid = `${person}-${sectionKey}-${i}`;
+            return `<div class="form-row${person === 'nick' ? ' person-nick' : ''}" data-uid="${uid}" data-person="${person}">
                 <label class="lock-cell" title="Mortal Lock — pays 1.5× units on win/loss. Only one per week.">
                     <input type="checkbox" class="lock" aria-label="Mortal lock" onchange="onMortalLockChange(this)" />
                 </label>
@@ -2412,14 +2550,18 @@
                 </span>
                 <input class="points" placeholder="Pts" aria-label="Points or line" type="number" step="0.5" />
                 <input class="units" placeholder="Units" aria-label="Units" type="number" step="0.5" min="0.5" />
-                <span class="idx">#${i}</span>
+                <span class="idx">${personLabel} #${i}</span>
                 <span class="row-status"></span>
             </div>`;
         }
 
         function formSection(sectionKey, title, count, lockNote, hidden) {
+            // Cards alternate person: RJ #1, Nick #1, RJ #2, Nick #2, ...
+            // RJ always first, numbering runs per person within the section.
             let rows = '';
-            for (let i = 1; i <= count; i++) rows += formRow(sectionKey, i);
+            for (let i = 1; i <= count; i++) {
+                rows += formRow('rj', sectionKey, i) + formRow('nick', sectionKey, i);
+            }
             const header = `<div class="form-col-header">
                 <span title="Mortal Lock">🔒</span>
                 <span>Bet Type</span>
@@ -2430,7 +2572,7 @@
                 <span>±/OU</span>
                 <span>Pts</span>
                 <span>Units</span>
-                <span>#</span>
+                <span>Who #</span>
                 <span></span>
             </div>`;
             return `<div class="panel-card form-section-card" data-section="${sectionKey}"${hidden ? ' style="display:none"' : ''}>
@@ -2444,46 +2586,47 @@
         const defaultWeek = computeCurrentWeek();
 
         el.innerHTML = `
-            <h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; font-size:1.05rem; margin:0.25rem 0 0.75rem;">${nameLabel}'s Picks</h2>
+            <h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; font-size:1.05rem; margin:0.25rem 0 0.75rem;">Enter Picks</h2>
             <div class="banner-warn">
-                <strong>Live:</strong> picks save automatically as you type. A row saves once it has a team and units (watch for the green check), and edits to a saved row update it in place. Clearing a saved row's teams deletes that pick. Rows land in the week set in the <strong>Week</strong> box at the bottom; <strong>Save all now</strong> is a backstop that pushes anything unsaved.
+                <strong>Live:</strong> picks save automatically as you type. Cards alternate person, <strong>RJ on the dark cards, Nick on the light cards</strong> (each card is tagged). A card saves once it has a team and units (watch for the check), and edits to a saved card update it in place. Clearing a saved card's teams deletes that pick. Cards land in the week set in the <strong>Week</strong> box at the bottom; <strong>Save all now</strong> is a backstop that pushes anything unsaved.
             </div>
-            <div class="banner-warn" style="border-color: rgba(74, 222, 128, 0.35);">
-                <strong style="color: var(--accent);">🔒 Mortal Lock rules:</strong> pays 1.5× the units placed on either a win or a loss. <strong>Only one mortal lock per week</strong> — checking a new one auto-unchecks the previous.
+            <div class="banner-warn" style="border-color: rgba(59, 130, 246, 0.45);">
+                <strong style="color: var(--lock-blue-bright);">🔒 Mortal Lock rules:</strong> pays 1.5× the units placed on either a win or a loss. <strong>Only one mortal lock per person per week</strong> — checking a new one auto-unchecks that person's previous lock.
             </div>
             <div class="enter-subtabs">
-                <button type="button" class="subtab active" onclick="showEnterSection('${who}','wd',this)">Weekday Games</button>
-                <button type="button" class="subtab" onclick="showEnterSection('${who}','main',this)">Main Slate</button>
-                <button type="button" class="subtab" onclick="showEnterSection('${who}','day',this)">Gameday Additions</button>
+                <button type="button" class="subtab active" onclick="showEnterSection('wd',this)">Weekday Games</button>
+                <button type="button" class="subtab" onclick="showEnterSection('main',this)">Main Slate</button>
+                <button type="button" class="subtab" onclick="showEnterSection('day',this)">Gameday Additions</button>
             </div>
             ${formSection('wd',  'Weekday Games',      5, 'Locks Saturday 12:00 PM EST')}
             ${formSection('main','Main Slate',        15, 'Locks Saturday 12:00 PM EST', true)}
             ${formSection('day', 'Gameday Additions', 10, 'Locks Sunday night', true)}
             <div class="panel-card">
                 <div class="save-bar">
-                    <label for="week-input-${who}">Week</label>
-                    <input type="number" id="week-input-${who}" min="0" step="1" value="${defaultWeek}" />
-                    <button class="btn-save" id="save-btn-${who}" onclick="savePicks('${who}')">Save all now</button>
-                    <span class="save-status" id="save-status-${who}"></span>
+                    <label for="week-input">Week</label>
+                    <input type="number" id="week-input" min="0" step="1" value="${defaultWeek}" />
+                    <button class="btn-save" id="save-btn" onclick="savePicks()">Save all now</button>
+                    <span class="save-status" id="save-status"></span>
                 </div>
             </div>`;
 
         // Initialize every row's visible fields to match its default bet type.
         el.querySelectorAll('.form-row').forEach(r => onBetTypeChange(r.dataset.uid));
 
-        // Autosave wiring: one delegated listener pair per panel (assigned as
-        // properties so re-renders never stack duplicates). Any typing (input)
-        // or field commit (change: selects, radios, the lock checkbox, blur of
-        // a text field) schedules that row's own debounced save. The week
-        // input is outside any .form-row, so changing it never fires a save
-        // and never retro-moves rows that already saved.
+        // Autosave wiring: one delegated listener pair for the merged panel
+        // (assigned as properties so re-renders never stack duplicates). Any
+        // typing (input) or field commit (change: selects, radios, the lock
+        // checkbox, blur of a text field) schedules that row's own debounced
+        // save; the row itself knows its person. The week input is outside
+        // any .form-row, so changing it never fires a save and never
+        // retro-moves rows that already saved.
         el.oninput = (e) => {
             const row = e.target.closest('.form-row');
-            if (row) scheduleRowSave(row, who);
+            if (row) scheduleRowSave(row);
         };
         el.onchange = (e) => {
             const row = e.target.closest('.form-row');
-            if (row) scheduleRowSave(row, who);
+            if (row) scheduleRowSave(row);
         };
     }
 
@@ -2537,14 +2680,12 @@
     };
 
     // Switch which form section (Weekday / Main Slate / Gameday) is visible
-    // in one person's Enter panel. Pure show/hide via style.display, never a
+    // in the merged Enter panel. Pure show/hide via style.display, never a
     // re-render, so half-typed input, saved ids, pending autosave timers, and
-    // every row's state in the hidden sections are fully preserved. Each
-    // person's panel has its own sub-tab bar, so RJ and Nick switch
-    // independently. The save bar sits outside the section cards and stays
-    // visible on every sub-tab.
-    window.showEnterSection = function(who, sec, btn) {
-        const panel = document.getElementById('enter-' + who);
+    // every card's state in the hidden sections are fully preserved. The save
+    // bar sits outside the section cards and stays visible on every sub-tab.
+    window.showEnterSection = function(sec, btn) {
+        const panel = document.getElementById('enter');
         if (!panel) return;
         panel.querySelectorAll('.enter-subtabs .subtab').forEach(b =>
             b.classList.toggle('active', b === btn));
@@ -2559,15 +2700,19 @@
     window.onMortalLockChange = function(inputEl) {
         if (!inputEl.checked) return;   // unchecking is always allowed
         const panel = inputEl.closest('.panel');
-        if (!panel) return;
-        const who = panel.id === 'enter-nick' ? 'nick' : 'rj';
-        panel.querySelectorAll('.lock-cell input.lock').forEach(cb => {
-            if (cb !== inputEl && cb.checked) {
+        const ownRow = inputEl.closest('.form-row');
+        if (!panel || !ownRow) return;
+        // One lock per PERSON: only sweep cards belonging to the same person
+        // as the card that was just locked, across all three sections.
+        const person = ownRow.dataset.person;
+        panel.querySelectorAll('.form-row').forEach(r => {
+            if (r === ownRow || r.dataset.person !== person) return;
+            const cb = r.querySelector('.lock-cell input.lock');
+            if (cb && cb.checked) {
                 cb.checked = false;
                 // A programmatic uncheck fires no change event, so schedule
                 // that row's autosave here to keep its saved pick in sync.
-                const otherRow = cb.closest('.form-row');
-                if (otherRow) scheduleRowSave(otherRow, who);
+                scheduleRowSave(r);
             }
         });
     };
@@ -2822,7 +2967,7 @@
        analytics tabs pick up the new data next time they render. */
     const AUTOSAVE_DEBOUNCE_MS = 800;
 
-    function setRowStatus(row, state, who) {
+    function setRowStatus(row, state) {
         const el = row.querySelector('.row-status');
         if (!el) return;
         el.classList.remove('saving', 'saved', 'retry');
@@ -2839,26 +2984,33 @@
             el.textContent = 'retry';
             el.classList.add('retry');
             el.title = 'Save failed, tap to try again';
-            el.onclick = () => autosaveRow(row, who);
+            el.onclick = () => autosaveRow(row);
         } else {
             el.textContent = '';
         }
     }
 
+    // The person a row belongs to comes from the card itself (data-person),
+    // never from panel context, so alternating RJ/Nick cards can never
+    // cross-attribute a save.
+    function rowPerson(row) {
+        return row.dataset.person === 'nick' ? 'nick' : 'rj';
+    }
+
     // Debounce is per row: each row carries its own timer, so typing in row 3
     // never delays or triggers row 5. Never schedules on archived seasons.
-    function scheduleRowSave(row, who) {
+    function scheduleRowSave(row) {
         if (seasonSel.value !== RAW.season) return;
         row._pendingSave = true;
         clearTimeout(row._saveTimer);
-        row._saveTimer = setTimeout(() => autosaveRow(row, who), AUTOSAVE_DEBOUNCE_MS);
+        row._saveTimer = setTimeout(() => autosaveRow(row), AUTOSAVE_DEBOUNCE_MS);
     }
 
     // Save one row now. Returns true on success, false on failure, null when
     // there was nothing to do. Serialized per row: if a save is already in
     // flight the new edit is marked dirty and re-runs when the first finishes,
     // so an in-flight POST can never race a second POST into a duplicate.
-    async function autosaveRow(row, who) {
+    async function autosaveRow(row) {
         if (seasonSel.value !== RAW.season) return null;
         if (row._saving) { row._dirty = true; return null; }
         row._pendingSave = false;
@@ -2867,16 +3019,16 @@
         const built = buildPickFromRow(row);
         const savedId = row.dataset.savedId || '';
 
-        if (!built && !savedId) { setRowStatus(row, '', who); return null; }   // empty, never saved
+        if (!built && !savedId) { setRowStatus(row, ''); return null; }   // empty, never saved
         if (built && !(built.units > 0)) {
             // Incomplete: has a team but no units. Not ready to save; if a
             // saved version exists keep it untouched until the row is complete.
-            if (!savedId) setRowStatus(row, '', who);
+            if (!savedId) setRowStatus(row, '');
             return null;
         }
 
         row._saving = true;
-        setRowStatus(row, 'saving', who);
+        setRowStatus(row, 'saving');
         let ok = false;
         try {
             if (!built) {
@@ -2884,7 +3036,7 @@
                 // natural way to remove a just-entered pick, so delete it.
                 await sb('/rest/v1/pickem_picks?id=eq.' + encodeURIComponent(savedId), { method: 'DELETE' });
                 delete row.dataset.savedId;
-                setRowStatus(row, '', who);
+                setRowStatus(row, '');
             } else if (savedId) {
                 // Later edit of an already-saved row: PATCH the same id.
                 // Week and person never change here; only new saves use the
@@ -2894,41 +3046,42 @@
                     body: { pick: built.pick, bet_type: built.bet_type,
                             units: built.units, mortal_lock: built.mortal_lock },
                 });
-                setRowStatus(row, 'saved', who);
+                setRowStatus(row, 'saved');
             } else {
-                // First save of this row: POST and remember the returned id.
-                const weekInput = document.getElementById('week-input-' + who);
+                // First save of this row: POST with the card's own person and
+                // remember the returned id.
+                const weekInput = document.getElementById('week-input');
                 const week = Math.max(0, Math.floor(Number(weekInput && weekInput.value) || 0));
                 const res = await sb('/rest/v1/pickem_picks', {
                     method: 'POST',
-                    body: [{ season: RAW.season, week: week, person: who,
+                    body: [{ season: RAW.season, week: week, person: rowPerson(row),
                              pick: built.pick, bet_type: built.bet_type,
                              units: built.units, mortal_lock: built.mortal_lock }],
                 });
                 const id = res && res[0] && res[0].id;
                 if (id !== undefined && id !== null) row.dataset.savedId = String(id);
-                setRowStatus(row, 'saved', who);
+                setRowStatus(row, 'saved');
             }
             ok = true;
             refreshLiveSeason(true);   // quiet: update data + toolbar, no panel re-render
         } catch (e) {
-            setRowStatus(row, 'retry', who);
+            setRowStatus(row, 'retry');
         } finally {
             row._saving = false;
-            if (row._dirty) { row._dirty = false; scheduleRowSave(row, who); }
+            if (row._dirty) { row._dirty = false; scheduleRowSave(row); }
         }
         return ok;
     }
 
-    // Backstop button ("Save all now"): force-saves every complete row that
-    // has not saved yet, flushes rows with pending debounced edits, and
-    // re-attempts rows sitting in the red retry state.
-    window.savePicks = async function(who) {
+    // Backstop button ("Save all now"): force-saves every complete card that
+    // has not saved yet (both people's), flushes cards with pending debounced
+    // edits, and re-attempts cards sitting in the red retry state.
+    window.savePicks = async function() {
         if (seasonSel.value !== RAW.season) return;
-        const panel = document.getElementById('enter-' + who);
-        const saveBtn = document.getElementById('save-btn-' + who);
+        const panel = document.getElementById('enter');
+        const saveBtn = document.getElementById('save-btn');
         const setStatus = (msg, cls) => {
-            const el = document.getElementById('save-status-' + who);
+            const el = document.getElementById('save-status');
             if (el) { el.textContent = msg; el.className = 'save-status' + (cls ? ' ' + cls : ''); }
         };
 
@@ -2947,7 +3100,7 @@
             const needsSave = !savedId || row._pendingSave || !built
                               || (statusEl && statusEl.classList.contains('retry'));
             if (!needsSave) continue;                                      // saved and clean
-            const ok = await autosaveRow(row, who);
+            const ok = await autosaveRow(row);
             if (ok === true) saved++;
             else if (ok === false) failed++;
         }
@@ -3034,8 +3187,7 @@
         else if (active === 'h2h') renderH2H();
         else if (active === 'teams') renderTeams();
         else if (active === 'locks') renderLocks();
-        else if (active === 'enter-rj') renderEnter('rj');
-        else if (active === 'enter-nick') renderEnter('nick');
+        else if (active === 'enter') renderEnter();
         makeCollapsible(document.querySelector('.panel.active'));
     }
 
@@ -3072,7 +3224,7 @@
     // True when any enter-form row has content that never saved, a pending
     // debounced save, a save in flight, or a failed save waiting on retry.
     function enterPanelHasUnsavedWork() {
-        for (const row of document.querySelectorAll('#enter-rj .form-row, #enter-nick .form-row')) {
+        for (const row of document.querySelectorAll('#enter .form-row')) {
             if (row._pendingSave || row._saving) return true;
             const statusEl = row.querySelector('.row-status');
             if (statusEl && statusEl.classList.contains('retry')) return true;
@@ -3086,7 +3238,7 @@
     // the ACTIVE panel, so a hidden enter panel's rows are safe either way.
     function refreshRespectingEnterPanel() {
         const active = document.querySelector('.tab.active');
-        const onEnter = !!active && (active.dataset.panel === 'enter-rj' || active.dataset.panel === 'enter-nick');
+        const onEnter = !!active && active.dataset.panel === 'enter';
         refreshLiveSeason(onEnter);
     }
 
