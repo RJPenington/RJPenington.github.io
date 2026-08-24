@@ -1408,6 +1408,32 @@
     }
     padCurrentSeasonWeeks(SEASONS[RAW.season]);
 
+    /* ===== All-seasons combined view =====
+       SEASONS[ALL_SEASONS] holds every tracked season's weeks concatenated,
+       oldest season first, so the analytics tabs can aggregate across years
+       by simply iterating it like any other season. Each merged week is a
+       shallow copy carrying a display label ("25-26 Wk 3") because week
+       numbers repeat across seasons; the numeric week field stays untouched.
+       Rebuilt from SEASONS on every live refresh, so autosaved picks flow in.
+       The view is read-only: every write guard already checks for the
+       current season by name, which "All" can never match. */
+    const ALL_SEASONS = 'All';
+    function seasonShortLabel(name) {
+        return name.replace(/^20(\d\d)-20(\d\d)$/, '$1-$2');
+    }
+    function buildAllSeasonsWeeks() {
+        const names = Object.keys(SEASONS).filter(n => n !== ALL_SEASONS).sort();
+        const merged = [];
+        for (const name of names) {
+            const short = seasonShortLabel(name);
+            for (const w of SEASONS[name] || []) {
+                merged.push({ ...w, label: short + ' Wk ' + w.week });
+            }
+        }
+        SEASONS[ALL_SEASONS] = merged;
+    }
+    buildAllSeasonsWeeks();
+
     /* ===== Supabase live layer (current season only) =====
        The CURRENT season's picks live in the pickem_picks table and are
        fetched fresh on every page load. Archived seasons stay embedded in
@@ -1496,7 +1522,10 @@
             }
         }
         SEASONS[RAW.season] = weeks;
-        if (seasonSel.value === RAW.season) {
+        buildAllSeasonsWeeks();
+        // Repaint when viewing the current season or the All view (both fold
+        // in the fresh data); archived views never need it.
+        if (seasonSel.value === RAW.season || seasonSel.value === ALL_SEASONS) {
             const prevWeek = weekSel.value;
             fillWeekSelector();
             if (prevWeek !== '' && [...weekSel.options].some(o => o.value === prevWeek)) {
@@ -1636,19 +1665,31 @@
     // signal a fresh year needs.
     function fillWeekSelector() {
         const weeks = SEASONS[seasonSel.value] || [];
+        const isAll = seasonSel.value === ALL_SEASONS;
         weekSel.innerHTML = '';
-        for (const w of weeks) {
+        weeks.forEach((w, i) => {
             const opt = document.createElement('option');
-            opt.value = w.week; opt.textContent = 'Week ' + w.week;
+            // The All view needs unique option values because week numbers
+            // repeat across seasons, so it selects by array index instead
+            opt.value = isAll ? String(i) : w.week;
+            opt.textContent = w.label || ('Week ' + w.week);
             weekSel.appendChild(opt);
-        }
+        });
         if (!weeks.length) return;
         // Default: the current season lands on the auto-computed week (ticks
-        // forward each Monday); archived seasons land on their latest week.
-        // A manual week choice is preserved across quiet autosave refreshes
-        // by refreshLiveSeason's save-and-restore around this call.
-        if (seasonSel.value === RAW.season) weekSel.value = String(computeCurrentWeek());
+        // forward each Monday); All and archived seasons land on their latest
+        // week. A manual week choice is preserved across quiet autosave
+        // refreshes by refreshLiveSeason's save-and-restore around this call.
+        if (isAll) weekSel.value = String(weeks.length - 1);
+        else if (seasonSel.value === RAW.season) weekSel.value = String(computeCurrentWeek());
         else weekSel.value = weeks[weeks.length - 1].week;
+    }
+
+    // Resolve the week object the selector points at. On the All view the
+    // selector value is an array index; everywhere else it is a week number.
+    function findSelectedWeek(weeks) {
+        if (seasonSel.value === ALL_SEASONS) return weeks[Number(weekSel.value)] || null;
+        return weeks.find(x => x.week === Number(weekSel.value)) || null;
     }
     fillWeekSelector();
 
@@ -1683,9 +1724,8 @@
 
     /* ===== Render — Week Picks tab ===== */
     function renderPicks() {
-        const wk = Number(weekSel.value);
         const weeks = SEASONS[seasonSel.value] || [];
-        const w = weeks.find(x => x.week === wk);
+        const w = findSelectedWeek(weeks);
         const el = document.getElementById('picks');
         if (!w) { el.innerHTML = '<div class="panel-card">No picks for that week.</div>'; return; }
 
@@ -1784,7 +1824,7 @@
             if (n > r) { nickWeekWins++; winner = 'Nick'; }
             else if (r > n) { rjWeekWins++; winner = 'RJ'; }
             else if (n !== 0 || r !== 0) { ties++; winner = 'Tie'; }
-            weeklyRows.push({week: w.week, n, r, winner, diff: n - r});
+            weeklyRows.push({week: w.week, label: w.label, n, r, winner, diff: n - r});
         }
 
         // Bet-type breakdown: order ML / Spread / O/U / TTO / (unknown)
@@ -1945,7 +1985,7 @@
                     </tr></thead>
                     <tbody>
                         ${weeklyRows.map(w => `<tr>
-                            <td>Week ${w.week}</td>
+                            <td>${w.label || ('Week ' + w.week)}</td>
                             <td class="num ${classForNet(w.n)}">${fmtNet(w.n)}</td>
                             <td class="num ${classForNet(w.r)}">${fmtNet(w.r)}</td>
                             <td class="num ${classForNet(w.diff)}">${fmtNet(w.diff)}</td>
@@ -2249,7 +2289,7 @@
                     if (n > 0) s.wins++;
                     else if (n < 0) s.losses++;
                     else s.pushes++;
-                    s.rows.push({week: w.week, pick: p.pick, units: p.units, net: p.net, game_date: p.game_date});
+                    s.rows.push({week: w.week, label: w.label, pick: p.pick, units: p.units, net: p.net, game_date: p.game_date});
                     // WD/WE bucketing — historical picks have no date → 'unk'
                     const we = isWkndDate(p.game_date);
                     const bucket = we === true ? 'we' : (we === false ? 'wd' : 'unk');
@@ -2283,7 +2323,7 @@
                         <th>Week</th><th>Pick</th><th class="num">Units</th><th class="num">Net</th>
                     </tr></thead>
                     <tbody>${s.rows.map(r => `<tr>
-                        <td>Week ${r.week}</td>
+                        <td>${r.label || ('Week ' + r.week)}</td>
                         <td>${r.pick}</td>
                         <td class="num">${r.units ?? '—'}</td>
                         <td class="num ${classForNet(r.net)}">${fmtNet(r.net)}</td>
@@ -2956,7 +2996,7 @@
        Layout left-to-right: Week Winner  ·  Season Tally (cumulative)  ·  Week Stats */
     function renderSummary() {
         const weeks = SEASONS[seasonSel.value] || [];
-        const w = weeks.find(x => x.week === Number(weekSel.value));
+        const w = findSelectedWeek(weeks);
         const el = document.getElementById('summary');
         if (!w) { el.innerHTML = ''; return; }
         const n = numOrZero(w.nick.total_net);
