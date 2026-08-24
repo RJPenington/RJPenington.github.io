@@ -441,6 +441,32 @@
     }
     .live-warn .dismiss:hover { color: var(--ink); }
 
+    /* Team typeahead dropdown: one reusable panel, absolutely positioned in
+       document coordinates under whichever team input is active, so it rides
+       the page's natural scroll (iOS keyboard included) and never gets
+       clipped by the form card borders. */
+    .team-typeahead {
+        position: absolute; display: none; z-index: 1000;
+        background: var(--surface);
+        border: 1px solid var(--accent);
+        border-radius: 6px;
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.6), 0 0 12px rgba(74, 222, 128, 0.25);
+        max-height: 240px; overflow-y: auto;
+        min-width: 200px;
+    }
+    .tt-option {
+        display: flex; align-items: center;
+        min-height: 40px; padding: 0 12px;
+        color: var(--ink); font-size: 0.95rem; cursor: pointer;
+        border-bottom: 1px solid #12161d;
+        user-select: none; -webkit-user-select: none;
+    }
+    .tt-option:last-child { border-bottom: none; }
+    .tt-option:hover, .tt-option.active {
+        background: rgba(74, 222, 128, 0.16);
+        color: var(--accent-bright);
+    }
+
     /* ===== Mobile layout (phones are the primary device) =====
        Everything below only applies under 720px, desktop is untouched. */
     @media (max-width: 720px) {
@@ -2230,11 +2256,8 @@
     function renderEnter(who) {
         const el = document.getElementById(`enter-${who}`);
         const nameLabel = who === 'rj' ? 'RJ' : 'Nick';
-        // One shared <datalist> per panel — every home/away input references
-        // it via list="fbs-teams-list". Type-ahead is built into the browser.
-        const teamDatalist = `<datalist id="fbs-teams-list">${
-            FBS_TEAMS.map(t => `<option value="${t}"></option>`).join('')
-        }</datalist>`;
+        // Team inputs use the custom typeahead dropdown (see the Team
+        // typeahead section), wired globally to every .team-input.
 
         function formRow(sectionKey, i) {
             // Scope uid by person so RJ's row #1 doesn't collide with Nick's row #1
@@ -2252,11 +2275,11 @@
                 <span class="sign-group side-h" title="Bet on home team">
                     <label><input type="radio" name="side-${uid}" value="H" />H</label>
                 </span>
-                <input class="home team-input" list="fbs-teams-list" placeholder="home team" aria-label="Home team" autocomplete="off" title="Home team — type to filter FBS teams" />
+                <input class="home team-input" placeholder="home team" aria-label="Home team" autocomplete="off" title="Home team — type to filter FBS teams" />
                 <span class="sign-group side-a" title="Bet on away team">
                     <label><input type="radio" name="side-${uid}" value="A" />A</label>
                 </span>
-                <input class="away team-input" list="fbs-teams-list" placeholder="away team" aria-label="Away team" autocomplete="off" title="Away team — type to filter FBS teams" />
+                <input class="away team-input" placeholder="away team" aria-label="Away team" autocomplete="off" title="Away team — type to filter FBS teams" />
                 <span class="sign-group sign-slot">
                     <label><input type="radio" name="sign-${uid}" value="-" />−</label>
                     <label><input type="radio" name="sign-${uid}" value="+" />+</label>
@@ -2298,7 +2321,6 @@
         const defaultWeek = curWeeks.length ? curWeeks[curWeeks.length - 1].week : 0;
 
         el.innerHTML = `
-            ${teamDatalist}
             <h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; font-size:1.05rem; margin:0.25rem 0 0.75rem;">${nameLabel}'s Picks</h2>
             <div class="banner-warn">
                 <strong>Live:</strong> picks save automatically as you type. A row saves once it has a team and units (watch for the green check), and edits to a saved row update it in place. Clearing a saved row's teams deletes that pick. Rows land in the week set in the <strong>Week</strong> box at the bottom; <strong>Save all now</strong> is a backstop that pushes anything unsaved.
@@ -2443,6 +2465,157 @@
             points.placeholder = 'Team total';
         }
     };
+
+    /* ===== Team typeahead =====
+       One reusable dropdown for every .team-input (home and away, all rows,
+       both people). Typing 1+ characters filters FBS_TEAMS live; the
+       TEAM_ABBR shorthand map is searched too (typing "asu" surfaces
+       "Arizona State"). Selecting an option fills the input and dispatches a
+       real bubbling input event, so the delegated autosave wiring fires
+       exactly as if the name had been typed. */
+    const TA_MAX_RESULTS = 8;
+
+    // Ranked matcher: name-prefix hits first, then abbreviation-prefix, then
+    // name-contains, then abbreviation-contains. Deduped, capped at 8.
+    function teamMatches(raw) {
+        const q = (raw || '').trim().toLowerCase();
+        if (!q) return [];
+        const namePrefix = [], nameContains = [], abbrPrefix = [], abbrContains = [];
+        for (const t of FBS_TEAMS) {
+            const lower = t.toLowerCase();
+            if (lower.startsWith(q)) namePrefix.push(t);
+            else if (lower.includes(q)) nameContains.push(t);
+        }
+        for (const [ab, canon] of Object.entries(TEAM_ABBR)) {
+            if (ab.startsWith(q)) abbrPrefix.push(canon);
+            else if (ab.includes(q)) abbrContains.push(canon);
+        }
+        const out = [];
+        for (const t of [...namePrefix, ...abbrPrefix, ...nameContains, ...abbrContains]) {
+            if (!out.includes(t)) out.push(t);
+            if (out.length === TA_MAX_RESULTS) break;
+        }
+        return out;
+    }
+
+    const teamDropdown = document.createElement('div');
+    teamDropdown.className = 'team-typeahead';
+    document.body.appendChild(teamDropdown);
+    let taInput = null;        // the input the dropdown is currently attached to
+    let taOptions = [];
+    let taActiveIdx = -1;      // keyboard-highlighted row
+    let taSuppress = false;    // ignore the input event we dispatch ourselves
+
+    function taVisible() { return teamDropdown.style.display === 'block'; }
+
+    // Position in document coordinates (rect + page scroll), directly under
+    // the field. Absolute positioning rides the page's natural scroll, which
+    // is what keeps it aligned while the iOS keyboard is up; no fixed or
+    // visual-viewport tricks needed.
+    function positionTeamDropdown(input) {
+        const r = input.getBoundingClientRect();
+        teamDropdown.style.left = (r.left + window.scrollX) + 'px';
+        teamDropdown.style.top = (r.bottom + window.scrollY + 2) + 'px';
+        teamDropdown.style.width = Math.max(200, r.width) + 'px';
+    }
+
+    function hideTeamDropdown() {
+        teamDropdown.style.display = 'none';
+        teamDropdown.innerHTML = '';
+        taInput = null; taOptions = []; taActiveIdx = -1;
+    }
+
+    function taMarkActive(idx) {
+        taActiveIdx = idx;
+        [...teamDropdown.children].forEach((c, i) => c.classList.toggle('active', i === idx));
+        const el = teamDropdown.children[idx];
+        if (el && el.scrollIntoView) el.scrollIntoView({ block: 'nearest' });
+    }
+
+    function pickTeam(name) {
+        const input = taInput;
+        hideTeamDropdown();
+        if (!input) return;
+        input.value = name;
+        // Real bubbling input event: the panel's delegated autosave handler
+        // (and anything else listening) reacts exactly as if typed. The
+        // suppress flag keeps our own listener from instantly reopening.
+        taSuppress = true;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        taSuppress = false;
+    }
+
+    function updateTeamDropdown(input) {
+        const matches = teamMatches(input.value);
+        if (!matches.length) { hideTeamDropdown(); return; }
+        taInput = input;
+        taOptions = matches;
+        taActiveIdx = -1;
+        teamDropdown.innerHTML = '';
+        matches.forEach((name, i) => {
+            const row = document.createElement('div');
+            row.className = 'tt-option';
+            row.textContent = name;
+            // pointerdown fires BEFORE the input's blur, and preventDefault
+            // stops the focus change entirely, so a finger tap on an option
+            // always lands (the classic touch race with blur-to-close).
+            row.addEventListener('pointerdown', (e) => { e.preventDefault(); pickTeam(name); });
+            row.addEventListener('mouseenter', () => taMarkActive(i));
+            teamDropdown.appendChild(row);
+        });
+        positionTeamDropdown(input);
+        teamDropdown.style.display = 'block';
+    }
+
+    // Typing in any team input (re)filters the dropdown; switching to the
+    // other team input moves the dropdown to it on the first keystroke.
+    document.addEventListener('input', (e) => {
+        const t = e.target;
+        if (!t.classList || !t.classList.contains('team-input')) return;
+        if (taSuppress) return;
+        updateTeamDropdown(t);
+    });
+
+    // Desktop keys: arrows move the highlight, Enter selects (never submits
+    // while the dropdown is open), Escape closes.
+    document.addEventListener('keydown', (e) => {
+        if (!taVisible() || e.target !== taInput) return;
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            taMarkActive((taActiveIdx + 1) % taOptions.length);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            taMarkActive((taActiveIdx - 1 + taOptions.length) % taOptions.length);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            pickTeam(taOptions[taActiveIdx >= 0 ? taActiveIdx : 0]);
+        } else if (e.key === 'Escape') {
+            hideTeamDropdown();
+        }
+    });
+
+    // Tap or click anywhere outside closes it (taps on options are inside
+    // the dropdown, so they never match this).
+    document.addEventListener('pointerdown', (e) => {
+        if (!taVisible()) return;
+        if (teamDropdown.contains(e.target) || e.target === taInput) return;
+        hideTeamDropdown();
+    });
+
+    // Blur closes it after a short delay as a fallback for environments
+    // without pointer events; the delay lets an option tap land first.
+    document.addEventListener('focusout', (e) => {
+        const t = e.target;
+        if (!t.classList || !t.classList.contains('team-input')) return;
+        setTimeout(() => {
+            if (taInput === t && document.activeElement !== t) hideTeamDropdown();
+        }, 150);
+    });
+
+    // Keep the panel glued to its input if the window resizes while open
+    window.addEventListener('resize', () => {
+        if (taVisible() && taInput) positionTeamDropdown(taInput);
+    });
 
     /* ===== Saving picks to Supabase ===== */
     // Turn one form row into {pick, bet_type, units, mortal_lock} the way a
