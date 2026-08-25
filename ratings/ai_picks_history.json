@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-08-24",
+  "as_of": "2026-08-25",
   "aggregates": {
     "today": {
       "picks": 5,
@@ -16,17 +16,17 @@
       "losses": 7,
       "pushes": 0,
       "pending": 5,
-      "units_net": 22.0,
+      "units_net": 23.0,
       "hit_pct": 0.8
     },
     "season": {
-      "picks": 65,
-      "wins": 36,
-      "losses": 24,
+      "picks": 70,
+      "wins": 40,
+      "losses": 25,
       "pushes": 0,
       "pending": 5,
-      "units_net": 12.0,
-      "hit_pct": 0.6
+      "units_net": 18.0,
+      "hit_pct": 0.6153846153846154
     }
   },
   "picks_by_date": {
@@ -1041,8 +1041,8 @@
           "units": 2,
           "confidence": "high",
           "reasoning": "All three ratings flag Tampa Bay as a strong play (R1 -1.93, R2 -2.04, R3 -1.46), and TBR is the best-supported side in the pool when the model likes them: 25-12 (68%) overall and 18-5 (78%, +22.0u) on strong plays. R2 is the hottest strong-play rating short-term at 30-9 (77%, +21.0u) over 7 days and 53-35 (60%) over 14 days, and the -137 price is roughly fair to the 2.04 edge.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 2
         },
         {
           "rank": 2,
@@ -1054,8 +1054,8 @@
           "units": 3,
           "confidence": "medium",
           "reasoning": "R3 posts the largest edge on the board at +2.55 with R1 (+2.23) and R2 (+2.34) both agreeing, and R3 is the top strong-play rating historically (season 168-133, 56%, +56.0u; 30d 99-76, 57%, +42.0u). The counterweight is COL, which is just 3-7 (30%) when the model likes them and 1-3 (-2.0u) on strong plays, so fading Colorado has been profitable even though WSN's own 10-14 when-liked mark is soft.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 3
         },
         {
           "rank": 3,
@@ -1067,8 +1067,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "Unanimous strong play (R1 -1.29, R2 -1.35, R3 -1.49) with PHI 20-12 (62%) when the model likes them, while the other side, SEA, is a dismal 5-11 (31%) when liked and 1-4 (20%, -3.0u) on strong plays. R3's 7-day 31-10 (76%, +23.0u) run supports leaning on its largest read of the three.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 4,
@@ -1080,8 +1080,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R2 has the biggest number on Chicago (-1.68) with R1 (-1.26) and R3 (-1.21) also strong; CHC is 20-10 (67%) when the model likes them. ARI is the worst strong-play team on the slate at 3-7 (30%, -7.0u), and R2's 14-day strong record of 53-35 (60%, +17.0u) is the best of the three ratings.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 5,
@@ -1093,13 +1093,96 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "Only R3 tags this as strong (-1.23 vs R1 -0.84, R2 -0.59), but R3 is the strongest strong-play engine (season +56.0u, 30d 57%) and the fade side is ideal: ATH is 4-7 (36%) when liked and 1-4 (20%, -4.0u) on strong plays. MIN is modest at 9-10 overall but 3-2 (+1.0u) on strong plays, so this is a smaller 1u lean.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
         "input_tokens": 3629,
         "output_tokens": 2014
+      },
+      "totals": {
+        "wins": 4,
+        "losses": 1,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": 6.0
+      }
+    },
+    "2026-08-25": {
+      "generated_at": "2026-08-25T05:38:46",
+      "model": "claude-opus-5",
+      "date": "2026-08-25",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "TBR",
+          "home_team": "DET",
+          "away_team": "TBR",
+          "rating_source": "R2",
+          "delta": -2.21,
+          "units": 2,
+          "confidence": "high",
+          "reasoning": "All three ratings agree on Tampa Bay with strong deltas (R1 -2.06, R2 -2.21, R3 -2.10), the cleanest consensus on the board. TBR is 26-12 (68%) when the model likes them and a slate-best 19-5 (79%, +23.0u) on strong plays, and R2 strong plays are 54-36 (60%) over 14 days and 29-9 (76%) over 7.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "LAD",
+          "home_team": "ATL",
+          "away_team": "LAD",
+          "rating_source": "R1",
+          "delta": -1.97,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "Unanimous three-rating agreement (R1 -1.97, R2 -1.66, R3 -1.50) on a team that is 22-9 (71%) when liked and an outstanding 16-2 (89%, +19.0u) on strong plays. Fading ATL is also profitable: Atlanta is just 4-5 (44%, -3.0u) as a strong-play side.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "MIL",
+          "home_team": "NYM",
+          "away_team": "MIL",
+          "rating_source": "R3",
+          "delta": -1.08,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "R3 is the top strong-play engine — 173-135 (56%, +61.0u) season, 101-77 (57%, +45.0u) in 30 days, 33-11 (75%, +24.0u) in 7 days — and it flags MIL at -1.08. Milwaukee is 28-15 (65%) when the model likes them with a 17-8 (68%, +8.0u) strong-play record, offsetting NYM's mediocre 4-4 (50%) strong mark.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "SFG",
+          "home_team": "SFG",
+          "away_team": "CIN",
+          "rating_source": "R2",
+          "delta": 2.29,
+          "units": 2,
+          "confidence": "medium",
+          "reasoning": "Largest edge on the slate after TBR (R2 +2.29, R3 +2.00, R1 +1.73) with all three ratings aligned, and the fade side is the key: CIN is 4-15 (21%) when the model likes them and 1-9 (10%, -9.0u) on strong plays. SFG's own 2-6 strong record is the caution, so sized at 2u on the R2 delta rather than pressed.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 5,
+          "pick": "CHC",
+          "home_team": "ARI",
+          "away_team": "CHC",
+          "rating_source": "R3",
+          "delta": -0.92,
+          "units": 1,
+          "confidence": "low",
+          "reasoning": "R3 shows the biggest lean here (-0.92) and R3's hot trends category is 108-80 (57%) over 14 days versus 56% season. Chicago is 21-10 (68%) when liked with a 9-6 (60%, +5.0u) strong record, while ARI is a poor 3-7 (30%, -7.0u) as a strong-play side.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 4209,
+        "output_tokens": 1730
       },
       "totals": {
         "wins": 0,
