@@ -681,6 +681,14 @@
         .form-row > .home       { order: 6; flex: 1 1 40%; min-width: 0; }
         .form-row > .away       { order: 7; flex: 1 1 40%; min-width: 0; }
         .form-row > .sign-slot  { order: 9; }
+        /* O/U and TTO: the direction bubbles ride the top right corner of
+           line 1 instead of the bottom left (for O/U the hidden H/A bubbles
+           free that corner; TTO has room beside them) */
+        .form-row.bt-ou > .sign-slot,
+        .form-row.bt-tto > .sign-slot { order: 4; margin-left: auto; }
+        .form-row.bt-tto > .side-h,
+        .form-row.bt-tto > .side-a { margin-left: 6px; }
+        .form-row.bt-ou > .sign-slot { margin-left: auto; }
         .form-row > .points     { order: 10; flex: 1 1 64px; max-width: 110px; }
         .form-row > .units      { order: 11; flex: 1 1 64px; max-width: 100px; }
         .form-row > .lock-cell  { order: 12; width: 40px; height: 40px; }
