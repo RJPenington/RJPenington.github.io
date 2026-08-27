@@ -33,6 +33,7 @@
         --nick-line: #30465a;
         /* Monochrome padlock shape for CSS pseudo-elements, painted through
            a mask so it always renders in the current context's color */
+        --chev-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 3l8 9-8 9h5l8-9-8-9H4zm9 0l8 9-8 9h5l8-9-8-9h-5z" fill="black"/></svg>');
         --lock-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 0 1 6 0v3H9z"/></svg>');
     }
     .lock-icon, .trash-icon { width: 1em; height: 1em; display: inline-block; vertical-align: -0.12em; }
@@ -70,11 +71,19 @@
     header.hero > * { position: relative; }
     /* Double chevrons pointing inward on each edge */
     .hero-chev {
-        position: absolute; top: 50%; width: 34px; height: 34px;
-        color: rgba(66, 229, 138, 0.26);
+        position: absolute; top: 50%; width: 110px; height: 110px;
+        color: rgba(66, 229, 138, 0.35);
+        filter: drop-shadow(0 0 10px rgba(66, 229, 138, 0.25));
     }
-    .hero-chev.left  { left: 12px; transform: translateY(-50%); }
-    .hero-chev.right { right: 12px; transform: translateY(-50%) scaleX(-1); }
+    /* Layered echo behind each chevron for the mockup's stacked-arrow look */
+    .hero-chev::after {
+        content: ''; position: absolute; inset: -18px;
+        background: currentColor; opacity: 0.25;
+        -webkit-mask: var(--chev-mask) center / contain no-repeat;
+        mask: var(--chev-mask) center / contain no-repeat;
+    }
+    .hero-chev.left  { left: -14px; transform: translateY(-50%); }
+    .hero-chev.right { right: -14px; transform: translateY(-50%) scaleX(-1); }
     /* The football in flight: a smooth drift with a slight rotation wobble,
        while the trailing speed dashes slide backward. Fully static when the
        visitor prefers reduced motion. */
@@ -152,6 +161,7 @@
     .season-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
     .season-row select { flex: 1 1 50%; min-width: 0; }
     .season-row select {
+        font-family: "Copperplate Gothic", Copperplate, "Copperplate Gothic Light", "Copperplate Gothic Bold", serif;
         background: var(--card); color: var(--ink); border: 1px solid var(--lock-blue);
         padding: 10px 6px; min-height: 42px; border-radius: 6px; font-size: 0.78rem; cursor: pointer;
         white-space: nowrap; font-weight: 600;
@@ -745,10 +755,10 @@
         .form-row.bt-ou > .lock-cell { margin-left: 16px; margin-right: 0; }
         .form-row > .points     { order: 10; flex: 1 1 64px; max-width: 110px; }
         .form-row > .units      { order: 11; flex: 1 1 64px; max-width: 100px; }
-        .form-row > .lock-cell  { order: 12; width: 40px; height: 40px; }
+        .form-row > .lock-cell  { order: 12; width: 50px; height: 50px; }
         .form-row > .row-status { order: 13; margin-left: auto; }
         /* Timeframe bubbles slim down so line 1 keeps room for team names */
-        .form-row > .timeframe label { min-width: 26px; height: 34px; padding: 0 4px; }
+        .form-row > .timeframe label { min-width: 32px; height: 42px; padding: 0 5px; }
         /* Row number as a small notch badge riding the card's top border.
            Absolutely positioned, so it takes no space from either line and
            never crowds the inputs at 390px. */
@@ -762,7 +772,7 @@
         /* 42px tall + 16px font: comfortable taps, and iOS Safari does not
            auto-zoom on focus at 16px or larger */
         .form-row select, .form-row .home, .form-row .away,
-        .form-row .points, .form-row .units { min-height: 42px; font-size: 16px; }
+        .form-row .points, .form-row .units { min-height: 52px; font-size: 18px; }
         .sign-group label { min-width: 32px; height: 38px; font-size: 0.95rem; }
         .lock-cell:has(input:checked)::after { width: 16px; height: 16px; }
         /* Keep the card padding even when the lock highlight adds its own
