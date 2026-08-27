@@ -659,18 +659,28 @@
             background: var(--card);
             padding: 8px; margin: 0.55rem 0;
         }
-        .form-row::before { content: ''; flex-basis: 100%; height: 0; order: 7; }
-        .form-row > .bet-type   { order: 1; flex: 0 0 auto; }
-        .form-row > .timeframe  { order: 2; }
+        /* Three-line phone card.
+           Line 1: timeframe icons, bet type, then the H and A bubbles
+           (H before A, matching home-left and away-right below).
+           Line 2: home and away inputs side by side, an even half each.
+           Line 3: sign group, points, units, lock, status.
+           The two pseudo items force the line breaks; they exist only in
+           this media query, so the desktop grid never sees them. With H/A
+           hidden on O/U rows, line 1 is just timeframe plus bet type and
+           line 2 still splits the teams evenly. */
+        .form-row::before { content: ''; flex-basis: 100%; height: 0; order: 5; }
+        .form-row::after  { content: ''; flex-basis: 100%; height: 0; order: 8; }
+        .form-row > .timeframe  { order: 1; }
+        .form-row > .bet-type   { order: 2; flex: 0 0 auto; }
         .form-row > .side-h     { order: 3; }
-        .form-row > .home       { order: 4; flex: 1 1 60px; min-width: 0; }
-        .form-row > .side-a     { order: 5; }
-        .form-row > .away       { order: 6; flex: 1 1 60px; min-width: 0; }
-        .form-row > .sign-slot  { order: 8; }
-        .form-row > .points     { order: 9; flex: 1 1 64px; max-width: 110px; }
-        .form-row > .units      { order: 10; flex: 1 1 64px; max-width: 100px; }
-        .form-row > .lock-cell  { order: 11; width: 40px; height: 40px; }
-        .form-row > .row-status { order: 12; margin-left: auto; }
+        .form-row > .side-a     { order: 4; }
+        .form-row > .home       { order: 6; flex: 1 1 40%; min-width: 0; }
+        .form-row > .away       { order: 7; flex: 1 1 40%; min-width: 0; }
+        .form-row > .sign-slot  { order: 9; }
+        .form-row > .points     { order: 10; flex: 1 1 64px; max-width: 110px; }
+        .form-row > .units      { order: 11; flex: 1 1 64px; max-width: 100px; }
+        .form-row > .lock-cell  { order: 12; width: 40px; height: 40px; }
+        .form-row > .row-status { order: 13; margin-left: auto; }
         /* Timeframe bubbles slim down so line 1 keeps room for team names */
         .form-row > .timeframe label { min-width: 26px; height: 34px; padding: 0 4px; }
         /* Row number as a small notch badge riding the card's top border.
