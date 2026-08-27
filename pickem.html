@@ -113,12 +113,6 @@
         color: var(--dim); font-size: 0.78rem; font-weight: 700;
         letter-spacing: 0.32em; text-transform: uppercase;
     }
-    .hero-names { margin-top: 0.4rem; font-size: 1.05rem; font-weight: 700; }
-    .hero-names .name {
-        color: #63796b;
-        text-shadow: 0 0 12px rgba(66, 229, 138, 0.4);
-    }
-    .hero-names .vs { color: var(--dim); font-weight: 400; margin: 0 0.45rem; }
     .hero-tally {
         margin-top: 0.55rem;
         font-size: 1.45rem; font-weight: 800;
@@ -127,6 +121,13 @@
     .hero-tally .t-rj { color: var(--accent); text-shadow: 0 0 12px rgba(66, 229, 138, 0.55); }
     .hero-tally .t-sep { color: var(--dim); font-weight: 400; margin: 0 0.7rem; }
     .hero-tally .t-nick { color: var(--lock-blue-bright); text-shadow: 0 0 12px rgba(37, 99, 235, 0.6); }
+    /* Numbers in black, set on light pills so they stay readable on the
+       dark hero */
+    .hero-tally .t-num {
+        color: #000; background: #e9efe9; text-shadow: none;
+        padding: 0 0.5em; border-radius: 6px; margin: 0 0.3em;
+        display: inline-block; min-width: 1.5em; text-align: center;
+    }
 
     /* Notes at the bottom of each enter section */
     .section-notes { margin-top: 1.1rem; }
@@ -671,8 +672,7 @@
         .hero-ball { width: 76px; height: 48px; }
         .hero-ball-wrap { height: 50px; }
         .hero-chev { width: 24px; height: 24px; }
-        .hero-names { font-size: 0.92rem; }
-        .hero-tally { font-size: 1.25rem; }
+        .hero-tally { font-size: 0.95rem; }
 
         /* Toolbar and tabs: wrap cleanly, tap-friendly, summary drops below */
         .toolbar { padding: 0.6rem 0.7rem; gap: 0.5rem; }
@@ -808,7 +808,6 @@
             </div>
             <h1 class="hero-title">PICK'EM</h1>
             <div class="hero-sub">All Time Head To Head</div>
-            <div class="hero-names"><span class="name">RJ The Great</span><span class="vs">vs</span><span class="name">Nick The Average</span></div>
             <div class="hero-tally" id="heroTally"></div>
         </header>
 
@@ -1007,9 +1006,9 @@
                 else if (n > r) nickWins++;
             }
         }
-        el.innerHTML = `<span class="t-rj">RJ ${rjWins}</span>`
+        el.innerHTML = `<span class="t-rj">RJ THE GREAT <span class="t-num">${rjWins}</span></span>`
             + `<span class="t-sep">|</span>`
-            + `<span class="t-nick">${nickWins} NICK</span>`;
+            + `<span class="t-nick"><span class="t-num">${nickWins}</span> NICK THE AVERAGE</span>`;
     }
     updateHeroTally();
 
