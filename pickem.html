@@ -690,9 +690,11 @@
         /* O/U row 3 zoning: Total sits under the gap between the timeframe
            and bet type, Units under the gap between bet type and the O/U
            bubbles, lock to the right of them */
-        .form-row.bt-ou > .points { margin-left: 4%; margin-right: auto; }
-        .form-row.bt-ou > .units  { margin-left: auto; margin-right: 4%; }
-        .form-row.bt-ou > .lock-cell { margin-left: 0; }
+        /* Equal auto gaps: [gap] Total [gap] Units+Lock [gap] status, so the
+           space left of Total matches the space between Total and Units */
+        .form-row.bt-ou > .points { margin-left: auto; margin-right: 0; }
+        .form-row.bt-ou > .units  { margin-left: auto; margin-right: 0; }
+        .form-row.bt-ou > .lock-cell { margin-left: 6px; }
         .form-row > .points     { order: 10; flex: 1 1 64px; max-width: 110px; }
         .form-row > .units      { order: 11; flex: 1 1 64px; max-width: 100px; }
         .form-row > .lock-cell  { order: 12; width: 40px; height: 40px; }
