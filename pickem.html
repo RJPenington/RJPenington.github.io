@@ -129,13 +129,23 @@
         font-variant-numeric: tabular-nums; letter-spacing: 0.04em;
         white-space: nowrap;   /* names plus record always stay one line */
     }
-    .hero-tally .t-rj { color: var(--accent); text-shadow: 0 0 12px rgba(66, 229, 138, 0.55); }
+    .hero-tally .t-rj {
+        background: linear-gradient(100deg, #2fbf71 15%, #a8d94a 55%, #fee123 90%);
+        -webkit-background-clip: text; background-clip: text;
+        -webkit-text-fill-color: transparent; color: #a8d94a;
+        filter: drop-shadow(0 0 10px rgba(150, 210, 60, 0.45));
+    }
     .hero-tally .t-sep { color: var(--dim); font-weight: 400; margin: 0 0.7rem; }
-    .hero-tally .t-nick { color: var(--lock-blue-bright); text-shadow: 0 0 12px rgba(37, 99, 235, 0.6); }
+    .hero-tally .t-nick {
+        background: linear-gradient(100deg, #3a6ea8 10%, #8a90b8 50%, #c99700 90%);
+        -webkit-background-clip: text; background-clip: text;
+        -webkit-text-fill-color: transparent; color: #8a90b8;
+        filter: drop-shadow(0 0 10px rgba(160, 140, 60, 0.4));
+    }
     /* Numbers in black, set on light pills so they stay readable on the
        dark hero */
     .hero-tally .t-num {
-        color: #000; background: #e9efe9; text-shadow: none;
+        color: #000; -webkit-text-fill-color: #000; background: #e9efe9; text-shadow: none;
         padding: 0 0.5em; border-radius: 6px; margin: 0 0.3em;
         display: inline-block; min-width: 1.5em; text-align: center;
     }
@@ -165,7 +175,7 @@
     .season-row select {
         font-family: "Copperplate Gothic", Copperplate, "Copperplate Gothic Light", "Copperplate Gothic Bold", serif;
         background: var(--card); color: var(--ink); border: 1px solid var(--lock-blue);
-        padding: 12px 8px; min-height: 56px; border-radius: 6px; font-size: 1.05rem; cursor: pointer;
+        padding: 12px 8px; min-height: 56px; border-radius: 6px; font-size: 1.22rem; cursor: pointer;
         white-space: nowrap; font-weight: 600;
         text-align: center; text-align-last: center;
         box-shadow: 0 0 10px rgba(37, 99, 235, 0.45), 0 0 22px rgba(37, 99, 235, 0.15);
@@ -332,6 +342,7 @@
         box-shadow: 0 0 10px rgba(37, 99, 235, 0.20);
     }
     .lock-slot .slot-title {
+        font-family: "Copperplate Gothic", Copperplate, "Copperplate Gothic Light", "Copperplate Gothic Bold", serif;
         font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
         letter-spacing: 0.07em; color: var(--lock-blue-bright); margin-bottom: 0.35rem;
     }
@@ -553,9 +564,11 @@
     /* The slate heading is the section's marquee: big, bold, centered on
        its own line above the cards */
     .slate-title {
-        justify-content: center; text-align: center;
+        font-family: "Copperplate Gothic", Copperplate, "Copperplate Gothic Light", "Copperplate Gothic Bold", serif;
+        justify-content: center; text-align: center; align-items: center;
+        display: flex; min-height: 3.2rem;
         font-size: 1.9rem; font-weight: 800; letter-spacing: 0.04em;
-        margin: 0.5rem 0 1rem;
+        margin: 0.35rem 0 0.9rem;
     }
     .form-section-title {
         color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em;
@@ -633,7 +646,7 @@
     .live-warn .dismiss {
         position: absolute; right: 6px; top: 4px;
         background: none; border: none; color: var(--dim);
-        font-size: 1.05rem; cursor: pointer; padding: 4px 8px;
+        font-size: 1.22rem; cursor: pointer; padding: 4px 8px;
     }
     .live-warn .dismiss:hover { color: var(--ink); }
 
@@ -643,7 +656,7 @@
        small dim footnotes stay left-aligned for readability, and the enter
        form rows keep their layout because they are controls, not prose. */
     .panel-card h3 { text-align: center; justify-content: center; }
-    section.panel h2 { text-align: center; }
+    section.panel h2 { text-align: center; font-family: "Copperplate Gothic", Copperplate, "Copperplate Gothic Light", "Copperplate Gothic Bold", serif; }
     .form-section-title { justify-content: center; }
     table.data th, table.data td { text-align: center; }
     table.data th.num, table.data td.num { text-align: center; }
@@ -703,7 +716,7 @@
            "26-27 Conf. Champs", must stay on one line in a half-width select
            at 390px. Selects open the native picker on phones, so the
            sub-16px zoom quirk does not apply. */
-        .season-row select { min-height: 56px; font-size: 14px; padding: 10px 6px; }
+        .season-row select { min-height: 56px; font-size: 15px; padding: 10px 6px; }
         .slate-title { font-size: 1.45rem; }
         .toolbar .summary { font-size: 1rem; }
         .toolbar .summary .sum-row:first-child { font-size: 1.2rem; }
