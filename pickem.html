@@ -107,7 +107,8 @@
     .season-tab.active { background: #2e3648; color: var(--accent, #ffd54a); border-bottom-color: var(--accent, #ffd54a); }
     .season-tab:hover { color: #e6e9f0; }
     /* Season tab row: the tabs plus the week selector inline at the end */
-    .season-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .season-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .season-row select { flex: 1 1 50%; min-width: 0; }
     .season-row select {
         background: var(--card); color: var(--ink); border: 1px solid var(--lock-blue);
         padding: 5px 6px; border-radius: 6px; font-size: 0.78rem; cursor: pointer;
@@ -495,6 +496,7 @@
         box-shadow: 0 0 8px rgba(66, 229, 138, 0.45);
     }
     .hidden-field { display: none !important; }
+    .slate-title { justify-content: center; font-size: 1.25rem; font-weight: 700; letter-spacing: 0.03em; }
     .form-section-title {
         color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em;
         font-size: 0.85rem; font-weight: 700; margin: 1.25rem 0 0.5rem 0;
@@ -748,9 +750,8 @@
         <!-- Season tabs with the week selector inline at the end of the row,
              then the scoreboard card holding only the three stat rows -->
         <div class="season-row">
-            <div class="season-tabs" id="seasonTabs"></div>
+            <select id="seasonSel" aria-label="Season"></select>
             <select id="weekSel" aria-label="Week"></select>
-            <select id="seasonSel" style="display:none;"></select>
         </div>
         <div class="toolbar">
             <div class="summary" id="summary"></div>
@@ -1839,23 +1840,14 @@
     /* ===== Toolbar wiring ===== */
     const seasonSel = document.getElementById('seasonSel');
     const weekSel = document.getElementById('weekSel');
-    const seasonTabs = document.getElementById('seasonTabs');
     // Last accepted week selection, for rolling back a declined week switch
     let weekSelAccepted = null;
-    Object.keys(SEASONS).forEach((name, i) => {
+    // Season is a plain dropdown now (tabs retired); options in SEASONS order,
+    // current season first, then archive, then All.
+    Object.keys(SEASONS).forEach(name => {
         const opt = document.createElement('option');
         opt.value = name; opt.textContent = name;
         seasonSel.appendChild(opt);
-        const btn = document.createElement('button');
-        btn.className = 'season-tab' + (i === 0 ? ' active' : '');
-        btn.textContent = name;
-        btn.addEventListener('click', () => {
-            seasonSel.value = name;
-            seasonTabs.querySelectorAll('.season-tab').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            seasonSel.dispatchEvent(new Event('change'));
-        });
-        seasonTabs.appendChild(btn);
     });
     // The old empty-season banner is gone. The current season always carries
     // weeks 0..14 now, so the empty person cards on Week Picks are all the
@@ -2777,7 +2769,7 @@
                 <span></span>
             </div>`;
             return `<div class="panel-card form-section-card">
-                <div class="form-section-title">Week Slate<span class="lock">Each pick's timeframe tag sets its lock time</span></div>
+                <div class="form-section-title slate-title" id="slateTitle">Week Slate</div>
                 ${header}
                 ${rows}
             </div>`;
@@ -3520,7 +3512,14 @@
         applyRowLockState(row, locked);
     }
 
+    function updateSlateTitle() {
+        const el = document.getElementById('slateTitle');
+        if (!el) return;
+        el.textContent = weekDisplayName(enterWeek()) + ' Slate';
+    }
+
     function hydrateEnterForm() {
+        updateSlateTitle();
         const panel = document.getElementById('enter');
         if (!panel) return;
         const wk = enterWeek();
