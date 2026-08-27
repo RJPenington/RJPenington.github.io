@@ -125,11 +125,14 @@
     }
     .hero-tally {
         margin-top: 0.55rem;
-        font-size: clamp(0.7rem, 2.6vw, 1.05rem); font-weight: 800;
+        font-size: clamp(0.62rem, 2.5vw, 1.05rem); font-weight: 800;
         font-variant-numeric: tabular-nums; letter-spacing: 0.04em;
         white-space: nowrap;   /* names plus record always stay one line */
-        /* Names and number pills vertically centered against each other */
+        /* Names and number pills vertically centered against each other;
+           full width with zero side padding so the divider is the exact
+           midline of the card on every device */
         display: flex; justify-content: center; align-items: center;
+        width: 100%; padding-left: 0; padding-right: 0;
     }
     /* Equal flex halves make the separator sit at the exact center of the
        card no matter how long each name is */
@@ -213,8 +216,9 @@
     .summary .sum-row { white-space: nowrap; }
     .summary .net-even { color: #4a5157; text-shadow: none; }
     .summary .winner-pill {
-        color: #000; background: #e9efe9; padding: 0 0.45em;
+        color: #fff; background: #000; padding: 0 0.45em;
         border-radius: 6px; display: inline-block;
+        border: 1px solid #2a2f36;
     }
     .summary .sum-row:first-child { font-size: 1.3rem; }
     .summary .sum-sep { color: var(--dim); margin: 0 7px; }
