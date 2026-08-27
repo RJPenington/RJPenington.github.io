@@ -110,7 +110,7 @@
     .season-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
     .season-row select {
         background: var(--card); color: var(--ink); border: 1px solid var(--lock-blue);
-        padding: 6px 9px; border-radius: 6px; font-size: 0.84rem; cursor: pointer;
+        padding: 5px 6px; border-radius: 6px; font-size: 0.78rem; cursor: pointer;
         white-space: nowrap; font-weight: 600;
         text-align: center; text-align-last: center;
         box-shadow: 0 0 10px rgba(37, 99, 235, 0.45), 0 0 22px rgba(37, 99, 235, 0.15);
@@ -630,7 +630,7 @@
         .toolbar { padding: 0.6rem 0.7rem; gap: 0.5rem; }
         /* Small font keeps even "26-27 W14" on one line; selects open the
            native picker on phones so the sub-16px zoom quirk does not apply */
-        .season-row select { min-height: 40px; font-size: 13px; padding: 6px 8px; }
+        .season-row select { min-height: 38px; font-size: 12px; padding: 5px 6px; }
         .toolbar .summary { font-size: 1rem; }
         .toolbar .summary .sum-row:first-child { font-size: 1.2rem; }
         .season-tabs { flex-wrap: wrap; margin-right: 6px; }
@@ -681,14 +681,16 @@
         .form-row > .home       { order: 6; flex: 1 1 40%; min-width: 0; }
         .form-row > .away       { order: 7; flex: 1 1 40%; min-width: 0; }
         .form-row > .sign-slot  { order: 9; }
-        /* O/U and TTO: the direction bubbles ride the top right corner of
-           line 1 instead of the bottom left (for O/U the hidden H/A bubbles
-           free that corner; TTO has room beside them) */
-        .form-row.bt-ou > .sign-slot,
-        .form-row.bt-tto > .sign-slot { order: 4; margin-left: auto; }
-        .form-row.bt-tto > .side-h,
-        .form-row.bt-tto > .side-a { margin-left: 6px; }
-        .form-row.bt-ou > .sign-slot { margin-left: auto; }
+        /* O/U only: the direction bubbles ride the top right corner of
+           line 1 (the hidden H/A bubbles free that corner). TTO keeps its
+           direction bubbles on line 3 as before. */
+        .form-row.bt-ou > .sign-slot { order: 4; margin-left: auto; }
+        /* O/U row 3 zoning: Total sits under the gap between the timeframe
+           and bet type, Units under the gap between bet type and the O/U
+           bubbles, lock to the right of them */
+        .form-row.bt-ou > .points { margin-left: 14%; }
+        .form-row.bt-ou > .units  { margin-left: auto; margin-right: 14%; }
+        .form-row.bt-ou > .lock-cell { margin-left: 0; }
         .form-row > .points     { order: 10; flex: 1 1 64px; max-width: 110px; }
         .form-row > .units      { order: 11; flex: 1 1 64px; max-width: 100px; }
         .form-row > .lock-cell  { order: 12; width: 40px; height: 40px; }
