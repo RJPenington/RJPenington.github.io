@@ -49,43 +49,84 @@
     }
     .container { max-width: 1100px; margin: 0 auto; padding: 1.25rem 1.25rem 4rem; }
 
-    /* HEADER — football field + helmet collision animation */
-    header {
+    /* HERO: neon head-to-head card, replaces the old canvas field graphic */
+    header.hero {
         position: relative; overflow: hidden;
-        height: 260px;
-        background: #0a0d12;
-        border-radius: 12px;
-        border: 1px solid rgba(66, 229, 138, 0.4);
-        box-shadow:
-            0 0 28px rgba(66, 229, 138, 0.20),
-            0 0 60px rgba(66, 229, 138, 0.10),
-            inset 0 0 60px rgba(0, 0, 0, 0.5);
+        background: linear-gradient(180deg, #081410 0%, #060d0a 100%);
+        border: 1px solid rgba(66, 229, 138, 0.35);
+        border-radius: 14px;
+        box-shadow: 0 0 14px rgba(66, 229, 138, 0.12), inset 0 0 50px rgba(0, 0, 0, 0.5);
         margin-bottom: 1.25rem;
+        padding: 1.5rem 1rem 1.3rem;
+        text-align: center;
     }
-    header canvas {
-        position: absolute; inset: 0; width: 100%; height: 100%;
+    /* Faint horizontal speed lines across the whole card, behind everything */
+    header.hero::before {
+        content: ''; position: absolute; inset: 0;
+        background: repeating-linear-gradient(180deg,
+            transparent 0 16px, rgba(66, 229, 138, 0.045) 16px 17px);
+        pointer-events: none;
     }
-    header .title-stack {
-        position: absolute; inset: 0;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        z-index: 2; text-align: center; pointer-events: none;
+    header.hero > * { position: relative; }
+    /* Double chevrons pointing inward on each edge */
+    .hero-chev {
+        position: absolute; top: 50%; width: 34px; height: 34px;
+        color: rgba(66, 229, 138, 0.26);
     }
-    /* Header title, painted on the field like a stadium midfield logo:
-       bold yellow with a heavy dark stroke for grass-paint depth. */
-    header h1 {
-        font-family: 'Copperplate Gothic Bold', 'Copperplate', 'Bank Gothic', 'Trajan Pro', 'Optima', Georgia, serif;
-        font-size: 5rem; font-weight: 900;
-        letter-spacing: 0.12em; text-transform: uppercase;
-        color: #fee11a;
-        background: linear-gradient(180deg, #fff2a0 0%, #fee11a 55%, #c99c00 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        -webkit-text-stroke: 2px rgba(0, 0, 0, 0.55);
-        text-shadow: 0 3px 6px rgba(0, 0, 0, 0.45);
-        line-height: 1;
+    .hero-chev.left  { left: 12px; transform: translateY(-50%); }
+    .hero-chev.right { right: 12px; transform: translateY(-50%) scaleX(-1); }
+    /* The football in flight: a smooth drift with a slight rotation wobble,
+       while the trailing speed dashes slide backward. Fully static when the
+       visitor prefers reduced motion. */
+    .hero-ball-wrap { height: 64px; display: flex; align-items: center; justify-content: center; }
+    .hero-ball {
+        width: 100px; height: 62px;
+        color: #eafff2;
+        filter: drop-shadow(0 0 6px rgba(66, 229, 138, 0.65));
+        animation: ball-flight 4.2s ease-in-out infinite;
     }
-    header h1 .apostrophe { -webkit-text-fill-color: #fff; color: #fff; }
+    .hero-lines line {
+        stroke: rgba(66, 229, 138, 0.55);
+        stroke-width: 2; stroke-linecap: round;
+        stroke-dasharray: 10 14;
+        animation: dash-slide 1.6s linear infinite;
+    }
+    @keyframes ball-flight {
+        0%, 100% { transform: translate(-5px, 3px) rotate(-6deg); }
+        50%      { transform: translate(7px, -5px) rotate(4deg); }
+    }
+    @keyframes dash-slide {
+        to { stroke-dashoffset: -48; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .hero-ball, .hero-lines line { animation: none; }
+    }
+    .hero-title {
+        font-style: italic; font-weight: 900;
+        font-size: 3.4rem; line-height: 1.1; letter-spacing: 0.05em;
+        color: #ffffff;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.35), 0 0 30px rgba(66, 229, 138, 0.45);
+        margin-top: 0.2rem;
+    }
+    .hero-sub {
+        margin-top: 0.45rem;
+        color: var(--dim); font-size: 0.78rem; font-weight: 700;
+        letter-spacing: 0.32em; text-transform: uppercase;
+    }
+    .hero-names { margin-top: 0.4rem; font-size: 1.05rem; font-weight: 700; }
+    .hero-names .name {
+        color: #63796b;
+        text-shadow: 0 0 12px rgba(66, 229, 138, 0.4);
+    }
+    .hero-names .vs { color: var(--dim); font-weight: 400; margin: 0 0.45rem; }
+    .hero-tally {
+        margin-top: 0.55rem;
+        font-size: 1.45rem; font-weight: 800;
+        font-variant-numeric: tabular-nums; letter-spacing: 0.04em;
+    }
+    .hero-tally .t-rj { color: var(--accent); text-shadow: 0 0 12px rgba(66, 229, 138, 0.55); }
+    .hero-tally .t-sep { color: var(--dim); font-weight: 400; margin: 0 0.7rem; }
+    .hero-tally .t-nick { color: var(--lock-blue-bright); text-shadow: 0 0 12px rgba(37, 99, 235, 0.6); }
 
     /* Notes at the bottom of each enter section */
     .section-notes { margin-top: 1.1rem; }
@@ -625,8 +666,13 @@
            scrolls inside its own card instead */
         body { overflow-x: hidden; }
         .container { padding: 0.75rem 0.75rem 3rem; }
-        header { height: 170px; }
-        header h1 { font-size: 2.6rem; -webkit-text-stroke: 1.5px rgba(0, 0, 0, 0.55); }
+        header.hero { padding: 1rem 0.6rem 0.9rem; }
+        .hero-title { font-size: 2.3rem; }
+        .hero-ball { width: 76px; height: 48px; }
+        .hero-ball-wrap { height: 50px; }
+        .hero-chev { width: 24px; height: 24px; }
+        .hero-names { font-size: 0.92rem; }
+        .hero-tally { font-size: 1.25rem; }
 
         /* Toolbar and tabs: wrap cleanly, tap-friendly, summary drops below */
         .toolbar { padding: 0.6rem 0.7rem; gap: 0.5rem; }
@@ -742,12 +788,28 @@
 </head>
 <body>
     <div class="container">
-        <!-- HEADER — canvas draws field + helmet collision animation -->
-        <header>
-            <canvas id="hdrCanvas"></canvas>
-            <div class="title-stack">
-                <h1>PICK<span class="apostrophe">'</span>EM</h1>
+        <!-- HERO: neon head-to-head card with the football in flight -->
+        <header class="hero">
+            <svg class="hero-chev left" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 8l13 12L8 32M22 8l13 12-13 12" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg class="hero-chev right" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 8l13 12L8 32M22 8l13 12-13 12" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="hero-ball-wrap" aria-hidden="true">
+                <svg class="hero-ball" viewBox="0 0 120 76">
+                    <g class="hero-lines">
+                        <line x1="2" y1="22" x2="34" y2="22" />
+                        <line x1="0" y1="38" x2="28" y2="38" />
+                        <line x1="4" y1="54" x2="32" y2="54" />
+                    </g>
+                    <g transform="rotate(-14 72 38)" fill="none" stroke="currentColor">
+                        <ellipse cx="72" cy="38" rx="34" ry="21" stroke-width="3"/>
+                        <path d="M56 38h32" stroke-width="2.4" stroke-linecap="round"/>
+                        <path d="M61 33.5v9M68 33.5v9M75 33.5v9M82 33.5v9" stroke-width="2" stroke-linecap="round"/>
+                    </g>
+                </svg>
             </div>
+            <h1 class="hero-title">PICK'EM</h1>
+            <div class="hero-sub">All Time Head To Head</div>
+            <div class="hero-names"><span class="name">RJ The Great</span><span class="vs">vs</span><span class="name">Nick The Average</span></div>
+            <div class="hero-tally" id="heroTally"></div>
         </header>
 
         <!-- Toolbar: season + week -->
@@ -796,706 +858,6 @@
 <script id="fbsTeams" type="application/json">["Air Force", "Akron", "Alabama", "App State", "Arizona", "Arizona State", "Arkansas", "Arkansas State", "Army", "Auburn", "Ball State", "Baylor", "Boise State", "Boston College", "Bowling Green", "Buffalo", "BYU", "California", "Central Michigan", "Charlotte", "Cincinnati", "Clemson", "Coastal Carolina", "Colorado", "Colorado State", "Connecticut", "Delaware", "Duke", "East Carolina", "Eastern Michigan", "FIU", "Florida", "Florida Atlantic", "Florida State", "Fresno State", "Georgia", "Georgia Southern", "Georgia State", "Georgia Tech", "Hawaii", "Houston", "Illinois", "Indiana", "Iowa", "Iowa State", "Jacksonville State", "James Madison", "Kansas", "Kansas State", "Kennesaw State", "Kent State", "Kentucky", "Liberty", "Louisiana", "Louisiana Tech", "Louisville", "LSU", "Marshall", "Maryland", "Massachusetts", "Memphis", "Miami (FL)", "Miami (OH)", "Michigan", "Michigan State", "Middle Tennessee", "Minnesota", "Mississippi State", "Missouri", "Missouri State", "Navy", "NC State", "Nebraska", "Nevada", "New Mexico", "New Mexico State", "North Carolina", "North Texas", "Northern Illinois", "Northwestern", "Notre Dame", "Ohio", "Ohio State", "Oklahoma", "Oklahoma State", "Old Dominion", "Ole Miss", "Oregon", "Oregon State", "Penn State", "Pittsburgh", "Purdue", "Rice", "Rutgers", "Sam Houston", "San Diego State", "San Jose State", "SMU", "South Alabama", "South Carolina", "South Florida", "Southern Miss", "Stanford", "Syracuse", "TCU", "Temple", "Tennessee", "Texas", "Texas A&M", "Texas State", "Texas Tech", "Toledo", "Troy", "Tulane", "Tulsa", "UAB", "UCF", "UCLA", "UNLV", "USC", "Utah", "Utah State", "UTEP", "UT Martin", "UTSA", "Vanderbilt", "Virginia", "Virginia Tech", "Wake Forest", "Washington", "Washington State", "West Virginia", "Western Kentucky", "Western Michigan", "Wisconsin", "Wyoming"]</script>
 
 <script>
-    /* ===== Football field + helmet collision animation ===== */
-    (function () {
-        const canvas = document.getElementById('hdrCanvas');
-        const ctx = canvas.getContext('2d');
-        let W = 0, H = 0, dpr = 1;
-        function resize() {
-            dpr = window.devicePixelRatio || 1;
-            const rect = canvas.parentElement.getBoundingClientRect();
-            W = rect.width; H = rect.height;
-            canvas.width = Math.max(1, Math.floor(W * dpr));
-            canvas.height = Math.max(1, Math.floor(H * dpr));
-            canvas.style.width  = W + 'px';
-            canvas.style.height = H + 'px';
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        }
-        resize();
-        window.addEventListener('resize', resize);
-
-        // Animation state — cycles: helmets approach, collide, explode, reset.
-        const CYCLE_MS = 4500;   // one full cycle
-        const APPROACH = 0.55;   // when they meet, as fraction of cycle
-        const EXPLODE_LEN = 0.20;
-        let start = performance.now();
-        let particles = [];
-
-        // Field layout constants — used by both drawField and the scenes below.
-        // Keep them as a helper so scenes can position players in field-yard-units.
-        function fieldGeom() {
-            const marginX = 20;
-            const marginY = 12;
-            const fieldW = W - marginX * 2;
-            const fieldH = H - marginY * 2;
-            const unitsTotal = 120;                 // 100 yards + 2×10-yard endzones
-            const uPx = fieldW / unitsTotal;        // px per yard-unit
-            const x = (u) => marginX + u * uPx;     // convert yard-unit to canvas x
-            return {marginX, marginY, fieldW, fieldH, unitsTotal, uPx, x};
-        }
-
-        function drawField() {
-            // Base grass — deep field green with vertical mowed stripes
-            const baseGrad = ctx.createLinearGradient(0, 0, 0, H);
-            baseGrad.addColorStop(0, '#0d3b1f');
-            baseGrad.addColorStop(1, '#0a2a17');
-            ctx.fillStyle = baseGrad;
-            ctx.fillRect(0, 0, W, H);
-            // Mowed stripes — 5-yard-wide alternating light/dark bands
-            const geom = fieldGeom();
-            for (let u = 0; u < geom.unitsTotal; u += 5) {
-                if ((u / 5) % 2 === 0) continue;
-                ctx.fillStyle = 'rgba(255,255,255,0.035)';
-                ctx.fillRect(geom.x(u), 0, geom.uPx * 5, H);
-            }
-            // Subtle grass texture — tiny random dots (deterministic-ish via sin)
-            ctx.fillStyle = 'rgba(0,0,0,0.14)';
-            for (let i = 0; i < 220; i++) {
-                const gx = (i * 173.7) % W;
-                const gy = (i * 91.3)  % H;
-                ctx.fillRect(gx, gy, 1, 1);
-            }
-            ctx.fillStyle = 'rgba(255,255,255,0.06)';
-            for (let i = 0; i < 140; i++) {
-                const gx = (i * 219.1) % W;
-                const gy = (i * 137.5) % H;
-                ctx.fillRect(gx, gy, 1, 1);
-            }
-            // Soft top vignette so text remains readable at the top edge
-            const vg = ctx.createLinearGradient(0, 0, 0, H * 0.35);
-            vg.addColorStop(0, 'rgba(0,0,0,0.35)');
-            vg.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = vg;
-            ctx.fillRect(0, 0, W, H * 0.35);
-
-            // Proper football field markings.
-            // Layout: two 10-yard endzones + 100 yards playing field = 120 units.
-            // Left to right: EZ | G | 10 | 20 | 30 | 40 | 50 | 40 | 30 | 20 | 10 | G | EZ
-            const marginX = 20;
-            const marginY = 12;
-            const fieldW = W - marginX * 2;
-            const fieldH = H - marginY * 2;
-            const unitsTotal = 120;                 // 100 yards + 2×10-yard endzones
-            const uPx = fieldW / unitsTotal;        // px per yard-unit
-
-            // Sidelines (top + bottom) — bright white
-            ctx.strokeStyle = 'rgba(255,255,255,0.85)';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(marginX, marginY); ctx.lineTo(W - marginX, marginY); ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(marginX, H - marginY); ctx.lineTo(W - marginX, H - marginY); ctx.stroke();
-
-            // Endzones — solid Oregon green (deeper than the field)
-            ctx.fillStyle = 'rgba(4, 46, 24, 0.85)';
-            ctx.fillRect(marginX, marginY, uPx * 10, fieldH);
-            ctx.fillRect(W - marginX - uPx * 10, marginY, uPx * 10, fieldH);
-
-            // Goal lines (thick, bright white)
-            ctx.strokeStyle = 'rgba(255,255,255,0.95)';
-            ctx.lineWidth = 3;
-            [10, 110].forEach(u => {
-                const x = marginX + u * uPx;
-                ctx.beginPath(); ctx.moveTo(x, marginY); ctx.lineTo(x, H - marginY); ctx.stroke();
-            });
-
-            // Yard-line markings every 10 yards (10 → 100 = the 10s across the playing field)
-            // With 50 in the middle. Labels: G 10 20 30 40 50 40 30 20 10 G
-            const yardMarks = [
-                {u: 10,  label: 'G'},
-                {u: 20,  label: '10'},
-                {u: 30,  label: '20'},
-                {u: 40,  label: '30'},
-                {u: 50,  label: '40'},
-                {u: 60,  label: '50'},
-                {u: 70,  label: '40'},
-                {u: 80,  label: '30'},
-                {u: 90,  label: '20'},
-                {u: 100, label: '10'},
-                {u: 110, label: 'G'},
-            ];
-            // Draw hash marks — small ticks at 1-yard intervals across the field
-            ctx.strokeStyle = 'rgba(255,255,255,0.7)';
-            ctx.lineWidth = 1;
-            for (let u = 11; u < 110; u++) {
-                if (u % 5 === 0) continue;  // handled below
-                const x = marginX + u * uPx;
-                const hashLen = 5;
-                [fieldH * 0.30 + marginY, fieldH * 0.70 + marginY].forEach(y => {
-                    ctx.beginPath();
-                    ctx.moveTo(x, y - hashLen / 2);
-                    ctx.lineTo(x, y + hashLen / 2);
-                    ctx.stroke();
-                });
-            }
-            // 5-yard lines — short partial lines
-            ctx.strokeStyle = 'rgba(255,255,255,0.85)';
-            ctx.lineWidth = 1.3;
-            for (let u = 15; u < 110; u += 5) {
-                if (u % 10 === 0) continue;
-                const x = marginX + u * uPx;
-                ctx.beginPath();
-                ctx.moveTo(x, marginY + 3);
-                ctx.lineTo(x, marginY + 12);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(x, H - marginY - 12);
-                ctx.lineTo(x, H - marginY - 3);
-                ctx.stroke();
-            }
-            // Ten-yard lines — full-height white lines
-            ctx.strokeStyle = 'rgba(255,255,255,0.95)';
-            ctx.lineWidth = 1.8;
-            for (const m of yardMarks) {
-                if (m.label === 'G') continue;
-                const x = marginX + m.u * uPx;
-                ctx.beginPath(); ctx.moveTo(x, marginY + 2); ctx.lineTo(x, H - marginY - 2); ctx.stroke();
-            }
-
-            // Yard-line numbers — top and bottom rows, upright on both halves
-            ctx.font = '800 13px "Helvetica Neue", system-ui, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            for (const m of yardMarks) {
-                if (m.label === 'G') continue;
-                if (m.u === 60) continue;  // midfield covered by PICK'EM logo
-                const x = marginX + m.u * uPx;
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.88)';
-                ctx.fillText(m.label, x, marginY + 16);
-                ctx.fillText(m.label, x, H - marginY - 16);
-            }
-
-            // ---- Endzone team names — vertical, painted white, both endzones ----
-            function endzoneText(label, uCenter) {
-                const ex = marginX + uCenter * uPx;
-                ctx.save();
-                ctx.translate(ex, H / 2);
-                // Text runs top-to-bottom on the left endzone (turned +90°),
-                // and bottom-to-top on the right endzone (turned −90°) so both
-                // read facing outward as at a real stadium.
-                ctx.rotate(uCenter < 60 ? -Math.PI / 2 : Math.PI / 2);
-                const ezPx = Math.min(fieldH * 0.55, 42);
-                ctx.font = `900 ${ezPx}px 'Copperplate Gothic Bold', 'Impact', system-ui`;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                // Outline for depth
-                ctx.lineWidth = 3;
-                ctx.strokeStyle = 'rgba(0,0,0,0.55)';
-                ctx.strokeText(label, 0, 0);
-                ctx.fillStyle = 'rgba(255,255,255,0.94)';
-                ctx.fillText(label, 0, 0);
-                ctx.restore();
-            }
-            endzoneText('R . J .',    5);   // left endzone  — spaced dotted initials
-            endzoneText('N I C K',  115);   // right endzone — spaced letters
-
-            // Note: the "PICK'EM" midfield text is painted by the h1 element
-            // overlaid on top of this canvas via header .title-stack — kept in
-            // HTML so it stays selectable + accessible + easily restyled.
-        }
-
-        // Draw a football helmet profile with a team-specific logo painted on
-        // the side. `team` is one of 'WSU' or 'ASU'. Rendered as a right-facing
-        // profile helmet with layered shading — shell base, ambient occlusion
-        // rim, warm specular highlight, and painted stripe.
-        function drawHelmet(cx, cy, facingRight, team) {
-            const R = Math.min(H * 0.22, 60);
-            ctx.save();
-            ctx.translate(cx, cy);
-            if (!facingRight) ctx.scale(-1, 1);
-
-            const paint = team === 'WSU'
-                ? { shell:'#f9f9f7', shellMid:'#dcdcd6', shellDark:'#8f8f8a',
-                    trim:'#981e32', trimDark:'#5a1220',
-                    mask:'#9a9da0', maskShadow:'#3a3d40',
-                    chin:'#00b7a8', chinDark:'#00695f' }
-                : { shell:'#ffcf3a', shellMid:'#e0a91b', shellDark:'#7a5a08',
-                    trim:'#8c1d40', trimDark:'#4a0a1e',
-                    mask:'#5c1128', maskShadow:'#2a0812',
-                    chin:'#3d0916', chinDark:'#1a0308' };
-
-            // Ground shadow ellipse
-            ctx.fillStyle = 'rgba(0,0,0,0.55)';
-            ctx.beginPath();
-            ctx.ellipse(0, R * 1.00, R * 1.10, R * 0.14, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // ---- Helmet shell silhouette ----
-            // Anatomical football helmet outline: dome front-heavy, extended ear
-            // flap in back, jaw pad wraps below the ear.
-            function shellPath() {
-                ctx.beginPath();
-                ctx.moveTo(-R * 0.85,  R * 0.05);       // back-left ear flap edge
-                // Sweep up the back of the head
-                ctx.bezierCurveTo(-R * 0.95, -R * 0.25,  -R * 0.90, -R * 0.60, -R * 0.55, -R * 0.80);
-                // Over the top of the crown
-                ctx.bezierCurveTo(-R * 0.20, -R * 1.02,   R * 0.55, -R * 1.00,  R * 0.82, -R * 0.55);
-                // Forehead down to eye level
-                ctx.bezierCurveTo( R * 0.99, -R * 0.20,   R * 1.02,  R * 0.05,  R * 0.85,  R * 0.30);
-                // Front lower jaw curve
-                ctx.bezierCurveTo( R * 0.70,  R * 0.48,   R * 0.55,  R * 0.55,  R * 0.35,  R * 0.55);
-                // Underside of jaw pad
-                ctx.bezierCurveTo( R * 0.10,  R * 0.68,  -R * 0.20,  R * 0.75, -R * 0.45,  R * 0.70);
-                // Ear-flap curve back to start
-                ctx.bezierCurveTo(-R * 0.72,  R * 0.60,  -R * 0.85,  R * 0.35, -R * 0.85,  R * 0.05);
-                ctx.closePath();
-            }
-
-            // Base fill (radial gradient — light hits from upper-right)
-            const shellGrad = ctx.createRadialGradient(R * 0.20, -R * 0.55, R * 0.10,
-                                                        R * 0.10, -R * 0.10, R * 1.30);
-            shellGrad.addColorStop(0.00, paint.shell);
-            shellGrad.addColorStop(0.55, paint.shellMid);
-            shellGrad.addColorStop(1.00, paint.shellDark);
-            ctx.fillStyle = shellGrad;
-            shellPath();
-            ctx.fill();
-
-            // Specular gloss — soft white sheen on the crown/front
-            const gloss = ctx.createRadialGradient(R * 0.15, -R * 0.65, R * 0.05,
-                                                    R * 0.15, -R * 0.55, R * 0.75);
-            gloss.addColorStop(0, 'rgba(255,255,255,0.55)');
-            gloss.addColorStop(1, 'rgba(255,255,255,0)');
-            ctx.fillStyle = gloss;
-            shellPath();
-            ctx.fill();
-
-            // Rim ambient-occlusion — soft dark inner shadow along back and jaw
-            ctx.save();
-            shellPath();
-            ctx.clip();
-            const shade = ctx.createRadialGradient(-R * 0.55, R * 0.30, R * 0.05,
-                                                    -R * 0.55, R * 0.30, R * 1.20);
-            shade.addColorStop(0, 'rgba(0,0,0,0.35)');
-            shade.addColorStop(0.6, 'rgba(0,0,0,0.08)');
-            shade.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = shade;
-            ctx.fillRect(-R * 1.2, -R * 1.2, R * 2.4, R * 2.4);
-            ctx.restore();
-
-            // Rim outline (very subtle)
-            ctx.strokeStyle = 'rgba(0,0,0,0.25)';
-            ctx.lineWidth = 1;
-            shellPath();
-            ctx.stroke();
-
-            // ---- Center helmet stripe (front-to-back), with darker outline ----
-            function stripePath() {
-                ctx.beginPath();
-                ctx.moveTo(-R * 0.55, -R * 0.80);
-                ctx.bezierCurveTo(-R * 0.20, -R * 0.99,  R * 0.55, -R * 0.97,  R * 0.82, -R * 0.55);
-                ctx.lineTo(R * 0.82, -R * 0.42);
-                ctx.bezierCurveTo(R * 0.55, -R * 0.86, -R * 0.20, -R * 0.86, -R * 0.55, -R * 0.68);
-                ctx.closePath();
-            }
-            ctx.fillStyle = paint.trim;
-            stripePath();
-            ctx.fill();
-            ctx.strokeStyle = paint.trimDark;
-            ctx.lineWidth = 0.8;
-            stripePath();
-            ctx.stroke();
-
-            // ---- Team logo on the side ----
-            if (team === 'WSU') {
-                // Stylized crimson Coug head — angular, side profile facing right.
-                // Not pixel-exact vs the real WSU mark (which is trademark art),
-                // but reads unmistakably as WSU: crimson, angular cougar head with
-                // pointy ears + jaw slash.
-                ctx.save();
-                ctx.translate(-R * 0.1, -R * 0.05);
-                ctx.rotate(-0.05);
-                ctx.fillStyle = paint.trim;   // crimson
-                ctx.strokeStyle = paint.trim;
-                ctx.lineJoin = 'miter';
-                ctx.lineWidth = 1;
-                const S = R * 0.55;   // logo bounding size
-                // Cougar head outline (side profile, facing right)
-                ctx.beginPath();
-                ctx.moveTo(-S * 0.65,  S * 0.15);    // back of neck
-                ctx.lineTo(-S * 0.75, -S * 0.10);    // up back of skull
-                ctx.lineTo(-S * 0.55, -S * 0.55);    // back of ear base
-                ctx.lineTo(-S * 0.35, -S * 0.30);    // ear notch dip
-                ctx.lineTo(-S * 0.20, -S * 0.60);    // front ear tip
-                ctx.lineTo(-S * 0.05, -S * 0.35);    // brow ridge
-                ctx.lineTo( S * 0.30, -S * 0.30);    // top of nose bridge
-                ctx.lineTo( S * 0.60, -S * 0.15);    // nose tip
-                ctx.lineTo( S * 0.65,  S * 0.05);    // upper lip
-                ctx.lineTo( S * 0.35,  S * 0.15);    // mouth line back
-                ctx.lineTo( S * 0.55,  S * 0.30);    // fang / lower jaw
-                ctx.lineTo( S * 0.15,  S * 0.40);    // jaw underside
-                ctx.lineTo(-S * 0.15,  S * 0.55);    // neck front
-                ctx.lineTo(-S * 0.55,  S * 0.55);    // neck bottom
-                ctx.closePath();
-                ctx.fill();
-                // Negative-space eye slash — cut a thin diagonal white slit
-                ctx.fillStyle = paint.shell;
-                ctx.beginPath();
-                ctx.moveTo( S * 0.05, -S * 0.20);
-                ctx.lineTo( S * 0.30, -S * 0.10);
-                ctx.lineTo( S * 0.28, -S * 0.02);
-                ctx.lineTo( S * 0.03, -S * 0.12);
-                ctx.closePath();
-                ctx.fill();
-                // Small mouth slit
-                ctx.beginPath();
-                ctx.moveTo( S * 0.35,  S * 0.05);
-                ctx.lineTo( S * 0.55,  S * 0.10);
-                ctx.lineTo( S * 0.55,  S * 0.15);
-                ctx.lineTo( S * 0.35,  S * 0.12);
-                ctx.closePath();
-                ctx.fill();
-                ctx.restore();
-            } else {
-                // ASU pitchfork — three-tined trident in maroon on gold shell
-                ctx.save();
-                ctx.translate(-R * 0.1, -R * 0.1);
-                ctx.rotate(-0.05);
-                ctx.fillStyle = paint.trim;   // maroon #8c1d40
-                ctx.strokeStyle = '#4a0a1e';  // darker maroon outline
-                ctx.lineWidth = 1;
-                // Handle
-                const w = R * 0.06, h = R * 0.55;
-                ctx.beginPath();
-                ctx.rect(-w / 2, 0, w, h);
-                ctx.fill(); ctx.stroke();
-                // Crossbar
-                ctx.beginPath();
-                ctx.rect(-R * 0.35, -R * 0.05, R * 0.7, w);
-                ctx.fill(); ctx.stroke();
-                // Three tines pointing up
-                const tineH = R * 0.55;
-                function tine(x) {
-                    ctx.beginPath();
-                    ctx.moveTo(x - w / 2, -R * 0.05);
-                    ctx.lineTo(x + w / 2, -R * 0.05);
-                    ctx.lineTo(x + w / 2, -R * 0.05 - tineH * 0.75);
-                    ctx.lineTo(x, -R * 0.05 - tineH);       // point
-                    ctx.lineTo(x - w / 2, -R * 0.05 - tineH * 0.75);
-                    ctx.closePath();
-                    ctx.fill(); ctx.stroke();
-                }
-                tine(-R * 0.28);
-                tine(0);
-                tine(R * 0.28);
-                ctx.restore();
-            }
-
-            // ---- Ear hole with padding ring ----
-            // Ring of shell-tinted padding around a dark ear cavity
-            ctx.fillStyle = paint.shellDark;
-            ctx.beginPath();
-            ctx.arc(-R * 0.35, R * 0.12, R * 0.22, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#0a0a0a';
-            ctx.beginPath();
-            ctx.arc(-R * 0.35, R * 0.12, R * 0.14, 0, Math.PI * 2);
-            ctx.fill();
-            // Small screw / vent dots
-            ctx.fillStyle = 'rgba(0,0,0,0.45)';
-            [[-R*0.60,-R*0.35],[R*0.05,-R*0.75],[R*0.55,-R*0.55],[-R*0.10,R*0.40]].forEach(([x,y])=>{
-                ctx.beginPath(); ctx.arc(x,y, R*0.03, 0, Math.PI*2); ctx.fill();
-            });
-
-            // ---- Face mask ----
-            // Modern speed-cage — 3 horizontal bars + 2 vertical connectors,
-            // painted with a subtle shadow underneath for depth.
-            const maskBars = [
-                // Upper eye bar
-                { m: [R*0.28, -R*0.08], c: [R*1.02, -R*0.02], e: [R*0.98, R*0.18] },
-                // Mid nose bar
-                { m: [R*0.22,  R*0.15], c: [R*1.02,  R*0.22], e: [R*0.94, R*0.36] },
-                // Lower mouth/chin bar
-                { m: [R*0.24,  R*0.36], c: [R*0.96,  R*0.40], e: [R*0.72, R*0.55] },
-            ];
-            // Shadow under the mask for depth
-            ctx.strokeStyle = paint.maskShadow;
-            ctx.lineWidth = 3.6; ctx.lineCap = 'round';
-            for (const b of maskBars) {
-                ctx.beginPath();
-                ctx.moveTo(b.m[0], b.m[1] + 1.5);
-                ctx.bezierCurveTo(b.c[0], b.c[1] + 1.5,  b.c[0], b.c[1] + 1.5,  b.e[0], b.e[1] + 1.5);
-                ctx.stroke();
-            }
-            // Mask itself
-            ctx.strokeStyle = paint.mask;
-            ctx.lineWidth = 2.8;
-            for (const b of maskBars) {
-                ctx.beginPath();
-                ctx.moveTo(b.m[0], b.m[1]);
-                ctx.bezierCurveTo(b.c[0], b.c[1],  b.c[0], b.c[1],  b.e[0], b.e[1]);
-                ctx.stroke();
-            }
-            // Vertical connector bars between the horizontals
-            ctx.beginPath();
-            ctx.moveTo(R * 1.02, -R * 0.02);
-            ctx.lineTo(R * 1.02,  R * 0.22);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(R * 0.94,  R * 0.36);
-            ctx.lineTo(R * 0.98,  R * 0.18);
-            ctx.stroke();
-            // Center vertical (nose bar)
-            ctx.beginPath();
-            ctx.moveTo(R * 0.75, R * 0.05);
-            ctx.lineTo(R * 0.72, R * 0.45);
-            ctx.stroke();
-
-            // ---- Chin strap ----
-            // Two-strap arrangement + molded chin cup
-            ctx.strokeStyle = paint.chinDark;
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(-R * 0.30, R * 0.68);
-            ctx.quadraticCurveTo(R * 0.05, R * 0.85, R * 0.38, R * 0.55);
-            ctx.stroke();
-            ctx.strokeStyle = paint.chin;
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(-R * 0.30, R * 0.66);
-            ctx.quadraticCurveTo(R * 0.05, R * 0.82, R * 0.38, R * 0.53);
-            ctx.stroke();
-            // Molded chin cup — small rounded rect
-            ctx.fillStyle = paint.chinDark;
-            ctx.beginPath();
-            ctx.ellipse(R * 0.32, R * 0.60, R * 0.14, R * 0.08, -0.2, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = paint.chin;
-            ctx.beginPath();
-            ctx.ellipse(R * 0.32, R * 0.58, R * 0.10, R * 0.05, -0.2, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.restore();
-        }
-
-        function spawnExplosion(cx, cy) {
-            particles = [];
-            const N = 60;
-            for (let i = 0; i < N; i++) {
-                const a = Math.random() * Math.PI * 2;
-                const speed = 2 + Math.random() * 5;
-                const green = Math.random() < 0.6;
-                particles.push({
-                    x: cx, y: cy,
-                    vx: Math.cos(a) * speed,
-                    vy: Math.sin(a) * speed * 0.8,
-                    life: 1.0,
-                    color: green ? '#4ade80' : (Math.random() < 0.5 ? '#ffffff' : '#ffcc4d'),
-                    size: 2 + Math.random() * 3,
-                });
-            }
-        }
-
-        // ---------- Field-goal-miss scene ----------
-        // Nick's team kicking LEFT from the left-33 (u=43); holder+kicker on
-        // the 40 (u=50). Ball snaps → hold → kick → flies toward the LEFT
-        // uprights, drifts LEFT, misses wide left. "WIDE LEFT · NICK LOSES".
-        // "WIDE LEFT" renders ABOVE the PICK'EM header, "NICK LOSES" below.
-        function drawFieldGoal(p, t) {
-            const geom = fieldGeom();
-            const {marginX, marginY, fieldW, fieldH, uPx, x} = geom;
-            const groundY = H * 0.62;
-
-            // Uprights on the LEFT endzone at u≈5 (center of endzone)
-            const upX = x(5);
-            const upTop = H * 0.10;
-            const upMid = H * 0.55;
-            ctx.strokeStyle = '#ffea3c';
-            ctx.lineWidth = 4; ctx.lineCap = 'square';
-            ctx.beginPath();
-            ctx.moveTo(upX, upMid); ctx.lineTo(upX, H - marginY - 4);
-            ctx.stroke();
-            const barW = uPx * 6;
-            ctx.beginPath();
-            ctx.moveTo(upX - barW/2, upMid);
-            ctx.lineTo(upX + barW/2, upMid);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(upX - barW/2, upMid); ctx.lineTo(upX - barW/2, upTop);
-            ctx.moveTo(upX + barW/2, upMid); ctx.lineTo(upX + barW/2, upTop);
-            ctx.stroke();
-
-            function player(px, py, colorFill, colorEdge) {
-                ctx.fillStyle = 'rgba(0,0,0,0.35)';
-                ctx.beginPath(); ctx.ellipse(px, py + 6, 6, 2, 0, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = colorFill;
-                ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fill();
-                ctx.strokeStyle = colorEdge; ctx.lineWidth = 1;
-                ctx.stroke();
-            }
-
-            // LOS at u=43 (left-side 33-yard line); kicking to the LEFT.
-            const losX = x(43);
-            // O-line (Nick's, blue) + D-line (dark) on the LOS
-            for (let i = -2; i <= 2; i++) player(losX + i * 12, groundY, '#3b82f6', '#0d3b7a');
-            for (let i = -2; i <= 2; i++) player(losX - 14 + i * 12, groundY, '#333', '#000');
-
-            // Holder + kicker sit at u=50 (40-yard line, 7 yds behind LOS to the RIGHT
-            // since we kick LEFT)
-            const holderX = x(50);
-            const holderY = groundY + 2;
-            const kickerX = holderX + 24;   // kicker behind holder (right side)
-            const kickerY = groundY - 6;
-
-            let ballX, ballY, ballAngle = 0;
-            const holderBallY = holderY - 4;
-
-            if (p < 0.15) {
-                ballX = losX; ballY = groundY - 2;
-            } else if (p < 0.30) {
-                const k = (p - 0.15) / 0.15;
-                ballX = losX + (holderX - losX) * k;
-                ballY = (groundY - 2) + (-12 * Math.sin(k * Math.PI)) + (holderBallY - (groundY - 2)) * k;
-                ballAngle = k * 3;
-            } else if (p < 0.42) {
-                ballX = holderX; ballY = holderBallY;
-            } else if (p < 0.75) {
-                const k = (p - 0.42) / 0.33;
-                const targetX = upX - barW * 0.85;   // WIDE LEFT of the left upright
-                ballX = holderX + (targetX - holderX) * k;
-                const arcApex = -Math.min(H * 0.55, 100);
-                ballY = holderBallY + arcApex * Math.sin(k * Math.PI) + (upMid - holderBallY) * k * 0.4;
-                ballAngle = k * 8;
-            } else {
-                // Freeze frame — ball settles just past the upright, on the ground
-                const k = Math.min(1, (p - 0.75) / 0.25);
-                ballX = upX - barW * 0.85 - 30 * k;
-                ballY = Math.min(H - marginY - 6, upMid - 10 + 60 * k);
-                ballAngle = 8 + k * 4;
-            }
-
-            if (p >= 0.15 && p < 0.42) {
-                player(kickerX, kickerY, '#3b82f6', '#0d3b7a');
-            } else if (p >= 0.42 && p < 0.75) {
-                // Follow-through — kick leg extended forward (LEFT)
-                player(kickerX - 8, kickerY - 8, '#3b82f6', '#0d3b7a');
-                ctx.strokeStyle = '#ffea3c'; ctx.lineWidth = 3; ctx.lineCap='round';
-                ctx.beginPath();
-                ctx.moveTo(kickerX - 8, kickerY - 6);
-                ctx.lineTo(kickerX + 12, kickerY + 4);
-                ctx.stroke();
-            } else {
-                player(kickerX, kickerY, '#3b82f6', '#0d3b7a');
-            }
-
-            player(holderX, holderY + 2, '#1e40af', '#0d1f4a');
-
-            // Football
-            ctx.save();
-            ctx.translate(ballX, ballY);
-            ctx.rotate(ballAngle);
-            ctx.fillStyle = '#8b4513';
-            ctx.beginPath();
-            ctx.ellipse(0, 0, 6, 3.5, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#fff'; ctx.lineWidth = 0.8;
-            ctx.beginPath();
-            ctx.moveTo(-2, 0); ctx.lineTo(2, 0);
-            for (let i = -1.5; i <= 1.5; i += 1) {
-                ctx.moveTo(i, -0.8); ctx.lineTo(i, 0.8);
-            }
-            ctx.stroke();
-            ctx.restore();
-
-            // Post-miss text — "WIDE LEFT" above the header, "NICK LOSES" below.
-            // The h1 PICK'EM sits near H/2, so we put text at ~14% and ~82%.
-            if (p >= 0.72) {
-                const k = Math.min(1, (p - 0.72) / 0.05);
-                const flash = 0.5 + 0.5 * Math.sin(t * 0.02);
-                ctx.globalAlpha = k;
-                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                // "WIDE LEFT" above the header
-                ctx.font = `900 ${Math.min(38, H * 0.18)}px 'Copperplate Gothic Bold', Impact, sans-serif`;
-                ctx.fillStyle = '#fff';
-                ctx.shadowColor = `rgba(239, 68, 68, ${0.7 + 0.3 * flash})`;
-                ctx.shadowBlur = 25;
-                ctx.fillText('WIDE LEFT', W / 2, H * 0.14);
-                // "NICK LOSES" below the header
-                ctx.font = `700 ${Math.min(32, H * 0.16)}px 'Copperplate Gothic Bold', Impact, sans-serif`;
-                ctx.fillStyle = '#ef4444';
-                ctx.shadowColor = 'rgba(239, 68, 68, 0.9)';
-                ctx.fillText('NICK LOSES', W / 2, H * 0.86);
-                ctx.globalAlpha = 1;
-                ctx.shadowBlur = 0;
-            }
-        }
-
-        // ---------- Animation loop — runs each scene ONCE then freezes ----------
-        // Phase A (0 .. CYCLE_MS)          : helmet collision
-        // Phase B (CYCLE_MS .. 2*CYCLE_MS) : field goal miss
-        // Phase C (>= 2*CYCLE_MS)          : freeze on the final FG frame
-        function drawCollision(p) {
-            const cy = H * 0.5;
-            const leftStart = -60, leftMid = W / 2 - 30;
-            const rightStart = W + 60, rightMid = W / 2 + 30;
-
-            let lx, rx;
-            if (p < APPROACH) {
-                const k = p / APPROACH;
-                const ease = k * k;
-                lx = leftStart + (leftMid - leftStart) * ease;
-                rx = rightStart + (rightMid - rightStart) * ease;
-            } else if (p < APPROACH + EXPLODE_LEN) {
-                const k = (p - APPROACH) / EXPLODE_LEN;
-                if (particles.length === 0) spawnExplosion(W / 2, cy);
-                lx = leftMid - 40 * k;
-                rx = rightMid + 40 * k;
-            } else {
-                const k = (p - APPROACH - EXPLODE_LEN) / (1 - APPROACH - EXPLODE_LEN);
-                lx = leftMid - 40 - (leftMid + 100) * k;
-                rx = rightMid + 40 + (W - rightMid + 100) * k;
-                if (k > 0.85) particles = [];
-            }
-
-            for (const pt of particles) {
-                pt.x += pt.vx;
-                pt.y += pt.vy;
-                pt.vy += 0.14;
-                pt.life -= 0.018;
-                if (pt.life > 0) {
-                    ctx.globalAlpha = Math.max(0, pt.life);
-                    ctx.fillStyle = pt.color;
-                    ctx.shadowColor = pt.color;
-                    ctx.shadowBlur = 8;
-                    ctx.beginPath();
-                    ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            }
-            ctx.globalAlpha = 1;
-            ctx.shadowBlur = 0;
-            particles = particles.filter(pt => pt.life > 0);
-
-            drawHelmet(lx, cy, true,  'WSU');
-            drawHelmet(rx, cy, false, 'ASU');
-        }
-
-        let frozen = false;
-        function frame(t) {
-            const dt = t - start;
-
-            drawField();
-
-            if (dt < CYCLE_MS) {
-                // Phase A — collision plays out
-                drawCollision(dt / CYCLE_MS);
-                requestAnimationFrame(frame);
-            } else if (dt < 2 * CYCLE_MS) {
-                // Phase B — field goal plays out
-                particles = [];   // clear collision debris before FG scene
-                drawFieldGoal((dt - CYCLE_MS) / CYCLE_MS, t);
-                requestAnimationFrame(frame);
-            } else {
-                // Phase C — freeze on the final field goal frame (ball landed
-                // past the upright, "WIDE LEFT" / "NICK LOSES" flashing).
-                // Keep drawing so the flashing sine wave keeps pulsing gently.
-                drawFieldGoal(1.0, t);
-                requestAnimationFrame(frame);
-            }
-        }
-        requestAnimationFrame(frame);
-    })();
-
     /* ===== Data + rendering ===== */
     const RAW = JSON.parse(document.getElementById('pickemData').textContent);
     const FBS_TEAMS = JSON.parse(document.getElementById('fbsTeams').textContent);
@@ -1628,6 +990,29 @@
     }
     buildAllSeasonsWeeks();
 
+    // Hero card tally: all-time weeks won across every tracked season
+    // (archive plus current). A week counts for whoever's total_net strictly
+    // exceeds the other's; ties and empty weeks count for neither. Runs at
+    // load and again after every live data refresh.
+    function updateHeroTally() {
+        const el = document.getElementById('heroTally');
+        if (!el) return;
+        let rjWins = 0, nickWins = 0;
+        for (const name of Object.keys(SEASONS)) {
+            if (name === ALL_SEASONS) continue;
+            for (const w of SEASONS[name] || []) {
+                const r = numOrZero(w.rj.total_net);
+                const n = numOrZero(w.nick.total_net);
+                if (r > n) rjWins++;
+                else if (n > r) nickWins++;
+            }
+        }
+        el.innerHTML = `<span class="t-rj">RJ ${rjWins}</span>`
+            + `<span class="t-sep">|</span>`
+            + `<span class="t-nick">${nickWins} NICK</span>`;
+    }
+    updateHeroTally();
+
     /* ===== Supabase live layer (current season only) =====
        The CURRENT season's picks live in the pickem_picks table and are
        fetched fresh on every page load. Archived seasons stay embedded in
@@ -1722,6 +1107,7 @@
         }
         SEASONS[RAW.season] = weeks;
         buildAllSeasonsWeeks();
+        updateHeroTally();
         // Repaint when viewing the current season or the All view (both fold
         // in the fresh data); archived views never need it.
         if (seasonSel.value === RAW.season || seasonSel.value === ALL_SEASONS) {
