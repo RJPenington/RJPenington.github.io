@@ -207,6 +207,7 @@
         color: var(--dim); font-size: 1.08rem;
     }
     .summary .sum-row { white-space: nowrap; }
+    .summary .net-even { color: #4a5157; text-shadow: none; }
     .summary .sum-row:first-child { font-size: 1.3rem; }
     .summary .sum-sep { color: var(--dim); margin: 0 7px; }
 
@@ -3135,17 +3136,22 @@
         // guaranteed a single line; nothing wraps into orphan pills. The old
         // "Wk N" pill is gone (it duplicated the week selector, which still
         // gets its default from the Monday auto-advance).
+        // Net coloring: even (within a dime of zero) reads charcoal, up is
+        // green, down is red. The winner line is green only when it names a
+        // winner; ties and no-picks dashes go charcoal too.
+        const netClass = v => v >= 0.1 ? 'net-good' : (v <= -0.1 ? 'net-bad' : 'net-even');
+        const winnerClass = (winner === 'Nick' || winner === 'RJ') ? 'net-good' : 'net-even';
         el.innerHTML = `
-            <div class="sum-row">Week winner: <strong style="color:var(--accent)">${winner}</strong></div>
+            <div class="sum-row">Week winner: <strong class="${winnerClass}">${winner}</strong></div>
             <div class="sum-row">Season:
-                <strong class="${nSeason >= 0 ? 'net-good' : 'net-bad'}">Nick ${fmtNet(nSeason)}u</strong>
+                <strong class="${netClass(nSeason)}">Nick ${fmtNet(nSeason)}u</strong>
                 <span class="sum-sep">|</span>
-                <strong class="${rSeason >= 0 ? 'net-good' : 'net-bad'}">RJ ${fmtNet(rSeason)}u</strong>
+                <strong class="${netClass(rSeason)}">RJ ${fmtNet(rSeason)}u</strong>
             </div>
             <div class="sum-row">Week:
-                <strong class="${n >= 0 ? 'net-good' : 'net-bad'}">Nick ${fmtNet(n)}u</strong>
+                <strong class="${netClass(n)}">Nick ${fmtNet(n)}u</strong>
                 <span class="sum-sep">|</span>
-                <strong class="${r >= 0 ? 'net-good' : 'net-bad'}">RJ ${fmtNet(r)}u</strong>
+                <strong class="${netClass(r)}">RJ ${fmtNet(r)}u</strong>
             </div>`;
     }
 
