@@ -672,9 +672,11 @@
            line 2 still splits the teams evenly. */
         .form-row::before { content: ''; flex-basis: 100%; height: 0; order: 5; }
         .form-row::after  { content: ''; flex-basis: 100%; height: 0; order: 8; }
-        .form-row > .timeframe  { order: 1; }
-        .form-row > .bet-type   { order: 2; flex: 0 0 auto; }
-        .form-row > .side-h     { order: 3; }
+        /* Line 1 zones: timeframe pinned left, bet type centered via auto
+           margins, H and A pushed to the right corner */
+        .form-row > .timeframe  { order: 1; margin-right: auto; }
+        .form-row > .bet-type   { order: 2; flex: 0 0 auto; margin-left: auto; margin-right: auto; }
+        .form-row > .side-h     { order: 3; margin-left: auto; }
         .form-row > .side-a     { order: 4; }
         .form-row > .home       { order: 6; flex: 1 1 40%; min-width: 0; }
         .form-row > .away       { order: 7; flex: 1 1 40%; min-width: 0; }
