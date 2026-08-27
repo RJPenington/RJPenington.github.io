@@ -152,24 +152,6 @@
         box-shadow: 0 0 14px rgba(74, 222, 128, 0.45);
     }
 
-    /* Sub-tabs inside the Enter Picks panels: smaller cousins of .tab that
-       switch between the three form sections with pure show/hide */
-    .enter-subtabs { display: flex; gap: 5px; margin: 0 0 1rem; }
-    .subtab {
-        flex: 1 1 0; padding: 9px 6px; min-width: 0;
-        background: var(--surface); color: var(--dim);
-        border: 1px solid var(--line); border-radius: 6px; cursor: pointer;
-        font-size: 0.78rem; font-weight: 600; letter-spacing: 0.03em;
-        text-transform: uppercase; text-align: center; line-height: 1.25;
-        transition: all 0.15s;
-    }
-    .subtab:hover { background: #1a1d24; color: var(--ink); }
-    .subtab.active {
-        background: linear-gradient(135deg, #0d3b1e, #164a2b);
-        color: var(--accent-bright); border-color: var(--accent);
-        box-shadow: 0 0 10px rgba(74, 222, 128, 0.35);
-    }
-
     section.panel { display: none; }
     section.panel.active { display: block; }
 
@@ -344,7 +326,7 @@
        Widths: lock | bet-type | H | Home | A | Away | ±/OU | Pts | Units | who# | save status */
     .form-row {
         display: grid;
-        grid-template-columns: 28px 80px 30px 1fr 30px 1fr 60px 75px 65px 56px 58px;
+        grid-template-columns: 28px 80px 82px 30px 1fr 30px 1fr 60px 75px 65px 56px 58px;
         gap: 0.45rem; align-items: center; margin: 0.45rem 0;
     }
     /* Nick's cards: steel gray, so the alternating RJ (near-black) / Nick
@@ -371,29 +353,30 @@
        subsequent items to auto-place and shift the layout left. */
     .form-row > .lock-cell  { grid-column: 1; }
     .form-row > .bet-type   { grid-column: 2; }
-    .form-row > .side-h     { grid-column: 3; }
-    .form-row > .home       { grid-column: 4; }
-    .form-row > .side-a     { grid-column: 5; }
-    .form-row > .away       { grid-column: 6; }
-    .form-row > .sign-slot  { grid-column: 7; }
-    .form-row > .points     { grid-column: 8; }
-    .form-row > .units      { grid-column: 9; }
-    .form-row > .idx        { grid-column: 10; }
-    .form-row > .row-status { grid-column: 11; }
+    .form-row > .timeframe  { grid-column: 3; }
+    .form-row > .side-h     { grid-column: 4; }
+    .form-row > .home       { grid-column: 5; }
+    .form-row > .side-a     { grid-column: 6; }
+    .form-row > .away       { grid-column: 7; }
+    .form-row > .sign-slot  { grid-column: 8; }
+    .form-row > .points     { grid-column: 9; }
+    .form-row > .units      { grid-column: 10; }
+    .form-row > .idx        { grid-column: 11; }
+    .form-row > .row-status { grid-column: 12; }
     /* Desktop adaptivity: O/U rows hide the H/A side bubbles, so their grid
        drops those two tracks and re-pins the later cells. The row reflows
        exactly like the phone layout does when fields hide. The mobile flex
        layout ignores grid templates, so phone behavior is untouched. */
     .form-row.bt-ou {
-        grid-template-columns: 28px 80px minmax(0, 1fr) minmax(0, 1fr) 60px 75px 65px 56px 58px;
+        grid-template-columns: 28px 80px 82px minmax(0, 1fr) minmax(0, 1fr) 60px 75px 65px 56px 58px;
     }
-    .form-row.bt-ou > .home       { grid-column: 3; }
-    .form-row.bt-ou > .away       { grid-column: 4; }
-    .form-row.bt-ou > .sign-slot  { grid-column: 5; }
-    .form-row.bt-ou > .points     { grid-column: 6; }
-    .form-row.bt-ou > .units      { grid-column: 7; }
-    .form-row.bt-ou > .idx        { grid-column: 8; }
-    .form-row.bt-ou > .row-status { grid-column: 9; }
+    .form-row.bt-ou > .home       { grid-column: 4; }
+    .form-row.bt-ou > .away       { grid-column: 5; }
+    .form-row.bt-ou > .sign-slot  { grid-column: 6; }
+    .form-row.bt-ou > .points     { grid-column: 7; }
+    .form-row.bt-ou > .units      { grid-column: 8; }
+    .form-row.bt-ou > .idx        { grid-column: 9; }
+    .form-row.bt-ou > .row-status { grid-column: 10; }
     /* Per-row autosave indicator: idle (empty), saving (dim), saved (green
        check), retry (red, tappable to re-attempt the save) */
     .row-status {
@@ -407,6 +390,11 @@
         color: var(--bad); cursor: pointer; font-weight: 700;
         text-decoration: underline; text-underline-offset: 2px;
     }
+    /* Red X: the pick is started but incomplete for its bet type. Styled
+       like the saved check, indicator only, never clickable. */
+    .row-status.incomplete { color: var(--bad); font-size: 0.95rem; font-weight: 700; }
+    /* Timeframe tag icons inside their bubbles */
+    .tf-icon { width: 12px; height: 12px; display: block; }
     .lock-cell {
         display: inline-flex; align-items: center; justify-content: center;
         width: 28px; height: 28px;
@@ -462,7 +450,7 @@
     .form-row.person-nick:has(.lock-cell input:checked) { background: #2f3d61; }
     .form-col-header {
         display: grid;
-        grid-template-columns: 28px 80px 30px 1fr 30px 1fr 60px 75px 65px 56px 58px;
+        grid-template-columns: 28px 80px 82px 30px 1fr 30px 1fr 60px 75px 65px 56px 58px;
         gap: 0.45rem; align-items: center;
         color: var(--dim); font-size: 0.72rem; text-transform: uppercase;
         letter-spacing: 0.08em; padding: 0 0 0.35rem;
@@ -646,7 +634,6 @@
         .season-tabs { flex-wrap: wrap; margin-right: 6px; }
         .season-tab { padding: 8px 12px; font-size: 0.9rem; }
         .tab { padding: 10px 8px; font-size: 0.75rem; flex: 1 1 auto; text-align: center; }
-        .subtab { padding: 8px 4px; font-size: 0.7rem; min-height: 42px; }
 
         /* Cards and tables: tighter padding; dense tables keep their natural
            width (nowrap cells) and scroll horizontally inside the card */
@@ -672,17 +659,20 @@
             background: var(--card);
             padding: 8px; margin: 0.55rem 0;
         }
-        .form-row::before { content: ''; flex-basis: 100%; height: 0; order: 6; }
+        .form-row::before { content: ''; flex-basis: 100%; height: 0; order: 7; }
         .form-row > .bet-type   { order: 1; flex: 0 0 auto; }
-        .form-row > .side-h     { order: 2; }
-        .form-row > .home       { order: 3; flex: 1 1 60px; min-width: 0; }
-        .form-row > .side-a     { order: 4; }
-        .form-row > .away       { order: 5; flex: 1 1 60px; min-width: 0; }
-        .form-row > .sign-slot  { order: 7; }
-        .form-row > .points     { order: 8; flex: 1 1 64px; max-width: 110px; }
-        .form-row > .units      { order: 9; flex: 1 1 64px; max-width: 100px; }
-        .form-row > .lock-cell  { order: 10; width: 40px; height: 40px; }
-        .form-row > .row-status { order: 11; margin-left: auto; }
+        .form-row > .timeframe  { order: 2; }
+        .form-row > .side-h     { order: 3; }
+        .form-row > .home       { order: 4; flex: 1 1 60px; min-width: 0; }
+        .form-row > .side-a     { order: 5; }
+        .form-row > .away       { order: 6; flex: 1 1 60px; min-width: 0; }
+        .form-row > .sign-slot  { order: 8; }
+        .form-row > .points     { order: 9; flex: 1 1 64px; max-width: 110px; }
+        .form-row > .units      { order: 10; flex: 1 1 64px; max-width: 100px; }
+        .form-row > .lock-cell  { order: 11; width: 40px; height: 40px; }
+        .form-row > .row-status { order: 12; margin-left: auto; }
+        /* Timeframe bubbles slim down so line 1 keeps room for team names */
+        .form-row > .timeframe label { min-width: 26px; height: 34px; padding: 0 4px; }
         /* Row number as a small notch badge riding the card's top border.
            Absolutely positioned, so it takes no space from either line and
            never crowds the inputs at 390px. */
@@ -1486,6 +1476,12 @@
     // Minimal outline trash can, same currentColor approach as LOCK_ICON,
     // tinted per context by CSS. No emoji anywhere.
     const TRASH_ICON = '<svg class="trash-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
+    // Timeframe tag icons: calendar for weekday games, football for the
+    // Saturday main slate, plus sign for gameday additions. currentColor
+    // like every other icon on the page.
+    const TF_WEEKDAY_ICON = '<svg class="tf-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zM5 10h14v10H5V10z"/></svg>';
+    const TF_MAIN_ICON = '<svg class="tf-icon" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="9.5" ry="6" transform="rotate(-30 12 12)"/><path d="M9.6 13.4l4.8-2.8" stroke-width="1.5"/></g></svg>';
+    const TF_GAMEDAY_ICON = '<svg class="tf-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5z"/></svg>';
     // Multi-season: the pickemData tag holds the CURRENT season (refreshed by
     // the weekly pipeline); pickemArchive holds frozen past seasons. Current
     // season is selected by default; every view and tally already reads
@@ -1506,8 +1502,13 @@
        based on the visitor's local date, so no republish is ever needed as
        the season rolls on. Archived seasons keep deriving their week list
        purely from their embedded data. */
-    const CURRENT_SEASON_TOTAL_WEEKS = 15;              // weeks 0 through 14
+    const CURRENT_SEASON_TOTAL_WEEKS = 18;              // weeks 0 through 17, postseason included
     const CURRENT_SEASON_WEEK0_MONDAY = '2026-08-24';   // Monday starting CFB Week 0's game week
+    // Weeks 15 to 17 are the postseason slots; the numeric week value stays
+    // in the DB, only the display name changes.
+    const SPECIAL_WEEK_NAMES = { 15: 'Conf. Champs', 16: 'Bowl Games', 17: 'CFP Playoff' };
+    function weekDisplayName(week) { return SPECIAL_WEEK_NAMES[week] || ('Week ' + week); }
+    function weekShortLabel(week) { return SPECIAL_WEEK_NAMES[week] || ('W' + week); }
 
     // floor(days since Week 0 Monday / 7), clamped to 0..14. Local time, so
     // it ticks over at the visitor's local midnight each Monday.
@@ -1538,10 +1539,16 @@
     }
     function pickLockTime(p, week) {
         const cut = weekLockTimes(week);
-        const created = p && p.created_at ? Date.parse(p.created_at) : NaN;
-        // Created after Saturday noon: a Gameday Addition with the later
+        // The pick's own timeframe tag (fields.section) is authoritative:
+        // weekday and main lock Saturday noon, gameday locks Sunday night.
+        const section = p && p.fields && p.fields.section;
+        if (section === 'gameday') return cut.sundayNightEt;
+        if (section === 'weekday' || section === 'main') return cut.saturdayNoonEt;
+        // Legacy rows without a tag keep the created_at heuristic: created
+        // after Saturday noon means a Gameday Addition with the later
         // cutoff. Missing/unparseable created_at falls back to the earlier
         // Saturday cutoff, the conservative choice.
+        const created = p && p.created_at ? Date.parse(p.created_at) : NaN;
         if (!isNaN(created) && created > cut.saturdayNoonEt) return cut.sundayNightEt;
         return cut.saturdayNoonEt;
     }
@@ -1585,7 +1592,7 @@
         for (const name of names) {
             const short = seasonShortLabel(name);
             for (const w of SEASONS[name] || []) {
-                merged.push({ ...w, label: short + ' W' + w.week });
+                merged.push({ ...w, label: short + ' ' + weekShortLabel(w.week) });
             }
         }
         SEASONS[ALL_SEASONS] = merged;
@@ -1694,6 +1701,7 @@
             if (prevWeek !== '' && [...weekSel.options].some(o => o.value === prevWeek)) {
                 weekSel.value = prevWeek;
             }
+            weekSelAccepted = weekSel.value;
             if (quiet) { renderSummary(); rehydrateEnterIfIdle(); updateEnterLockSlots(); }
             else renderAll();
         }
@@ -1808,6 +1816,8 @@
     const seasonSel = document.getElementById('seasonSel');
     const weekSel = document.getElementById('weekSel');
     const seasonTabs = document.getElementById('seasonTabs');
+    // Last accepted week selection, for rolling back a declined week switch
+    let weekSelAccepted = null;
     Object.keys(SEASONS).forEach((name, i) => {
         const opt = document.createElement('option');
         opt.value = name; opt.textContent = name;
@@ -1835,7 +1845,7 @@
             // The All view needs unique option values because week numbers
             // repeat across seasons, so it selects by array index instead
             opt.value = isAll ? String(i) : w.week;
-            opt.textContent = w.label || ('Week ' + w.week);
+            opt.textContent = w.label || weekDisplayName(w.week);
             weekSel.appendChild(opt);
         });
         if (!weeks.length) return;
@@ -1846,6 +1856,7 @@
         if (isAll) weekSel.value = String(weeks.length - 1);
         else if (seasonSel.value === RAW.season) weekSel.value = String(computeCurrentWeek());
         else weekSel.value = weeks[weeks.length - 1].week;
+        weekSelAccepted = weekSel.value;
     }
 
     // Resolve the week object the selector points at. On the All view the
@@ -1857,7 +1868,23 @@
     fillWeekSelector();
 
     seasonSel.addEventListener('change', () => { fillWeekSelector(); updateEnterTabsForSeason(); renderAll(); });
-    weekSel.addEventListener('change', renderAll);
+    // Week-driven entry: the global selector is the single source of truth
+    // for the Enter tab, so switching weeks re-renders the form for the new
+    // week. If unsaved typing would be discarded, confirm first and roll the
+    // selector back on decline (safer than a silent wipe, and less annoying
+    // than hard-blocking the switch).
+    weekSel.addEventListener('change', () => {
+        const activeTab = document.querySelector('.tab.active');
+        if (activeTab && activeTab.dataset.panel === 'enter'
+            && seasonSel.value === RAW.season && enterPanelHasUnsavedWork()) {
+            if (!confirm('You have unsaved picks typed for this week. Switch weeks and discard them?')) {
+                if (weekSelAccepted !== null) weekSel.value = weekSelAccepted;
+                return;
+            }
+        }
+        weekSelAccepted = weekSel.value;
+        renderAll();
+    });
 
     /* ===== Tab wiring ===== */
     document.querySelectorAll('.tab').forEach(t => {
@@ -2209,7 +2236,7 @@
                     </tr></thead>
                     <tbody>
                         ${weeklyRows.map(w => `<tr>
-                            <td>${w.label || ('Week ' + w.week)}</td>
+                            <td>${w.label || weekDisplayName(w.week)}</td>
                             <td class="num ${classForNet(w.n)}">${fmtNet(w.n)}</td>
                             <td class="num ${classForNet(w.r)}">${fmtNet(w.r)}</td>
                             <td class="num ${classForNet(w.diff)}">${fmtNet(w.diff)}</td>
@@ -2547,7 +2574,7 @@
                         <th>Week</th><th>Pick</th><th class="num">Units</th><th class="num">Net</th>
                     </tr></thead>
                     <tbody>${s.rows.map(r => `<tr>
-                        <td>${r.label || ('Week ' + r.week)}</td>
+                        <td>${r.label || weekDisplayName(r.week)}</td>
                         <td>${r.pick}</td>
                         <td class="num">${r.units ?? '—'}</td>
                         <td class="num ${classForNet(r.net)}">${fmtNet(r.net)}</td>
@@ -2611,8 +2638,9 @@
             <div class="panel-card rules-prose">
                 <h3>Lock Schedule</h3>
                 <ul>
-                    <li><strong>Weekday Games + Main Slate</strong> lock at <strong>Saturday 12:00 PM EST</strong>.</li>
-                    <li><strong>Gameday Additions</strong> (anything entered after Saturday noon) lock <strong>Sunday night</strong>.</li>
+                    <li>Every pick carries a <strong>timeframe tag</strong> chosen on its entry card (weekday game, main slate, or gameday addition); the tag decides which lock time applies.</li>
+                    <li><strong>Weekday Games + Main Slate</strong> picks lock at <strong>Saturday 12:00 PM EST</strong>.</li>
+                    <li><strong>Gameday Additions</strong> lock <strong>Sunday night</strong>.</li>
                     <li>Once a pick's lock time passes, deleting and editing are disabled; its card shows dimmed with a small locked note.</li>
                 </ul>
             </div>
@@ -2628,10 +2656,11 @@
             <div class="panel-card rules-prose">
                 <h3>Saving Picks</h3>
                 <ul>
-                    <li>Picks <strong>autosave as you type</strong>: a card saves once it has a team and units, then shows a green check.</li>
+                    <li>Picks <strong>autosave as you type</strong>: a card saves once it is complete for its bet type (team, units, timeframe, plus any line or total), then shows a green check.</li>
+                    <li>An incomplete card shows a red <strong>✕</strong> and will not save until finished.</li>
                     <li>Edits to a saved card update that same pick, never a duplicate.</li>
                     <li>Clearing a saved card's team fields deletes the pick.</li>
-                    <li>Cards land in the week set in the Week box; <strong>Save all now</strong> is a backstop for anything unsaved.</li>
+                    <li>Cards save to the week selected at the top of the page; <strong>Save all now</strong> is a backstop for anything unsaved.</li>
                 </ul>
             </div>
             <div class="panel-card rules-prose">
@@ -2657,13 +2686,15 @@
         // typeahead section), wired globally to every .team-input.
 
         // One row belongs to one person; the card's data-person attribute is
-        // what autosave reads, so attribution can never depend on which panel
-        // or section the row sits in. RJ cards keep the dark look, Nick cards
-        // go off-white via the person-nick class.
-        function formRow(person, sectionKey, i) {
+        // what autosave reads, so attribution can never depend on where the
+        // row sits. RJ cards keep the dark look, Nick cards go steel via the
+        // person-nick class. Every card carries a required timeframe tag
+        // (weekday, main slate, gameday add) that sets its lock window and
+        // persists in fields.section.
+        function formRow(person, i) {
             const personLabel = person === 'nick' ? 'Nick' : 'RJ';
             // Scope uid by person so RJ's row #1 does not collide with Nick's row #1
-            const uid = `${person}-${sectionKey}-${i}`;
+            const uid = `${person}-slate-${i}`;
             return `<div class="form-row${person === 'nick' ? ' person-nick' : ''}" data-uid="${uid}" data-person="${person}">
                 <label class="lock-cell" title="Mortal Lock — pays 1.5× units on win/loss. Only one per week.">
                     <input type="checkbox" class="lock" aria-label="Mortal lock" onchange="onMortalLockChange(this)" />
@@ -2674,6 +2705,11 @@
                     <option value="O/U">O/U</option>
                     <option value="TTO">TTO</option>
                 </select>
+                <span class="sign-group timeframe" title="Timeframe, decides the pick's lock time">
+                    <label title="Weekday game (locks Saturday noon ET)"><input type="radio" name="tf-${uid}" value="weekday" />${TF_WEEKDAY_ICON}</label>
+                    <label title="Main Slate, Saturday (locks Saturday noon ET)"><input type="radio" name="tf-${uid}" value="main" />${TF_MAIN_ICON}</label>
+                    <label title="Gameday Addition (locks Sunday night)"><input type="radio" name="tf-${uid}" value="gameday" />${TF_GAMEDAY_ICON}</label>
+                </span>
                 <span class="sign-group side-h" title="Bet on home team">
                     <label><input type="radio" name="side-${uid}" value="H" />H</label>
                 </span>
@@ -2695,16 +2731,17 @@
             </div>`;
         }
 
-        function formSection(sectionKey, title, count, lockNote, hidden) {
-            // Cards alternate person: RJ #1, Nick #1, RJ #2, Nick #2, ...
-            // RJ always first, numbering runs per person within the section.
+        // One continuous slate: 25 cards per person, alternating RJ #1,
+        // Nick #1, RJ #2, ... with per-person numbering.
+        function slateSection() {
             let rows = '';
-            for (let i = 1; i <= count; i++) {
-                rows += formRow('rj', sectionKey, i) + formRow('nick', sectionKey, i);
+            for (let i = 1; i <= 25; i++) {
+                rows += formRow('rj', i) + formRow('nick', i);
             }
             const header = `<div class="form-col-header">
                 <span title="Mortal Lock">${LOCK_ICON}</span>
                 <span>Bet Type</span>
+                <span>When</span>
                 <span>H</span>
                 <span>Home Team</span>
                 <span>A</span>
@@ -2715,45 +2752,31 @@
                 <span>Who #</span>
                 <span></span>
             </div>`;
-            return `<div class="panel-card form-section-card" data-section="${sectionKey}"${hidden ? ' style="display:none"' : ''}>
-                <div class="form-section-title">${title}<span class="lock">${lockNote}</span></div>
+            return `<div class="panel-card form-section-card">
+                <div class="form-section-title">Week Slate<span class="lock">Each pick's timeframe tag sets its lock time</span></div>
                 ${header}
                 ${rows}
-                ${enterNotes}
             </div>`;
         }
 
-        // The two note cards render at the BOTTOM of every section, after
-        // its last entry card, so whichever sub-tab is open shows them
-        // beneath its cards. Defined before the sections are built.
+        // The two note cards render once, at the bottom of the single slate
         const enterNotes = `
             <div class="section-notes">
                 <div class="banner-warn">
-                    <strong>Live:</strong> picks save automatically as you type. Cards alternate person, <strong>RJ on the dark cards, Nick on the steel cards</strong> (each card is tagged). A card saves once it has a team and units (watch for the check), and edits to a saved card update it in place. Clearing a saved card's teams deletes that pick. Cards land in the week set in the <strong>Week</strong> box at the bottom; <strong>Save all now</strong> is a backstop that pushes anything unsaved.
+                    <strong>Live:</strong> picks save automatically as you type. Cards alternate person, <strong>RJ on the dark cards, Nick on the steel cards</strong> (each card is tagged). Cards save to the <strong>week selected at the top of the page</strong>. A card saves once it is complete for its bet type (team, units, timeframe, plus any line or total); it shows a red ✕ until complete and a green check once saved. Edits to a saved card update it in place, and clearing a saved card's teams deletes that pick. <strong>Save all now</strong> is a backstop that pushes anything unsaved.
                 </div>
                 <div class="banner-warn">
                     <strong>${LOCK_ICON} Mortal Lock rules:</strong> pays 1.5× the units placed on either a win or a loss. <strong>Only one mortal lock per person per week</strong> — checking a new one auto-unchecks that person's previous lock.
                 </div>
             </div>`;
-        // Default the week number to the auto-computed current week; it
-        // advances on its own every Monday and stays overridable per save.
-        const defaultWeek = computeCurrentWeek();
 
         el.innerHTML = `
             <h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; font-size:1.05rem; margin:0.25rem 0 0.75rem;">Enter Picks</h2>
             <div class="lock-slots" id="enter-lock-slots"></div>
-            <div class="enter-subtabs">
-                <button type="button" class="subtab active" onclick="showEnterSection('wd',this)">Weekday Games</button>
-                <button type="button" class="subtab" onclick="showEnterSection('main',this)">Main Slate</button>
-                <button type="button" class="subtab" onclick="showEnterSection('day',this)">Gameday Additions</button>
-            </div>
-            ${formSection('wd',  'Weekday Games',      5, 'Locks Saturday 12:00 PM EST')}
-            ${formSection('main','Main Slate',        15, 'Locks Saturday 12:00 PM EST', true)}
-            ${formSection('day', 'Gameday Additions', 10, 'Locks Sunday night', true)}
+            ${slateSection()}
+            ${enterNotes}
             <div class="panel-card">
                 <div class="save-bar">
-                    <label for="week-input">Week</label>
-                    <input type="number" id="week-input" min="0" step="1" value="${defaultWeek}" />
                     <button class="btn-save" id="save-btn" onclick="savePicks()">Save all now</button>
                     <span class="save-status" id="save-status"></span>
                 </div>
@@ -2766,27 +2789,21 @@
         // (assigned as properties so re-renders never stack duplicates). Any
         // typing (input) or field commit (change: selects, radios, the lock
         // checkbox, blur of a text field) schedules that row's own debounced
-        // save; the row itself knows its person. The week input is outside
-        // any .form-row, so changing it never fires a save and never
-        // retro-moves rows that already saved.
-        // Every keystroke and field commit also repaints the live lock slots
-        // at the top of the panel (cheap, pure display). Events from the week
-        // input have no row but still refresh the slots, since the saved-lock
-        // fallback depends on the week number.
+        // save; the row itself knows its person, and the week comes from the
+        // global selector at save time. Every event also repaints the live
+        // lock slots (cheap, pure display).
         el.oninput = (e) => {
             const row = e.target.closest('.form-row');
             if (row) scheduleRowSave(row);
-            else if (e.target.id === 'week-input' && !enterPanelHasUnsavedWork()) hydrateEnterForm();
             updateEnterLockSlots();
         };
         el.onchange = (e) => {
             const row = e.target.closest('.form-row');
             if (row) scheduleRowSave(row);
-            else if (e.target.id === 'week-input' && !enterPanelHasUnsavedWork()) hydrateEnterForm();
             updateEnterLockSlots();
         };
-        // Populate the cards with this week's saved picks (also paints the
-        // live lock slots), so returning to the tab never shows blank cards.
+        // Populate the cards with the selected week's saved picks (also
+        // paints the live lock slots), so returning never shows blank cards.
         hydrateEnterForm();
     }
 
@@ -2839,20 +2856,12 @@
         },
     };
 
-    // Switch which form section (Weekday / Main Slate / Gameday) is visible
-    // in the merged Enter panel. Pure show/hide via style.display, never a
-    // re-render, so half-typed input, saved ids, pending autosave timers, and
-    // every card's state in the hidden sections are fully preserved. The save
-    // bar sits outside the section cards and stays visible on every sub-tab.
-    window.showEnterSection = function(sec, btn) {
-        const panel = document.getElementById('enter');
-        if (!panel) return;
-        panel.querySelectorAll('.enter-subtabs .subtab').forEach(b =>
-            b.classList.toggle('active', b === btn));
-        panel.querySelectorAll('.form-section-card').forEach(card => {
-            card.style.display = card.dataset.section === sec ? '' : 'none';
-        });
-    };
+    // The week every enter-tab read and write uses: the global selector.
+    // Enter is only reachable on the current season, where option values are
+    // plain week numbers.
+    function enterWeek() {
+        return Math.max(0, Math.floor(Number(weekSel.value) || 0));
+    }
 
     // Enforce one mortal lock per week PER PERSON — clicking a new lock
     // unchecks all other rows across every section in the SAME panel
@@ -3120,6 +3129,29 @@
         return { pick, bet_type: bt, units: isNaN(units) ? 0 : units, mortal_lock: lock };
     }
 
+    // Completeness per bet type. Every pick needs a team, units, and a
+    // timeframe tag; Spread also needs a signed line, O/U and TTO need a
+    // direction and points. Only complete rows earn the green check and only
+    // complete rows autosave; until then the status shows a red X.
+    function isRowComplete(row) {
+        const built = buildPickFromRow(row);
+        if (!built || !(built.units > 0)) return false;
+        if (!row.querySelector('.timeframe input:checked')) return false;
+        const bt = built.bet_type;
+        if (bt === 'ML') return true;
+        const signEl = row.querySelector('.sign-slot input:checked');
+        const ptsRaw = (row.querySelector('.points').value || '').trim();
+        const hasPts = ptsRaw !== '' && !isNaN(Number(ptsRaw));
+        if (!hasPts) return false;
+        if (bt === 'Spread') {
+            // The sign can come from the bubble or be typed into the number
+            return (signEl && (signEl.value === '-' || signEl.value === '+'))
+                || ptsRaw.startsWith('-') || ptsRaw.startsWith('+');
+        }
+        // O/U and TTO need an explicit Over or Under direction
+        return !!signEl && (signEl.value === 'O' || signEl.value === 'U');
+    }
+
     /* ===== Structured fields persistence =====
        The pick STRING is lossy (an ML pick never mentions the away team, so
        side and opponent information cannot round-trip through it). Every
@@ -3136,12 +3168,15 @@
         }
     }
 
-    // The raw row state exactly as the form holds it right now
+    // The raw row state exactly as the form holds it right now. The
+    // timeframe tag rides along as fields.section, no schema change needed.
     function captureRowFields(row) {
         const sideEl = row.querySelector('input[name^="side-"]:checked');
         const signEl = row.querySelector('.sign-slot input:checked');
+        const tfEl = row.querySelector('.timeframe input:checked');
         return {
             bet_type: row.querySelector('.bet-type').value,
+            section: tfEl ? tfEl.value : null,
             side: sideEl ? sideEl.value : null,
             home: row.querySelector('.home').value,
             away: row.querySelector('.away').value,
@@ -3166,7 +3201,7 @@
     function setRowStatus(row, state) {
         const el = row.querySelector('.row-status');
         if (!el) return;
-        el.classList.remove('saving', 'saved', 'retry');
+        el.classList.remove('saving', 'saved', 'retry', 'incomplete');
         el.onclick = null;
         el.title = '';
         if (state === 'saving') {
@@ -3184,6 +3219,11 @@
         } else if (state === 'locked') {
             el.textContent = 'locked';
             el.title = 'Lock time passed, this pick can no longer be edited';
+        } else if (state === 'incomplete') {
+            // Status indicator only, deliberately not clickable
+            el.textContent = '✕';
+            el.classList.add('incomplete');
+            el.title = 'Pick incomplete, fill every field for its bet type to save';
         } else {
             el.textContent = '';
         }
@@ -3222,10 +3262,11 @@
         const savedId = row.dataset.savedId || '';
 
         if (!built && !savedId) { setRowStatus(row, ''); return null; }   // empty, never saved
-        if (built && !(built.units > 0)) {
-            // Incomplete: has a team but no units. Not ready to save; if a
-            // saved version exists keep it untouched until the row is complete.
-            if (!savedId) setRowStatus(row, '');
+        if (built && !isRowComplete(row)) {
+            // Incomplete for its bet type: red X, no save. A previously
+            // saved row keeps its DB copy until it is complete again
+            // (PATCH) or its teams are fully cleared (DELETE).
+            setRowStatus(row, 'incomplete');
             return null;
         }
 
@@ -3260,8 +3301,7 @@
             } else {
                 // First save of this row: POST with the card's own person and
                 // remember the returned id.
-                const weekInput = document.getElementById('week-input');
-                const week = Math.max(0, Math.floor(Number(weekInput && weekInput.value) || 0));
+                const week = enterWeek();
                 const postBody = { season: RAW.season, week: week, person: rowPerson(row),
                                    pick: built.pick, bet_type: built.bet_type,
                                    units: built.units, mortal_lock: built.mortal_lock };
@@ -3299,13 +3339,13 @@
 
         if (saveBtn) saveBtn.disabled = true;
         setStatus('Saving...', '');
-        let saved = 0, failed = 0, skippedNoUnits = 0;
+        let saved = 0, failed = 0, skippedIncomplete = 0;
         for (const row of panel.querySelectorAll('.form-row')) {
             const built = buildPickFromRow(row);
             const savedId = row.dataset.savedId || '';
             if (!built && !savedId) continue;                              // empty row
-            if (built && !(built.units > 0)) {
-                if (!savedId) skippedNoUnits++;                            // team but no units
+            if (built && !isRowComplete(row)) {
+                if (!savedId) skippedIncomplete++;                         // started but incomplete
                 continue;
             }
             const statusEl = row.querySelector('.row-status');
@@ -3320,25 +3360,22 @@
         if (saved || failed) {
             setStatus('Saved ' + saved + ' pick(s).'
                 + (failed ? ' ' + failed + ' failed, tap retry on the row or press again.' : '')
-                + (skippedNoUnits ? ' ' + skippedNoUnits + ' row(s) missing units.' : ''),
+                + (skippedIncomplete ? ' ' + skippedIncomplete + ' row(s) incomplete.' : ''),
                 failed ? 'err' : 'ok');
         } else {
-            setStatus(skippedNoUnits
-                ? skippedNoUnits + ' row(s) have a team but no units.'
-                : 'Everything is already saved.', skippedNoUnits ? 'err' : 'ok');
+            setStatus(skippedIncomplete
+                ? skippedIncomplete + ' row(s) are incomplete for their bet type.'
+                : 'Everything is already saved.', skippedIncomplete ? 'err' : 'ok');
         }
     };
 
     /* ===== Enter form hydration =====
        The form used to rebuild BLANK on every visit, so returning to the
        Enter tab after a save showed empty cards even though the picks were
-       safe in the DB. Hydration rebuilds the cards from the saved picks for
-       the week in the Week box. The DB does not record which SECTION a pick
-       was entered in, so saved picks hydrate sequentially into the currently
-       ACTIVE section's cards, per person (documented choice: simplest
-       correct behavior; the data itself is untouched). Every hydrated card
-       carries its data-saved-id, so edits PATCH and clearing DELETEs, and a
-       re-typed pick can never duplicate. */
+       safe in the DB. Hydration rebuilds the single slate from the saved
+       picks for the week chosen in the global selector, sequentially per
+       person. Every hydrated card carries its data-saved-id, so edits PATCH
+       and clearing DELETEs, and a re-typed pick can never duplicate. */
 
     // Best-effort inverse of buildPickFromRow. Strings our own builder wrote
     // round-trip exactly; anything unrecognized lands raw in the home field,
@@ -3428,10 +3465,16 @@
                 const signRadio = row.querySelector('.sign-slot input[value="' + sf.sign + '"]');
                 if (signRadio) signRadio.checked = true;
             }
+            if (sf.section) {
+                const tfRadio = row.querySelector('.timeframe input[value="' + sf.section + '"]');
+                if (tfRadio) tfRadio.checked = true;
+            }
             row.querySelector('.points').value = sf.points || '';
             row.querySelector('.units').value = sf.units || '';
             row.querySelector('.lock-cell input.lock').checked = !!sf.lock;
-            setRowStatus(row, 'saved');
+            // Green check only for complete picks; a legacy row missing its
+            // timeframe tag shows the red X until someone tags it
+            setRowStatus(row, isRowComplete(row) ? 'saved' : 'incomplete');
             applyRowLockState(row, locked);
             return;
         }
@@ -3449,27 +3492,23 @@
         row.querySelector('.points').value = f.pts || '';
         row.querySelector('.units').value = (p.units === null || p.units === undefined) ? '' : p.units;
         row.querySelector('.lock-cell input.lock').checked = !!p.mortal_lock;
-        setRowStatus(row, 'saved');
+        setRowStatus(row, isRowComplete(row) ? 'saved' : 'incomplete');
         applyRowLockState(row, locked);
     }
 
     function hydrateEnterForm() {
         const panel = document.getElementById('enter');
         if (!panel) return;
-        const weekInput = document.getElementById('week-input');
-        const wk = Math.max(0, Math.floor(Number(weekInput && weekInput.value) || 0));
+        const wk = enterWeek();
         const wData = (SEASONS[RAW.season] || []).find(x => x.week === wk);
         panel.querySelectorAll('.form-row').forEach(resetFormRow);
         if (wData) {
-            const activeSection = [...panel.querySelectorAll('.form-section-card')]
-                .find(c => c.style.display !== 'none');
-            if (activeSection) {
-                for (const who of ['rj', 'nick']) {
-                    const rows = activeSection.querySelectorAll('.form-row[data-person="' + who + '"]');
-                    const picks = wData[who].picks;
-                    for (let i = 0; i < picks.length && i < rows.length; i++) {
-                        fillFormRowFromPick(rows[i], picks[i], pickIsLocked(picks[i], wk));
-                    }
+            // Single slate: saved picks fill each person's cards in order
+            for (const who of ['rj', 'nick']) {
+                const rows = panel.querySelectorAll('.form-row[data-person="' + who + '"]');
+                const picks = wData[who].picks;
+                for (let i = 0; i < picks.length && i < rows.length; i++) {
+                    fillFormRowFromPick(rows[i], picks[i], pickIsLocked(picks[i], wk));
                 }
             }
         }
@@ -3503,8 +3542,7 @@
         const activeTab = document.querySelector('.tab.active');
         if (!activeTab || activeTab.dataset.panel !== 'enter') return;
         if (enterPanelHasUnsavedWork()) return;
-        const weekInput = document.getElementById('week-input');
-        const wk = Math.max(0, Math.floor(Number(weekInput && weekInput.value) || 0));
+        const wk = enterWeek();
         const wData = (SEASONS[RAW.season] || []).find(x => x.week === wk);
         if (!enterFormMatchesData(wData)) hydrateEnterForm();
     }
@@ -3531,8 +3569,7 @@
             }
         }
         if (bodyHtml === null) {
-            const weekInput = document.getElementById('week-input');
-            const wk = Math.max(0, Math.floor(Number(weekInput && weekInput.value) || 0));
+            const wk = enterWeek();
             const wData = (SEASONS[RAW.season] || []).find(x => x.week === wk);
             const saved = wData ? wData[who].picks.find(p => p.mortal_lock) : null;
             if (saved) {
