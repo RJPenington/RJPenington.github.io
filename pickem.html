@@ -212,6 +212,10 @@
     }
     .summary .sum-row { white-space: nowrap; }
     .summary .net-even { color: #4a5157; text-shadow: none; }
+    .summary .winner-pill {
+        color: #000; background: #e9efe9; padding: 0 0.45em;
+        border-radius: 6px; display: inline-block;
+    }
     .summary .sum-row:first-child { font-size: 1.3rem; }
     .summary .sum-sep { color: var(--dim); margin: 0 7px; }
 
@@ -3144,9 +3148,15 @@
         // green, down is red. The winner line is green only when it names a
         // winner; ties and no-picks dashes go charcoal too.
         const netClass = v => v >= 0.1 ? 'net-good' : (v <= -0.1 ? 'net-bad' : 'net-even');
-        const winnerClass = (winner === 'Nick' || winner === 'RJ') ? 'net-good' : 'net-even';
+        // A named winner gets bold black on a light pill (black stays readable
+        // on the dark card that way, same treatment as the hero tally numbers);
+        // Tie and the no-picks dash keep the charcoal even-state color.
+        const isName = (winner === 'Nick' || winner === 'RJ');
+        const winnerHtml = isName
+            ? `<strong class="winner-pill">${winner}</strong>`
+            : `<strong class="net-even">${winner}</strong>`;
         el.innerHTML = `
-            <div class="sum-row">Week winner: <strong class="${winnerClass}">${winner}</strong></div>
+            <div class="sum-row">Week winner: ${winnerHtml}</div>
             <div class="sum-row">Season:
                 <strong class="${netClass(nSeason)}">Nick ${fmtNet(nSeason)}u</strong>
                 <span class="sum-sep">|</span>
