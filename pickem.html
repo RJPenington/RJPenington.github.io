@@ -12,25 +12,25 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cg transform='rotate(-30 16 16)'%3E%3Cellipse cx='16' cy='16' rx='13' ry='8.5' fill='%238B4A2B' stroke='%235C2E14' stroke-width='1'/%3E%3Cpath d='M10 16h12' stroke='white' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M12 13.5v5M14.7 13.5v5M17.3 13.5v5M20 13.5v5' stroke='white' stroke-width='1.2' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E">
 <style>
     :root {
-        --bg: #0b0d10;
-        --surface: #14181f;
-        --card: #0f1319;
-        --line: #1e2530;
-        --ink: #e5e7eb;
-        --dim: #7b8390;
-        --accent: #4ade80;
-        --accent-bright: #22ff9a;
-        --accent-glow: rgba(74, 222, 128, 0.55);
-        --accent-glow-strong: rgba(34, 255, 154, 0.75);
-        --good: #4ade80;
+        --bg: #07100f;
+        --surface: #0f151d;
+        --card: #0d1218;
+        --line: #1c2732;
+        --ink: #f1f3f5;
+        --dim: #8b96a5;
+        --accent: #42e58a;
+        --accent-bright: #5ff2a4;
+        --accent-glow: rgba(66, 229, 138, 0.55);
+        --accent-glow-strong: rgba(95, 242, 164, 0.75);
+        --good: #42e58a;
         --bad: #ef4444;
         --lock-blue: #2563eb;        /* deep royal blue, the mortal lock family */
         --lock-blue-deep: #1e40af;   /* deepest shade, used for card washes */
         --lock-blue-bright: #60a5fa; /* readable light blue for lock text on dark */
         /* Nick's cards: muted steel gray with a cool cast, clearly apart
            from RJ's near-black cards but still in the dark family */
-        --nick-bg: #353b47;
-        --nick-line: #4a5261;
+        --nick-bg: #182532;
+        --nick-line: #30465a;
         /* Monochrome padlock shape for CSS pseudo-elements, painted through
            a mask so it always renders in the current context's color */
         --lock-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 0 1 6 0v3H9z"/></svg>');
@@ -41,9 +41,9 @@
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         line-height: 1.55; color: var(--ink); background: var(--bg);
         background-image:
-            radial-gradient(ellipse at 0% 0%,   rgba(74, 222, 128, 0.08) 0%, transparent 45%),
-            radial-gradient(ellipse at 100% 0%, rgba(74, 222, 128, 0.06) 0%, transparent 45%),
-            radial-gradient(ellipse at 50% 100%,rgba(74, 222, 128, 0.10) 0%, transparent 50%);
+            radial-gradient(ellipse at 0% 0%,   rgba(66, 229, 138, 0.08) 0%, transparent 45%),
+            radial-gradient(ellipse at 100% 0%, rgba(66, 229, 138, 0.06) 0%, transparent 45%),
+            radial-gradient(ellipse at 50% 100%,rgba(66, 229, 138, 0.10) 0%, transparent 50%);
         background-attachment: fixed;
         min-height: 100vh;
     }
@@ -55,10 +55,10 @@
         height: 260px;
         background: #0a0d12;
         border-radius: 12px;
-        border: 1px solid rgba(74, 222, 128, 0.4);
+        border: 1px solid rgba(66, 229, 138, 0.4);
         box-shadow:
-            0 0 28px rgba(74, 222, 128, 0.20),
-            0 0 60px rgba(74, 222, 128, 0.10),
+            0 0 28px rgba(66, 229, 138, 0.20),
+            0 0 60px rgba(66, 229, 138, 0.10),
             inset 0 0 60px rgba(0, 0, 0, 0.5);
         margin-bottom: 1.25rem;
     }
@@ -113,7 +113,7 @@
         padding: 7px 12px; border-radius: 6px; font-size: 0.92rem; cursor: pointer;
         white-space: nowrap; font-weight: 600;
         text-align: center; text-align-last: center;
-        box-shadow: 0 0 8px rgba(74, 222, 128, 0.25);
+        box-shadow: 0 0 8px rgba(66, 229, 138, 0.25);
     }
     .season-row select:focus { outline: 1px solid var(--accent); }
     /* Scoreboard card: nothing but the three stat rows, centered */
@@ -124,8 +124,8 @@
         /* Scoreboard identity: glowing green frame using the site accent */
         border: 1px solid var(--accent);
         box-shadow: 0 0 12px var(--accent-glow),
-                    0 0 30px rgba(74, 222, 128, 0.18),
-                    inset 0 0 10px rgba(74, 222, 128, 0.06);
+                    0 0 30px rgba(66, 229, 138, 0.18),
+                    inset 0 0 10px rgba(66, 229, 138, 0.06);
     }
     /* Summary: tidy stacked rows (winner, season totals, week totals),
        each locked to a single line, centered, scaled up as the page's
@@ -151,7 +151,7 @@
     .tab.active {
         background: linear-gradient(135deg, #0d3b1e, #164a2b);
         color: var(--accent-bright); border-color: var(--accent);
-        box-shadow: 0 0 14px rgba(74, 222, 128, 0.45);
+        box-shadow: 0 0 14px rgba(66, 229, 138, 0.45);
     }
 
     section.panel { display: none; }
@@ -203,7 +203,7 @@
         margin-left: auto; font-weight: 800; font-size: 1.15rem;
         font-variant-numeric: tabular-nums;
     }
-    .person-card .net.good { color: var(--good); text-shadow: 0 0 10px rgba(74, 222, 128, 0.5); }
+    .person-card .net.good { color: var(--good); text-shadow: 0 0 10px rgba(66, 229, 138, 0.5); }
     .person-card .net.bad  { color: var(--bad);  text-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
     .person-card table {
         width: 100%; border-collapse: collapse; font-size: 0.88rem;
@@ -249,8 +249,8 @@
     .person-card tr.graded-l,
     .person-card tr.graded-p { animation: none; }
     .person-card tr.graded-w {
-        background: rgba(74, 222, 128, 0.10);
-        box-shadow: inset 3px 0 0 0 var(--good), 0 0 12px rgba(74, 222, 128, 0.25);
+        background: rgba(66, 229, 138, 0.10);
+        box-shadow: inset 3px 0 0 0 var(--good), 0 0 12px rgba(66, 229, 138, 0.25);
     }
     .person-card tr.graded-l {
         background: rgba(239, 68, 68, 0.10);
@@ -265,7 +265,7 @@
         display: inline-block; margin-left: 8px; padding: 0 6px;
         border-radius: 4px; font-size: 0.7rem; font-weight: 800;
     }
-    .lock-badge.w { background: rgba(74, 222, 128, 0.18); color: var(--good); border: 1px solid var(--good); }
+    .lock-badge.w { background: rgba(66, 229, 138, 0.18); color: var(--good); border: 1px solid var(--good); }
     .lock-badge.l { background: rgba(239, 68, 68, 0.16); color: var(--bad); border: 1px solid var(--bad); }
     .lock-badge.p { background: rgba(255, 200, 90, 0.16); color: #d3a63f; border: 1px solid #b48a2f; }
 
@@ -284,7 +284,7 @@
     .lock-slot .slot-meta { font-size: 0.8rem; color: var(--dim); margin-top: 2px; }
     .lock-slot .slot-empty { color: var(--dim); font-style: italic; }
     /* Graded slot takes the result treatment (the row keeps its blue) */
-    .lock-slot.graded-w { background: rgba(74, 222, 128, 0.10); border-color: var(--good); box-shadow: 0 0 12px rgba(74, 222, 128, 0.28); }
+    .lock-slot.graded-w { background: rgba(66, 229, 138, 0.10); border-color: var(--good); box-shadow: 0 0 12px rgba(66, 229, 138, 0.28); }
     .lock-slot.graded-l { background: rgba(239, 68, 68, 0.10); border-color: var(--bad); box-shadow: 0 0 12px rgba(239, 68, 68, 0.25); }
     .lock-slot.graded-p { background: rgba(255, 200, 90, 0.08); border-color: #b48a2f; box-shadow: 0 0 10px rgba(255, 200, 90, 0.18); }
     .net-good { color: var(--good); font-weight: 700; }
@@ -340,7 +340,7 @@
         border-radius: 6px; padding: 3px 0;
     }
     .form-row.person-nick select, .form-row.person-nick input {
-        background: #3e4552; border-color: #525a6e;
+        background: #111c29; border-color: #30465a;
     }
     .form-row.person-nick .idx { color: #a7aebb; }
     /* Text centers inside the enter card controls. Selects rely on
@@ -387,7 +387,7 @@
         justify-content: center; padding: 2px 4px;
     }
     .row-status.saving { color: var(--dim); }
-    .row-status.saved  { color: var(--good); font-size: 0.95rem; text-shadow: 0 0 6px rgba(74, 222, 128, 0.6); }
+    .row-status.saved  { color: var(--good); font-size: 0.95rem; text-shadow: 0 0 6px rgba(66, 229, 138, 0.6); }
     .row-status.retry  {
         color: var(--bad); cursor: pointer; font-weight: 700;
         text-decoration: underline; text-underline-offset: 2px;
@@ -489,10 +489,10 @@
     .sign-group label:hover { background: rgba(0, 0, 0, 0.35); color: var(--ink); }
     .sign-group input[type="radio"] { display: none; }
     .sign-group label:has(input:checked) {
-        background: rgba(74, 222, 128, 0.22);
+        background: rgba(66, 229, 138, 0.22);
         border-color: var(--accent);
         color: var(--accent);
-        box-shadow: 0 0 8px rgba(74, 222, 128, 0.45);
+        box-shadow: 0 0 8px rgba(66, 229, 138, 0.45);
     }
     .hidden-field { display: none !important; }
     .form-section-title {
@@ -529,7 +529,7 @@
         line-height: 1; transition: all 0.12s;
     }
     .grade-btn:hover { color: var(--ink); border-color: var(--accent); }
-    .grade-btn.w.on { background: rgba(74, 222, 128, 0.22); color: var(--good); border-color: var(--accent); box-shadow: 0 0 8px rgba(74, 222, 128, 0.4); }
+    .grade-btn.w.on { background: rgba(66, 229, 138, 0.22); color: var(--good); border-color: var(--accent); box-shadow: 0 0 8px rgba(66, 229, 138, 0.4); }
     .grade-btn.l.on { background: rgba(239, 68, 68, 0.20); color: var(--bad); border-color: var(--bad); box-shadow: 0 0 8px rgba(239, 68, 68, 0.35); }
     .grade-btn.p.on { background: rgba(255, 255, 255, 0.10); color: var(--ink); border-color: #6b7280; }
     .grade-btn.del:hover { color: var(--bad); border-color: var(--bad); }
@@ -552,9 +552,9 @@
         padding: 9px 20px; border-radius: 6px; cursor: pointer;
         font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em;
         text-transform: uppercase;
-        box-shadow: 0 0 14px rgba(74, 222, 128, 0.35);
+        box-shadow: 0 0 14px rgba(66, 229, 138, 0.35);
     }
-    .btn-save:hover { box-shadow: 0 0 20px rgba(74, 222, 128, 0.55); }
+    .btn-save:hover { box-shadow: 0 0 20px rgba(66, 229, 138, 0.55); }
     .btn-save:disabled { opacity: 0.5; cursor: default; box-shadow: none; }
     .save-status { color: var(--dim); font-size: 0.85rem; }
     .save-status.ok { color: var(--good); }
@@ -599,7 +599,7 @@
         background: var(--surface);
         border: 1px solid var(--accent);
         border-radius: 6px;
-        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.6), 0 0 12px rgba(74, 222, 128, 0.25);
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.6), 0 0 12px rgba(66, 229, 138, 0.25);
         max-height: 240px; overflow-y: auto;
         min-width: 200px;
     }
@@ -612,7 +612,7 @@
     }
     .tt-option:last-child { border-bottom: none; }
     .tt-option:hover, .tt-option.active {
-        background: rgba(74, 222, 128, 0.16);
+        background: rgba(66, 229, 138, 0.16);
         color: var(--accent-bright);
     }
 
@@ -718,7 +718,7 @@
     footer {
         margin-top: 3rem; text-align: center;
         color: var(--accent); font-size: 0.82rem;
-        text-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+        text-shadow: 0 0 10px rgba(66, 229, 138, 0.3);
     }
 </style>
 </head>
