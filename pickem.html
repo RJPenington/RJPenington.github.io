@@ -2967,7 +2967,11 @@
             }
             row.querySelector('.points').value = sf.points || '';
             row.querySelector('.units').value = sf.units || '';
-            row.querySelector('.lock-cell input.lock').checked = !!sf.lock;
+            // Strict boolean check: jsonb from any writer may hold the
+            // STRING "false", which is truthy and would silently re-check
+            // the lock on every hydration, painting freshly typed cards
+            // with the mortal lock look while saves stay false
+            row.querySelector('.lock-cell input.lock').checked = (sf.lock === true || sf.lock === 'true');
             // Green check only for complete picks; a legacy row missing its
             // timeframe tag shows the red X until someone tags it
             setRowStatus(row, isRowComplete(row) ? 'saved' : 'incomplete');
