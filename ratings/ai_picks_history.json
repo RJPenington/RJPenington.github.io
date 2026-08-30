@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-08-29",
+  "as_of": "2026-08-30",
   "aggregates": {
     "today": {
       "picks": 5,
@@ -12,21 +12,21 @@
     },
     "week": {
       "picks": 35,
-      "wins": 20,
-      "losses": 10,
+      "wins": 19,
+      "losses": 11,
       "pushes": 0,
       "pending": 5,
-      "units_net": 14.0,
-      "hit_pct": 0.6666666666666666
+      "units_net": 12.0,
+      "hit_pct": 0.6333333333333333
     },
     "season": {
-      "picks": 85,
-      "wins": 47,
-      "losses": 33,
+      "picks": 90,
+      "wins": 50,
+      "losses": 35,
       "pushes": 0,
       "pending": 5,
       "units_net": 17.0,
-      "hit_pct": 0.5875
+      "hit_pct": 0.5882352941176471
     }
   },
   "picks_by_date": {
@@ -1373,8 +1373,8 @@
           "units": 2,
           "confidence": "high",
           "reasoning": "All three ratings back LAD with R3 at 2.20 (STRONG 2u), and R3 is the top strong-play rating at 48-29 (62%, +22u) over 14 days and +57u on the season. LAD when the model likes them is 23-10 (70%) overall and a slate-best 17-3 (85%, +19u) on strong plays, so the consensus lines up with the strongest team profile on the board.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -2
         },
         {
           "rank": 2,
@@ -1386,8 +1386,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "MIL is the best team-when-liked record on the slate at 30-16 (65%) with strong plays 19-8 (70%, +13.0u), while the opposing side TEX is just 12-14 (46%) and 2-4 (33%) on strong plays. R2 strong plays are 47-30 (61%, +17u) over 14 days, and its edge here is driven by the HOT SP category (14d 102-70, 59% vs 52% season).",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 3,
@@ -1399,8 +1399,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R2 (1.35) and R3 (1.13) both flag this STRONG, and KCR when the model likes them is 14-7 (67%) with strong plays 5-1 (83%, +4.0u). CLE is a modest 11-8 (58%) with strong plays exactly break-even at 7-5 (+0.0u), so the road side is the better historical profile at +132.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 4,
@@ -1412,8 +1412,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R1 (1.12) and R2 (1.45) both make this a STRONG play, and STL is 13-8 (62%) when liked with strong plays 6-2 (75%, +6.0u). PIT is the counter-indicator at 8-11 (42%) overall and a dismal 1-4 (20%, -3.0u) on strong plays, making the home side the clean side of the model.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 5,
@@ -1425,13 +1425,96 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "Unanimous STRONG across R1 (1.74), R2 (1.96) and R3 (1.76) — the widest triple-agreement on the board outside LAD/ATL. PHI when liked is 20-14 (59%) with strong plays 9-6 (60%, +1.0u), versus LAA at 6-9 (40%) and 3-4 (43%, -3.0u); R2's 14d strong record of 47-30 (61%) supports laying the price.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
         "input_tokens": 4604,
         "output_tokens": 2310
+      },
+      "totals": {
+        "wins": 3,
+        "losses": 2,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": 0.0
+      }
+    },
+    "2026-08-30": {
+      "generated_at": "2026-08-30T05:31:16",
+      "model": "claude-opus-5",
+      "date": "2026-08-30",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "MIL",
+          "home_team": "MIL",
+          "away_team": "TEX",
+          "rating_source": "R3",
+          "delta": 2.72,
+          "units": 3,
+          "confidence": "high",
+          "reasoning": "R3 is the strongest strong-play rating (season 188-147, 56%, +63.0u; 14d 53-25, 68%, +32.0u) and posts its largest edge of the slate here at +2.72. Milwaukee is 31-16 (66%) when the model likes them and 19-8 (70%, +13.0u) on strong plays, while Texas is just 12-14 (46%) and 2-4 (33%, -3.0u) as a strong side.  All three ratings agree on MIL (+2.39/+2.64/+2.72).",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "LAD",
+          "home_team": "DET",
+          "away_team": "LAD",
+          "rating_source": "R3",
+          "delta": -2.0,
+          "units": 2,
+          "confidence": "high",
+          "reasoning": "LAD is the best when-model-likes-them team on the board at 23-11 (68%) overall and a slate-best 17-4 (81%, +18.0u) on strong plays. All three ratings agree on the Dodgers (-2.11/-1.89/-2.00), and R3's 30d strong record (96-77, 55%, +27.0u) is the most reliable window available. Detroit's own 13-8 strong mark is respectable but well short of LAD's 81%.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "TBR",
+          "home_team": "TBR",
+          "away_team": "SDP",
+          "rating_source": "R2",
+          "delta": 1.55,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "Tampa Bay grades 28-13 (68%) when liked and 19-6 (76%, +21.0u) on strong plays — the top strong-play unit profile in the pool. R2 carries the biggest edge here (+1.55) and is 50-27 (65%, +26.0u) on strong plays over 14 days; SDP is only 16-13 (55%) and 6-4 when liked. Unanimous three-rating agreement adds confidence.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "ATL",
+          "home_team": "ATL",
+          "away_team": "COL",
+          "rating_source": "R3",
+          "delta": 2.98,
+          "units": 3,
+          "confidence": "medium",
+          "reasoning": "Largest delta on the slate with unanimous 3u agreement (R1 +3.02, R2 +2.72, R3 +2.98), and R3's 68% 14d strong-play clip (53-25, +32.0u) supports max sizing. Colorado is the worst fade-adjacent profile in the pool at 3-8 (27%) when liked and 1-3 (25%, -2.0u) on strong plays; ATL's 14-10 (58%) is modest but the edge magnitude carries it.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 5,
+          "pick": "CHC",
+          "home_team": "CHC",
+          "away_team": "CIN",
+          "rating_source": "R3",
+          "delta": 1.76,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "R3 shows the biggest edge (+1.76) and Chicago is 22-12 (65%) when the model likes them. The other side is the key: Cincinnati is 4-15 (21%) when liked and a dismal 1-9 (10%, -9.0u) on strong plays, the worst mark on the board. R3's 30d +27.0u strong-play run is the healthiest of the three ratings.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 4680,
+        "output_tokens": 1860
       },
       "totals": {
         "wins": 0,
