@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-08-31",
+  "as_of": "2026-09-01",
   "aggregates": {
     "today": {
       "picks": 5,
@@ -12,21 +12,21 @@
     },
     "week": {
       "picks": 35,
-      "wins": 17,
-      "losses": 13,
+      "wins": 15,
+      "losses": 15,
       "pushes": 0,
       "pending": 5,
-      "units_net": 7.0,
-      "hit_pct": 0.5666666666666667
+      "units_net": -2.0,
+      "hit_pct": 0.5
     },
     "season": {
-      "picks": 95,
-      "wins": 53,
-      "losses": 37,
+      "picks": 100,
+      "wins": 55,
+      "losses": 40,
       "pushes": 0,
       "pending": 5,
-      "units_net": 19.0,
-      "hit_pct": 0.5888888888888889
+      "units_net": 16.0,
+      "hit_pct": 0.5789473684210527
     }
   },
   "picks_by_date": {
@@ -1539,8 +1539,8 @@
           "units": 3,
           "confidence": "high",
           "reasoning": "R3 posts the slate's largest edge at +3.39 and is the hottest strong-play rating (14d 57-27, 68%, +33.0u; season 194-150, +66.0u). Tampa Bay is elite when the model likes them: 29-13 (69%) overall and 20-6 (77%, +22.0u) on strong plays, the best strong-play ROI of any team on today's card. All three ratings agree on TBR at 3u strength (+2.89/+2.95/+3.39).",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -3
         },
         {
           "rank": 2,
@@ -1552,8 +1552,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "Unanimous strong play (R1 +1.16, R2 +1.13, R3 +1.11) and Boston is the model's most reliable side: 34-10 (77%) when liked and 18-5 (78%, +17.0u) on strong plays. The fade side is equally supportive — Seattle is 5-12 (29%) when liked and 1-4 (20%, -3.0u) on strong plays. R1 strong plays are 49-25 (66%, +21.0u) over 14 days.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 3,
@@ -1565,8 +1565,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R3 has the biggest edge on Milwaukee (-1.59 vs R1 -1.54, R2 -1.21) and is running 26-17 (60%, +10.0u) over 7 days and 99-77 (56%, +29.0u) over 30. Milwaukee is 31-17 (65%) when the model likes them with a 19-9 (68%, +11.0u) strong-play mark, versus Chicago's much weaker 9-8 (53%) strong record — and we get a pick'em price (+100).",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 4,
@@ -1578,8 +1578,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "Three-rating agreement (R1 +1.29, R2 +1.44, R3 +1.49) with R3 the strongest and hottest source (14d 57-27, 68%). The fade angle carries this one: the Athletics are just 4-7 (36%) when liked and 1-4 (20%, -4.0u) on strong plays, the worst small-sample strong profile on the slate. Texas's own 2-4 strong record (-3.0u) is why this stays at 1u and medium confidence.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 5,
@@ -1591,13 +1591,96 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "R3 gives the largest edge (-1.24) and R2 also flags it strong (-1.14), and R3 leads all ratings at 56% (+66.0u) on season strong plays with SP/trends categories firing (trends 14d 110-63, 64%; sp 14d 98-75, 57%). Caution flags keep this at low confidence: New York is only 12-15 (44%) when liked and 4-9 (31%, -7.0u) on strong plays, while the Angels' 3-4 (43%) strong mark offers little counterweight.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         }
       ],
       "usage": {
         "input_tokens": 3975,
         "output_tokens": 1961
+      },
+      "totals": {
+        "wins": 2,
+        "losses": 3,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": -3.0
+      }
+    },
+    "2026-09-01": {
+      "generated_at": "2026-09-01T05:31:26",
+      "model": "claude-opus-5",
+      "date": "2026-09-01",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "KCR",
+          "home_team": "KCR",
+          "away_team": "MIA",
+          "rating_source": "R1",
+          "delta": 1.77,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "All three ratings agree on Kansas City (R1 +1.77, R2 +1.27, R3 +1.08), the strongest triple-agreement edge on the board. KCR is 15-7 (68%) when the model likes them and 5-1 (83%, +4.0u) on strong plays, while MIA is only 10-9 (53%) as a strong side. R1 strong plays are 49-26 (65%, +16.0u) over 14 days with sp HOT at 59% (+6.8pts).",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "TBR",
+          "home_team": "TBR",
+          "away_team": "NYM",
+          "rating_source": "R3",
+          "delta": 1.06,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "R3 is the top strong-play rating: 58-29 (67%, +28.0u) last 14 days and 198-153 (56%, +65.0u) on the season, and it is the only rating pushing this to STRONG (+1.06) with R1/R2 agreeing at +0.88/+0.86. Tampa Bay is 29-14 (67%) when the model likes them and a slate-best 20-7 (74%, +19.0u) on strong plays, versus NYM's 5-4 strong record.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "LAD",
+          "home_team": "LAD",
+          "away_team": "STL",
+          "rating_source": "R2",
+          "delta": 1.13,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "R2 flags LAD as a STRONG play at +1.13 with R1 (+0.90) and R3 (+0.89) on the same side. The Dodgers are 24-11 (69%) when the model likes them and 18-4 (82%, +20.0u) on strong plays, the best strong-play profile of any team on the slate; R2 strong plays are 49-29 (63%, +15.0u) over 14 days.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "SDP",
+          "home_team": "CIN",
+          "away_team": "SDP",
+          "rating_source": "R3",
+          "delta": 1.88,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "Largest delta on the board from the best rating: R3 has SDP at 1.88 with R1 (-1.31) and R2 (-1.46) also strong on the same side. SDP is 17-13 (57%) / 6-4 (60%) strong when liked, and the fade side is the key edge — CIN is 4-15 (21%) when the model likes them and a disastrous 1-9 (10%, -9.0u) on strong plays.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 5,
+          "pick": "CHW",
+          "home_team": "HOU",
+          "away_team": "CHW",
+          "rating_source": "R3",
+          "delta": 1.65,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "Unanimous strong side (R1 -1.61, R2 -1.00, R3 -1.65) with R3 riding a 100-78 (56%, +25.0u) 30-day strong-play run. CHW's own 14-17 (45%) when-liked record is weak, but Houston is 3-8 (27%, -8.0u) on strong plays and 17-14 overall, making the fade the value; trends (62% last 14d, +6.1pts) is the hottest category driving this line.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 4574,
+        "output_tokens": 1906
       },
       "totals": {
         "wins": 0,
