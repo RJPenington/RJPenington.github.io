@@ -3,7 +3,7 @@
     "1": {
       "per_day": [
         {
-          "date": "2026-08-31",
+          "date": "2026-09-01",
           "flat": {
             "bets": 0,
             "wins": 0,
@@ -64,20 +64,20 @@
           },
           "games": [
             {
-              "matchup": "SFG@ATL",
-              "pick": "ATL",
-              "delta": 0.14470433284827777,
-              "odds_american": "-164",
-              "units": 1.0,
+              "matchup": "SDP@CIN",
+              "pick": "SDP",
+              "delta": -1.3121046084818389,
+              "odds_american": "-134",
+              "units": 1.5,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
             },
             {
-              "matchup": "SDP@CIN",
-              "pick": "SDP",
-              "delta": -0.39152037179241805,
-              "odds_american": "-140",
+              "matchup": "SFG@PIT",
+              "pick": "PIT",
+              "delta": 0.03605941893765863,
+              "odds_american": "-158",
               "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
@@ -86,9 +86,19 @@
             {
               "matchup": "NYM@TBR",
               "pick": "TBR",
-              "delta": 2.885918833631586,
-              "odds_american": "-170",
-              "units": 3.0,
+              "delta": 0.88127390234839,
+              "odds_american": "-124",
+              "units": 1.0,
+              "outcome": null,
+              "profit_flat": 0.0,
+              "profit_scaled": 0.0
+            },
+            {
+              "matchup": "TOR@CLE",
+              "pick": "CLE",
+              "delta": 0.4449866230209709,
+              "odds_american": "-176",
+              "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -96,18 +106,18 @@
             {
               "matchup": "SEA@BOS",
               "pick": "BOS",
-              "delta": 1.156200061636599,
-              "odds_american": "-164",
+              "delta": 1.2648731313851416,
+              "odds_american": "-120",
               "units": 1.5,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
             },
             {
-              "matchup": "MIA@WSN",
+              "matchup": "ATL@WSN",
               "pick": "WSN",
-              "delta": 0.06351512342286814,
-              "odds_american": "+102",
+              "delta": 0.07966524448201984,
+              "odds_american": "+154",
               "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
@@ -116,9 +126,19 @@
             {
               "matchup": "DET@MIN",
               "pick": "MIN",
-              "delta": 0.6153947341037789,
-              "odds_american": "-132",
+              "delta": 0.9824205417189384,
+              "odds_american": "+100",
               "units": 1.0,
+              "outcome": null,
+              "profit_flat": 0.0,
+              "profit_scaled": 0.0
+            },
+            {
+              "matchup": "MIA@KCR",
+              "pick": "KCR",
+              "delta": 1.768776498765197,
+              "odds_american": "-116",
+              "units": 2.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -126,9 +146,9 @@
             {
               "matchup": "MIL@CHC",
               "pick": "MIL",
-              "delta": -1.5412720760483642,
-              "odds_american": "+100",
-              "units": 2.0,
+              "delta": -0.3698422705007012,
+              "odds_american": "+112",
+              "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -136,9 +156,9 @@
             {
               "matchup": "ATH@TEX",
               "pick": "TEX",
-              "delta": 1.293184146640292,
-              "odds_american": "-215",
-              "units": 1.5,
+              "delta": 0.43103013882963115,
+              "odds_american": "-187",
+              "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -146,9 +166,9 @@
             {
               "matchup": "CHW@HOU",
               "pick": "CHW",
-              "delta": -0.3331486430061492,
-              "odds_american": "+119",
-              "units": 1.0,
+              "delta": -1.6073235692631602,
+              "odds_american": "-116",
+              "units": 2.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -156,9 +176,9 @@
             {
               "matchup": "BAL@COL",
               "pick": "BAL",
-              "delta": -1.3455998502713218,
+              "delta": -0.25307311120038456,
               "odds_american": "-142",
-              "units": 1.5,
+              "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -166,8 +186,8 @@
             {
               "matchup": "NYY@LAA",
               "pick": "NYY",
-              "delta": -0.8630727367817395,
-              "odds_american": "-145",
+              "delta": -0.7792818186850425,
+              "odds_american": "-190",
               "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
@@ -176,12 +196,205 @@
             {
               "matchup": "PHI@ARI",
               "pick": "PHI",
-              "delta": -1.0026406807267518,
-              "odds_american": "-125",
-              "units": 1.5,
+              "delta": -0.03160653918914402,
+              "odds_american": "-140",
+              "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
+            },
+            {
+              "matchup": "STL@LAD",
+              "pick": "LAD",
+              "delta": 0.9024892254291812,
+              "odds_american": "-179",
+              "units": 1.0,
+              "outcome": null,
+              "profit_flat": 0.0,
+              "profit_scaled": 0.0
+            }
+          ]
+        },
+        {
+          "date": "2026-08-31",
+          "flat": {
+            "bets": 12,
+            "wins": 7,
+            "losses": 5,
+            "stake": 1200.0,
+            "profit": 7.1,
+            "roi_pct": 0.59
+          },
+          "scaled": {
+            "bets": 12,
+            "wins": 7,
+            "losses": 5,
+            "stake": 1700.0,
+            "profit": -163.95,
+            "roi_pct": -9.64
+          },
+          "by_units": {
+            "1.0u": {
+              "bets": 6,
+              "wins": 3,
+              "losses": 3,
+              "stake": 600.0,
+              "profit": -50.81,
+              "roi_pct": -8.47
+            },
+            "1.5u": {
+              "bets": 4,
+              "wins": 4,
+              "losses": 0,
+              "stake": 600.0,
+              "profit": 386.86,
+              "roi_pct": 64.48
+            },
+            "2.0u": {
+              "bets": 1,
+              "wins": 0,
+              "losses": 1,
+              "stake": 200.0,
+              "profit": -200.0,
+              "roi_pct": -100.0
+            },
+            "2.5u": {
+              "bets": 0,
+              "wins": 0,
+              "losses": 0,
+              "stake": 0.0,
+              "profit": 0.0,
+              "roi_pct": 0
+            },
+            "3.0u": {
+              "bets": 1,
+              "wins": 0,
+              "losses": 1,
+              "stake": 300.0,
+              "profit": -300.0,
+              "roi_pct": -100.0
+            }
+          },
+          "games": [
+            {
+              "matchup": "SFG@ATL",
+              "pick": "ATL",
+              "delta": 0.14470433284827777,
+              "odds_american": "-164",
+              "units": 1.0,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -100.0
+            },
+            {
+              "matchup": "SDP@CIN",
+              "pick": "SDP",
+              "delta": -0.39152037179241805,
+              "odds_american": "-140",
+              "units": 1.0,
+              "outcome": "W",
+              "profit_flat": 71.43,
+              "profit_scaled": 71.43
+            },
+            {
+              "matchup": "NYM@TBR",
+              "pick": "TBR",
+              "delta": 2.885918833631586,
+              "odds_american": "-170",
+              "units": 3.0,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -300.0
+            },
+            {
+              "matchup": "SEA@BOS",
+              "pick": "BOS",
+              "delta": 1.156200061636599,
+              "odds_american": "-164",
+              "units": 1.5,
+              "outcome": "W",
+              "profit_flat": 60.98,
+              "profit_scaled": 91.46
+            },
+            {
+              "matchup": "MIA@WSN",
+              "pick": "WSN",
+              "delta": 0.06351512342286814,
+              "odds_american": "+102",
+              "units": 1.0,
+              "outcome": "W",
+              "profit_flat": 102.0,
+              "profit_scaled": 102.0
+            },
+            {
+              "matchup": "DET@MIN",
+              "pick": "MIN",
+              "delta": 0.6153947341037789,
+              "odds_american": "-132",
+              "units": 1.0,
+              "outcome": "W",
+              "profit_flat": 75.76,
+              "profit_scaled": 75.76
+            },
+            {
+              "matchup": "MIL@CHC",
+              "pick": "MIL",
+              "delta": -1.5412720760483642,
+              "odds_american": "+100",
+              "units": 2.0,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -200.0
+            },
+            {
+              "matchup": "ATH@TEX",
+              "pick": "TEX",
+              "delta": 1.293184146640292,
+              "odds_american": "-215",
+              "units": 1.5,
+              "outcome": "W",
+              "profit_flat": 46.51,
+              "profit_scaled": 69.77
+            },
+            {
+              "matchup": "CHW@HOU",
+              "pick": "CHW",
+              "delta": -0.3331486430061492,
+              "odds_american": "+119",
+              "units": 1.0,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -100.0
+            },
+            {
+              "matchup": "BAL@COL",
+              "pick": "BAL",
+              "delta": -1.3455998502713218,
+              "odds_american": "-142",
+              "units": 1.5,
+              "outcome": "W",
+              "profit_flat": 70.42,
+              "profit_scaled": 105.63
+            },
+            {
+              "matchup": "NYY@LAA",
+              "pick": "NYY",
+              "delta": -0.8630727367817395,
+              "odds_american": "-145",
+              "units": 1.0,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -100.0
+            },
+            {
+              "matchup": "PHI@ARI",
+              "pick": "PHI",
+              "delta": -1.0026406807267518,
+              "odds_american": "-125",
+              "units": 1.5,
+              "outcome": "W",
+              "profit_flat": 80.0,
+              "profit_scaled": 120.0
             }
           ]
         },
@@ -12102,45 +12315,45 @@
         }
       ],
       "overall_flat": {
-        "bets": 795,
-        "wins": 441,
-        "losses": 354,
-        "stake": 79500.0,
-        "profit": 2694.42,
-        "roi_pct": 3.39
+        "bets": 807,
+        "wins": 448,
+        "losses": 359,
+        "stake": 80700.0,
+        "profit": 2701.52,
+        "roi_pct": 3.35
       },
       "overall_scaled": {
-        "bets": 795,
-        "wins": 441,
-        "losses": 354,
-        "stake": 114500.0,
-        "profit": 1266.73,
-        "roi_pct": 1.11
+        "bets": 807,
+        "wins": 448,
+        "losses": 359,
+        "stake": 116200.0,
+        "profit": 1102.78,
+        "roi_pct": 0.95
       },
       "overall_by_units": {
         "1.0u": {
-          "bets": 434,
-          "wins": 241,
-          "losses": 193,
-          "stake": 43400.0,
-          "profit": 4490.83,
-          "roi_pct": 10.35
+          "bets": 440,
+          "wins": 244,
+          "losses": 196,
+          "stake": 44000.0,
+          "profit": 4440.02,
+          "roi_pct": 10.09
         },
         "1.5u": {
-          "bets": 162,
-          "wins": 88,
+          "bets": 166,
+          "wins": 92,
           "losses": 74,
-          "stake": 24300.0,
-          "profit": -1570.62,
-          "roi_pct": -6.46
+          "stake": 24900.0,
+          "profit": -1183.76,
+          "roi_pct": -4.75
         },
         "2.0u": {
-          "bets": 99,
+          "bets": 100,
           "wins": 53,
-          "losses": 46,
-          "stake": 19800.0,
-          "profit": -1202.09,
-          "roi_pct": -6.07
+          "losses": 47,
+          "stake": 20000.0,
+          "profit": -1402.09,
+          "roi_pct": -7.01
         },
         "2.5u": {
           "bets": 60,
@@ -12151,19 +12364,19 @@
           "roi_pct": 0.21
         },
         "3.0u": {
-          "bets": 40,
+          "bets": 41,
           "wins": 23,
-          "losses": 17,
-          "stake": 12000.0,
-          "profit": -483.56,
-          "roi_pct": -4.03
+          "losses": 18,
+          "stake": 12300.0,
+          "profit": -783.56,
+          "roi_pct": -6.37
         }
       }
     },
     "2": {
       "per_day": [
         {
-          "date": "2026-08-31",
+          "date": "2026-09-01",
           "flat": {
             "bets": 0,
             "wins": 0,
@@ -12224,20 +12437,20 @@
           },
           "games": [
             {
-              "matchup": "SFG@ATL",
-              "pick": "SFG",
-              "delta": -0.04499645010958275,
-              "odds_american": "+147",
-              "units": 1.0,
+              "matchup": "SDP@CIN",
+              "pick": "SDP",
+              "delta": -1.4638090977333036,
+              "odds_american": "-134",
+              "units": 1.5,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
             },
             {
-              "matchup": "SDP@CIN",
-              "pick": "SDP",
-              "delta": -0.2011700863982222,
-              "odds_american": "-140",
+              "matchup": "SFG@PIT",
+              "pick": "SFG",
+              "delta": -0.017805060187589206,
+              "odds_american": "+144",
               "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
@@ -12246,9 +12459,19 @@
             {
               "matchup": "NYM@TBR",
               "pick": "TBR",
-              "delta": 2.952527815382182,
-              "odds_american": "-170",
-              "units": 3.0,
+              "delta": 0.8595679811154477,
+              "odds_american": "-124",
+              "units": 1.0,
+              "outcome": null,
+              "profit_flat": 0.0,
+              "profit_scaled": 0.0
+            },
+            {
+              "matchup": "TOR@CLE",
+              "pick": "CLE",
+              "delta": 0.39122482221010557,
+              "odds_american": "-176",
+              "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -12256,18 +12479,18 @@
             {
               "matchup": "SEA@BOS",
               "pick": "BOS",
-              "delta": 1.126077584990215,
-              "odds_american": "-164",
+              "delta": 1.3888453317731706,
+              "odds_american": "-120",
               "units": 1.5,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
             },
             {
-              "matchup": "MIA@WSN",
-              "pick": "MIA",
-              "delta": -0.06423993374351866,
-              "odds_american": "-115",
+              "matchup": "ATL@WSN",
+              "pick": "WSN",
+              "delta": 0.5232437219547981,
+              "odds_american": "+154",
               "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
@@ -12276,19 +12499,29 @@
             {
               "matchup": "DET@MIN",
               "pick": "MIN",
-              "delta": 0.5126957438238033,
-              "odds_american": "-132",
-              "units": 1.0,
+              "delta": 1.615742054280938,
+              "odds_american": "+100",
+              "units": 2.0,
+              "outcome": null,
+              "profit_flat": 0.0,
+              "profit_scaled": 0.0
+            },
+            {
+              "matchup": "MIA@KCR",
+              "pick": "KCR",
+              "delta": 1.2727742258289485,
+              "odds_american": "-116",
+              "units": 1.5,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
             },
             {
               "matchup": "MIL@CHC",
-              "pick": "MIL",
-              "delta": -1.2111673477381002,
-              "odds_american": "+100",
-              "units": 1.5,
+              "pick": "CHC",
+              "delta": 0.2217509210810178,
+              "odds_american": "-124",
+              "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -12296,19 +12529,19 @@
             {
               "matchup": "ATH@TEX",
               "pick": "TEX",
-              "delta": 1.440509018179874,
-              "odds_american": "-215",
-              "units": 1.5,
+              "delta": 0.9970878538412951,
+              "odds_american": "-187",
+              "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
             },
             {
               "matchup": "CHW@HOU",
-              "pick": "HOU",
-              "delta": 0.0035053763175545427,
-              "odds_american": "-128",
-              "units": 1.0,
+              "pick": "CHW",
+              "delta": -1.0021694479577778,
+              "odds_american": "-116",
+              "units": 1.5,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -12316,7 +12549,7 @@
             {
               "matchup": "BAL@COL",
               "pick": "BAL",
-              "delta": -0.7807813677147708,
+              "delta": -0.10080238600583602,
               "odds_american": "-142",
               "units": 1.0,
               "outcome": null,
@@ -12326,9 +12559,9 @@
             {
               "matchup": "NYY@LAA",
               "pick": "NYY",
-              "delta": -1.1388753535607101,
-              "odds_american": "-145",
-              "units": 1.5,
+              "delta": -0.288903292429433,
+              "odds_american": "-190",
+              "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -12336,12 +12569,205 @@
             {
               "matchup": "PHI@ARI",
               "pick": "PHI",
-              "delta": -1.0063648892972301,
-              "odds_american": "-125",
+              "delta": -0.2286291935065723,
+              "odds_american": "-140",
+              "units": 1.0,
+              "outcome": null,
+              "profit_flat": 0.0,
+              "profit_scaled": 0.0
+            },
+            {
+              "matchup": "STL@LAD",
+              "pick": "LAD",
+              "delta": 1.1346424088499862,
+              "odds_american": "-179",
               "units": 1.5,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
+            }
+          ]
+        },
+        {
+          "date": "2026-08-31",
+          "flat": {
+            "bets": 12,
+            "wins": 8,
+            "losses": 4,
+            "stake": 1200.0,
+            "profit": 230.22,
+            "roi_pct": 19.19
+          },
+          "scaled": {
+            "bets": 12,
+            "wins": 8,
+            "losses": 4,
+            "stake": 1650.0,
+            "profit": 23.96,
+            "roi_pct": 1.45
+          },
+          "by_units": {
+            "1.0u": {
+              "bets": 6,
+              "wins": 5,
+              "losses": 1,
+              "stake": 600.0,
+              "profit": 342.73,
+              "roi_pct": 57.12
+            },
+            "1.5u": {
+              "bets": 5,
+              "wins": 3,
+              "losses": 2,
+              "stake": 750.0,
+              "profit": -18.77,
+              "roi_pct": -2.5
+            },
+            "2.0u": {
+              "bets": 0,
+              "wins": 0,
+              "losses": 0,
+              "stake": 0.0,
+              "profit": 0.0,
+              "roi_pct": 0
+            },
+            "2.5u": {
+              "bets": 0,
+              "wins": 0,
+              "losses": 0,
+              "stake": 0.0,
+              "profit": 0.0,
+              "roi_pct": 0
+            },
+            "3.0u": {
+              "bets": 1,
+              "wins": 0,
+              "losses": 1,
+              "stake": 300.0,
+              "profit": -300.0,
+              "roi_pct": -100.0
+            }
+          },
+          "games": [
+            {
+              "matchup": "SFG@ATL",
+              "pick": "SFG",
+              "delta": -0.04499645010958275,
+              "odds_american": "+147",
+              "units": 1.0,
+              "outcome": "W",
+              "profit_flat": 147.0,
+              "profit_scaled": 147.0
+            },
+            {
+              "matchup": "SDP@CIN",
+              "pick": "SDP",
+              "delta": -0.2011700863982222,
+              "odds_american": "-140",
+              "units": 1.0,
+              "outcome": "W",
+              "profit_flat": 71.43,
+              "profit_scaled": 71.43
+            },
+            {
+              "matchup": "NYM@TBR",
+              "pick": "TBR",
+              "delta": 2.952527815382182,
+              "odds_american": "-170",
+              "units": 3.0,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -300.0
+            },
+            {
+              "matchup": "SEA@BOS",
+              "pick": "BOS",
+              "delta": 1.126077584990215,
+              "odds_american": "-164",
+              "units": 1.5,
+              "outcome": "W",
+              "profit_flat": 60.98,
+              "profit_scaled": 91.46
+            },
+            {
+              "matchup": "MIA@WSN",
+              "pick": "MIA",
+              "delta": -0.06423993374351866,
+              "odds_american": "-115",
+              "units": 1.0,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -100.0
+            },
+            {
+              "matchup": "DET@MIN",
+              "pick": "MIN",
+              "delta": 0.5126957438238033,
+              "odds_american": "-132",
+              "units": 1.0,
+              "outcome": "W",
+              "profit_flat": 75.76,
+              "profit_scaled": 75.76
+            },
+            {
+              "matchup": "MIL@CHC",
+              "pick": "MIL",
+              "delta": -1.2111673477381002,
+              "odds_american": "+100",
+              "units": 1.5,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -150.0
+            },
+            {
+              "matchup": "ATH@TEX",
+              "pick": "TEX",
+              "delta": 1.440509018179874,
+              "odds_american": "-215",
+              "units": 1.5,
+              "outcome": "W",
+              "profit_flat": 46.51,
+              "profit_scaled": 69.77
+            },
+            {
+              "matchup": "CHW@HOU",
+              "pick": "HOU",
+              "delta": 0.0035053763175545427,
+              "odds_american": "-128",
+              "units": 1.0,
+              "outcome": "W",
+              "profit_flat": 78.12,
+              "profit_scaled": 78.12
+            },
+            {
+              "matchup": "BAL@COL",
+              "pick": "BAL",
+              "delta": -0.7807813677147708,
+              "odds_american": "-142",
+              "units": 1.0,
+              "outcome": "W",
+              "profit_flat": 70.42,
+              "profit_scaled": 70.42
+            },
+            {
+              "matchup": "NYY@LAA",
+              "pick": "NYY",
+              "delta": -1.1388753535607101,
+              "odds_american": "-145",
+              "units": 1.5,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -150.0
+            },
+            {
+              "matchup": "PHI@ARI",
+              "pick": "PHI",
+              "delta": -1.0063648892972301,
+              "odds_american": "-125",
+              "units": 1.5,
+              "outcome": "W",
+              "profit_flat": 80.0,
+              "profit_scaled": 120.0
             }
           ]
         },
@@ -24049,37 +24475,37 @@
         }
       ],
       "overall_flat": {
-        "bets": 780,
-        "wins": 427,
-        "losses": 353,
-        "stake": 78000.0,
-        "profit": 2022.95,
-        "roi_pct": 2.59
+        "bets": 792,
+        "wins": 435,
+        "losses": 357,
+        "stake": 79200.0,
+        "profit": 2253.17,
+        "roi_pct": 2.84
       },
       "overall_scaled": {
-        "bets": 780,
-        "wins": 427,
-        "losses": 353,
-        "stake": 111050.0,
-        "profit": 1025.86,
-        "roi_pct": 0.92
+        "bets": 792,
+        "wins": 435,
+        "losses": 357,
+        "stake": 112700.0,
+        "profit": 1049.82,
+        "roi_pct": 0.93
       },
       "overall_by_units": {
         "1.0u": {
-          "bets": 434,
-          "wins": 238,
-          "losses": 196,
-          "stake": 43400.0,
-          "profit": 4038.16,
-          "roi_pct": 9.3
+          "bets": 440,
+          "wins": 243,
+          "losses": 197,
+          "stake": 44000.0,
+          "profit": 4380.89,
+          "roi_pct": 9.96
         },
         "1.5u": {
-          "bets": 153,
-          "wins": 76,
-          "losses": 77,
-          "stake": 22950.0,
-          "profit": -3462.2,
-          "roi_pct": -15.09
+          "bets": 158,
+          "wins": 79,
+          "losses": 79,
+          "stake": 23700.0,
+          "profit": -3480.97,
+          "roi_pct": -14.69
         },
         "2.0u": {
           "bets": 105,
@@ -24098,19 +24524,19 @@
           "roi_pct": -8.29
         },
         "3.0u": {
-          "bets": 34,
+          "bets": 35,
           "wins": 21,
-          "losses": 13,
-          "stake": 10200.0,
-          "profit": 263.97,
-          "roi_pct": 2.59
+          "losses": 14,
+          "stake": 10500.0,
+          "profit": -36.03,
+          "roi_pct": -0.34
         }
       }
     },
     "3": {
       "per_day": [
         {
-          "date": "2026-08-31",
+          "date": "2026-09-01",
           "flat": {
             "bets": 0,
             "wins": 0,
@@ -24171,20 +24597,20 @@
           },
           "games": [
             {
-              "matchup": "SFG@ATL",
-              "pick": "ATL",
-              "delta": 0.19130354843822772,
-              "odds_american": "-164",
-              "units": 1.0,
+              "matchup": "SDP@CIN",
+              "pick": "SDP",
+              "delta": -1.88312183942406,
+              "odds_american": "-134",
+              "units": 2.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
             },
             {
-              "matchup": "SDP@CIN",
-              "pick": "SDP",
-              "delta": -0.3977428400032297,
-              "odds_american": "-140",
+              "matchup": "SFG@PIT",
+              "pick": "PIT",
+              "delta": 0.2861373202192894,
+              "odds_american": "-158",
               "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
@@ -24193,9 +24619,19 @@
             {
               "matchup": "NYM@TBR",
               "pick": "TBR",
-              "delta": 3.3929398063978264,
-              "odds_american": "-170",
-              "units": 3.0,
+              "delta": 1.064952870042549,
+              "odds_american": "-124",
+              "units": 1.5,
+              "outcome": null,
+              "profit_flat": 0.0,
+              "profit_scaled": 0.0
+            },
+            {
+              "matchup": "TOR@CLE",
+              "pick": "CLE",
+              "delta": 0.8766861761744558,
+              "odds_american": "-176",
+              "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -24203,18 +24639,18 @@
             {
               "matchup": "SEA@BOS",
               "pick": "BOS",
-              "delta": 1.106388519577191,
-              "odds_american": "-164",
+              "delta": 1.1747005337047884,
+              "odds_american": "-120",
               "units": 1.5,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
             },
             {
-              "matchup": "MIA@WSN",
-              "pick": "MIA",
-              "delta": -0.08879304591072223,
-              "odds_american": "-115",
+              "matchup": "ATL@WSN",
+              "pick": "WSN",
+              "delta": 0.1073620345773989,
+              "odds_american": "+154",
               "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
@@ -24223,9 +24659,19 @@
             {
               "matchup": "DET@MIN",
               "pick": "MIN",
-              "delta": 0.8232181764867637,
-              "odds_american": "-132",
-              "units": 1.0,
+              "delta": 1.188871067725862,
+              "odds_american": "+100",
+              "units": 1.5,
+              "outcome": null,
+              "profit_flat": 0.0,
+              "profit_scaled": 0.0
+            },
+            {
+              "matchup": "MIA@KCR",
+              "pick": "KCR",
+              "delta": 1.0839062577114325,
+              "odds_american": "-116",
+              "units": 1.5,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -24233,9 +24679,9 @@
             {
               "matchup": "MIL@CHC",
               "pick": "MIL",
-              "delta": -1.5924360565788431,
-              "odds_american": "+100",
-              "units": 2.0,
+              "delta": -0.47696776449776035,
+              "odds_american": "+112",
+              "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -24243,9 +24689,9 @@
             {
               "matchup": "ATH@TEX",
               "pick": "TEX",
-              "delta": 1.4922493916725612,
-              "odds_american": "-215",
-              "units": 1.5,
+              "delta": 0.996298706796825,
+              "odds_american": "-187",
+              "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -24253,9 +24699,9 @@
             {
               "matchup": "CHW@HOU",
               "pick": "CHW",
-              "delta": -0.5577023505446785,
-              "odds_american": "+119",
-              "units": 1.0,
+              "delta": -1.6545415518459539,
+              "odds_american": "-116",
+              "units": 2.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -24263,9 +24709,9 @@
             {
               "matchup": "BAL@COL",
               "pick": "BAL",
-              "delta": -1.1857873958299479,
+              "delta": -0.2709270490243032,
               "odds_american": "-142",
-              "units": 1.5,
+              "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -24273,9 +24719,9 @@
             {
               "matchup": "NYY@LAA",
               "pick": "NYY",
-              "delta": -1.2415876148828806,
-              "odds_american": "-145",
-              "units": 1.5,
+              "delta": -0.542333065075046,
+              "odds_american": "-190",
+              "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -24283,12 +24729,205 @@
             {
               "matchup": "PHI@ARI",
               "pick": "PHI",
-              "delta": -1.2450731729289766,
-              "odds_american": "-125",
-              "units": 1.5,
+              "delta": -0.0431506583109762,
+              "odds_american": "-140",
+              "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
+            },
+            {
+              "matchup": "STL@LAD",
+              "pick": "LAD",
+              "delta": 0.8926532698814276,
+              "odds_american": "-179",
+              "units": 1.0,
+              "outcome": null,
+              "profit_flat": 0.0,
+              "profit_scaled": 0.0
+            }
+          ]
+        },
+        {
+          "date": "2026-08-31",
+          "flat": {
+            "bets": 12,
+            "wins": 6,
+            "losses": 6,
+            "stake": 1200.0,
+            "profit": -194.9,
+            "roi_pct": -16.24
+          },
+          "scaled": {
+            "bets": 12,
+            "wins": 6,
+            "losses": 6,
+            "stake": 1750.0,
+            "profit": -415.95,
+            "roi_pct": -23.77
+          },
+          "by_units": {
+            "1.0u": {
+              "bets": 5,
+              "wins": 2,
+              "losses": 3,
+              "stake": 500.0,
+              "profit": -152.81,
+              "roi_pct": -30.56
+            },
+            "1.5u": {
+              "bets": 5,
+              "wins": 4,
+              "losses": 1,
+              "stake": 750.0,
+              "profit": 236.86,
+              "roi_pct": 31.58
+            },
+            "2.0u": {
+              "bets": 1,
+              "wins": 0,
+              "losses": 1,
+              "stake": 200.0,
+              "profit": -200.0,
+              "roi_pct": -100.0
+            },
+            "2.5u": {
+              "bets": 0,
+              "wins": 0,
+              "losses": 0,
+              "stake": 0.0,
+              "profit": 0.0,
+              "roi_pct": 0
+            },
+            "3.0u": {
+              "bets": 1,
+              "wins": 0,
+              "losses": 1,
+              "stake": 300.0,
+              "profit": -300.0,
+              "roi_pct": -100.0
+            }
+          },
+          "games": [
+            {
+              "matchup": "SFG@ATL",
+              "pick": "ATL",
+              "delta": 0.19130354843822772,
+              "odds_american": "-164",
+              "units": 1.0,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -100.0
+            },
+            {
+              "matchup": "SDP@CIN",
+              "pick": "SDP",
+              "delta": -0.3977428400032297,
+              "odds_american": "-140",
+              "units": 1.0,
+              "outcome": "W",
+              "profit_flat": 71.43,
+              "profit_scaled": 71.43
+            },
+            {
+              "matchup": "NYM@TBR",
+              "pick": "TBR",
+              "delta": 3.3929398063978264,
+              "odds_american": "-170",
+              "units": 3.0,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -300.0
+            },
+            {
+              "matchup": "SEA@BOS",
+              "pick": "BOS",
+              "delta": 1.106388519577191,
+              "odds_american": "-164",
+              "units": 1.5,
+              "outcome": "W",
+              "profit_flat": 60.98,
+              "profit_scaled": 91.46
+            },
+            {
+              "matchup": "MIA@WSN",
+              "pick": "MIA",
+              "delta": -0.08879304591072223,
+              "odds_american": "-115",
+              "units": 1.0,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -100.0
+            },
+            {
+              "matchup": "DET@MIN",
+              "pick": "MIN",
+              "delta": 0.8232181764867637,
+              "odds_american": "-132",
+              "units": 1.0,
+              "outcome": "W",
+              "profit_flat": 75.76,
+              "profit_scaled": 75.76
+            },
+            {
+              "matchup": "MIL@CHC",
+              "pick": "MIL",
+              "delta": -1.5924360565788431,
+              "odds_american": "+100",
+              "units": 2.0,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -200.0
+            },
+            {
+              "matchup": "ATH@TEX",
+              "pick": "TEX",
+              "delta": 1.4922493916725612,
+              "odds_american": "-215",
+              "units": 1.5,
+              "outcome": "W",
+              "profit_flat": 46.51,
+              "profit_scaled": 69.77
+            },
+            {
+              "matchup": "CHW@HOU",
+              "pick": "CHW",
+              "delta": -0.5577023505446785,
+              "odds_american": "+119",
+              "units": 1.0,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -100.0
+            },
+            {
+              "matchup": "BAL@COL",
+              "pick": "BAL",
+              "delta": -1.1857873958299479,
+              "odds_american": "-142",
+              "units": 1.5,
+              "outcome": "W",
+              "profit_flat": 70.42,
+              "profit_scaled": 105.63
+            },
+            {
+              "matchup": "NYY@LAA",
+              "pick": "NYY",
+              "delta": -1.2415876148828806,
+              "odds_american": "-145",
+              "units": 1.5,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -150.0
+            },
+            {
+              "matchup": "PHI@ARI",
+              "pick": "PHI",
+              "delta": -1.2450731729289766,
+              "odds_american": "-125",
+              "units": 1.5,
+              "outcome": "W",
+              "profit_flat": 80.0,
+              "profit_scaled": 120.0
             }
           ]
         },
@@ -35996,45 +36635,45 @@
         }
       ],
       "overall_flat": {
-        "bets": 780,
-        "wins": 413,
-        "losses": 367,
-        "stake": 78000.0,
-        "profit": -1683.89,
-        "roi_pct": -2.16
+        "bets": 792,
+        "wins": 419,
+        "losses": 373,
+        "stake": 79200.0,
+        "profit": -1878.79,
+        "roi_pct": -2.37
       },
       "overall_scaled": {
-        "bets": 780,
-        "wins": 413,
-        "losses": 367,
-        "stake": 109650.0,
-        "profit": -2528.95,
-        "roi_pct": -2.31
+        "bets": 792,
+        "wins": 419,
+        "losses": 373,
+        "stake": 111400.0,
+        "profit": -2944.9,
+        "roi_pct": -2.64
       },
       "overall_by_units": {
         "1.0u": {
-          "bets": 446,
-          "wins": 222,
-          "losses": 224,
-          "stake": 44600.0,
-          "profit": -842.88,
-          "roi_pct": -1.89
+          "bets": 451,
+          "wins": 224,
+          "losses": 227,
+          "stake": 45100.0,
+          "profit": -995.69,
+          "roi_pct": -2.21
         },
         "1.5u": {
-          "bets": 156,
-          "wins": 87,
-          "losses": 69,
-          "stake": 23400.0,
-          "profit": -696.54,
-          "roi_pct": -2.98
+          "bets": 161,
+          "wins": 91,
+          "losses": 70,
+          "stake": 24150.0,
+          "profit": -459.68,
+          "roi_pct": -1.9
         },
         "2.0u": {
-          "bets": 89,
+          "bets": 90,
           "wins": 51,
-          "losses": 38,
-          "stake": 17800.0,
-          "profit": -609.91,
-          "roi_pct": -3.43
+          "losses": 39,
+          "stake": 18000.0,
+          "profit": -809.91,
+          "roi_pct": -4.5
         },
         "2.5u": {
           "bets": 57,
@@ -36045,19 +36684,19 @@
           "roi_pct": 5.77
         },
         "3.0u": {
-          "bets": 32,
+          "bets": 33,
           "wins": 18,
-          "losses": 14,
-          "stake": 9600.0,
-          "profit": -1202.17,
-          "roi_pct": -12.52
+          "losses": 15,
+          "stake": 9900.0,
+          "profit": -1502.17,
+          "roi_pct": -15.17
         }
       }
     },
     "4": {
       "per_day": [
         {
-          "date": "2026-08-31",
+          "date": "2026-09-01",
           "flat": {
             "bets": 0,
             "wins": 0,
@@ -36118,20 +36757,20 @@
           },
           "games": [
             {
-              "matchup": "SFG@ATL",
-              "pick": "ATL",
-              "delta": 0.7391236378332673,
-              "odds_american": "-164",
-              "units": 1.0,
+              "matchup": "SDP@CIN",
+              "pick": "SDP",
+              "delta": -1.162692504550649,
+              "odds_american": "-134",
+              "units": 1.5,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
             },
             {
-              "matchup": "SDP@CIN",
-              "pick": "SDP",
-              "delta": -0.15368052672978472,
-              "odds_american": "-140",
+              "matchup": "SFG@PIT",
+              "pick": "PIT",
+              "delta": 0.20665058227737632,
+              "odds_american": "-158",
               "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
@@ -36140,9 +36779,19 @@
             {
               "matchup": "NYM@TBR",
               "pick": "TBR",
-              "delta": 3.437328199237445,
-              "odds_american": "-170",
-              "units": 3.0,
+              "delta": 1.7405885313627962,
+              "odds_american": "-124",
+              "units": 2.0,
+              "outcome": null,
+              "profit_flat": 0.0,
+              "profit_scaled": 0.0
+            },
+            {
+              "matchup": "TOR@CLE",
+              "pick": "CLE",
+              "delta": 0.5842458953053145,
+              "odds_american": "-176",
+              "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -36150,18 +36799,18 @@
             {
               "matchup": "SEA@BOS",
               "pick": "BOS",
-              "delta": 1.3690984991978752,
-              "odds_american": "-164",
-              "units": 1.5,
+              "delta": 1.9465021969942926,
+              "odds_american": "-120",
+              "units": 2.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
             },
             {
-              "matchup": "MIA@WSN",
-              "pick": "MIA",
-              "delta": -0.4339936304882057,
-              "odds_american": "-115",
+              "matchup": "ATL@WSN",
+              "pick": "ATL",
+              "delta": -0.4194941101623435,
+              "odds_american": "-166",
               "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
@@ -36170,8 +36819,18 @@
             {
               "matchup": "DET@MIN",
               "pick": "MIN",
-              "delta": 0.9302043376454154,
-              "odds_american": "-132",
+              "delta": 1.8337821028125942,
+              "odds_american": "+100",
+              "units": 2.0,
+              "outcome": null,
+              "profit_flat": 0.0,
+              "profit_scaled": 0.0
+            },
+            {
+              "matchup": "MIA@KCR",
+              "pick": "KCR",
+              "delta": 0.8089816757668373,
+              "odds_american": "-116",
               "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
@@ -36180,9 +36839,9 @@
             {
               "matchup": "MIL@CHC",
               "pick": "MIL",
-              "delta": -1.5650770767575288,
-              "odds_american": "+100",
-              "units": 2.0,
+              "delta": -0.20752977750606139,
+              "odds_american": "+112",
+              "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -36190,9 +36849,9 @@
             {
               "matchup": "ATH@TEX",
               "pick": "TEX",
-              "delta": 1.5404054755103154,
-              "odds_american": "-215",
-              "units": 2.0,
+              "delta": 1.4046314712793828,
+              "odds_american": "-187",
+              "units": 1.5,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -36200,9 +36859,9 @@
             {
               "matchup": "CHW@HOU",
               "pick": "CHW",
-              "delta": -0.4992570161789853,
-              "odds_american": "+119",
-              "units": 1.0,
+              "delta": -1.369221309501583,
+              "odds_american": "-116",
+              "units": 1.5,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -36210,9 +36869,9 @@
             {
               "matchup": "BAL@COL",
               "pick": "BAL",
-              "delta": -1.531221740640988,
+              "delta": -0.6956652069234996,
               "odds_american": "-142",
-              "units": 2.0,
+              "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -36220,9 +36879,9 @@
             {
               "matchup": "NYY@LAA",
               "pick": "NYY",
-              "delta": -1.860088189613312,
-              "odds_american": "-145",
-              "units": 2.0,
+              "delta": -0.5129930061934687,
+              "odds_american": "-190",
+              "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
@@ -36230,12 +36889,205 @@
             {
               "matchup": "PHI@ARI",
               "pick": "PHI",
-              "delta": -1.1949004386974185,
-              "odds_american": "-125",
+              "delta": -0.1737997502778752,
+              "odds_american": "-140",
+              "units": 1.0,
+              "outcome": null,
+              "profit_flat": 0.0,
+              "profit_scaled": 0.0
+            },
+            {
+              "matchup": "STL@LAD",
+              "pick": "LAD",
+              "delta": 1.2037922691895702,
+              "odds_american": "-179",
               "units": 1.5,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
+            }
+          ]
+        },
+        {
+          "date": "2026-08-31",
+          "flat": {
+            "bets": 12,
+            "wins": 6,
+            "losses": 6,
+            "stake": 1200.0,
+            "profit": -194.9,
+            "roi_pct": -16.24
+          },
+          "scaled": {
+            "bets": 12,
+            "wins": 6,
+            "losses": 6,
+            "stake": 1900.0,
+            "profit": -407.48,
+            "roi_pct": -21.45
+          },
+          "by_units": {
+            "1.0u": {
+              "bets": 5,
+              "wins": 2,
+              "losses": 3,
+              "stake": 500.0,
+              "profit": -152.81,
+              "roi_pct": -30.56
+            },
+            "1.5u": {
+              "bets": 2,
+              "wins": 2,
+              "losses": 0,
+              "stake": 300.0,
+              "profit": 211.46,
+              "roi_pct": 70.49
+            },
+            "2.0u": {
+              "bets": 4,
+              "wins": 2,
+              "losses": 2,
+              "stake": 800.0,
+              "profit": -166.13,
+              "roi_pct": -20.77
+            },
+            "2.5u": {
+              "bets": 0,
+              "wins": 0,
+              "losses": 0,
+              "stake": 0.0,
+              "profit": 0.0,
+              "roi_pct": 0
+            },
+            "3.0u": {
+              "bets": 1,
+              "wins": 0,
+              "losses": 1,
+              "stake": 300.0,
+              "profit": -300.0,
+              "roi_pct": -100.0
+            }
+          },
+          "games": [
+            {
+              "matchup": "SFG@ATL",
+              "pick": "ATL",
+              "delta": 0.7391236378332673,
+              "odds_american": "-164",
+              "units": 1.0,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -100.0
+            },
+            {
+              "matchup": "SDP@CIN",
+              "pick": "SDP",
+              "delta": -0.15368052672978472,
+              "odds_american": "-140",
+              "units": 1.0,
+              "outcome": "W",
+              "profit_flat": 71.43,
+              "profit_scaled": 71.43
+            },
+            {
+              "matchup": "NYM@TBR",
+              "pick": "TBR",
+              "delta": 3.437328199237445,
+              "odds_american": "-170",
+              "units": 3.0,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -300.0
+            },
+            {
+              "matchup": "SEA@BOS",
+              "pick": "BOS",
+              "delta": 1.3690984991978752,
+              "odds_american": "-164",
+              "units": 1.5,
+              "outcome": "W",
+              "profit_flat": 60.98,
+              "profit_scaled": 91.46
+            },
+            {
+              "matchup": "MIA@WSN",
+              "pick": "MIA",
+              "delta": -0.4339936304882057,
+              "odds_american": "-115",
+              "units": 1.0,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -100.0
+            },
+            {
+              "matchup": "DET@MIN",
+              "pick": "MIN",
+              "delta": 0.9302043376454154,
+              "odds_american": "-132",
+              "units": 1.0,
+              "outcome": "W",
+              "profit_flat": 75.76,
+              "profit_scaled": 75.76
+            },
+            {
+              "matchup": "MIL@CHC",
+              "pick": "MIL",
+              "delta": -1.5650770767575288,
+              "odds_american": "+100",
+              "units": 2.0,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -200.0
+            },
+            {
+              "matchup": "ATH@TEX",
+              "pick": "TEX",
+              "delta": 1.5404054755103154,
+              "odds_american": "-215",
+              "units": 2.0,
+              "outcome": "W",
+              "profit_flat": 46.51,
+              "profit_scaled": 93.02
+            },
+            {
+              "matchup": "CHW@HOU",
+              "pick": "CHW",
+              "delta": -0.4992570161789853,
+              "odds_american": "+119",
+              "units": 1.0,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -100.0
+            },
+            {
+              "matchup": "BAL@COL",
+              "pick": "BAL",
+              "delta": -1.531221740640988,
+              "odds_american": "-142",
+              "units": 2.0,
+              "outcome": "W",
+              "profit_flat": 70.42,
+              "profit_scaled": 140.85
+            },
+            {
+              "matchup": "NYY@LAA",
+              "pick": "NYY",
+              "delta": -1.860088189613312,
+              "odds_american": "-145",
+              "units": 2.0,
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -200.0
+            },
+            {
+              "matchup": "PHI@ARI",
+              "pick": "PHI",
+              "delta": -1.1949004386974185,
+              "odds_american": "-125",
+              "units": 1.5,
+              "outcome": "W",
+              "profit_flat": 80.0,
+              "profit_scaled": 120.0
             }
           ]
         },
@@ -38191,45 +39043,45 @@
         }
       ],
       "overall_flat": {
-        "bets": 132,
-        "wins": 82,
-        "losses": 50,
-        "stake": 13200.0,
-        "profit": 882.11,
-        "roi_pct": 6.68
+        "bets": 144,
+        "wins": 88,
+        "losses": 56,
+        "stake": 14400.0,
+        "profit": 687.21,
+        "roi_pct": 4.77
       },
       "overall_scaled": {
-        "bets": 132,
-        "wins": 82,
-        "losses": 50,
-        "stake": 19500.0,
-        "profit": 952.03,
-        "roi_pct": 4.88
+        "bets": 144,
+        "wins": 88,
+        "losses": 56,
+        "stake": 21400.0,
+        "profit": 544.55,
+        "roi_pct": 2.54
       },
       "overall_by_units": {
         "1.0u": {
-          "bets": 64,
-          "wins": 37,
-          "losses": 27,
-          "stake": 6400.0,
-          "profit": 319.71,
-          "roi_pct": 5.0
+          "bets": 69,
+          "wins": 39,
+          "losses": 30,
+          "stake": 6900.0,
+          "profit": 166.9,
+          "roi_pct": 2.42
         },
         "1.5u": {
-          "bets": 33,
-          "wins": 24,
+          "bets": 35,
+          "wins": 26,
           "losses": 9,
-          "stake": 4950.0,
-          "profit": 1024.69,
-          "roi_pct": 20.7
+          "stake": 5250.0,
+          "profit": 1236.15,
+          "roi_pct": 23.55
         },
         "2.0u": {
-          "bets": 18,
-          "wins": 11,
-          "losses": 7,
-          "stake": 3600.0,
-          "profit": 59.66,
-          "roi_pct": 1.66
+          "bets": 22,
+          "wins": 13,
+          "losses": 9,
+          "stake": 4400.0,
+          "profit": -106.47,
+          "roi_pct": -2.42
         },
         "2.5u": {
           "bets": 11,
@@ -38240,12 +39092,12 @@
           "roi_pct": 0.07
         },
         "3.0u": {
-          "bets": 6,
+          "bets": 7,
           "wins": 3,
-          "losses": 3,
-          "stake": 1800.0,
-          "profit": -453.95,
-          "roi_pct": -25.22
+          "losses": 4,
+          "stake": 2100.0,
+          "profit": -753.95,
+          "roi_pct": -35.9
         }
       }
     }
