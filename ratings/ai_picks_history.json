@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-09-02",
+  "as_of": "2026-09-03",
   "aggregates": {
     "today": {
       "picks": 5,
@@ -11,22 +11,22 @@
       "hit_pct": null
     },
     "week": {
-      "picks": 35,
-      "wins": 16,
-      "losses": 14,
+      "picks": 40,
+      "wins": 17,
+      "losses": 18,
       "pushes": 0,
       "pending": 5,
-      "units_net": 0.0,
-      "hit_pct": 0.5333333333333333
+      "units_net": -4.0,
+      "hit_pct": 0.4857142857142857
     },
     "season": {
-      "picks": 105,
-      "wins": 57,
-      "losses": 43,
+      "picks": 110,
+      "wins": 58,
+      "losses": 47,
       "pushes": 0,
       "pending": 5,
-      "units_net": 15.0,
-      "hit_pct": 0.57
+      "units_net": 11.0,
+      "hit_pct": 0.5523809523809524
     }
   },
   "picks_by_date": {
@@ -1705,8 +1705,8 @@
           "units": 2,
           "confidence": "high",
           "reasoning": "All three ratings agree on San Diego with R2 posting the largest edge on the slate (d=-2.35, STRONG), and R1 (-2.00) and R3 (-1.67) confirm. Cincinnati is the worst when-model-likes-them team in the pool at 4-15 (21%) overall and 1-9 (10%, -9.0u) on strong plays, while SDP is 17-14 (55%) with strong plays 6-5 (+1.0u); R2 strong plays are +8.0u over 14 days (45-32, 58%).",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -2
         },
         {
           "rank": 2,
@@ -1718,8 +1718,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "R3 is the hottest strong-play rating at 54-30 (64%, +23.0u) over 14 days and 26-16 (62%, +7.0u) over 7, and it flags Milwaukee at d=-1.40 with R1 agreeing (-1.34 STRONG). Milwaukee is the best-supported team here when the model likes them: 32-18 (64%) overall and 19-10 (66%, +10.0u) on strong plays, versus CHC 9-8 (53%) strong.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 3,
@@ -1731,8 +1731,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R2 tags Minnesota as a STRONG play at d=+1.20 with R1 (+0.64) and R3 (+0.94) leaning the same way, so all three ratings align on the home side at a near-pickem price (-118). Minnesota is 3-2 (60%, +1.0u) on strong plays and the edge is coming from the SP category, which is the hottest bucket for R2 at 101-73 (58%) in 14 days vs 52% season (+5.6 pts).",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 4,
@@ -1744,8 +1744,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R3 (-1.18 STRONG) and R1 (-1.30 STRONG) both back Baltimore, and R3's strong plays are 98-80 (55%, +19.0u) over 30 days. Colorado is 3-8 (27%) when the model likes them and 1-3 (25%, -2.0u) on strong plays, which outweighs Baltimore's own mediocre 7-9 (44%) strong-play mark.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 5,
@@ -1757,13 +1757,96 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "Unanimous lean to Philadelphia across R1 (-0.46), R2 (-0.60) and R3 (-0.80, the largest), and Philadelphia grades 24-14 (63%) when the model likes them with strong plays 12-6 (67%, +4.0u). Arizona is the counterweight at 14-13 (52%) overall but just 3-7 (30%, -7.0u) on strong plays, and the price is only -115 on a side the models all favor.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         }
       ],
       "usage": {
         "input_tokens": 4322,
         "output_tokens": 2041
+      },
+      "totals": {
+        "wins": 1,
+        "losses": 4,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": -4.0
+      }
+    },
+    "2026-09-03": {
+      "generated_at": "2026-09-03T05:35:19",
+      "model": "claude-opus-5",
+      "date": "2026-09-03",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "MIL",
+          "home_team": "CHC",
+          "away_team": "MIL",
+          "rating_source": "R2",
+          "delta": -2.67,
+          "units": 3,
+          "confidence": "high",
+          "reasoning": "All three ratings flag MIL as a strong play (R1 -2.18, R2 -2.67, R3 -1.85), the largest consensus edge on the board. MIL when the model likes them is 33-18 (65%) overall and 20-10 (67%, +11.0u) on strong plays, and R2/R3 strong plays are hot at 43-31 (58%) and 51-29 (64%) over 14 days. At -115 with a 2.67 delta this is the top-EV play of the slate.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "LAD",
+          "home_team": "LAD",
+          "away_team": "STL",
+          "rating_source": "R1",
+          "delta": 1.95,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "Unanimous strong play across R1 (+1.95), R2 (+1.84) and R3 (+1.91). LAD when the model likes them is 24-13 (65%) and an elite 18-4 (82%, +20.0u) on strong plays — the best team profile in today's pool. R3 strong plays are +17.0u over 30 days and +24.0u over 14, supporting the consensus side despite the -300 price.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "BOS",
+          "home_team": "BAL",
+          "away_team": "BOS",
+          "rating_source": "R2",
+          "delta": -0.68,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "All three ratings land on Boston (R1 -0.40, R2 -0.68, R3 -0.56) and BOS is the strongest team-history profile on the slate at 35-12 (74%, n=47), 19-6 (76%, +17.0u) on strong plays. The opposing side is a liability: BAL when liked is only 19-17 (53%) and 7-10 (41%, -3.0u) strong. SP is the hottest category driver at 61% over 14 days (vs 53% season).",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "TBR",
+          "home_team": "TEX",
+          "away_team": "TBR",
+          "rating_source": "R3",
+          "delta": -0.28,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "R3 is the best rating historically (season 202-159, 56%, +62.0u; 14d 51-29, 64%, +24.0u) and it fades Texas here. TBR when the model likes them is 30-15 (67%) with a 20-8 (71%, +17.0u) strong-play record, while TEX is just 14-15 (48%) and 3-4 (-2.0u) strong. Small delta keeps this to 1u.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 5,
+          "pick": "KCR",
+          "home_team": "KCR",
+          "away_team": "MIA",
+          "rating_source": "R1",
+          "delta": 0.52,
+          "units": 1,
+          "confidence": "low",
+          "reasoning": "R1 (+0.52) and R3 (+0.47) both take Kansas City, and KCR when liked is 15-9 (62%) with a 5-2 (71%, +3.0u) strong record versus MIA's more pedestrian 15-14 (52%). R1's SP category is running 106-68 (61%) over the last 14 days, +8.4 points above its 53% season mark, which is the driver here. Thin delta and near-pickem pricing (-104) keeps the stake at 1u.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 3738,
+        "output_tokens": 2003
       },
       "totals": {
         "wins": 0,
