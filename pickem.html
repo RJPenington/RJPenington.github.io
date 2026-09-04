@@ -449,7 +449,7 @@
     .form-row > .sign-slot  { grid-column: 8; }
     .form-row > .points     { grid-column: 9; }
     .form-row > .units      { grid-column: 10; }
-    .form-row > .who-cell   { grid-column: 11; }
+    .form-row > .idx        { grid-column: 11; }
     .form-row > .row-status { grid-column: 12; }
     /* Desktop adaptivity: O/U rows hide the H/A side bubbles, so their grid
        drops those two tracks and re-pins the later cells. The row reflows
@@ -463,7 +463,7 @@
     .form-row.bt-ou > .sign-slot  { grid-column: 6; }
     .form-row.bt-ou > .points     { grid-column: 7; }
     .form-row.bt-ou > .units      { grid-column: 8; }
-    .form-row.bt-ou > .who-cell   { grid-column: 9; }
+    .form-row.bt-ou > .idx        { grid-column: 9; }
     .form-row.bt-ou > .row-status { grid-column: 10; }
     /* Per-row autosave indicator: idle (empty), saving (dim), saved (green
        check), retry (red, tappable to re-attempt the save) */
@@ -545,17 +545,9 @@
         border-bottom: 1px solid var(--line); margin-bottom: 0.4rem;
     }
     .form-col-header span { text-align: center; }
-    /* Person name pronounced in white, the card number small and dim.
-       Desktop: both sit in the Who column side by side. Mobile: they split
-       into top-left and top-right notches on the card. */
-    .who-cell { display: inline-flex; align-items: baseline; gap: 6px; justify-content: flex-end; }
-    .who-tag {
-        color: #fff; font-weight: 800; font-size: 0.85rem;
-        font-family: 'Copperplate Gothic Bold', serif;
-    }
     .form-row .idx {
         color: var(--dim); font-family: 'Copperplate Gothic Bold', serif;
-        font-size: 0.72rem;
+        font-size: 0.8rem; width: 30px; text-align: right;
     }
     .form-row select, .form-row input {
         background: var(--card); color: var(--ink); border: 1px solid var(--line);
@@ -781,7 +773,7 @@
             gap: 8px;
             border: 1px solid var(--line); border-radius: 8px;
             background: var(--card);
-            padding: 8px 8px 8px 28px; margin: 0.55rem 0;
+            padding: 8px; margin: 0.55rem 0;
         }
         /* Three-line phone card.
            Line 1: timeframe icons, bet type, then the H and A bubbles
@@ -829,25 +821,7 @@
            and never crowd the inputs at 390px. The wrapper dissolves via
            display contents so both notches position against the card. */
         .form-row { position: relative; }
-        .form-row > .who-cell { display: contents; }
-        /* Person name as a vertical rail inside the card's left edge:
-           upright letters stacked top to bottom (RJ / N I C K), white on
-           both the dark and steel cards. Centered twice over: the translate
-           pins the stack's midpoint to the card's vertical center, and
-           left 15px sits the letter column on the centerline of the 28px
-           rail zone, so edge-to-letters and letters-to-content spacing come
-           out equal. Upright glyphs self-center on the column axis, and the
-           tight line height keeps that exact. */
-        .form-row .who-tag {
-            position: absolute; left: 15px; top: 50%;
-            transform: translate(-50%, -50%);
-            writing-mode: vertical-rl;
-            text-orientation: upright;
-            letter-spacing: 2px; line-height: 1;
-            font-size: 0.82rem; color: #fff;
-            padding: 0; background: transparent;
-        }
-        .form-row .idx {
+        .form-row > .idx {
             display: block; position: absolute; top: -9px; right: 10px;
             width: auto; padding: 0 5px;
             font-size: 0.65rem; text-align: center;
@@ -862,7 +836,7 @@
         /* Keep the card padding even when the lock highlight adds its own
            left border (the base rule shrinks padding-left for the grid),
            and paint the card's own border in the deep lock blue too */
-        .form-row:has(.lock-cell input:checked) { padding-left: 28px; border-color: var(--lock-blue); }
+        .form-row:has(.lock-cell input:checked) { padding-left: 8px; border-color: var(--lock-blue); }
         /* Nick's steel cards, restated here because the mobile .form-row
            rule above resets the background later in the cascade */
         .form-row.person-nick { background: var(--nick-bg); border-color: var(--nick-line); }
@@ -2258,7 +2232,7 @@
                 </span>
                 <input class="points" placeholder="Pts" aria-label="Points or line" type="number" step="0.5" />
                 <input class="units" placeholder="Units" aria-label="Units" type="number" step="0.5" min="0.5" />
-                <span class="who-cell"><span class="who-tag">${personLabel}</span><span class="idx">#${i}</span></span>
+                <span class="idx">${personLabel} #${i}</span>
                 <span class="row-status"></span>
             </div>`;
         }
