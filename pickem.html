@@ -2812,6 +2812,9 @@
                 setRowStatus(row, 'saved');
             }
             ok = true;
+            // Stamp the save so the quiet refresh below cannot reshuffle the
+            // form while the user is still looking at it
+            lastOwnSaveAt = Date.now();
             refreshLiveSeason(true);   // quiet: update data + toolbar, no panel re-render
         } catch (e) {
             setRowStatus(row, 'retry');
@@ -3043,13 +3046,25 @@
         return domIds.length === dataIds.length && domIds.every((v, i) => v === dataIds[i]);
     }
 
+    // The user is still LOOKING at the form right after their own save (the
+    // unsaved-work detector reads idle the instant the last row stores), so
+    // folding fresh data in at that moment reshuffles cards under their
+    // fingers; a relocated lock pick landing beside or inside the card they
+    // just typed in reads exactly like "typing made it a mortal lock".
+    // Data-diff rehydrates therefore hold off while a save is recent. Week
+    // changes, tab returns, and full re-renders still fold in immediately.
+    const REHYDRATE_HOLDOFF_MS = 60000;
+    let lastOwnSaveAt = 0;
+
     // After fresh data lands: rebuild the form only when the Enter tab is
-    // active, nothing is unsaved (never clobber in-progress typing), and the
-    // data actually differs from what the cards already show.
+    // active, nothing is unsaved (never clobber in-progress typing), no own
+    // save just happened (never reshuffle mid-session), and the data
+    // actually differs from what the cards already show.
     function rehydrateEnterIfIdle() {
         const activeTab = document.querySelector('.tab.active');
         if (!activeTab || activeTab.dataset.panel !== 'enter') return;
         if (enterPanelHasUnsavedWork()) return;
+        if (Date.now() - lastOwnSaveAt < REHYDRATE_HOLDOFF_MS) return;
         const wk = enterWeek();
         const wData = (SEASONS[RAW.season] || []).find(x => x.week === wk);
         if (!enterFormMatchesData(wData)) hydrateEnterForm();
