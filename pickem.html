@@ -449,7 +449,7 @@
     .form-row > .sign-slot  { grid-column: 8; }
     .form-row > .points     { grid-column: 9; }
     .form-row > .units      { grid-column: 10; }
-    .form-row > .idx        { grid-column: 11; }
+    .form-row > .who-cell   { grid-column: 11; }
     .form-row > .row-status { grid-column: 12; }
     /* Desktop adaptivity: O/U rows hide the H/A side bubbles, so their grid
        drops those two tracks and re-pins the later cells. The row reflows
@@ -463,7 +463,7 @@
     .form-row.bt-ou > .sign-slot  { grid-column: 6; }
     .form-row.bt-ou > .points     { grid-column: 7; }
     .form-row.bt-ou > .units      { grid-column: 8; }
-    .form-row.bt-ou > .idx        { grid-column: 9; }
+    .form-row.bt-ou > .who-cell   { grid-column: 9; }
     .form-row.bt-ou > .row-status { grid-column: 10; }
     /* Per-row autosave indicator: idle (empty), saving (dim), saved (green
        check), retry (red, tappable to re-attempt the save) */
@@ -545,15 +545,30 @@
         border-bottom: 1px solid var(--line); margin-bottom: 0.4rem;
     }
     .form-col-header span { text-align: center; }
+    /* Person name pronounced in white, the card number small and dim.
+       Desktop: both sit in the Who column side by side. Mobile: they split
+       into top-left and top-right notches on the card. */
+    .who-cell { display: inline-flex; align-items: baseline; gap: 6px; justify-content: flex-end; }
+    .who-tag {
+        color: #fff; font-weight: 800; font-size: 0.85rem;
+        font-family: 'Copperplate Gothic Bold', serif;
+    }
     .form-row .idx {
         color: var(--dim); font-family: 'Copperplate Gothic Bold', serif;
-        font-size: 0.8rem; width: 30px; text-align: right;
+        font-size: 0.72rem;
     }
     .form-row select, .form-row input {
         background: var(--card); color: var(--ink); border: 1px solid var(--line);
         padding: 6px 9px; border-radius: 4px; font-size: 0.88rem; min-width: 0;
     }
     .form-row select:focus, .form-row input:focus { outline: 1px solid var(--accent); }
+    /* Mis-set dropdown guard: on an ML row with a sign chosen and points
+       typed, the pick string will not carry the line, so the points field
+       gets a soft amber outline as a nudge to check the bet type */
+    .form-row.bt-ml:has(.sign-slot input:checked) > .points:not(:placeholder-shown) {
+        outline: 1px solid rgba(255, 200, 90, 0.75);
+        outline-offset: 1px;
+    }
     .sign-group {
         display: inline-flex; gap: 0.25rem; align-items: center;
         justify-content: center;
@@ -808,11 +823,19 @@
         .form-row > .row-status { order: 13; margin-left: auto; }
         /* Timeframe bubbles slim down so line 1 keeps room for team names */
         .form-row > .timeframe label { min-width: 32px; height: 42px; padding: 0 5px; }
-        /* Row number as a small notch badge riding the card's top border.
-           Absolutely positioned, so it takes no space from either line and
-           never crowds the inputs at 390px. */
+        /* Card title notches riding the top border: the person NAME big and
+           white at the top LEFT, the card number small and dim at the top
+           RIGHT. Absolutely positioned, so they take no space from any line
+           and never crowd the inputs at 390px. The wrapper dissolves via
+           display contents so both notches position against the card. */
         .form-row { position: relative; }
-        .form-row > .idx {
+        .form-row > .who-cell { display: contents; }
+        .form-row .who-tag {
+            position: absolute; top: -12px; left: 12px;
+            padding: 0 7px; background: var(--surface);
+            font-size: 0.9rem; color: #fff;
+        }
+        .form-row .idx {
             display: block; position: absolute; top: -9px; right: 10px;
             width: auto; padding: 0 5px;
             font-size: 0.65rem; text-align: center;
@@ -2223,7 +2246,7 @@
                 </span>
                 <input class="points" placeholder="Pts" aria-label="Points or line" type="number" step="0.5" />
                 <input class="units" placeholder="Units" aria-label="Units" type="number" step="0.5" min="0.5" />
-                <span class="idx">${personLabel} #${i}</span>
+                <span class="who-cell"><span class="who-tag">${personLabel}</span><span class="idx">#${i}</span></span>
                 <span class="row-status"></span>
             </div>`;
         }
@@ -2411,18 +2434,24 @@
             showSign(0,true); showSign(1,true); showSign(2,false); showSign(3,false);
             points.classList.remove('hidden-field');
             points.placeholder = 'Line';
+            // Pairs with the amber outline: a line typed here is not part of
+            // an ML pick string, so surface the likely dropdown mistake
+            points.title = 'ML ignores this in the pick; if this should be a spread, switch Bet Type to Spread';
         } else if (bt === 'Spread') {
             showSign(0,true); showSign(1,true); showSign(2,false); showSign(3,false);
             points.classList.remove('hidden-field');
             points.placeholder = 'Spread';
+            points.title = '';
         } else if (bt === 'O/U') {
             showSign(0,false); showSign(1,false); showSign(2,true); showSign(3,true);
             points.classList.remove('hidden-field');
             points.placeholder = 'Total';
+            points.title = '';
         } else if (bt === 'TTO') {
             showSign(0,false); showSign(1,false); showSign(2,true); showSign(3,true);
             points.classList.remove('hidden-field');
             points.placeholder = 'Team total';
+            points.title = '';
         }
     };
 
