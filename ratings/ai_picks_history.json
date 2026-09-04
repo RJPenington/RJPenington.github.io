@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-09-03",
+  "as_of": "2026-09-04",
   "aggregates": {
     "today": {
       "picks": 5,
@@ -16,17 +16,17 @@
       "losses": 18,
       "pushes": 0,
       "pending": 5,
-      "units_net": -4.0,
+      "units_net": -6.0,
       "hit_pct": 0.4857142857142857
     },
     "season": {
-      "picks": 110,
-      "wins": 58,
-      "losses": 47,
+      "picks": 115,
+      "wins": 61,
+      "losses": 49,
       "pushes": 0,
       "pending": 5,
-      "units_net": 11.0,
-      "hit_pct": 0.5523809523809524
+      "units_net": 10.0,
+      "hit_pct": 0.5545454545454546
     }
   },
   "picks_by_date": {
@@ -1788,8 +1788,8 @@
           "units": 3,
           "confidence": "high",
           "reasoning": "All three ratings flag MIL as a strong play (R1 -2.18, R2 -2.67, R3 -1.85), the largest consensus edge on the board. MIL when the model likes them is 33-18 (65%) overall and 20-10 (67%, +11.0u) on strong plays, and R2/R3 strong plays are hot at 43-31 (58%) and 51-29 (64%) over 14 days. At -115 with a 2.67 delta this is the top-EV play of the slate.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -3
         },
         {
           "rank": 2,
@@ -1801,8 +1801,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "Unanimous strong play across R1 (+1.95), R2 (+1.84) and R3 (+1.91). LAD when the model likes them is 24-13 (65%) and an elite 18-4 (82%, +20.0u) on strong plays — the best team profile in today's pool. R3 strong plays are +17.0u over 30 days and +24.0u over 14, supporting the consensus side despite the -300 price.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 3,
@@ -1814,8 +1814,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "All three ratings land on Boston (R1 -0.40, R2 -0.68, R3 -0.56) and BOS is the strongest team-history profile on the slate at 35-12 (74%, n=47), 19-6 (76%, +17.0u) on strong plays. The opposing side is a liability: BAL when liked is only 19-17 (53%) and 7-10 (41%, -3.0u) strong. SP is the hottest category driver at 61% over 14 days (vs 53% season).",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 4,
@@ -1827,8 +1827,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R3 is the best rating historically (season 202-159, 56%, +62.0u; 14d 51-29, 64%, +24.0u) and it fades Texas here. TBR when the model likes them is 30-15 (67%) with a 20-8 (71%, +17.0u) strong-play record, while TEX is just 14-15 (48%) and 3-4 (-2.0u) strong. Small delta keeps this to 1u.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 5,
@@ -1840,13 +1840,96 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "R1 (+0.52) and R3 (+0.47) both take Kansas City, and KCR when liked is 15-9 (62%) with a 5-2 (71%, +3.0u) strong record versus MIA's more pedestrian 15-14 (52%). R1's SP category is running 106-68 (61%) over the last 14 days, +8.4 points above its 53% season mark, which is the driver here. Thin delta and near-pickem pricing (-104) keeps the stake at 1u.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
         "input_tokens": 3738,
         "output_tokens": 2003
+      },
+      "totals": {
+        "wins": 3,
+        "losses": 2,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": -1.0
+      }
+    },
+    "2026-09-04": {
+      "generated_at": "2026-09-04T05:38:19",
+      "model": "claude-opus-5",
+      "date": "2026-09-04",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "MIL",
+          "home_team": "CIN",
+          "away_team": "MIL",
+          "rating_source": "R3",
+          "delta": -1.19,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "All three ratings flag MIL as a strong play (R1 -1.27, R2 -1.26, R3 -1.19), and R3 is the best strong-play engine at 50-30 (62%, +20.0u) over 14 days and 203-160 (56%, +62.0u) on the season. MIL when the model likes them is 33-19 (63%) with strong plays 20-11 (65%, +9.0u), while the fade side CIN is a disastrous 4-15 (21%) and 1-9 (10%, -9.0u) as a model favorite.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "LAD",
+          "home_team": "LAD",
+          "away_team": "WSN",
+          "rating_source": "R1",
+          "delta": 1.91,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "Largest triple-agreement edge on the board (R1 +1.91, R2 +1.90, R3 +1.13 all strong), and LAD is the single best team-when-liked profile in the slate at 25-13 (66%) with strong plays 19-4 (83%, +21.0u). R1 strong plays are 42-27 (61%, +10.0u) over 14 days, and WSN as a model side is only 14-16 (47%).",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "TBR",
+          "home_team": "TEX",
+          "away_team": "TBR",
+          "rating_source": "R3",
+          "delta": -1.48,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "R3 posts the biggest single-rating edge here (-1.48, strong) with R1 also strong at -1.20, and R3's 30-day strong record is 98-80 (55%, +19.0u). TBR when the model likes them is 30-15 (67%) with strong plays 20-8 (71%, +17.0u), versus TEX at 15-15 (50%) and 3-4 (43%, -2.0u) on strongs.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "KCR",
+          "home_team": "KCR",
+          "away_team": "TOR",
+          "rating_source": "R3",
+          "delta": 1.28,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "Unanimous strong play (R1 +1.13, R2 +1.02, R3 +1.28) with the source being R3's league-best 62% / +20.0u 14-day strong form. KCR is 16-9 (64%) when liked with strongs 5-2 (71%, +3.0u), while TOR strongs are just 1-2 (33%) on a tiny sample.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 5,
+          "pick": "NYM",
+          "home_team": "NYM",
+          "away_team": "SFG",
+          "rating_source": "R2",
+          "delta": 1.02,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "R2 tags this strong at +1.02 with R3 (+0.87) and R1 (+0.46) agreeing on the same side, and R2 strongs are 96-84 (53%, +5.0u) over 30 days with the SP category HOT at 110-64 (63%) vs a 53% season baseline. NYM is 16-9 (64%) when the model likes them, while SFG is a poor 12-15 (44%) overall and 3-7 (30%, -8.0u) on strongs.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 4781,
+        "output_tokens": 2247
       },
       "totals": {
         "wins": 0,
