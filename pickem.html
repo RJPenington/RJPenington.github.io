@@ -781,7 +781,7 @@
             gap: 8px;
             border: 1px solid var(--line); border-radius: 8px;
             background: var(--card);
-            padding: 8px; margin: 0.55rem 0;
+            padding: 8px 8px 8px 28px; margin: 0.55rem 0;
         }
         /* Three-line phone card.
            Line 1: timeframe icons, bet type, then the H and A bubbles
@@ -830,10 +830,22 @@
            display contents so both notches position against the card. */
         .form-row { position: relative; }
         .form-row > .who-cell { display: contents; }
+        /* Person name as a vertical rail inside the card's left edge:
+           upright letters stacked top to bottom (RJ / N I C K), white on
+           both the dark and steel cards. Centered twice over: the translate
+           pins the stack's midpoint to the card's vertical center, and
+           left 15px sits the letter column on the centerline of the 28px
+           rail zone, so edge-to-letters and letters-to-content spacing come
+           out equal. Upright glyphs self-center on the column axis, and the
+           tight line height keeps that exact. */
         .form-row .who-tag {
-            position: absolute; top: -12px; left: 12px;
-            padding: 0 7px; background: var(--surface);
-            font-size: 0.9rem; color: #fff;
+            position: absolute; left: 15px; top: 50%;
+            transform: translate(-50%, -50%);
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            letter-spacing: 2px; line-height: 1;
+            font-size: 0.82rem; color: #fff;
+            padding: 0; background: transparent;
         }
         .form-row .idx {
             display: block; position: absolute; top: -9px; right: 10px;
@@ -850,7 +862,7 @@
         /* Keep the card padding even when the lock highlight adds its own
            left border (the base rule shrinks padding-left for the grid),
            and paint the card's own border in the deep lock blue too */
-        .form-row:has(.lock-cell input:checked) { padding-left: 8px; border-color: var(--lock-blue); }
+        .form-row:has(.lock-cell input:checked) { padding-left: 28px; border-color: var(--lock-blue); }
         /* Nick's steel cards, restated here because the mobile .form-row
            rule above resets the background later in the cascade */
         .form-row.person-nick { background: var(--nick-bg); border-color: var(--nick-line); }
