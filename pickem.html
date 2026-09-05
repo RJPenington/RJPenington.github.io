@@ -718,6 +718,74 @@
         color: var(--accent-bright);
     }
 
+    /* ===== Enter Picks person tabs =====
+       Two big tappable tabs under the lock slots. They only FILTER which
+       person's cards are visible (CSS display, cards never leave the DOM,
+       so autosave, hydration, and the lock slots keep seeing every row).
+       RJ's active state uses the site accent, Nick's uses his steel blue. */
+    .person-tabs { display: flex; gap: 8px; margin-bottom: 1rem; }
+    .person-tab {
+        flex: 1 1 0; min-height: 54px; padding: 10px 8px;
+        font-family: "Copperplate Gothic", Copperplate, "Copperplate Gothic Light", "Copperplate Gothic Bold", serif;
+        font-size: 1.15rem; font-weight: 700; letter-spacing: 0.08em;
+        text-transform: uppercase; cursor: pointer;
+        background: var(--surface); color: var(--dim);
+        border: 1px solid var(--line); border-radius: 8px;
+        transition: all 0.15s;
+    }
+    .person-tab:hover { color: var(--ink); }
+    .person-tab.active[data-person="rj"] {
+        background: linear-gradient(135deg, #0d3b1e, #164a2b);
+        color: var(--accent-bright); border-color: var(--accent);
+        box-shadow: 0 0 14px rgba(66, 229, 138, 0.45);
+    }
+    .person-tab.active[data-person="nick"] {
+        background: linear-gradient(135deg, var(--nick-bg), #21374d);
+        color: #a9c9e8; border-color: #4a7ba6;
+        box-shadow: 0 0 14px rgba(74, 123, 166, 0.5);
+    }
+    /* The filter itself: hide the other person's entry cards via CSS only */
+    #enter.pv-rj .form-row[data-person="nick"] { display: none; }
+    #enter.pv-nick .form-row[data-person="rj"] { display: none; }
+
+    /* ===== Mortal lock confirmation modal =====
+       Centered in-page confirm shown when a lock checkbox is about to turn
+       on. Deep lock blue accents, big phone-friendly buttons. */
+    .lock-modal-overlay {
+        position: fixed; inset: 0; z-index: 2000;
+        display: none; align-items: center; justify-content: center;
+        background: rgba(0, 0, 0, 0.65); padding: 1rem;
+    }
+    .lock-modal {
+        background: var(--surface); border: 1px solid var(--lock-blue);
+        border-radius: 10px; width: 100%; max-width: 420px;
+        padding: 1.3rem 1.2rem; text-align: center;
+        box-shadow: 0 0 24px rgba(37, 99, 235, 0.5), 0 10px 40px rgba(0, 0, 0, 0.6);
+    }
+    .lock-modal h3 {
+        font-family: "Copperplate Gothic", Copperplate, "Copperplate Gothic Light", "Copperplate Gothic Bold", serif;
+        color: var(--lock-blue-bright); font-size: 1.15rem;
+        letter-spacing: 0.08em; text-transform: uppercase;
+        margin-bottom: 0.6rem;
+    }
+    .lock-modal p { color: var(--ink); font-size: 1rem; line-height: 1.5; margin-bottom: 1.1rem; }
+    .lock-modal .lock-modal-btns { display: flex; gap: 0.7rem; }
+    .lock-modal .lock-modal-btns button {
+        flex: 1 1 0; min-height: 52px; border-radius: 8px; cursor: pointer;
+        font-size: 0.95rem; font-weight: 700; letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+    .lock-modal .lm-cancel {
+        background: var(--card); color: var(--dim);
+        border: 1px solid var(--line);
+    }
+    .lock-modal .lm-cancel:hover { color: var(--ink); }
+    .lock-modal .lm-confirm {
+        background: linear-gradient(135deg, var(--lock-blue-deep), var(--lock-blue));
+        color: #eaf2ff; border: 1px solid var(--lock-blue-bright);
+        box-shadow: 0 0 14px rgba(37, 99, 235, 0.55);
+    }
+
     /* ===== Mobile layout (phones are the primary device) =====
        Everything below only applies under 720px, desktop is untouched. */
     @media (max-width: 720px) {
@@ -2186,6 +2254,22 @@
          O/U      — team (game reference OK) + O/U + total points
          TTO      — team + O/U + team-total points
        Every bet has an Opponent so we can track "how well do we do vs Team X". */
+
+    // Whose entry cards the Enter tab currently shows. RJ is the default on
+    // every load. This only drives a CSS class on the panel; the hidden
+    // person's cards stay in the DOM, so autosave, hydration, completeness
+    // checks, and the lock slots keep operating on all 50 cards.
+    let enterPersonView = 'rj';
+    function setEnterPersonView(person) {
+        enterPersonView = person === 'nick' ? 'nick' : 'rj';
+        const panel = document.getElementById('enter');
+        if (!panel) return;
+        panel.classList.toggle('pv-rj', enterPersonView === 'rj');
+        panel.classList.toggle('pv-nick', enterPersonView === 'nick');
+        panel.querySelectorAll('.person-tab').forEach(b =>
+            b.classList.toggle('active', b.dataset.person === enterPersonView));
+    }
+
     function renderEnter() {
         const el = document.getElementById('enter');
         // Team inputs use the custom typeahead dropdown (see the Team
@@ -2279,6 +2363,10 @@
         el.innerHTML = `
             <h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; font-size:1.05rem; margin:0.25rem 0 0.75rem;">Enter Picks</h2>
             <div class="lock-slots" id="enter-lock-slots"></div>
+            <div class="person-tabs" id="enterPersonTabs">
+                <button type="button" class="person-tab" data-person="rj">RJ</button>
+                <button type="button" class="person-tab" data-person="nick">Nick</button>
+            </div>
             ${slateSection()}
             ${enterNotes}
             <div class="panel-card">
@@ -2290,6 +2378,13 @@
 
         // Initialize every row's visible fields to match its default bet type.
         el.querySelectorAll('.form-row').forEach(r => onBetTypeChange(r.dataset.uid));
+
+        // Person tabs: pure visibility filter over the entry cards. The
+        // choice survives re-renders via the module-level enterPersonView.
+        el.querySelectorAll('.person-tab').forEach(btn => {
+            btn.addEventListener('click', () => setEnterPersonView(btn.dataset.person));
+        });
+        setEnterPersonView(enterPersonView);
 
         // Autosave wiring: one delegated listener pair for the merged panel
         // (assigned as properties so re-renders never stack duplicates). Any
@@ -2369,16 +2464,36 @@
         return Math.max(0, Math.floor(Number(weekSel.value) || 0));
     }
 
-    // Enforce one mortal lock per week PER PERSON — clicking a new lock
-    // unchecks all other rows across every section in the SAME panel
-    // (RJ's picks and Nick's picks are independent).
+    /* ===== Mortal lock checkbox flow =====
+       Unchecking is always immediate. CHECKING goes through two gates:
+       1) Ghost-click guard. On phones, tapping a team dropdown option can
+          fire a synthetic click that falls through onto the lock circle
+          sitting under it. Any check landing within the guard window right
+          after the dropdown closed is reverted and ignored.
+       2) Confirmation modal. A genuine tap reverts the box and asks first;
+          only Confirm actually sets the lock and lets autosave run.
+       Hydration sets .checked programmatically, which fires no change
+       event, so saved locks restore silently with no popup. */
+    const LOCK_TAP_GUARD_MS = 500;
+    let lockTapGuardAt = 0;      // stamped when a suggestion is picked or the dropdown closes
+
     window.onMortalLockChange = function(inputEl) {
         if (!inputEl.checked) return;   // unchecking is always allowed
+        if (Date.now() - lockTapGuardAt < LOCK_TAP_GUARD_MS) {
+            inputEl.checked = false;    // ghost click, throw it away
+            return;
+        }
+        inputEl.checked = false;        // hold the lock off until Confirm
+        showLockConfirm(inputEl);
+    };
+
+    // Enforce one mortal lock per week PER PERSON — checking a new lock
+    // unchecks all other rows in the SAME panel belonging to that person
+    // (RJ's picks and Nick's picks are independent). Runs after Confirm.
+    function applyMortalLockSweep(inputEl) {
         const panel = inputEl.closest('.panel');
         const ownRow = inputEl.closest('.form-row');
         if (!panel || !ownRow) return;
-        // One lock per PERSON: only sweep cards belonging to the same person
-        // as the card that was just locked, across all three sections.
         const person = ownRow.dataset.person;
         panel.querySelectorAll('.form-row').forEach(r => {
             if (r === ownRow || r.dataset.person !== person) return;
@@ -2390,7 +2505,62 @@
                 scheduleRowSave(r);
             }
         });
-    };
+    }
+
+    /* ===== Lock confirmation modal =====
+       One overlay for the whole page, built once. Confirm checks the box,
+       runs the one-lock-per-person sweep, and schedules the row's normal
+       autosave. Cancel (button, backdrop tap, or Escape) leaves the box
+       unchecked and saves nothing. */
+    let lockConfirmTarget = null;
+    const lockModalOverlay = document.createElement('div');
+    lockModalOverlay.className = 'lock-modal-overlay';
+    lockModalOverlay.innerHTML = `<div class="lock-modal">
+        <h3>${LOCK_ICON} Mortal Lock</h3>
+        <p id="lockModalDesc"></p>
+        <div class="lock-modal-btns">
+            <button type="button" class="lm-cancel">Cancel</button>
+            <button type="button" class="lm-confirm">Confirm</button>
+        </div>
+    </div>`;
+    document.body.appendChild(lockModalOverlay);
+    lockModalOverlay.addEventListener('click', (e) => {
+        if (e.target === lockModalOverlay) resolveLockConfirm(false);
+    });
+    lockModalOverlay.querySelector('.lm-cancel').addEventListener('click', () => resolveLockConfirm(false));
+    lockModalOverlay.querySelector('.lm-confirm').addEventListener('click', () => resolveLockConfirm(true));
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lockModalOverlay.style.display === 'flex') resolveLockConfirm(false);
+    });
+
+    function showLockConfirm(inputEl) {
+        lockConfirmTarget = inputEl;
+        const row = inputEl.closest('.form-row');
+        // Describe the pick from whatever the row currently holds; a mostly
+        // empty row falls back to "this pick".
+        const built = row ? buildPickFromRow(row) : null;
+        let desc = 'this pick';
+        if (built && built.pick) {
+            desc = built.pick;
+            const u = row ? (row.querySelector('.units').value || '').trim() : '';
+            if (u) desc += ' (' + u + 'u)';
+        }
+        lockModalOverlay.querySelector('#lockModalDesc').textContent =
+            'Make ' + desc + ' your mortal lock for this week?';
+        lockModalOverlay.style.display = 'flex';
+    }
+
+    function resolveLockConfirm(confirmed) {
+        const inputEl = lockConfirmTarget;
+        lockConfirmTarget = null;
+        lockModalOverlay.style.display = 'none';
+        if (!confirmed || !inputEl) return;
+        inputEl.checked = true;
+        applyMortalLockSweep(inputEl);
+        const row = inputEl.closest('.form-row');
+        if (row) scheduleRowSave(row);
+        updateEnterLockSlots();
+    }
 
     // Toggle the visible fields per bet type. Kept globally callable so the
     // inline onchange handler works after the form is re-rendered.
@@ -2495,6 +2665,10 @@
     }
 
     function hideTeamDropdown() {
+        // Stamp the ghost-click guard whenever an OPEN dropdown closes, so a
+        // synthetic click falling through onto the lock circle below gets
+        // ignored (see onMortalLockChange and the capture-phase shield).
+        if (taVisible()) lockTapGuardAt = Date.now();
         teamDropdown.style.display = 'none';
         teamDropdown.innerHTML = '';
         taInput = null; taOptions = []; taActiveIdx = -1;
@@ -2509,6 +2683,7 @@
 
     function pickTeam(name) {
         const input = taInput;
+        lockTapGuardAt = Date.now();   // belt and suspenders with hideTeamDropdown's stamp
         hideTeamDropdown();
         if (!input) return;
         input.value = name;
@@ -2576,6 +2751,21 @@
         if (teamDropdown.contains(e.target) || e.target === taInput) return;
         hideTeamDropdown();
     });
+
+    // Capture-phase ghost-click shield: selection happens on pointerdown
+    // with preventDefault, but some mobile browsers still synthesize a
+    // click ~300ms later at the same screen spot, and with the dropdown
+    // gone it lands on whatever sits underneath (RJ hit the mortal lock
+    // circle under the away-team dropdown). Swallow any click on a lock
+    // circle inside the guard window; canceling the click also reverts
+    // the checkbox toggle, so no change event ever fires.
+    document.addEventListener('click', (e) => {
+        if (Date.now() - lockTapGuardAt >= LOCK_TAP_GUARD_MS) return;
+        if (e.target && e.target.closest && e.target.closest('.lock-cell')) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }, true);
 
     // Blur closes it after a short delay as a fallback for environments
     // without pointer events; the delay lets an option tap land first.
