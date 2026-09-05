@@ -1347,6 +1347,15 @@
         return s;
     }
 
+    // First-half bet types behave exactly like their full-game twin
+    // everywhere in the form and the analytics; only the dropdown label, the
+    // stored bet_type, and the " (1H)" suffix on the pick string differ.
+    // baseBetType() collapses a 1H type to its twin so every bet_type switch
+    // can branch on the base type.
+    const FIRST_HALF_TYPES = { '1H Spread': 'Spread', '1H O/U': 'O/U', '1H TTO': 'TTO' };
+    const BET_TYPES_ALL = ['ML', 'Spread', 'O/U', 'TTO', '1H Spread', '1H O/U', '1H TTO'];
+    function baseBetType(bt) { return FIRST_HALF_TYPES[bt] || bt; }
+
     // Return { picked: [team...], opponents: [team...] } for a pick.
     //   ML/Spread/TTO → one picked team, opponent = form's p.opponent when present
     //   O/U          → both teams in the game count as picked (they share the outcome)
@@ -1357,7 +1366,7 @@
         if (p.home || p.away) {
             const side = p.side;
             const picked = [], opponents = [];
-            if (p.bet_type === 'O/U') {
+            if (baseBetType(p.bet_type) === 'O/U') {
                 if (p.home) picked.push(p.home);
                 if (p.away) picked.push(p.away);
             } else if (side === 'H') {
@@ -1373,7 +1382,7 @@
             return { picked, opponents };
         }
         // Fallback: parse the pick string itself
-        if (p.bet_type === 'O/U') {
+        if (baseBetType(p.bet_type) === 'O/U') {
             const teams = matchFBSTeamsIn(p.pick);
             return { picked: teams.slice(0, 2), opponents: [] };
         }
@@ -1652,8 +1661,9 @@
             weeklyRows.push({week: w.week, label: w.label, n, r, winner, diff: n - r});
         }
 
-        // Bet-type breakdown: order ML / Spread / O/U / TTO / (unknown)
-        const BET_ORDER = ['ML', 'Spread', 'O/U', 'TTO'];
+        // Bet-type breakdown: full-game types first, then the first-half
+        // variants as their own categories
+        const BET_ORDER = ['ML', 'Spread', 'O/U', 'TTO', '1H Spread', '1H O/U', '1H TTO'];
         const nickByType = aggregatePicksBy(weeks, 'nick', p => p.bet_type || null);
         const rjByType   = aggregatePicksBy(weeks, 'rj',   p => p.bet_type || null);
 
@@ -1950,7 +1960,7 @@
         const map = {};   // team -> { team, home: {picks,W,L,net}, away: {picks,W,L,net} }
         const empty = () => ({picks:0, wins:0, losses:0, pushes:0, net:0});
         for (const w of weeks) for (const p of w[who].picks) {
-            if (p.bet_type !== 'O/U') continue;
+            if (baseBetType(p.bet_type) !== 'O/U') continue;
             if (!p.home || !p.away) continue;   // need explicit sides
             const n = numOrZero(p.net);
             for (const [team, role] of [[p.home, 'home'], [p.away, 'away']]) {
@@ -2242,6 +2252,7 @@
                 <ul>
                     <li>Picks grade <strong>automatically each morning</strong>.</li>
                     <li>Manual <strong>W / L / P</strong> buttons stay available on every pick in Week Picks, locks included; <strong>X</strong> clears a grade back to pending.</li>
+                    <li>First-half picks (1H Spread, 1H O/U, 1H TTO) are not auto-graded (finals cannot grade a half), so grade them with the manual <strong>W / L / P</strong> buttons.</li>
                     <li>Mortal lock results also show automatically in their slots; a manually graded lock pays the same <strong>1.5×</strong>.</li>
                 </ul>
             </div>`;
@@ -2253,6 +2264,9 @@
          Spread   — team + sign (-/+) + points
          O/U      — team (game reference OK) + O/U + total points
          TTO      — team + O/U + team-total points
+       First-half variants (1H Spread, 1H O/U, 1H TTO) use the exact same
+       fields and completeness rules as their full-game twin; the pick string
+       just carries a " (1H)" suffix.
        Every bet has an Opponent so we can track "how well do we do vs Team X". */
 
     // Whose entry cards the Enter tab currently shows. RJ is the default on
@@ -2292,8 +2306,11 @@
                 <select class="bet-type" aria-label="Bet type" onchange="onBetTypeChange('${uid}')">
                     <option value="ML">ML</option>
                     <option value="Spread">Spread</option>
+                    <option value="1H Spread">1H Spread</option>
                     <option value="O/U">O/U</option>
+                    <option value="1H O/U">1H O/U</option>
                     <option value="TTO">TTO</option>
+                    <option value="1H TTO">1H TTO</option>
                 </select>
                 <span class="sign-group timeframe" title="Timeframe, decides the pick's lock time">
                     <label title="Weekday game (locks Saturday noon ET)"><input type="radio" name="tf-${uid}" value="weekday" />${TF_WEEKDAY_ICON}</label>
@@ -2423,6 +2440,11 @@
     //   O 55.5 → combined final points > 55.5 = WIN; < 55.5 = LOSS; equal = PUSH (only on whole lines).
     //
     // TTO grading: same as O/U but scored on ONE team's final points.
+    //
+    // First-half types (1H Spread, 1H O/U, 1H TTO) grade by the same rules
+    // applied to HALFTIME scores. Final scores cannot grade them, so the
+    // morning auto-grader skips them on purpose; use the manual W/L/P
+    // buttons on Week Picks.
     //
     // Payout: unit-neutral bets pay 1× units on win, lose 1× units on loss.
     // Mortal locks pay 1.5× units on either.
@@ -2568,10 +2590,13 @@
         const row = document.querySelector(`.form-row[data-uid="${uid}"]`);
         if (!row) return;
         const bt = row.querySelector('.bet-type').value;
+        // 1H types share their twin's layout, fields, and row class, so the
+        // bt-ml class (and its amber guard) can only ever land on real ML rows
+        const base = baseBetType(bt);
         // Per-type class so the desktop grid can reflow the row per bet type
         // exactly like the phone flex layout does
         row.classList.remove('bt-ml', 'bt-spread', 'bt-ou', 'bt-tto');
-        row.classList.add(bt === 'O/U' ? 'bt-ou' : 'bt-' + bt.toLowerCase());
+        row.classList.add(base === 'O/U' ? 'bt-ou' : 'bt-' + base.toLowerCase());
         const signGroup = row.querySelector('.sign-slot');
         const sideH = row.querySelector('.side-h');
         const sideA = row.querySelector('.side-a');
@@ -2582,10 +2607,10 @@
         const showSign = (idx, on) => signLabels[idx].classList.toggle('hidden-field', !on);
         // H/A bubbles: shown for ML/Spread/TTO (single-side bets),
         // hidden for O/U (both sides bet the total together — no "side" concept).
-        sideH.classList.toggle('hidden-field', bt === 'O/U');
-        sideA.classList.toggle('hidden-field', bt === 'O/U');
+        sideH.classList.toggle('hidden-field', base === 'O/U');
+        sideA.classList.toggle('hidden-field', base === 'O/U');
 
-        if (bt === 'ML') {
+        if (base === 'ML') {
             // ML now takes an actual line: -/+ bubble + line value (e.g. -110, +145)
             showSign(0,true); showSign(1,true); showSign(2,false); showSign(3,false);
             points.classList.remove('hidden-field');
@@ -2593,17 +2618,17 @@
             // Pairs with the amber outline: a line typed here is not part of
             // an ML pick string, so surface the likely dropdown mistake
             points.title = 'ML ignores this in the pick; if this should be a spread, switch Bet Type to Spread';
-        } else if (bt === 'Spread') {
+        } else if (base === 'Spread') {
             showSign(0,true); showSign(1,true); showSign(2,false); showSign(3,false);
             points.classList.remove('hidden-field');
             points.placeholder = 'Spread';
             points.title = '';
-        } else if (bt === 'O/U') {
+        } else if (base === 'O/U') {
             showSign(0,false); showSign(1,false); showSign(2,true); showSign(3,true);
             points.classList.remove('hidden-field');
             points.placeholder = 'Total';
             points.title = '';
-        } else if (bt === 'TTO') {
+        } else if (base === 'TTO') {
             showSign(0,false); showSign(1,false); showSign(2,true); showSign(3,true);
             points.classList.remove('hidden-field');
             points.placeholder = 'Team total';
@@ -2789,9 +2814,12 @@
     //   O/U:    "Sam Houston/WKU Over 60.5"
     //   TTO:    "UNLV Over 48.5 Team Total"
     //   ML:     "Stanford"
+    // First-half types build the same string as their twin plus a " (1H)"
+    // suffix, e.g. "K State -3 (1H)"; bet_type stores the 1H label verbatim.
     // Returns null when the row has no team at all (never saves an empty pick).
     function buildPickFromRow(row) {
         const bt = row.querySelector('.bet-type').value;
+        const base = baseBetType(bt);
         const home = (row.querySelector('.home').value || '').trim();
         const away = (row.querySelector('.away').value || '').trim();
         if (!home && !away) return null;
@@ -2812,22 +2840,25 @@
         else team = home || away;
 
         let pick = '';
-        if (bt === 'ML') {
+        if (base === 'ML') {
             pick = team;
-        } else if (bt === 'Spread') {
+        } else if (base === 'Spread') {
             if (!hasPts) pick = team;
             else if (sign === '-' || sign === '+') pick = team + ' ' + sign + Math.abs(pts);
             else pick = team + ' ' + (pts >= 0 ? '+' : '') + pts;   // no bubble chosen, keep the typed sign
-        } else if (bt === 'O/U') {
+        } else if (base === 'O/U') {
             const teams = [home, away].filter(Boolean).join('/');
             const ou = sign === 'U' ? 'Under' : 'Over';
             pick = teams + ' ' + ou + (hasPts ? ' ' + pts : '');
-        } else if (bt === 'TTO') {
+        } else if (base === 'TTO') {
             const ou = sign === 'U' ? 'Under' : 'Over';
             pick = team + ' ' + ou + (hasPts ? ' ' + pts : '') + ' Team Total';
         }
         pick = pick.trim();
         if (!pick) return null;
+        // First-half marker so the Week Picks list reads unambiguously; the
+        // fields blob, not this suffix, is what hydration reads back
+        if (bt !== base) pick += ' (1H)';
         return { pick, bet_type: bt, units: isNaN(units) ? 0 : units, mortal_lock: lock };
     }
 
@@ -2839,7 +2870,8 @@
         const built = buildPickFromRow(row);
         if (!built || !(built.units > 0)) return false;
         if (!row.querySelector('.timeframe input:checked')) return false;
-        const bt = built.bet_type;
+        // 1H types share their twin's completeness rules
+        const bt = baseBetType(built.bet_type);
         if (bt === 'ML') return true;
         const signEl = row.querySelector('.sign-slot input:checked');
         const ptsRaw = (row.querySelector('.points').value || '').trim();
@@ -3086,13 +3118,17 @@
     // round-trip exactly; anything unrecognized lands raw in the home field,
     // which ML rebuilds verbatim and other types keep visible and editable.
     function parsePickToFields(pick, betType) {
-        const s = (pick || '').trim();
-        if (betType === 'Spread') {
+        // 1H strings are the twin's string plus a " (1H)" suffix; strip it
+        // and parse with the twin's pattern. (Fields-blob hydration is the
+        // normal path; this fallback only runs for rows without fields.)
+        const bt = baseBetType(betType);
+        const s = (pick || '').trim().replace(/\s*\(1H\)$/i, '');
+        if (bt === 'Spread') {
             const m = s.match(/^(.+?)\s+([+-])(\d+(?:\.\d+)?)$/);
             if (m) return { home: m[1], sign: m[2], pts: m[3] };
             return { home: s };
         }
-        if (betType === 'O/U') {
+        if (bt === 'O/U') {
             const m = s.match(/^(.+?)\s+(Over|Under)(?:\s+(\d+(?:\.\d+)?))?$/i);
             if (m) {
                 const teams = m[1].split('/');
@@ -3101,7 +3137,7 @@
             }
             return { home: s };
         }
-        if (betType === 'TTO') {
+        if (bt === 'TTO') {
             const m = s.match(/^(.+?)\s+(Over|Under)(?:\s+(\d+(?:\.\d+)?))?\s+Team\s+Total$/i);
             if (m) return { home: m[1], sign: m[2].toLowerCase() === 'under' ? 'U' : 'O', pts: m[3] || '' };
             return { home: s };
@@ -3158,7 +3194,7 @@
         // columns. Legacy rows without fields fall back to text parsing.
         const sf = (p.fields && typeof p.fields === 'object') ? p.fields : null;
         if (sf) {
-            betSel.value = ['ML', 'Spread', 'O/U', 'TTO'].includes(sf.bet_type) ? sf.bet_type : 'ML';
+            betSel.value = BET_TYPES_ALL.includes(sf.bet_type) ? sf.bet_type : 'ML';
             onBetTypeChange(row.dataset.uid);
             row.querySelector('.home').value = sf.home || '';
             row.querySelector('.away').value = sf.away || '';
@@ -3188,7 +3224,7 @@
             return;
         }
 
-        const bt = ['ML', 'Spread', 'O/U', 'TTO'].includes(p.bet_type) ? p.bet_type : 'ML';
+        const bt = BET_TYPES_ALL.includes(p.bet_type) ? p.bet_type : 'ML';
         betSel.value = bt;
         onBetTypeChange(row.dataset.uid);
         const f = parsePickToFields(p.pick, bt);
