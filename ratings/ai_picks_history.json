@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-09-05",
+  "as_of": "2026-09-06",
   "aggregates": {
     "today": {
       "picks": 5,
@@ -12,21 +12,21 @@
     },
     "week": {
       "picks": 40,
-      "wins": 18,
-      "losses": 17,
+      "wins": 17,
+      "losses": 18,
       "pushes": 0,
       "pending": 5,
-      "units_net": -4.0,
-      "hit_pct": 0.5142857142857142
+      "units_net": -8.0,
+      "hit_pct": 0.4857142857142857
     },
     "season": {
-      "picks": 120,
-      "wins": 65,
-      "losses": 50,
+      "picks": 125,
+      "wins": 67,
+      "losses": 53,
       "pushes": 0,
       "pending": 5,
-      "units_net": 13.0,
-      "hit_pct": 0.5652173913043478
+      "units_net": 9.0,
+      "hit_pct": 0.5583333333333333
     }
   },
   "picks_by_date": {
@@ -1954,8 +1954,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "All three ratings flag BOS as a strong play (R1 -1.42, R2 -1.55, R3 -1.49), and Boston is the best team-when-liked on the board at 36-12 (75%) overall and 19-6 (76%, +17.0u) on strong plays. The other side is a negative: BAL is just 7-11 (39%, -4.0u) when the model likes them, and R3 strong plays are 51-31 (62%, +19.0u) over 14 days.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 2,
@@ -1967,8 +1967,8 @@
           "units": 3,
           "confidence": "medium",
           "reasoning": "Largest edge on the slate with unanimous agreement (R1 +2.71, R2 +2.69, R3 +2.70), all three tagging it a 3u strong play. LAA is a poor fade target for the model's opponents at only 6-9 (40%) when liked and 3-4 (43%, -3.0u) on strong plays, and R3's strong-play book is 96-78 (55%, +20.0u) over 30 days despite PIT's own modest 12-11 record.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -3
         },
         {
           "rank": 3,
@@ -1980,8 +1980,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "R3 posts the biggest edge of the three (-1.61 to MIL) with R1 (-1.42) and R2 (-1.17) agreeing as strong plays. Milwaukee is 34-19 (64%) when the model likes them and 21-11 (66%, +10.0u) on strong plays, while Cincinnati is the worst team on the board at 4-15 (21%) and 1-9 (10%, -9.0u) strong.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 4,
@@ -1993,8 +1993,8 @@
           "units": 2,
           "confidence": "medium",
           "reasoning": "Consensus 2u-level edge (R1 +2.12, R2 +1.99, R3 +2.01) and Cleveland is 13-8 (62%) when liked with a 7-5 (58%) strong record. The edge is largely starting-pitching driven, and SP is the hottest category for every rating at 59-62% over 14 days versus a 53% season baseline.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -2
         },
         {
           "rank": 5,
@@ -2006,13 +2006,96 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R2 shows the largest edge at -1.81 with R1 also strong at -1.40; Chicago is 22-13 (63%) when the model likes them. MIA is only 15-15 (50%) when liked, and R2 strong plays sit at 96-81 (54%, +10.0u) over 30 days, making this a modest but positive-EV 1u add.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
         "input_tokens": 4697,
         "output_tokens": 2121
+      },
+      "totals": {
+        "wins": 2,
+        "losses": 3,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": -4.0
+      }
+    },
+    "2026-09-06": {
+      "generated_at": "2026-09-06T05:35:37",
+      "model": "claude-opus-5",
+      "date": "2026-09-06",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "BOS",
+          "home_team": "BAL",
+          "away_team": "BOS",
+          "rating_source": "R3",
+          "delta": 1.45,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "Boston is the single best when-model-likes-them team on the board at 37-12 (76%, n=49) and 20-6 (77%, +18.0u) on strong plays, while Baltimore is a losing fade target at 7-11 (39%, -4.0u) as a strong side. All three ratings agree (R1 -1.35, R2 -1.55, R3 -1.45), and R3 leads all ratings at 44-33 (57%, +7.0u) over 14 days and +57.0u on the season.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "CHC",
+          "home_team": "MIA",
+          "away_team": "CHC",
+          "rating_source": "R3",
+          "delta": 1.43,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "Unanimous strong play across R1 (-1.29), R2 (-1.45) and R3 (-1.43), with the Cubs at 23-13 (64%, n=36) when the model likes them and 10-8 (56%, +4.0u) on strong plays. R3's 30-day mark of 94-79 (54%, +13.0u) is the best of the three core ratings, and the -149 price is close to the model's implied edge.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "CLE",
+          "home_team": "CLE",
+          "away_team": "DET",
+          "rating_source": "R1",
+          "delta": 1.9,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "Largest delta on the slate at R1 +1.90 (R3 +1.51, R2 +1.21), and R1's strong plays are 41-31 (57%, +2.0u) over 14 days and 213-182 (54%, +46.0u) on the season. Cleveland sits at 13-9 (59%, n=22) when backed, and the edge here is driven by the SP category, which is the hottest input at 105-70 (60%) over 14 days vs a 53% season baseline.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "ATL",
+          "home_team": "PHI",
+          "away_team": "ATL",
+          "rating_source": "R3",
+          "delta": 1.2,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "All three ratings land on Atlanta (R1 -1.10, R2 -1.18, R3 -1.20) in a pick'em priced game (-110/-110), which is where model edges cash best. Atlanta is 17-12 (59%, n=29) and 6-5 (+2.0u) on strong plays, and R3's season strong-play line of 207-166 (55%, +57.0u) is the top mark among the core ratings.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 5,
+          "pick": "TOR",
+          "home_team": "KCR",
+          "away_team": "TOR",
+          "rating_source": "R3",
+          "delta": 1.54,
+          "units": 1,
+          "confidence": "low",
+          "reasoning": "Second-largest consensus delta on the board (R1 -1.39, R2 -1.53, R3 -1.54) at a modest -120 price. Toronto is 12-8 (60%, n=20) when the model likes them, though the strong-play sample is tiny at 1-2 (+1.0u) and KC is a solid 16-10 (62%) when backed, which caps confidence despite the R3 edge.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 4712,
+        "output_tokens": 1686
       },
       "totals": {
         "wins": 0,
