@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-09-06",
+  "as_of": "2026-09-07",
   "aggregates": {
     "today": {
       "picks": 5,
@@ -16,17 +16,17 @@
       "losses": 18,
       "pushes": 0,
       "pending": 5,
-      "units_net": -8.0,
+      "units_net": -9.0,
       "hit_pct": 0.4857142857142857
     },
     "season": {
-      "picks": 125,
-      "wins": 67,
-      "losses": 53,
+      "picks": 130,
+      "wins": 70,
+      "losses": 55,
       "pushes": 0,
       "pending": 5,
-      "units_net": 9.0,
-      "hit_pct": 0.5583333333333333
+      "units_net": 10.0,
+      "hit_pct": 0.56
     }
   },
   "picks_by_date": {
@@ -2037,8 +2037,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "Boston is the single best when-model-likes-them team on the board at 37-12 (76%, n=49) and 20-6 (77%, +18.0u) on strong plays, while Baltimore is a losing fade target at 7-11 (39%, -4.0u) as a strong side. All three ratings agree (R1 -1.35, R2 -1.55, R3 -1.45), and R3 leads all ratings at 44-33 (57%, +7.0u) over 14 days and +57.0u on the season.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 2,
@@ -2050,8 +2050,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "Unanimous strong play across R1 (-1.29), R2 (-1.45) and R3 (-1.43), with the Cubs at 23-13 (64%, n=36) when the model likes them and 10-8 (56%, +4.0u) on strong plays. R3's 30-day mark of 94-79 (54%, +13.0u) is the best of the three core ratings, and the -149 price is close to the model's implied edge.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 3,
@@ -2063,8 +2063,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "Largest delta on the slate at R1 +1.90 (R3 +1.51, R2 +1.21), and R1's strong plays are 41-31 (57%, +2.0u) over 14 days and 213-182 (54%, +46.0u) on the season. Cleveland sits at 13-9 (59%, n=22) when backed, and the edge here is driven by the SP category, which is the hottest input at 105-70 (60%) over 14 days vs a 53% season baseline.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 4,
@@ -2076,8 +2076,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "All three ratings land on Atlanta (R1 -1.10, R2 -1.18, R3 -1.20) in a pick'em priced game (-110/-110), which is where model edges cash best. Atlanta is 17-12 (59%, n=29) and 6-5 (+2.0u) on strong plays, and R3's season strong-play line of 207-166 (55%, +57.0u) is the top mark among the core ratings.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 5,
@@ -2089,13 +2089,96 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "Second-largest consensus delta on the board (R1 -1.39, R2 -1.53, R3 -1.54) at a modest -120 price. Toronto is 12-8 (60%, n=20) when the model likes them, though the strong-play sample is tiny at 1-2 (+1.0u) and KC is a solid 16-10 (62%) when backed, which caps confidence despite the R3 edge.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         }
       ],
       "usage": {
         "input_tokens": 4712,
         "output_tokens": 1686
+      },
+      "totals": {
+        "wins": 3,
+        "losses": 2,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": 1.0
+      }
+    },
+    "2026-09-07": {
+      "generated_at": "2026-09-07T05:33:57",
+      "model": "claude-opus-5",
+      "date": "2026-09-07",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "SDP",
+          "home_team": "SDP",
+          "away_team": "WSN",
+          "rating_source": "R3",
+          "delta": 1.59,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "All three ratings flag SDP as a STRONG play (R1 +1.83, R3 +1.59, R2 +1.55), the only unanimous strong side on the slate. R3 is the best strong-play engine (season 210-168, 56%, +58.0u; 30d 93-77, 55%, +11.0u), and the fade side is well supported since WSN is just 14-17 (45%) when a model likes them.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "TOR",
+          "home_team": "ATH",
+          "away_team": "TOR",
+          "rating_source": "R3",
+          "delta": 1.32,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "R3 and R1 both make TOR a STRONG play (-1.32 / -1.26) and R3 is the top strong-play rating (30d 93-77, 55%, +11.0u; 14d 42-35, 55%, +2.0u). The opponent profile is the clincher: ATH are just 4-7 (36%) when a model likes them and 1-4 (20%, -4.0u) on strong plays, the worst mark on the board.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "CHC",
+          "home_team": "MIL",
+          "away_team": "CHC",
+          "rating_source": "R3",
+          "delta": -0.4,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "R3 posts the largest edge on CHC (-0.40) with R1 (-0.39) and R2 (-0.29) in agreement, so all three ratings take the underdog at +105. CHC are 23-14 (62%) when the model likes them with strong plays 10-9 (53%, +3.0u), and R3's hot SP category (14d 94-81, 54%) plus trends+sp being the best combo at 56.9% (291-220) supports the price.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "CLE",
+          "home_team": "BAL",
+          "away_team": "CLE",
+          "rating_source": "R1",
+          "delta": -0.26,
+          "units": 1,
+          "confidence": "low",
+          "reasoning": "All three ratings side with CLE (R1 -0.26, R3 -0.22, R2 -0.07) at plus money, and R1's SP category is the hottest on the board at 100-75 (57%) over 14 days versus 53% season. CLE are 14-9 (61%) when liked while BAL are only 19-18 (51%) and a losing 7-11 (39%, -4.0u) on strong plays.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 5,
+          "pick": "MIA",
+          "home_team": "MIA",
+          "away_team": "NYM",
+          "rating_source": "R3",
+          "delta": 0.42,
+          "units": 1,
+          "confidence": "low",
+          "reasoning": "Unanimous agreement on MIA (R2 +0.85, R3 +0.42, R1 +0.29); I source it to R3 rather than R2 because R2 is cold on strong plays (7d 15-19, 44%, -12.0u; 14d 48%) while R3 is +11.0u over 30 days. MIA sit 10-9 (53%, +6.0u) on strong plays, and the modest 0.42 edge argues for a minimum 1u stake at -118.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 3414,
+        "output_tokens": 2254
       },
       "totals": {
         "wins": 0,
