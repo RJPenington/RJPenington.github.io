@@ -920,6 +920,31 @@
         color: var(--accent); font-size: 0.82rem;
         text-shadow: 0 0 10px rgba(66, 229, 138, 0.3);
     }
+
+    /* Tiny entered/edited stamps. On the Enter cards the stamp is a
+       full-width extra grid/flex line tucked under the row; it disappears
+       entirely while empty, so pre-feature picks show nothing. */
+    .row-stamp { display: none; }
+    .row-stamp:not(:empty) {
+        display: block; grid-column: 1 / -1;
+        text-align: right; padding-right: 6px;
+        font-size: 0.6rem; line-height: 1.1; color: var(--dim); opacity: 0.8;
+        pointer-events: none;
+    }
+    @media (max-width: 720px) {
+        .row-stamp:not(:empty) { order: 99; flex-basis: 100%; }
+    }
+    /* Week Picks: stamp rides under the pick text */
+    .pick-stamp { font-size: 0.62rem; color: var(--dim); opacity: 0.85; margin-top: 2px; }
+
+    /* Changes tab */
+    #changes .chg-del td { color: var(--bad); }
+    #changes .chg-desc { white-space: normal; }
+    #changes .chg-count {
+        display: inline-block; margin-left: 6px; padding: 0 6px;
+        border: 1px solid var(--line); border-radius: 8px;
+        font-size: 0.68rem; color: var(--dim);
+    }
 </style>
 </head>
 <body>
@@ -998,6 +1023,7 @@
             <button class="tab" data-panel="teams">Team Performance</button>
             <button class="tab" data-panel="locks">Mortal Locks</button>
             <button class="tab" data-panel="rules">Rules</button>
+            <button class="tab" data-panel="changes">Changes</button>
         </div>
 
         <section class="panel active" id="enter"></section>
@@ -1006,6 +1032,7 @@
         <section class="panel" id="teams"></section>
         <section class="panel" id="locks"></section>
         <section class="panel" id="rules"></section>
+        <section class="panel" id="changes"></section>
 
         <footer>
             <p>Pick'em · Pigskin, points, and the perpetual attempt to outsmart the other guy.</p>
@@ -1249,6 +1276,7 @@
                                  rj:   { picks: [], total_net: 0 } });
             }
             const who = r.person === 'nick' ? 'nick' : 'rj';
+            const f = (r.fields && typeof r.fields === 'object') ? r.fields : null;
             byWeek.get(wk)[who].picks.push({
                 _id: r.id,
                 pick: r.pick,
@@ -1259,7 +1287,16 @@
                 outcome: r.outcome || null,
                 // Structured form state (jsonb), present once the fields
                 // column exists; hydration restores it verbatim
-                fields: (r.fields && typeof r.fields === 'object') ? r.fields : null,
+                fields: f,
+                // Analytics fields flattened out of the blob. The breakdown
+                // tabs read p.home / p.side / p.sign / p.points directly;
+                // before this flattening every form-saved pick fell into the
+                // "Side unknown" and "Line unknown" buckets.
+                home: f && f.home ? String(f.home).trim() : null,
+                away: f && f.away ? String(f.away).trim() : null,
+                side: f && (f.side === 'H' || f.side === 'A') ? f.side : null,
+                sign: f && f.sign ? f.sign : null,
+                points: f && f.points !== undefined && f.points !== '' ? f.points : null,
                 // Creation time decides the pick's lock window
                 created_at: r.created_at || null,
             });
@@ -1306,11 +1343,18 @@
         'jmu':'James Madison','niu':'Northern Illinois','ltech':'Louisiana Tech',
         'unlv':'UNLV','utep':'UTEP','utsa':'UTSA', 'usa':'South Alabama',
         'ndsu':'North Dakota State',
+        // Audit-driven additions so differently typed names land on one
+        // team row ("UNC" and "North Carolina" were splitting)
+        'unc':'North Carolina','north dakota st':'North Dakota State',
+        'tenn state':'Tennessee State','youngstown st':'Youngstown State',
     };
     // Given a raw pick string, return every FBS team name mentioned.
     // Also matches common abbreviations RJ types in the sheet.
+    // Slashes join the two teams of an O/U pick ("Sam Houston/WKU Over
+    // 60.5"), so they become spaces first; the old space-delimited match
+    // never found either team in a slash-joined pick.
     function matchFBSTeamsIn(s) {
-        const lower = ' ' + s.toLowerCase() + ' ';
+        const lower = ' ' + s.toLowerCase().replace(/\//g, ' ') + ' ';
         const found = [];
         // Match full official FBS names first (longest names win, so sort by length)
         const sorted = [...FBS_TEAMS].sort((a,b) => b.length - a.length);
@@ -1339,9 +1383,22 @@
     function extractTeam(pickStr) {
         if (!pickStr || typeof pickStr !== 'string') return null;
         let s = pickStr.trim();
-        s = s.replace(/\s+(Over|Under|O|U)\s+\d+(\.\d+)?.*/i, ' [total]');
+        // Team totals name exactly one team, so peel the TTO tail off first
+        // ("UNLV Over 48.5 Team Total" is a pick ON UNLV, not a game total;
+        // it used to fall through to the [total] rule and return nothing)
+        s = s.replace(/\s+(Over|Under|O|U)\s*\d+(\.\d+)?\s+Team\s+Total(\s*\(1H\))?\s*$/i, '');
+        // \s* between the direction word and the number: the sheet holds
+        // strings like "over52.5" with no space
+        s = s.replace(/\s+(Over|Under|O|U)\s*\d+(\.\d+)?.*/i, ' [total]');
         s = s.replace(/\s+([+\-−]?\d+(\.\d+)?).*$/, '');
         s = s.replace(/\s*Team\s+Total.*$/i, '');
+        // Trailing bet-type words from sheet-era picks: "VT ML" and
+        // "ASU TTO" are team picks, a bare trailing "Over"/"Under"/"OU"
+        // means a total with no recoverable line, so treat it like [total].
+        // Before this these strings became junk team rows ("VT ML",
+        // "Alabama FSU Over") in the archive-season team tables.
+        s = s.replace(/\s+(ML|TTO)\s*$/i, '');
+        s = s.replace(/\s+(Over|Under|OU)\s*$/i, ' [total]');
         s = s.trim();
         if (!s || s.includes('[total]') || s.includes('/')) return null;
         return s;
@@ -1356,38 +1413,88 @@
     const BET_TYPES_ALL = ['ML', 'Spread', 'O/U', 'TTO', '1H Spread', '1H O/U', '1H TTO'];
     function baseBetType(bt) { return FIRST_HALF_TYPES[bt] || bt; }
 
-    // Return { picked: [team...], opponents: [team...] } for a pick.
-    //   ML/Spread/TTO → one picked team, opponent = form's p.opponent when present
-    //   O/U          → both teams in the game count as picked (they share the outcome)
-    // Uses p.home / p.away / p.side from form-saved picks when available.
-    function extractTeamsFromPick(p) {
-        if (!p || !p.pick) return { picked: [], opponents: [] };
-        // Prefer explicit fields from the form when they exist
-        if (p.home || p.away) {
-            const side = p.side;
-            const picked = [], opponents = [];
-            if (baseBetType(p.bet_type) === 'O/U') {
-                if (p.home) picked.push(p.home);
-                if (p.away) picked.push(p.away);
-            } else if (side === 'H') {
-                if (p.home) picked.push(p.home);
-                if (p.away) opponents.push(p.away);
-            } else if (side === 'A') {
-                if (p.away) picked.push(p.away);
-                if (p.home) opponents.push(p.home);
-            } else {
-                if (p.home) picked.push(p.home);
-                if (p.away) opponents.push(p.away);
+    // Canonical team name: exact FBS list match first (case-insensitive),
+    // then the abbreviation map ("UNC" becomes "North Carolina"), otherwise
+    // the name as typed. Keeps one team from splitting into several rows in
+    // the team tables when it was typed differently on different cards.
+    let CANON_TEAM_MAP = null;
+    function canonTeam(name) {
+        const raw = (name || '').trim();
+        if (!raw) return '';
+        if (!CANON_TEAM_MAP) {
+            CANON_TEAM_MAP = {};
+            for (const t of FBS_TEAMS) CANON_TEAM_MAP[t.toLowerCase()] = t;
+            for (const [ab, canon] of Object.entries(TEAM_ABBR)) {
+                const key = ab.toLowerCase();
+                if (!(key in CANON_TEAM_MAP)) CANON_TEAM_MAP[key] = canon;
             }
-            return { picked, opponents };
         }
-        // Fallback: parse the pick string itself
-        if (baseBetType(p.bet_type) === 'O/U') {
-            const teams = matchFBSTeamsIn(p.pick);
-            return { picked: teams.slice(0, 2), opponents: [] };
+        return CANON_TEAM_MAP[raw.toLowerCase()] || raw;
+    }
+
+    // Graded state of one pick: 'W' | 'L' | 'P' | null while pending.
+    // outcome is the authority when present; otherwise the net's sign
+    // decides (archive rows carry only net). Null net with no outcome means
+    // the pick has not been graded, which is NOT a push.
+    function pickResult(p) {
+        if (p.outcome === 'W') return 'W';
+        if (p.outcome === 'L') return 'L';
+        if (p.outcome === 'push') return 'P';
+        if (p.net === null || p.net === undefined) return null;
+        const n = Number(p.net);
+        if (isNaN(n)) return null;
+        return n > 0 ? 'W' : (n < 0 ? 'L' : 'P');
+    }
+
+    // Fold one pick into a stats bucket. Picks always count toward `picks`;
+    // W/L/push, net, and gross unit tallies only move once the pick is
+    // graded, so pending picks can never masquerade as pushes.
+    function tallyPick(b, p) {
+        b.picks++;
+        const res = pickResult(p);
+        if (res === null) return;
+        const n = numOrZero(p.net);
+        b.net += n;
+        if (res === 'W') { b.wins++; if (b.uWon !== undefined) b.uWon += n; }
+        else if (res === 'L') { b.losses++; if (b.uLost !== undefined) b.uLost += -n; }
+        else b.pushes++;
+    }
+
+    // Teams involved in a pick, for RJ's team-tracking rule: EVERY team in
+    // the game wears the pick's result, whichever side the bet rode on and
+    // whatever the bet type. Bet against Michigan and win, that is 1-0 on
+    // Michigan; lose it and that is a loss to Michigan.
+    // Returns { involved, withTeams, againstTeams } (canonical names). The
+    // fields blob's home/away is the authority for who was involved;
+    // archive rows without fields fall back to parsing the pick text, which
+    // for single-side bets only reveals the team the bet was ON.
+    function teamsInvolvedInPick(p) {
+        if (!p || !p.pick) return { involved: [], withTeams: [], againstTeams: [] };
+        let withTeams = [], againstTeams = [];
+        if (p.home || p.away) {
+            const home = canonTeam(p.home), away = canonTeam(p.away);
+            if (baseBetType(p.bet_type) === 'O/U') {
+                // Total bets ride with both teams, against neither
+                withTeams = [home, away].filter(Boolean);
+            } else if (p.side === 'A') {
+                withTeams = away ? [away] : [];
+                againstTeams = home ? [home] : [];
+            } else {
+                // Side H, or no side recorded: home is the picked side
+                withTeams = home ? [home] : [];
+                againstTeams = away ? [away] : [];
+            }
+        } else if (baseBetType(p.bet_type) === 'O/U') {
+            withTeams = matchFBSTeamsIn(p.pick).slice(0, 2).map(canonTeam);
+        } else {
+            const one = extractTeam(p.pick);
+            withTeams = one ? [canonTeam(one)] : [];
         }
-        const one = extractTeam(p.pick);
-        return { picked: one ? [one] : [], opponents: [] };
+        const involved = [];
+        for (const t of [...withTeams, ...againstTeams]) {
+            if (t && !involved.includes(t)) involved.push(t);
+        }
+        return { involved, withTeams, againstTeams };
     }
     function numOrZero(v) { return typeof v === 'number' ? v : (Number(v) || 0); }
     function fmtNet(v) {
@@ -1590,8 +1697,12 @@
                 const lockBadge = isLock && p.outcome
                     ? `<span class="lock-badge ${p.outcome === 'push' ? 'p' : p.outcome.toLowerCase()}">${p.outcome === 'push' ? 'P' : p.outcome}</span>`
                     : '';
+                // Tiny entered/edited stamp; picks saved before the stamp
+                // feature have no fields timestamps and show nothing
+                const stampTxt = p.fields ? pickStampText(p.fields.entered_at, p.fields.edited_at) : '';
+                const stampHtml = stampTxt ? `<div class="pick-stamp">${stampTxt}</div>` : '';
                 rows += `<tr class="${isLock ? 'mortal-lock' : ''}${gradeCls}">
-                    <td>${p.pick}${lockBadge}</td>
+                    <td>${p.pick}${lockBadge}${stampHtml}</td>
                     <td>${p.units ?? '—'}</td>
                     <td>${netHtml}</td>${actions}
                 </tr>`;
@@ -1625,7 +1736,8 @@
     //   net   = signed sum of every pick's Total column (profit/loss)
     //   uWon  = sum of the *positive* nets — gross units earned on winners
     //   uLost = absolute sum of the *negative* nets — gross units surrendered on losers
-    // So `net === uWon - uLost` by construction.
+    // So `net === uWon - uLost` by construction. Pending picks count toward
+    // `picks` only; grading is what moves W/L/push (see tallyPick).
     function aggregatePicksBy(weeks, who, keyFn) {
         const buckets = {};
         for (const w of weeks) {
@@ -1633,13 +1745,7 @@
                 const key = keyFn(p, w);
                 if (key == null) continue;
                 if (!buckets[key]) buckets[key] = {key, picks:0, wins:0, losses:0, pushes:0, net:0, uWon:0, uLost:0};
-                const b = buckets[key];
-                b.picks++;
-                const n = numOrZero(p.net);
-                b.net += n;
-                if (n > 0) { b.wins++;   b.uWon  += n; }
-                else if (n < 0) { b.losses++; b.uLost += -n; }
-                else b.pushes++;
+                tallyPick(buckets[key], p);
             }
         }
         return Object.values(buckets);
@@ -1720,13 +1826,7 @@
                 const bt = p.bet_type; if (!bt || !BET_ORDER.includes(bt)) continue;
                 const we = isWeekend(p.game_date);
                 const bucket = we === true ? 'WE' : (we === false ? 'WD' : '?');
-                const c = cell[bucket][bt];
-                c.picks++;
-                const n = numOrZero(p.net);
-                c.net += n;
-                if (n > 0) { c.wins++;   c.uWon  += n; }
-                else if (n < 0) { c.losses++; c.uLost += -n; }
-                else c.pushes++;
+                tallyPick(cell[bucket][bt], p);
             }
             const rowLabel = {WD:'Weekday (Mon–Thu)', WE:'Weekend (Fri–Sun)', '?':'Date unknown (historical)'};
             const rows = ['WD','WE','?'].map(bucket => {
@@ -1771,11 +1871,7 @@
             for (const w of weeks) for (const p of w[who].picks) {
                 const bt = p.bet_type; if (!bt || !BET_ORDER.includes(bt)) continue;
                 const side = p.side === 'H' ? 'H' : (p.side === 'A' ? 'A' : '—');
-                const c = cell[side][bt];
-                c.picks++;
-                const n = numOrZero(p.net);
-                c.net += n;
-                if (n > 0) c.wins++; else if (n < 0) c.losses++; else c.pushes++;
+                tallyPick(cell[side][bt], p);
             }
             const sideLabel = {H:'Home side', A:'Away side', '—':'Side unknown (historical)'};
             const rows = ['H','A','—'].map(side => {
@@ -1877,12 +1973,7 @@
                 // land in "unknown" for now — could add "off-scale" bucket later.
                 else bucket = unknown;
             }
-            bucket.picks++;
-            const n = numOrZero(p.net);
-            bucket.net += n;
-            if (n > 0) { bucket.wins++;   bucket.uWon  += n; }
-            else if (n < 0) { bucket.losses++; bucket.uLost += -n; }
-            else bucket.pushes++;
+            tallyPick(bucket, p);
         }
         const rows = [...buckets, unknown].map(b => {
             const g = b.wins + b.losses;
@@ -1924,25 +2015,25 @@
     }
 
     /* ===== Render — Teams tab (best + worst) =====
-       O/U picks credit BOTH teams involved in the game — winning
-       "Alabama FSU Over" gives Alabama and FSU each +1 W. ML/Spread/TTO
-       still credit only the one picked team. */
+       RJ's rule: every graded pick counts for EVERY team involved in the
+       game, whichever side the bet rode on and whatever the bet type. Bet
+       against Michigan and win, that is 1-0 on Michigan; bet against them
+       and lose, that is a loss to Michigan. Each team's row also keeps a
+       with/against split of the same record. */
     function computeTeamStats(who) {
         const weeks = SEASONS[seasonSel.value] || [];
         const map = {};
+        const sub = () => ({picks:0, wins:0, losses:0, pushes:0, net:0});
         for (const w of weeks) {
             for (const p of w[who].picks) {
-                const { picked } = extractTeamsFromPick(p);
-                for (const team of picked) {
-                    if (!map[team]) map[team] = { team, picks: 0, wins: 0, losses: 0, pushes: 0, net: 0, units: 0 };
+                const { involved, withTeams } = teamsInvolvedInPick(p);
+                for (const team of involved) {
+                    if (!map[team]) map[team] = { team, picks: 0, wins: 0, losses: 0, pushes: 0,
+                                                  net: 0, units: 0, withRec: sub(), vsRec: sub() };
                     const rec = map[team];
-                    rec.picks += 1;
                     rec.units += numOrZero(p.units);
-                    const n = numOrZero(p.net);
-                    rec.net += n;
-                    if (n > 0) rec.wins++;
-                    else if (n < 0) rec.losses++;
-                    else rec.pushes++;
+                    tallyPick(rec, p);
+                    tallyPick(withTeams.includes(team) ? rec.withRec : rec.vsRec, p);
                 }
             }
         }
@@ -1962,55 +2053,19 @@
         for (const w of weeks) for (const p of w[who].picks) {
             if (baseBetType(p.bet_type) !== 'O/U') continue;
             if (!p.home || !p.away) continue;   // need explicit sides
-            const n = numOrZero(p.net);
-            for (const [team, role] of [[p.home, 'home'], [p.away, 'away']]) {
+            for (const [name, role] of [[p.home, 'home'], [p.away, 'away']]) {
+                const team = canonTeam(name);
                 if (!map[team]) map[team] = {team, home: empty(), away: empty()};
-                const r = map[team][role];
-                r.picks++;
-                r.net += n;
-                if (n > 0) r.wins++;
-                else if (n < 0) r.losses++;
-                else r.pushes++;
+                tallyPick(map[team][role], p);
             }
         }
         return Object.values(map);
     }
 
-    // Track our record against each team as an opponent.
-    // Only meaningful when the opponent is known — that's:
-    //   - Form-saved ML/Spread/TTO where opponent is explicit
-    //   - Historical O/U picks (the "other" team is by convention the opponent
-    //     of the "first" team, though O/U isn't really "against" anyone; we
-    //     still show it because it's the closest signal we have)
-    function computeVsOpponentStats(who) {
-        const weeks = SEASONS[seasonSel.value] || [];
-        const map = {};
-        for (const w of weeks) {
-            for (const p of w[who].picks) {
-                const { opponents } = extractTeamsFromPick(p);
-                for (const team of opponents) {
-                    if (!map[team]) map[team] = { team, picks: 0, wins: 0, losses: 0, pushes: 0, net: 0 };
-                    const rec = map[team];
-                    rec.picks += 1;
-                    const n = numOrZero(p.net);
-                    rec.net += n;
-                    if (n > 0) rec.wins++;
-                    else if (n < 0) rec.losses++;
-                    else rec.pushes++;
-                }
-            }
-        }
-        return Object.values(map).map(t => ({
-            ...t,
-            hit_pct: (t.wins + t.losses) > 0 ? t.wins / (t.wins + t.losses) : null,
-        }));
-    }
     function renderTeams() {
         const el = document.getElementById('teams');
         const nickTeams = computeTeamStats('nick');
         const rjTeams = computeTeamStats('rj');
-        const nickVsOpp = computeVsOpponentStats('nick');
-        const rjVsOpp = computeVsOpponentStats('rj');
         const nickOUHA = computeTeamOUHomeAway('nick');
         const rjOUHA   = computeTeamOUHomeAway('rj');
 
@@ -2022,6 +2077,13 @@
             } else {
                 sorted = [...rows].filter(t => t.net < 0).sort((a,b) => a.net - b.net).slice(0, 15);
             }
+            // With/against split cell: "2-1" when a side has graded
+            // picks, a dim dash when it has none
+            // Empty side shows the site's standard placeholder glyph
+            // (borrowed from fmtNet so the cell matches every other table)
+            const splitCell = (r) => (r && (r.wins + r.losses + r.pushes) > 0)
+                ? `${r.wins}-${r.losses}${r.pushes ? '-' + r.pushes : ''}`
+                : '<span style="color:var(--dim)">' + fmtNet(null) + '</span>';
             return `<div class="panel-card">
                 <h3>${title}</h3>
                 <table class="data">
@@ -2029,6 +2091,8 @@
                         <th>Team</th>
                         <th class="num">Picks</th>
                         <th class="num">W-L-P</th>
+                        <th class="num" title="Record on picks that rode WITH this team">With</th>
+                        <th class="num" title="Record on picks made AGAINST this team">Against</th>
                         <th class="num">Hit %</th>
                         <th class="num">Net (u)</th>
                     </tr></thead>
@@ -2037,16 +2101,17 @@
                             <td>${t.team}</td>
                             <td class="num">${t.picks}</td>
                             <td class="num">${t.wins}-${t.losses}-${t.pushes}</td>
+                            <td class="num">${splitCell(t.withRec)}</td>
+                            <td class="num">${splitCell(t.vsRec)}</td>
                             <td class="num">${t.hit_pct === null ? '—' : (t.hit_pct*100).toFixed(0) + '%'}</td>
                             <td class="num ${classForNet(t.net)}">${fmtNet(t.net)}</td>
-                        </tr>`).join('') || '<tr><td colspan="5" style="text-align:center; color:var(--dim); padding:1rem;">Nothing here.</td></tr>'}
+                        </tr>`).join('') || '<tr><td colspan="7" style="text-align:center; color:var(--dim); padding:1rem;">Nothing here.</td></tr>'}
                     </tbody>
                 </table>
             </div>`;
         }
 
-        const OU_NOTE = `<div style="color:var(--dim); font-size:0.78rem; margin:-0.35rem 0 0.9rem 0.2rem;">O/U picks credit both teams in the game (e.g. "Alabama FSU Over" → Alabama +1 W and FSU +1 W). ML/Spread/TTO credit only the picked team.</div>`;
-        const VS_NOTE = `<div style="color:var(--dim); font-size:0.78rem; margin:-0.35rem 0 0.9rem 0.2rem;">Record when a team was the opponent. Historical picks only supply an opponent on O/U bets; ML/Spread/TTO opponents appear as new picks come in from the form.</div>`;
+        const RULE_NOTE = `<div style="color:var(--dim); font-size:0.78rem; margin:-0.35rem 0 0.9rem 0.2rem;">Every graded pick counts for every team in its game, whichever side the bet was on. Win a bet against Michigan and that is 1-0 on Michigan; lose it and that is a loss to Michigan. The With and Against columns split the same record by whether the pick rode with that team or against them (O/U picks ride with both teams). Archive picks reveal only the team the bet was on, so their opponents are not counted there.</div>`;
 
         // O/U-by-team broken out into Home vs Away — only meaningful for
         // form-saved picks that carry p.home / p.away.
@@ -2080,18 +2145,14 @@
 
         el.innerHTML =
             `<h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.06em; font-size:0.95rem; margin:0.5rem 0 0.75rem;">Nick's Teams</h2>` +
-            OU_NOTE +
+            RULE_NOTE +
             table(nickTeams, "Nick — Best Teams (top 15 by Net Units)", 'best') +
             table(nickTeams, "Nick — Worst Teams (top 15 by lowest Net Units)", 'worst') +
-            VS_NOTE +
-            table(nickVsOpp, "Nick — Vs Opponents (top 15 by Net Units)", 'best') +
             ouHomeAwayTable('Nick', nickOUHA) +
             `<h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.06em; font-size:0.95rem; margin:1.5rem 0 0.75rem;">RJ's Teams</h2>` +
-            OU_NOTE +
+            RULE_NOTE +
             table(rjTeams,   "RJ — Best Teams (top 15 by Net Units)", 'best') +
             table(rjTeams,   "RJ — Worst Teams (top 15 by lowest Net Units)", 'worst') +
-            VS_NOTE +
-            table(rjVsOpp,   "RJ — Vs Opponents (top 15 by Net Units)", 'best') +
             ouHomeAwayTable('RJ', rjOUHA);
     }
 
@@ -2118,22 +2179,14 @@
                 for (const p of w[who].picks) {
                     if (!p.mortal_lock) continue;
                     const s = stats[who];
-                    s.picks++;
-                    const n = numOrZero(p.net);
-                    s.net += n;
-                    if (n > 0) s.wins++;
-                    else if (n < 0) s.losses++;
-                    else s.pushes++;
+                    // Pending locks stay listed below but do not count as
+                    // pushes in the record (tallyPick skips ungraded picks)
+                    tallyPick(s, p);
                     s.rows.push({week: w.week, label: w.label, pick: p.pick, units: p.units, net: p.net, game_date: p.game_date});
                     // WD/WE bucketing — historical picks have no date → 'unk'
                     const we = isWkndDate(p.game_date);
                     const bucket = we === true ? 'we' : (we === false ? 'wd' : 'unk');
-                    const b = s[bucket];
-                    b.picks++;
-                    b.net += n;
-                    if (n > 0) b.wins++;
-                    else if (n < 0) b.losses++;
-                    else b.pushes++;
+                    tallyPick(s[bucket], p);
                 }
             }
         }
@@ -2335,6 +2388,7 @@
                 <input class="units" placeholder="Units" aria-label="Units" type="number" step="0.5" min="0.5" />
                 <span class="idx">${personLabel} #${i}</span>
                 <span class="row-status"></span>
+                <span class="row-stamp"></span>
             </div>`;
         }
 
@@ -2735,6 +2789,15 @@
             // stops the focus change entirely, so a finger tap on an option
             // always lands (the classic touch race with blur-to-close).
             row.addEventListener('pointerdown', (e) => { e.preventDefault(); pickTeam(name); });
+            // Suppress the rest of the tap sequence at the source too:
+            // touch events keep targeting the row the touch started on even
+            // after the dropdown is torn down, so preventDefault here stops
+            // the browser from synthesizing mouse events and a click that
+            // would otherwise fall through onto the card underneath. The
+            // document-level ghostTapShield remains the safety net for
+            // browsers that synthesize the click anyway.
+            row.addEventListener('touchend', (e) => { e.preventDefault(); }, { passive: false });
+            row.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); });
             row.addEventListener('mouseenter', () => taMarkActive(i));
             teamDropdown.appendChild(row);
         });
@@ -2777,20 +2840,33 @@
         hideTeamDropdown();
     });
 
-    // Capture-phase ghost-click shield: selection happens on pointerdown
-    // with preventDefault, but some mobile browsers still synthesize a
-    // click ~300ms later at the same screen spot, and with the dropdown
-    // gone it lands on whatever sits underneath (RJ hit the mortal lock
-    // circle under the away-team dropdown). Swallow any click on a lock
-    // circle inside the guard window; canceling the click also reverts
-    // the checkbox toggle, so no change event ever fires.
-    document.addEventListener('click', (e) => {
+    // Capture-phase ghost-tap shield, generalized: selection happens on
+    // pointerdown with preventDefault, but some mobile browsers still
+    // synthesize a click (plus the mouse compatibility events) ~300ms later
+    // at the same screen spot, and with the dropdown gone it lands on
+    // whatever sits underneath. RJ has hit the mortal lock circle, the +/-
+    // sign bubbles under the home field, and the H/A side toggles below the
+    // away field this way. Inside the guard window after a typeahead pick
+    // or a dropdown dismissal, swallow the whole pointer/mouse/click
+    // sequence on ANY state-changing entry control inside the Enter panel:
+    // sign bubbles, H/A toggles, timeframe icons, the bet-type select, the
+    // lock cell, and buttons. A ghost tap that merely focuses a text or
+    // number field is harmless and stays allowed, and a deliberate tap
+    // after the window behaves normally. Canceling the click also reverts
+    // any checkbox/radio toggle, so no change event ever fires.
+    function ghostTapShield(e) {
         if (Date.now() - lockTapGuardAt >= LOCK_TAP_GUARD_MS) return;
-        if (e.target && e.target.closest && e.target.closest('.lock-cell')) {
+        const t = e.target;
+        if (!t || !t.closest || !t.closest('#enter')) return;
+        if (t.matches && t.matches('input:not([type]), input[type="text"], input[type="number"]')) return;
+        if (t.closest('.sign-group, .lock-cell, label, select, button, input[type="radio"], input[type="checkbox"]')) {
             e.preventDefault();
             e.stopPropagation();
         }
-    }, true);
+    }
+    for (const evt of ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'click']) {
+        document.addEventListener(evt, ghostTapShield, true);
+    }
 
     // Blur closes it after a short delay as a fallback for environments
     // without pointer events; the delay lets an option tap land first.
@@ -2900,6 +2976,48 @@
         } catch (e) {
             FIELDS_COLUMN_OK = false;   // column missing: omit fields from writes
         }
+    }
+
+    /* ===== Entered/edited stamps =====
+       fields.entered_at is set once on a row's FIRST save and preserved on
+       every later write; fields.edited_at refreshes on every later save
+       that changes content (autosave only fires on real edits). Both ride
+       the fields jsonb, no schema change. Picks saved before this feature
+       carry neither key and deliberately show no stamp, never a fallback
+       to the created_at column. */
+    function fmtStamp(iso) {
+        const d = new Date(iso);
+        if (isNaN(d)) return '';
+        let h = d.getHours();
+        const ap = h < 12 ? 'AM' : 'PM';
+        h = h % 12 || 12;
+        return (d.getMonth() + 1) + '/' + d.getDate() + ' '
+             + h + ':' + String(d.getMinutes()).padStart(2, '0') + ' ' + ap;
+    }
+    // "entered 9/6 3:42 PM · edited 9/7 1:10 PM" (edited only when it says
+    // something new at minute granularity); empty string when unstamped
+    function pickStampText(enteredIso, editedIso) {
+        const ent = enteredIso ? fmtStamp(enteredIso) : '';
+        const edt = editedIso ? fmtStamp(editedIso) : '';
+        const parts = [];
+        if (ent) parts.push('entered ' + ent);
+        if (edt && edt !== ent) parts.push('edited ' + edt);
+        return parts.join(' · ');
+    }
+    function updateRowStamp(row) {
+        const el = row.querySelector('.row-stamp');
+        if (el) el.textContent = pickStampText(row.dataset.enteredAt, row.dataset.editedAt);
+    }
+    // Called right before a save body ships. First save stamps entered_at;
+    // later saves stamp edited_at (a pre-feature pick edited today gets an
+    // edited stamp but stays without entered_at, by design).
+    function stampRowTimes(row, fields, isFirstSave) {
+        const now = new Date().toISOString();
+        if (isFirstSave) row.dataset.enteredAt = now;
+        else row.dataset.editedAt = now;
+        if (row.dataset.enteredAt) fields.entered_at = row.dataset.enteredAt;
+        if (row.dataset.editedAt) fields.edited_at = row.dataset.editedAt;
+        updateRowStamp(row);
     }
 
     // The raw row state exactly as the form holds it right now. The
@@ -3026,7 +3144,10 @@
                 // current Week box value.
                 const patchBody = { pick: built.pick, bet_type: built.bet_type,
                                     units: built.units, mortal_lock: built.mortal_lock };
-                if (FIELDS_COLUMN_OK) patchBody.fields = captureRowFields(row);
+                if (FIELDS_COLUMN_OK) {
+                    patchBody.fields = captureRowFields(row);
+                    stampRowTimes(row, patchBody.fields, false);
+                }
                 await sb('/rest/v1/pickem_picks?id=eq.' + encodeURIComponent(savedId), {
                     method: 'PATCH',
                     body: patchBody,
@@ -3039,7 +3160,10 @@
                 const postBody = { season: RAW.season, week: week, person: rowPerson(row),
                                    pick: built.pick, bet_type: built.bet_type,
                                    units: built.units, mortal_lock: built.mortal_lock };
-                if (FIELDS_COLUMN_OK) postBody.fields = captureRowFields(row);
+                if (FIELDS_COLUMN_OK) {
+                    postBody.fields = captureRowFields(row);
+                    stampRowTimes(row, postBody.fields, true);
+                }
                 const res = await sb('/rest/v1/pickem_picks', {
                     method: 'POST',
                     body: [postBody],
@@ -3159,6 +3283,9 @@
     function resetFormRow(row) {
         delete row.dataset.savedId;
         delete row.dataset.locked;
+        delete row.dataset.enteredAt;
+        delete row.dataset.editedAt;
+        updateRowStamp(row);
         row._pendingSave = false;
         row._dirty = false;
         clearTimeout(row._saveTimer);
@@ -3217,6 +3344,11 @@
             // the lock on every hydration, painting freshly typed cards
             // with the mortal lock look while saves stay false
             row.querySelector('.lock-cell input.lock').checked = (sf.lock === true || sf.lock === 'true');
+            // Entered/edited stamps round-trip from the blob; pre-feature
+            // picks have neither and show nothing
+            if (sf.entered_at) row.dataset.enteredAt = sf.entered_at;
+            if (sf.edited_at) row.dataset.editedAt = sf.edited_at;
+            updateRowStamp(row);
             // Green check only for complete picks; a legacy row missing its
             // timeframe tag shows the red X until someone tags it
             setRowStatus(row, isRowComplete(row) ? 'saved' : 'incomplete');
@@ -3396,10 +3528,11 @@
         if (!w) { el.innerHTML = ''; return; }
         const n = numOrZero(w.nick.total_net);
         const r = numOrZero(w.rj.total_net);
-        // A week with no picks at all has no winner yet (archived seasons
-        // never hit this, every archived week has at least one pick)
-        const hasPicks = (w.nick.picks.length + w.rj.picks.length) > 0;
-        const winner = !hasPicks ? '—' : (n > r ? 'Nick' : (r > n ? 'RJ' : 'Tie'));
+        // A week with nothing GRADED yet has no winner. Before this checked
+        // for picks only, so every fresh week showed "Tie" from Monday until
+        // the first grade landed.
+        const hasGraded = [...w.nick.picks, ...w.rj.picks].some(p => pickResult(p) !== null);
+        const winner = !hasGraded ? '—' : (n > r ? 'Nick' : (r > n ? 'RJ' : 'Tie'));
         // Season-to-date tallies (all weeks in the season, not just current)
         let nSeason = 0, rSeason = 0;
         for (const wk of weeks) {
@@ -3435,6 +3568,135 @@
             </div>`;
     }
 
+    /* ===== Render — Changes tab (audit change log) =====
+       Reads the pickem_audit table, filled by DB triggers once RJ runs
+       SUPABASE_AUDIT.sql in the Supabase SQL editor. Select-only over the
+       same anon REST pattern as everything else. Until the table exists the
+       endpoint 404s and the tab shows a friendly note instead. */
+
+    // --- changes-tab pure helpers (self-contained, node-testable) ---
+    // Signed net for prose, no color markup: null reads "pending"
+    function fmtNetPlain(v) {
+        if (v === null || v === undefined || v === '') return 'pending';
+        const n = Number(v);
+        if (isNaN(n)) return String(v);
+        const s = (n >= 0 ? '+' : '') + n.toFixed(2).replace(/\.?0+$/, '');
+        return s.endsWith('.') ? s + '0' : s;
+    }
+    function escapeHtml(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+    // Coalesce autosave bursts: consecutive UPDATE rows for the same pick
+    // id, each within 5 minutes of its neighbor, collapse into one entry
+    // keeping the EARLIEST old state and the LATEST new state. Rows arrive
+    // newest first (order=id.desc) and entries stay newest first.
+    function coalesceAuditRows(rows) {
+        const out = [];
+        for (const r of rows || []) {
+            const prev = out[out.length - 1];
+            const t = Date.parse(r.happened_at);
+            if (prev && prev.action === 'UPDATE' && r.action === 'UPDATE'
+                && prev.pick_id !== null && prev.pick_id !== undefined
+                && prev.pick_id === r.pick_id
+                && !isNaN(t) && !isNaN(prev.earliestMs)
+                && (prev.earliestMs - t) <= 5 * 60 * 1000) {
+                prev.old_row = r.old_row;   // r is the older row, its old state wins
+                prev.earliestMs = t;
+                prev.count++;
+                continue;
+            }
+            out.push({ id: r.id, action: r.action, pick_id: r.pick_id,
+                       happened_at: r.happened_at, earliestMs: t,
+                       old_row: r.old_row, new_row: r.new_row, count: 1 });
+        }
+        return out;
+    }
+    // Plain-words description of one (possibly coalesced) audit entry.
+    // old_row/new_row are full pickem_picks rows as jsonb.
+    function describeAuditChange(action, oldRow, newRow) {
+        const o = oldRow || {}, n = newRow || {};
+        const u = v => (v === null || v === undefined) ? '?' : v;
+        const summary = r => '"' + (r.pick || '?') + '" (' + (r.bet_type || '?') + ', '
+                           + u(r.units) + 'u' + (r.mortal_lock ? ', mortal lock' : '') + ')';
+        if (action === 'INSERT') return 'added ' + summary(n);
+        if (action === 'DELETE') return 'deleted ' + summary(o);
+        const parts = [];
+        if ((o.pick || '') !== (n.pick || '')) parts.push('pick: "' + (o.pick || '?') + '" to "' + (n.pick || '?') + '"');
+        if ((o.bet_type || '') !== (n.bet_type || '')) parts.push('bet type: ' + (o.bet_type || '?') + ' to ' + (n.bet_type || '?'));
+        if (String(u(o.units)) !== String(u(n.units))) parts.push('units: ' + u(o.units) + ' to ' + u(n.units));
+        if (!!o.mortal_lock !== !!n.mortal_lock) parts.push(n.mortal_lock ? 'mortal lock ON' : 'mortal lock OFF');
+        const oOut = o.outcome || null, nOut = n.outcome || null;
+        if (oOut !== nOut) {
+            if (nOut) parts.push('graded ' + (nOut === 'push' ? 'PUSH' : nOut) + ' (net ' + fmtNetPlain(n.net) + ')');
+            else parts.push('grade cleared, back to pending');
+        } else if (fmtNetPlain(o.net) !== fmtNetPlain(n.net)) {
+            parts.push('net: ' + fmtNetPlain(o.net) + ' to ' + fmtNetPlain(n.net));
+        }
+        // Fields-blob changes not already told by the columns above
+        const of2 = (o.fields && typeof o.fields === 'object') ? o.fields : {};
+        const nf2 = (n.fields && typeof n.fields === 'object') ? n.fields : {};
+        const fieldLabels = { section: 'timeframe', home: 'home team', away: 'away team',
+                              side: 'side', sign: 'sign', points: 'points' };
+        for (const k of Object.keys(fieldLabels)) {
+            const a = (of2[k] === undefined || of2[k] === null) ? '' : String(of2[k]);
+            const b = (nf2[k] === undefined || nf2[k] === null) ? '' : String(nf2[k]);
+            if (a !== b) parts.push(fieldLabels[k] + ': ' + (a || 'none') + ' to ' + (b || 'none'));
+        }
+        if (String(u(o.week)) !== String(u(n.week))) parts.push('week: ' + u(o.week) + ' to ' + u(n.week));
+        return parts.length ? parts.join('; ') : 'saved again (no visible change)';
+    }
+    // --- end changes-tab pure helpers ---
+
+    async function renderChanges() {
+        const el = document.getElementById('changes');
+        if (!el) return;
+        el.innerHTML = '<div class="panel-card" style="color:var(--dim);">Loading change log...</div>';
+        let rows;
+        try {
+            rows = await sb('/rest/v1/pickem_audit?select=*&order=id.desc&limit=300');
+        } catch (e) {
+            el.innerHTML = `<div class="panel-card">
+                <h3>Change Log</h3>
+                <div style="color:var(--dim); line-height:1.6;">
+                    The change log is not switched on yet. Paste SUPABASE_AUDIT.sql into the
+                    Supabase SQL editor to create the audit table and its triggers.
+                    Picks made before it is switched on will not appear in this log.
+                </div>
+            </div>`;
+            makeCollapsible(el);
+            return;
+        }
+        const entries = coalesceAuditRows(rows || []);
+        const bodyRows = entries.map(en => {
+            const src = en.new_row || en.old_row || {};
+            const who = src.person === 'nick' ? 'Nick' : (src.person === 'rj' ? 'RJ' : '?');
+            const wkName = (src.week === null || src.week === undefined) ? '?' : weekDisplayName(Number(src.week));
+            const actWord = en.action === 'INSERT' ? 'Added' : (en.action === 'DELETE' ? 'Deleted' : 'Edited');
+            const badge = en.count > 1 ? `<span class="chg-count">${en.count} saves</span>` : '';
+            return `<tr class="${en.action === 'DELETE' ? 'chg-del' : ''}">
+                <td>${fmtStamp(en.happened_at)}</td>
+                <td>${who}</td>
+                <td>${wkName}</td>
+                <td>${actWord}${badge}</td>
+                <td class="chg-desc">${escapeHtml(describeAuditChange(en.action, en.old_row, en.new_row))}</td>
+            </tr>`;
+        }).join('');
+        el.innerHTML = `<div class="panel-card">
+            <h3>Change Log</h3>
+            <div style="color:var(--dim); font-size:0.78rem; margin:0 0 0.6rem;">Every pick added, edited, deleted, or graded, newest first. Rapid autosave edits to the same pick collapse into one line. Showing the latest 300 raw changes.</div>
+            <table class="data">
+                <thead><tr>
+                    <th>When</th><th>Who</th><th>Week</th><th>Action</th><th>Change</th>
+                </tr></thead>
+                <tbody>${bodyRows || '<tr><td colspan="5" style="text-align:center; color:var(--dim); padding:1rem;">No changes recorded yet.</td></tr>'}</tbody>
+            </table>
+        </div>`;
+        // Content lands async, so wire the collapse chevrons here rather
+        // than relying on renderAll's synchronous pass
+        makeCollapsible(el);
+    }
+
     function renderAll() {
         renderSummary();
         const active = document.querySelector('.tab.active').dataset.panel;
@@ -3443,6 +3705,7 @@
         else if (active === 'teams') renderTeams();
         else if (active === 'locks') renderLocks();
         else if (active === 'rules') renderRules();
+        else if (active === 'changes') renderChanges();
         else if (active === 'enter') renderEnter();
         makeCollapsible(document.querySelector('.panel.active'));
     }
