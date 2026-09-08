@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-09-07",
+  "as_of": "2026-09-08",
   "aggregates": {
     "today": {
       "picks": 5,
@@ -12,21 +12,21 @@
     },
     "week": {
       "picks": 40,
-      "wins": 17,
-      "losses": 18,
+      "wins": 16,
+      "losses": 19,
       "pushes": 0,
       "pending": 5,
       "units_net": -9.0,
-      "hit_pct": 0.4857142857142857
+      "hit_pct": 0.45714285714285713
     },
     "season": {
-      "picks": 130,
-      "wins": 70,
-      "losses": 55,
+      "picks": 135,
+      "wins": 71,
+      "losses": 59,
       "pushes": 0,
       "pending": 5,
-      "units_net": 10.0,
-      "hit_pct": 0.56
+      "units_net": 7.0,
+      "hit_pct": 0.5461538461538461
     }
   },
   "picks_by_date": {
@@ -2120,8 +2120,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "All three ratings flag SDP as a STRONG play (R1 +1.83, R3 +1.59, R2 +1.55), the only unanimous strong side on the slate. R3 is the best strong-play engine (season 210-168, 56%, +58.0u; 30d 93-77, 55%, +11.0u), and the fade side is well supported since WSN is just 14-17 (45%) when a model likes them.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 2,
@@ -2133,8 +2133,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R3 and R1 both make TOR a STRONG play (-1.32 / -1.26) and R3 is the top strong-play rating (30d 93-77, 55%, +11.0u; 14d 42-35, 55%, +2.0u). The opponent profile is the clincher: ATH are just 4-7 (36%) when a model likes them and 1-4 (20%, -4.0u) on strong plays, the worst mark on the board.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 3,
@@ -2146,8 +2146,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R3 posts the largest edge on CHC (-0.40) with R1 (-0.39) and R2 (-0.29) in agreement, so all three ratings take the underdog at +105. CHC are 23-14 (62%) when the model likes them with strong plays 10-9 (53%, +3.0u), and R3's hot SP category (14d 94-81, 54%) plus trends+sp being the best combo at 56.9% (291-220) supports the price.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 4,
@@ -2159,8 +2159,8 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "All three ratings side with CLE (R1 -0.26, R3 -0.22, R2 -0.07) at plus money, and R1's SP category is the hottest on the board at 100-75 (57%) over 14 days versus 53% season. CLE are 14-9 (61%) when liked while BAL are only 19-18 (51%) and a losing 7-11 (39%, -4.0u) on strong plays.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 5,
@@ -2172,13 +2172,96 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "Unanimous agreement on MIA (R2 +0.85, R3 +0.42, R1 +0.29); I source it to R3 rather than R2 because R2 is cold on strong plays (7d 15-19, 44%, -12.0u; 14d 48%) while R3 is +11.0u over 30 days. MIA sit 10-9 (53%, +6.0u) on strong plays, and the modest 0.42 edge argues for a minimum 1u stake at -118.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         }
       ],
       "usage": {
         "input_tokens": 3414,
         "output_tokens": 2254
+      },
+      "totals": {
+        "wins": 1,
+        "losses": 4,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": -3.0
+      }
+    },
+    "2026-09-08": {
+      "generated_at": "2026-09-08T05:35:45",
+      "model": "claude-opus-5",
+      "date": "2026-09-08",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "LAD",
+          "home_team": "LAD",
+          "away_team": "CIN",
+          "rating_source": "R2",
+          "delta": 2.19,
+          "units": 2,
+          "confidence": "high",
+          "reasoning": "LAD is the best when-model-likes-them team on the board at 28-13 (68%) overall and 20-4 (83%, +22.0u) on strong plays, while CIN is the worst at 4-15 (21%) and 1-9 (10%, -9.0u) as a strong side. All three ratings agree (R1 +1.97, R2 +2.19, R3 +1.81), and R2's +2.19 delta lands in the 2u band.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "MIL",
+          "home_team": "MIL",
+          "away_team": "CHC",
+          "rating_source": "R3",
+          "delta": 1.71,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "R3 is the strongest strong-play rating (season 212-169, 56%, +59.0u; 30d 94-72, 57%, +20.0u) and posts the largest delta here at +1.71. MIL is 34-21 (62%) when liked and 21-12 (64%, +9.0u) on strong plays, versus CHC's mediocre 10-9 (53%) strong mark; R1/R2 also agree at +1.58/+1.66.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "TBR",
+          "home_team": "ATL",
+          "away_team": "TBR",
+          "rating_source": "R3",
+          "delta": 1.0,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "TBR grades 31-15 (67%) when the model likes them and 21-8 (72%, +18.0u) on strong plays, the second-best strong profile in today's pool behind LAD. Only R3 crosses the strong threshold (-1.00 toward TBR) but R3 is the top-performing rating (56% season, +59.0u), and getting a pick'em price (-102) on a 72% strong-play team is the value here.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "DET",
+          "home_team": "DET",
+          "away_team": "MIN",
+          "rating_source": "R2",
+          "delta": 1.75,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "Unanimous strong play (R1 +1.37, R2 +1.75, R3 +1.28) with R2 giving the largest edge. DET is 13-8 (62%, +12.0u) on strong plays while MIN is only 12-16 (43%) when liked, and the SP category — the hottest input at 98-78 (56%) over 14 days vs 53% season — supports the favorite side.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 5,
+          "pick": "SDP",
+          "home_team": "SDP",
+          "away_team": "WSN",
+          "rating_source": "R3",
+          "delta": 1.05,
+          "units": 1,
+          "confidence": "low",
+          "reasoning": "R3 is the only rating to push this to strong (+1.05 vs R1 +0.57, R2 +0.70), and R3 leads all ratings at 57% (+20.0u) over 30 days. SDP is 7-6 (54%, +0.0u) on strong plays versus WSN's weak 14-17 (45%) when-liked profile, so this is a modest 1u lean rather than a marquee play.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 4481,
+        "output_tokens": 1660
       },
       "totals": {
         "wins": 0,
