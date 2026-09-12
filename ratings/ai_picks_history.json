@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-09-11",
+  "as_of": "2026-09-12",
   "aggregates": {
     "today": {
       "picks": 5,
@@ -20,13 +20,13 @@
       "hit_pct": 0.5142857142857142
     },
     "season": {
-      "picks": 150,
-      "wins": 79,
-      "losses": 66,
+      "picks": 155,
+      "wins": 83,
+      "losses": 67,
       "pushes": 0,
       "pending": 5,
-      "units_net": 13.0,
-      "hit_pct": 0.5448275862068965
+      "units_net": 16.0,
+      "hit_pct": 0.5533333333333333
     }
   },
   "picks_by_date": {
@@ -2452,8 +2452,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "All three ratings flag Boston as a STRONG play (R1 +1.81, R2 +1.45, R3 +1.69), the only unanimous strong side on the board. Boston is the best team-when-liked profile in the slate at 39-14 (74%) overall and 22-6 (79%, +20.0u) on strong plays, and R1 strong plays are 91-70 (57%, +15.0u) over 30 days.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 2,
@@ -2465,8 +2465,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "R2 makes Milwaukee a STRONG play at +1.16 with R1 (+0.60) and R3 (+0.81) on the same side. MIL when the model likes them is 36-21 (63%) and 22-12 (65%, +10.0u) on strong plays, while Cincinnati is the worst fade-worthy team here at 4-15 (21%) and 1-9 (10%, -9.0u) when liked; R2 strong plays are 21-13 (62%, +11.0u) in the last 7 days.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 3,
@@ -2478,8 +2478,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R1 grades Atlanta a STRONG play at +1.03 with R2 (+0.96) and R3 (+0.84) agreeing, so all three models are on the Braves. ATL when liked is 18-13 (58%) and 7-5 (58%, +3.0u) on strong plays, and R1's strong-play ledger is 43-33 (57%, +5.0u) over 14 days.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 4,
@@ -2491,8 +2491,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R1 (+1.17) and R2 (+1.05) both rate Cleveland a STRONG play with R3 (+0.98) just under the line — full model consensus on the road side. Cleveland is 15-11 (58%) when liked, while Minnesota is only 12-16 (43%) when the model backs them, and the SP category driving these edges is hot at 56% over 14 days vs 53% season for R1/R2.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 5,
@@ -2504,13 +2504,96 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "All three ratings land on Detroit (R1 +0.66, R2 +0.83, R3 +0.80) and DET is 19-16 (54%) overall but 14-9 (61%, +12.0u) on strong plays when the model likes them. Colorado is 4-8 (33%) and 1-3 (25%, -2.0u) when backed, making them the weakest side to oppose after Cincinnati; R2's trends category is running 53% over 14 days with a 55% season mark.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
         "input_tokens": 4316,
         "output_tokens": 1894
+      },
+      "totals": {
+        "wins": 4,
+        "losses": 1,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": 3.0
+      }
+    },
+    "2026-09-12": {
+      "generated_at": "2026-09-12T05:37:29",
+      "model": "claude-opus-5",
+      "date": "2026-09-12",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "LAD",
+          "home_team": "MIA",
+          "away_team": "LAD",
+          "rating_source": "R3",
+          "delta": 1.64,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "All three ratings agree on LAD (R1 -1.57, R2 -1.58, R3 -1.64) and LAD is the single best team-when-model-likes-them profile on the board at 31-13 (70%) overall and 23-4 (85%, +25.0u) on strong plays. R3 is the top strong-play rating historically (season 224-176, 56%, +68.0u) and is hot at 58% over 30 days (+26.0u).",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "DET",
+          "home_team": "DET",
+          "away_team": "COL",
+          "rating_source": "R2",
+          "delta": 1.87,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "Unanimous strong play (R1 +1.70, R2 +1.87, R3 +1.34) with R2 giving the largest edge, and R2 is the hottest strong-play rating short-term at 20-12 (62%, +11.0u) over 7 days. DET is 20-16 (56%) when liked and 14-9 (61%, +12.0u) on strong plays, while COL is a dismal 4-8 (33%) and 1-3 on strong fades.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "ARI",
+          "home_team": "ARI",
+          "away_team": "TEX",
+          "rating_source": "R2",
+          "delta": 2.87,
+          "units": 3,
+          "confidence": "medium",
+          "reasoning": "Biggest delta on the slate by far (R2 +2.87, R1 +2.31, R3 +2.40) — the only 3u-sized number today — off a rating running 92-70 (57%, +19.0u) over 30 days. Team history is the caution flag (ARI strong 3-7, -7.0u), but TEX is also weak when liked at 17-18 (49%) and 3-5 (38%) on strong plays, so the size of the model edge carries it.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "CLE",
+          "home_team": "MIN",
+          "away_team": "CLE",
+          "rating_source": "R2",
+          "delta": 1.43,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "All three ratings land on CLE (R1 1.23, R2 1.43, R3 1.17) in a pick'em market (-109/-110), which is where model edges convert best. CLE is 16-11 (59%) when liked and 9-6 (60%) on strong plays, versus MIN at just 12-16 (43%) when the model likes them.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 5,
+          "pick": "CHC",
+          "home_team": "CHC",
+          "away_team": "PIT",
+          "rating_source": "R2",
+          "delta": 1.6,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "Unanimous strong side (R1 1.12, R2 1.60, R3 1.35) with CHC at 23-15 (61%) when the model likes them and PIT weak at 13-13 (50%) overall and 4-5 (44%, -3.0u) on strong plays. The edge is driven by trends+SP, the two hottest categories at 54% each over 14 days and a 56.8% (308-234) hit rate when they agree.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 4411,
+        "output_tokens": 1639
       },
       "totals": {
         "wins": 0,
