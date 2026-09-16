@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-09-15",
+  "as_of": "2026-09-16",
   "aggregates": {
     "today": {
       "picks": 5,
@@ -16,17 +16,17 @@
       "losses": 11,
       "pushes": 0,
       "pending": 5,
-      "units_net": 6.0,
+      "units_net": 8.0,
       "hit_pct": 0.56
     },
     "season": {
-      "picks": 160,
-      "wins": 85,
-      "losses": 70,
+      "picks": 165,
+      "wins": 89,
+      "losses": 71,
       "pushes": 0,
       "pending": 5,
-      "units_net": 13.0,
-      "hit_pct": 0.5483870967741935
+      "units_net": 19.0,
+      "hit_pct": 0.55625
     }
   },
   "picks_by_date": {
@@ -2618,8 +2618,8 @@
           "units": 3,
           "confidence": "high",
           "reasoning": "All three ratings hammer LAD (R1 -3.33, R2 -3.16, R3 -3.66), the largest agreed delta on the slate, and R3 leads all ratings on strong plays at 93-58 (62%, +38.0u) over 30 days and +69.0u for the season. LAD when the model likes them is 31-14 (69%) overall and 23-5 (82%, +24.0u) on strong plays, while CIN is the worst fade target in the pool at 4-15 (21%) and 1-9 (10%, -9.0u) as a liked strong side.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 3
         },
         {
           "rank": 2,
@@ -2631,8 +2631,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "Unanimous triple agreement (R1 +1.23, R2 +1.33, R3 +1.09) on the best team-history side available: TBR is 35-16 (69%) when the model likes them and 21-9 (70%, +17.0u) on strong plays. The opponent ATH is 5-7 (42%) and just 1-4 (20%, -4.0u) as a liked strong play, and R2 is the hottest 7-day rating at 18-10 (64%, +13.0u).",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 3,
@@ -2644,8 +2644,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R1 (-1.66) and R3 (-1.62) both flag SDP as a strong play, and R1 is 89-57 (61%, +27.0u) over 30 days with a 17-11 (61%, +10.0u) last week. SDP profiles well when liked at 21-15 (58%) and 8-6 (57%, +1.0u) on strong plays, versus COL at 4-8 (33%) and 1-3 (25%, -2.0u).",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 4,
@@ -2657,8 +2657,8 @@
           "units": 2,
           "confidence": "medium",
           "reasoning": "Second-largest consensus delta on the board (R1 -2.16, R2 -2.23, R3 -1.98) coming from R2, which is 18-10 (64%, +13.0u) in the last 7 days and 91-59 (61%, +31.0u) over 30 days. Sizing is capped at 2u and confidence held to medium because NYY is only 19-19 (50%) when liked and 7-11 (39%, -3.0u) on strong plays, so the edge here is rating form rather than team history.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 2
         },
         {
           "rank": 5,
@@ -2670,13 +2670,96 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "All three ratings agree on BAL (R1 -1.34, R2 -1.54, R3 -1.22) and R2's strong plays are 32-26 (55%, +5.0u) over 14 days and 229-190 (55%, +57.0u) on the season, plus plus-money (+110) on the favored side by model. Downgraded to low confidence and 1u because BAL is just 19-18 (51%) when liked and 7-11 (39%, -4.0u) on strong plays while NYM is 17-10 (63%) when liked.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
         "input_tokens": 4580,
         "output_tokens": 2001
+      },
+      "totals": {
+        "wins": 4,
+        "losses": 1,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": 6.0
+      }
+    },
+    "2026-09-16": {
+      "generated_at": "2026-09-16T05:33:27",
+      "model": "claude-opus-5",
+      "date": "2026-09-16",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "LAD",
+          "home_team": "CIN",
+          "away_team": "LAD",
+          "rating_source": "R3",
+          "delta": -3.44,
+          "units": 3,
+          "confidence": "high",
+          "reasoning": "All three ratings agree big on LAD (R1 -3.25, R2 -3.23, R3 -3.44), and R3 is the top strong-play rating at 232-182 (56%, +73.0u) on the season with 95-59 (62%, +40.0u) over 30 days. LAD when the model likes them is 32-14 (70%) overall and 24-5 (83%, +27.0u) on strong plays, while CIN as a model favorite is a disaster at 4-15 (21%) and 1-9 (10%, -9.0u) strong.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "TBR",
+          "home_team": "TBR",
+          "away_team": "ATH",
+          "rating_source": "R3",
+          "delta": 1.57,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "Unanimous strong play (R1 +1.42, R2 +1.46, R3 +1.57) on a team with elite support history: TBR 36-16 (69%) when liked and 22-9 (71%, +18.0u) on strong plays. The other side is the worst profile on the board — ATH 5-7 overall and just 1-4 (20%, -4.0u) as a strong pick.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "MIL",
+          "home_team": "PIT",
+          "away_team": "MIL",
+          "rating_source": "R1",
+          "delta": -1.41,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "All three ratings tag MIL (R1 -1.41, R2 -1.25, R3 -1.23) and MIL is 39-21 (65%, n=60) when the model likes them with 23-12 (66%, +13.0u) on strong plays. R1 strong plays are hot at 17-11 (61%, +12.0u) over 7 days and 89-56 (61%, +29.0u) over 30, while PIT as a model side is only 13-13 with strong 4-5 (44%, -3.0u).",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "NYY",
+          "home_team": "MIN",
+          "away_team": "NYY",
+          "rating_source": "R3",
+          "delta": -2.45,
+          "units": 2,
+          "confidence": "medium",
+          "reasoning": "The largest consensus edge outside LAD — R1 -2.24, R2 -2.19, R3 -2.45 — and R3 has delivered 95-59 (62%, +40.0u) on strong plays over the last 30 days. NYY's own when-liked record is the caution flag (20-19, strong 8-11, -1.0u), but MIN is worse overall at 12-16 (43%) when backed, so the 2-unit delta tier carries it.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 5,
+          "pick": "CLE",
+          "home_team": "CLE",
+          "away_team": "CHW",
+          "rating_source": "R1",
+          "delta": 1.18,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "R1 (+1.18) and R3 (+1.11) both flag CLE as a strong play with R2 agreeing at +0.81, and CLE is 17-12 (59%) when the model likes them. CHW is one of the weakest fade-side profiles on the slate at 15-21 (42%) when liked and 7-9 (44%, -4.0u) on strong plays.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 4702,
+        "output_tokens": 1869
       },
       "totals": {
         "wins": 0,
