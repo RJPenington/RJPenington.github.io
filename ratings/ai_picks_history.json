@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-09-16",
+  "as_of": "2026-09-17",
   "aggregates": {
     "today": {
       "picks": 5,
@@ -16,17 +16,17 @@
       "losses": 11,
       "pushes": 0,
       "pending": 5,
-      "units_net": 8.0,
+      "units_net": 3.0,
       "hit_pct": 0.56
     },
     "season": {
-      "picks": 165,
-      "wins": 89,
-      "losses": 71,
+      "picks": 170,
+      "wins": 92,
+      "losses": 73,
       "pushes": 0,
       "pending": 5,
-      "units_net": 19.0,
-      "hit_pct": 0.55625
+      "units_net": 17.0,
+      "hit_pct": 0.5575757575757576
     }
   },
   "picks_by_date": {
@@ -2701,8 +2701,8 @@
           "units": 3,
           "confidence": "high",
           "reasoning": "All three ratings agree big on LAD (R1 -3.25, R2 -3.23, R3 -3.44), and R3 is the top strong-play rating at 232-182 (56%, +73.0u) on the season with 95-59 (62%, +40.0u) over 30 days. LAD when the model likes them is 32-14 (70%) overall and 24-5 (83%, +27.0u) on strong plays, while CIN as a model favorite is a disaster at 4-15 (21%) and 1-9 (10%, -9.0u) strong.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -3
         },
         {
           "rank": 2,
@@ -2714,8 +2714,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "Unanimous strong play (R1 +1.42, R2 +1.46, R3 +1.57) on a team with elite support history: TBR 36-16 (69%) when liked and 22-9 (71%, +18.0u) on strong plays. The other side is the worst profile on the board — ATH 5-7 overall and just 1-4 (20%, -4.0u) as a strong pick.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 3,
@@ -2727,8 +2727,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "All three ratings tag MIL (R1 -1.41, R2 -1.25, R3 -1.23) and MIL is 39-21 (65%, n=60) when the model likes them with 23-12 (66%, +13.0u) on strong plays. R1 strong plays are hot at 17-11 (61%, +12.0u) over 7 days and 89-56 (61%, +29.0u) over 30, while PIT as a model side is only 13-13 with strong 4-5 (44%, -3.0u).",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 4,
@@ -2740,8 +2740,8 @@
           "units": 2,
           "confidence": "medium",
           "reasoning": "The largest consensus edge outside LAD — R1 -2.24, R2 -2.19, R3 -2.45 — and R3 has delivered 95-59 (62%, +40.0u) on strong plays over the last 30 days. NYY's own when-liked record is the caution flag (20-19, strong 8-11, -1.0u), but MIN is worse overall at 12-16 (43%) when backed, so the 2-unit delta tier carries it.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -2
         },
         {
           "rank": 5,
@@ -2753,13 +2753,96 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R1 (+1.18) and R3 (+1.11) both flag CLE as a strong play with R2 agreeing at +0.81, and CLE is 17-12 (59%) when the model likes them. CHW is one of the weakest fade-side profiles on the slate at 15-21 (42%) when liked and 7-9 (44%, -4.0u) on strong plays.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
         "input_tokens": 4702,
         "output_tokens": 1869
+      },
+      "totals": {
+        "wins": 3,
+        "losses": 2,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": -2.0
+      }
+    },
+    "2026-09-17": {
+      "generated_at": "2026-09-17T05:30:13",
+      "model": "claude-opus-5",
+      "date": "2026-09-17",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "TBR",
+          "home_team": "TBR",
+          "away_team": "ATH",
+          "rating_source": "R1",
+          "delta": 2.18,
+          "units": 2,
+          "confidence": "high",
+          "reasoning": "All three ratings agree on Tampa Bay at essentially identical deltas (R1 +2.18, R2 +2.16, R3 +2.17), the only 2u-sized edge on the board. TBR is 37-16 (70%) when the model likes them and 23-9 (72%, +19.0u) on strong plays, while the ATH are just 5-7 overall and 1-4 (20%, -4.0u) as a model side. R1 strong plays are 89-57 (61%, +23.0u) over 30 days.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "LAD",
+          "home_team": "CIN",
+          "away_team": "LAD",
+          "rating_source": "R3",
+          "delta": -1.96,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "R3 posts the largest edge here (-1.96) and is the strongest strong-play rating: 96-60 (62%, +35.0u) over 30 days and 236-184 (56%, +72.0u) on the season. LAD is 24-6 (80%, +24.0u) on strong plays, the best mark on the slate, against a Cincinnati side that is 4-15 (21%) when liked and 1-9 (10%, -9.0u) on strongs.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "SDP",
+          "home_team": "COL",
+          "away_team": "SDP",
+          "rating_source": "R3",
+          "delta": -1.61,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "R3 (-1.61) and R1 (-1.56) both flag San Diego as a strong play, with R2 agreeing at -1.08 — full three-rating consensus. COL is only 4-8 (33%) when the model likes them and 1-3 (25%, -2.0u) on strongs; SDP's own 8-7 (53%, +0.0u) strong record is mediocre, which caps this at 1u.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "LAA",
+          "home_team": "LAA",
+          "away_team": "MIN",
+          "rating_source": "R1",
+          "delta": 1.66,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "R1 grades this at +1.66 with R2 (+1.33) and R3 (+1.43) confirming, and R1 strongs are 38-25 (60%, +13.0u) in the last 14 days. Team history is a drag on both sides — LAA 7-12 (37%) when liked, MIN 12-16 (43%) — so this stays a 1u play on the rating edge alone.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 5,
+          "pick": "MIL",
+          "home_team": "PIT",
+          "away_team": "MIL",
+          "rating_source": "R3",
+          "delta": -0.5,
+          "units": 1,
+          "confidence": "low",
+          "reasoning": "All three ratings lean Milwaukee (R1 -0.42, R2 -0.45, R3 -0.50), and MIL owns the best overall when-liked profile on the slate at 40-21 (66%) with strongs 24-12 (67%, +14.0u). PIT is a coin flip at 13-13 (50%) and 4-5 (44%, -3.0u) on strongs; small delta means minimum size and low confidence.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 3606,
+        "output_tokens": 1814
       },
       "totals": {
         "wins": 0,
