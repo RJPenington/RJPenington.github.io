@@ -1,6 +1,6 @@
 {
-  "as_of": "2026-09-17",
-  "n_dates": 79,
+  "as_of": "2026-09-18",
+  "n_dates": 80,
   "hot_min_games": 15,
   "hot_delta_pts": 5.0,
   "categories": [
@@ -21,24 +21,24 @@
     "1": {
       "trends": {
         "7d": {
-          "wins": 40,
+          "wins": 44,
           "losses": 25,
-          "hit_pct": 0.6153846153846154
+          "hit_pct": 0.6376811594202898
         },
         "14d": {
-          "wins": 89,
-          "losses": 72,
-          "hit_pct": 0.5527950310559007
+          "wins": 93,
+          "losses": 68,
+          "hit_pct": 0.577639751552795
         },
         "30d": {
-          "wins": 209,
-          "losses": 156,
-          "hit_pct": 0.5726027397260274
+          "wins": 204,
+          "losses": 155,
+          "hit_pct": 0.5682451253481894
         },
         "season": {
-          "wins": 557,
-          "losses": 449,
-          "hit_pct": 0.5536779324055666
+          "wins": 564,
+          "losses": 451,
+          "hit_pct": 0.5556650246305419
         },
         "streak": {
           "type": "L",
@@ -46,13 +46,13 @@
         },
         "hot": false,
         "cold": false,
-        "vs_season_pts": -0.1
+        "vs_season_pts": 2.2
       },
       "runs": {
         "7d": {
-          "wins": 35,
-          "losses": 30,
-          "hit_pct": 0.5384615384615384
+          "wins": 36,
+          "losses": 33,
+          "hit_pct": 0.5217391304347826
         },
         "14d": {
           "wins": 80,
@@ -60,291 +60,86 @@
           "hit_pct": 0.4968944099378882
         },
         "30d": {
-          "wins": 195,
-          "losses": 170,
-          "hit_pct": 0.5342465753424658
+          "wins": 187,
+          "losses": 172,
+          "hit_pct": 0.520891364902507
         },
         "season": {
-          "wins": 529,
-          "losses": 477,
-          "hit_pct": 0.525844930417495
+          "wins": 532,
+          "losses": 483,
+          "hit_pct": 0.5241379310344828
         },
         "streak": {
           "type": "W",
-          "count": 5
+          "count": 1
         },
         "hot": false,
         "cold": false,
-        "vs_season_pts": -2.9
+        "vs_season_pts": -2.7
       },
       "sp": {
         "7d": {
-          "wins": 28,
-          "losses": 37,
-          "hit_pct": 0.4307692307692308
+          "wins": 33,
+          "losses": 36,
+          "hit_pct": 0.4782608695652174
         },
         "14d": {
-          "wins": 81,
-          "losses": 80,
-          "hit_pct": 0.5031055900621118
-        },
-        "30d": {
-          "wins": 201,
-          "losses": 164,
-          "hit_pct": 0.5506849315068493
-        },
-        "season": {
-          "wins": 525,
-          "losses": 481,
-          "hit_pct": 0.5218687872763419
-        },
-        "streak": {
-          "type": "W",
-          "count": 1
-        },
-        "hot": false,
-        "cold": false,
-        "vs_season_pts": -1.9
-      },
-      "bullpen": {
-        "7d": {
-          "wins": 35,
-          "losses": 30,
-          "hit_pct": 0.5384615384615384
-        },
-        "14d": {
-          "wins": 88,
-          "losses": 73,
-          "hit_pct": 0.546583850931677
+          "wins": 79,
+          "losses": 82,
+          "hit_pct": 0.4906832298136646
         },
         "30d": {
           "wins": 197,
-          "losses": 168,
-          "hit_pct": 0.5397260273972603
+          "losses": 162,
+          "hit_pct": 0.5487465181058496
         },
         "season": {
-          "wins": 520,
-          "losses": 486,
-          "hit_pct": 0.5168986083499006
+          "wins": 531,
+          "losses": 484,
+          "hit_pct": 0.5231527093596059
         },
         "streak": {
-          "type": "L",
+          "type": "W",
           "count": 2
-        },
-        "hot": false,
-        "cold": false,
-        "vs_season_pts": 3.0
-      },
-      "hitting": {
-        "7d": {
-          "wins": 29,
-          "losses": 36,
-          "hit_pct": 0.4461538461538462
-        },
-        "14d": {
-          "wins": 75,
-          "losses": 86,
-          "hit_pct": 0.4658385093167702
-        },
-        "30d": {
-          "wins": 178,
-          "losses": 187,
-          "hit_pct": 0.4876712328767123
-        },
-        "season": {
-          "wins": 499,
-          "losses": 507,
-          "hit_pct": 0.4960238568588469
-        },
-        "streak": {
-          "type": "L",
-          "count": 1
-        },
-        "hot": false,
-        "cold": false,
-        "vs_season_pts": -3.0
-      },
-      "bullpen_fatigue": {
-        "7d": {
-          "wins": 38,
-          "losses": 27,
-          "hit_pct": 0.5846153846153846
-        },
-        "14d": {
-          "wins": 79,
-          "losses": 82,
-          "hit_pct": 0.4906832298136646
-        },
-        "30d": {
-          "wins": 165,
-          "losses": 200,
-          "hit_pct": 0.4520547945205479
-        },
-        "season": {
-          "wins": 470,
-          "losses": 536,
-          "hit_pct": 0.4671968190854871
-        },
-        "streak": {
-          "type": "W",
-          "count": 1
-        },
-        "hot": false,
-        "cold": false,
-        "vs_season_pts": 2.3
-      }
-    },
-    "2": {
-      "trends": {
-        "7d": {
-          "wins": 40,
-          "losses": 25,
-          "hit_pct": 0.6153846153846154
-        },
-        "14d": {
-          "wins": 89,
-          "losses": 72,
-          "hit_pct": 0.5527950310559007
-        },
-        "30d": {
-          "wins": 209,
-          "losses": 156,
-          "hit_pct": 0.5726027397260274
-        },
-        "season": {
-          "wins": 557,
-          "losses": 449,
-          "hit_pct": 0.5536779324055666
-        },
-        "streak": {
-          "type": "L",
-          "count": 1
-        },
-        "hot": false,
-        "cold": false,
-        "vs_season_pts": -0.1
-      },
-      "runs": {
-        "7d": {
-          "wins": 37,
-          "losses": 28,
-          "hit_pct": 0.5692307692307692
-        },
-        "14d": {
-          "wins": 79,
-          "losses": 82,
-          "hit_pct": 0.4906832298136646
-        },
-        "30d": {
-          "wins": 188,
-          "losses": 177,
-          "hit_pct": 0.5150684931506849
-        },
-        "season": {
-          "wins": 526,
-          "losses": 480,
-          "hit_pct": 0.5228628230616302
-        },
-        "streak": {
-          "type": "W",
-          "count": 1
         },
         "hot": false,
         "cold": false,
         "vs_season_pts": -3.2
       },
-      "sp": {
+      "bullpen": {
         "7d": {
-          "wins": 28,
-          "losses": 37,
-          "hit_pct": 0.4307692307692308
+          "wins": 38,
+          "losses": 31,
+          "hit_pct": 0.5507246376811594
         },
         "14d": {
-          "wins": 81,
-          "losses": 80,
-          "hit_pct": 0.5031055900621118
+          "wins": 91,
+          "losses": 70,
+          "hit_pct": 0.5652173913043478
         },
         "30d": {
-          "wins": 201,
-          "losses": 164,
-          "hit_pct": 0.5506849315068493
+          "wins": 193,
+          "losses": 166,
+          "hit_pct": 0.5376044568245125
         },
         "season": {
-          "wins": 525,
-          "losses": 481,
-          "hit_pct": 0.5218687872763419
+          "wins": 526,
+          "losses": 489,
+          "hit_pct": 0.5182266009852217
         },
         "streak": {
           "type": "W",
-          "count": 1
-        },
-        "hot": false,
-        "cold": false,
-        "vs_season_pts": -1.9
-      },
-      "bullpen": {
-        "7d": {
-          "wins": 35,
-          "losses": 30,
-          "hit_pct": 0.5384615384615384
-        },
-        "14d": {
-          "wins": 88,
-          "losses": 73,
-          "hit_pct": 0.546583850931677
-        },
-        "30d": {
-          "wins": 197,
-          "losses": 168,
-          "hit_pct": 0.5397260273972603
-        },
-        "season": {
-          "wins": 520,
-          "losses": 486,
-          "hit_pct": 0.5168986083499006
-        },
-        "streak": {
-          "type": "L",
           "count": 2
         },
         "hot": false,
         "cold": false,
-        "vs_season_pts": 3.0
+        "vs_season_pts": 4.7
       },
       "hitting": {
         "7d": {
-          "wins": 30,
+          "wins": 34,
           "losses": 35,
-          "hit_pct": 0.46153846153846156
-        },
-        "14d": {
-          "wins": 77,
-          "losses": 84,
-          "hit_pct": 0.4782608695652174
-        },
-        "30d": {
-          "wins": 180,
-          "losses": 185,
-          "hit_pct": 0.4931506849315068
-        },
-        "season": {
-          "wins": 487,
-          "losses": 519,
-          "hit_pct": 0.4840954274353877
-        },
-        "streak": {
-          "type": "L",
-          "count": 1
-        },
-        "hot": false,
-        "cold": false,
-        "vs_season_pts": -0.6
-      },
-      "bullpen_fatigue": {
-        "7d": {
-          "wins": 38,
-          "losses": 27,
-          "hit_pct": 0.5846153846153846
+          "hit_pct": 0.4927536231884058
         },
         "14d": {
           "wins": 79,
@@ -352,74 +147,14 @@
           "hit_pct": 0.4906832298136646
         },
         "30d": {
-          "wins": 165,
-          "losses": 200,
-          "hit_pct": 0.4520547945205479
+          "wins": 178,
+          "losses": 181,
+          "hit_pct": 0.4958217270194986
         },
         "season": {
-          "wins": 470,
-          "losses": 536,
-          "hit_pct": 0.4671968190854871
-        },
-        "streak": {
-          "type": "W",
-          "count": 1
-        },
-        "hot": false,
-        "cold": false,
-        "vs_season_pts": 2.3
-      }
-    },
-    "3": {
-      "trends": {
-        "7d": {
-          "wins": 40,
-          "losses": 25,
-          "hit_pct": 0.6153846153846154
-        },
-        "14d": {
-          "wins": 89,
-          "losses": 72,
-          "hit_pct": 0.5527950310559007
-        },
-        "30d": {
-          "wins": 209,
-          "losses": 156,
-          "hit_pct": 0.5726027397260274
-        },
-        "season": {
-          "wins": 557,
-          "losses": 449,
-          "hit_pct": 0.5536779324055666
-        },
-        "streak": {
-          "type": "L",
-          "count": 1
-        },
-        "hot": false,
-        "cold": false,
-        "vs_season_pts": -0.1
-      },
-      "runs": {
-        "7d": {
-          "wins": 36,
-          "losses": 29,
-          "hit_pct": 0.5538461538461539
-        },
-        "14d": {
-          "wins": 83,
-          "losses": 78,
-          "hit_pct": 0.515527950310559
-        },
-        "30d": {
-          "wins": 196,
-          "losses": 169,
-          "hit_pct": 0.536986301369863
-        },
-        "season": {
-          "wins": 528,
-          "losses": 478,
-          "hit_pct": 0.5248508946322068
+          "wins": 507,
+          "losses": 508,
+          "hit_pct": 0.4995073891625616
         },
         "streak": {
           "type": "W",
@@ -429,98 +164,11 @@
         "cold": false,
         "vs_season_pts": -0.9
       },
-      "sp": {
-        "7d": {
-          "wins": 29,
-          "losses": 36,
-          "hit_pct": 0.4461538461538462
-        },
-        "14d": {
-          "wins": 81,
-          "losses": 80,
-          "hit_pct": 0.5031055900621118
-        },
-        "30d": {
-          "wins": 197,
-          "losses": 168,
-          "hit_pct": 0.5397260273972603
-        },
-        "season": {
-          "wins": 531,
-          "losses": 475,
-          "hit_pct": 0.5278330019880716
-        },
-        "streak": {
-          "type": "W",
-          "count": 1
-        },
-        "hot": false,
-        "cold": false,
-        "vs_season_pts": -2.5
-      },
-      "bullpen": {
-        "7d": {
-          "wins": 35,
-          "losses": 30,
-          "hit_pct": 0.5384615384615384
-        },
-        "14d": {
-          "wins": 88,
-          "losses": 73,
-          "hit_pct": 0.546583850931677
-        },
-        "30d": {
-          "wins": 197,
-          "losses": 168,
-          "hit_pct": 0.5397260273972603
-        },
-        "season": {
-          "wins": 520,
-          "losses": 486,
-          "hit_pct": 0.5168986083499006
-        },
-        "streak": {
-          "type": "L",
-          "count": 2
-        },
-        "hot": false,
-        "cold": false,
-        "vs_season_pts": 3.0
-      },
-      "hitting": {
-        "7d": {
-          "wins": 32,
-          "losses": 33,
-          "hit_pct": 0.49230769230769234
-        },
-        "14d": {
-          "wins": 79,
-          "losses": 82,
-          "hit_pct": 0.4906832298136646
-        },
-        "30d": {
-          "wins": 180,
-          "losses": 185,
-          "hit_pct": 0.4931506849315068
-        },
-        "season": {
-          "wins": 487,
-          "losses": 519,
-          "hit_pct": 0.4840954274353877
-        },
-        "streak": {
-          "type": "L",
-          "count": 1
-        },
-        "hot": false,
-        "cold": false,
-        "vs_season_pts": 0.7
-      },
       "bullpen_fatigue": {
         "7d": {
-          "wins": 38,
+          "wins": 42,
           "losses": 27,
-          "hit_pct": 0.5846153846153846
+          "hit_pct": 0.6086956521739131
         },
         "14d": {
           "wins": 79,
@@ -529,17 +177,369 @@
         },
         "30d": {
           "wins": 165,
-          "losses": 200,
-          "hit_pct": 0.4520547945205479
+          "losses": 194,
+          "hit_pct": 0.4596100278551532
         },
         "season": {
-          "wins": 470,
-          "losses": 536,
-          "hit_pct": 0.4671968190854871
+          "wins": 475,
+          "losses": 540,
+          "hit_pct": 0.46798029556650245
+        },
+        "streak": {
+          "type": "W",
+          "count": 2
+        },
+        "hot": false,
+        "cold": false,
+        "vs_season_pts": 2.3
+      }
+    },
+    "2": {
+      "trends": {
+        "7d": {
+          "wins": 44,
+          "losses": 25,
+          "hit_pct": 0.6376811594202898
+        },
+        "14d": {
+          "wins": 93,
+          "losses": 68,
+          "hit_pct": 0.577639751552795
+        },
+        "30d": {
+          "wins": 204,
+          "losses": 155,
+          "hit_pct": 0.5682451253481894
+        },
+        "season": {
+          "wins": 564,
+          "losses": 451,
+          "hit_pct": 0.5556650246305419
+        },
+        "streak": {
+          "type": "L",
+          "count": 1
+        },
+        "hot": false,
+        "cold": false,
+        "vs_season_pts": 2.2
+      },
+      "runs": {
+        "7d": {
+          "wins": 37,
+          "losses": 32,
+          "hit_pct": 0.5362318840579711
+        },
+        "14d": {
+          "wins": 78,
+          "losses": 83,
+          "hit_pct": 0.484472049689441
+        },
+        "30d": {
+          "wins": 181,
+          "losses": 178,
+          "hit_pct": 0.5041782729805014
+        },
+        "season": {
+          "wins": 528,
+          "losses": 487,
+          "hit_pct": 0.5201970443349754
+        },
+        "streak": {
+          "type": "L",
+          "count": 3
+        },
+        "hot": false,
+        "cold": false,
+        "vs_season_pts": -3.6
+      },
+      "sp": {
+        "7d": {
+          "wins": 33,
+          "losses": 36,
+          "hit_pct": 0.4782608695652174
+        },
+        "14d": {
+          "wins": 79,
+          "losses": 82,
+          "hit_pct": 0.4906832298136646
+        },
+        "30d": {
+          "wins": 197,
+          "losses": 162,
+          "hit_pct": 0.5487465181058496
+        },
+        "season": {
+          "wins": 531,
+          "losses": 484,
+          "hit_pct": 0.5231527093596059
+        },
+        "streak": {
+          "type": "W",
+          "count": 2
+        },
+        "hot": false,
+        "cold": false,
+        "vs_season_pts": -3.2
+      },
+      "bullpen": {
+        "7d": {
+          "wins": 38,
+          "losses": 31,
+          "hit_pct": 0.5507246376811594
+        },
+        "14d": {
+          "wins": 91,
+          "losses": 70,
+          "hit_pct": 0.5652173913043478
+        },
+        "30d": {
+          "wins": 193,
+          "losses": 166,
+          "hit_pct": 0.5376044568245125
+        },
+        "season": {
+          "wins": 526,
+          "losses": 489,
+          "hit_pct": 0.5182266009852217
+        },
+        "streak": {
+          "type": "W",
+          "count": 2
+        },
+        "hot": false,
+        "cold": false,
+        "vs_season_pts": 4.7
+      },
+      "hitting": {
+        "7d": {
+          "wins": 34,
+          "losses": 35,
+          "hit_pct": 0.4927536231884058
+        },
+        "14d": {
+          "wins": 80,
+          "losses": 81,
+          "hit_pct": 0.4968944099378882
+        },
+        "30d": {
+          "wins": 178,
+          "losses": 181,
+          "hit_pct": 0.4958217270194986
+        },
+        "season": {
+          "wins": 494,
+          "losses": 521,
+          "hit_pct": 0.48669950738916257
         },
         "streak": {
           "type": "W",
           "count": 1
+        },
+        "hot": false,
+        "cold": false,
+        "vs_season_pts": 1.0
+      },
+      "bullpen_fatigue": {
+        "7d": {
+          "wins": 42,
+          "losses": 27,
+          "hit_pct": 0.6086956521739131
+        },
+        "14d": {
+          "wins": 79,
+          "losses": 82,
+          "hit_pct": 0.4906832298136646
+        },
+        "30d": {
+          "wins": 165,
+          "losses": 194,
+          "hit_pct": 0.4596100278551532
+        },
+        "season": {
+          "wins": 475,
+          "losses": 540,
+          "hit_pct": 0.46798029556650245
+        },
+        "streak": {
+          "type": "W",
+          "count": 2
+        },
+        "hot": false,
+        "cold": false,
+        "vs_season_pts": 2.3
+      }
+    },
+    "3": {
+      "trends": {
+        "7d": {
+          "wins": 44,
+          "losses": 25,
+          "hit_pct": 0.6376811594202898
+        },
+        "14d": {
+          "wins": 93,
+          "losses": 68,
+          "hit_pct": 0.577639751552795
+        },
+        "30d": {
+          "wins": 204,
+          "losses": 155,
+          "hit_pct": 0.5682451253481894
+        },
+        "season": {
+          "wins": 564,
+          "losses": 451,
+          "hit_pct": 0.5556650246305419
+        },
+        "streak": {
+          "type": "L",
+          "count": 1
+        },
+        "hot": false,
+        "cold": false,
+        "vs_season_pts": 2.2
+      },
+      "runs": {
+        "7d": {
+          "wins": 39,
+          "losses": 30,
+          "hit_pct": 0.5652173913043478
+        },
+        "14d": {
+          "wins": 85,
+          "losses": 76,
+          "hit_pct": 0.5279503105590062
+        },
+        "30d": {
+          "wins": 191,
+          "losses": 168,
+          "hit_pct": 0.532033426183844
+        },
+        "season": {
+          "wins": 533,
+          "losses": 482,
+          "hit_pct": 0.5251231527093596
+        },
+        "streak": {
+          "type": "W",
+          "count": 1
+        },
+        "hot": false,
+        "cold": false,
+        "vs_season_pts": 0.3
+      },
+      "sp": {
+        "7d": {
+          "wins": 33,
+          "losses": 36,
+          "hit_pct": 0.4782608695652174
+        },
+        "14d": {
+          "wins": 79,
+          "losses": 82,
+          "hit_pct": 0.4906832298136646
+        },
+        "30d": {
+          "wins": 193,
+          "losses": 166,
+          "hit_pct": 0.5376044568245125
+        },
+        "season": {
+          "wins": 536,
+          "losses": 479,
+          "hit_pct": 0.5280788177339901
+        },
+        "streak": {
+          "type": "W",
+          "count": 1
+        },
+        "hot": false,
+        "cold": false,
+        "vs_season_pts": -3.7
+      },
+      "bullpen": {
+        "7d": {
+          "wins": 38,
+          "losses": 31,
+          "hit_pct": 0.5507246376811594
+        },
+        "14d": {
+          "wins": 91,
+          "losses": 70,
+          "hit_pct": 0.5652173913043478
+        },
+        "30d": {
+          "wins": 193,
+          "losses": 166,
+          "hit_pct": 0.5376044568245125
+        },
+        "season": {
+          "wins": 526,
+          "losses": 489,
+          "hit_pct": 0.5182266009852217
+        },
+        "streak": {
+          "type": "W",
+          "count": 2
+        },
+        "hot": false,
+        "cold": false,
+        "vs_season_pts": 4.7
+      },
+      "hitting": {
+        "7d": {
+          "wins": 36,
+          "losses": 33,
+          "hit_pct": 0.5217391304347826
+        },
+        "14d": {
+          "wins": 81,
+          "losses": 80,
+          "hit_pct": 0.5031055900621118
+        },
+        "30d": {
+          "wins": 178,
+          "losses": 181,
+          "hit_pct": 0.4958217270194986
+        },
+        "season": {
+          "wins": 494,
+          "losses": 521,
+          "hit_pct": 0.48669950738916257
+        },
+        "streak": {
+          "type": "W",
+          "count": 1
+        },
+        "hot": false,
+        "cold": false,
+        "vs_season_pts": 1.6
+      },
+      "bullpen_fatigue": {
+        "7d": {
+          "wins": 42,
+          "losses": 27,
+          "hit_pct": 0.6086956521739131
+        },
+        "14d": {
+          "wins": 79,
+          "losses": 82,
+          "hit_pct": 0.4906832298136646
+        },
+        "30d": {
+          "wins": 165,
+          "losses": 194,
+          "hit_pct": 0.4596100278551532
+        },
+        "season": {
+          "wins": 475,
+          "losses": 540,
+          "hit_pct": 0.46798029556650245
+        },
+        "streak": {
+          "type": "W",
+          "count": 2
         },
         "hot": false,
         "cold": false,
@@ -549,96 +549,9 @@
     "4": {
       "trends": {
         "7d": {
-          "wins": 40,
+          "wins": 44,
           "losses": 25,
-          "hit_pct": 0.6153846153846154
-        },
-        "14d": {
-          "wins": 89,
-          "losses": 72,
-          "hit_pct": 0.5527950310559007
-        },
-        "30d": {
-          "wins": 190,
-          "losses": 145,
-          "hit_pct": 0.5671641791044776
-        },
-        "season": {
-          "wins": 190,
-          "losses": 145,
-          "hit_pct": 0.5671641791044776
-        },
-        "streak": {
-          "type": "L",
-          "count": 1
-        },
-        "hot": false,
-        "cold": false,
-        "vs_season_pts": -1.4
-      },
-      "runs": {
-        "7d": {
-          "wins": 36,
-          "losses": 29,
-          "hit_pct": 0.5538461538461539
-        },
-        "14d": {
-          "wins": 82,
-          "losses": 79,
-          "hit_pct": 0.5093167701863354
-        },
-        "30d": {
-          "wins": 179,
-          "losses": 156,
-          "hit_pct": 0.5343283582089552
-        },
-        "season": {
-          "wins": 179,
-          "losses": 156,
-          "hit_pct": 0.5343283582089552
-        },
-        "streak": {
-          "type": "W",
-          "count": 3
-        },
-        "hot": false,
-        "cold": false,
-        "vs_season_pts": -2.5
-      },
-      "sp": {
-        "7d": {
-          "wins": 29,
-          "losses": 36,
-          "hit_pct": 0.4461538461538462
-        },
-        "14d": {
-          "wins": 81,
-          "losses": 80,
-          "hit_pct": 0.5031055900621118
-        },
-        "30d": {
-          "wins": 183,
-          "losses": 152,
-          "hit_pct": 0.5462686567164179
-        },
-        "season": {
-          "wins": 183,
-          "losses": 152,
-          "hit_pct": 0.5462686567164179
-        },
-        "streak": {
-          "type": "W",
-          "count": 1
-        },
-        "hot": false,
-        "cold": false,
-        "vs_season_pts": -4.3
-      },
-      "bullpen": {
-        "7d": {
-          "wins": 35,
-          "losses": 30,
-          "hit_pct": 0.5384615384615384
+          "hit_pct": 0.6376811594202898
         },
         "14d": {
           "wins": 93,
@@ -646,72 +559,43 @@
           "hit_pct": 0.577639751552795
         },
         "30d": {
-          "wins": 182,
-          "losses": 153,
-          "hit_pct": 0.5432835820895522
+          "wins": 197,
+          "losses": 147,
+          "hit_pct": 0.5726744186046512
         },
         "season": {
-          "wins": 182,
-          "losses": 153,
-          "hit_pct": 0.5432835820895522
+          "wins": 197,
+          "losses": 147,
+          "hit_pct": 0.5726744186046512
         },
         "streak": {
           "type": "L",
-          "count": 3
+          "count": 1
         },
         "hot": false,
         "cold": false,
-        "vs_season_pts": 3.4
+        "vs_season_pts": 0.5
       },
-      "hitting": {
-        "7d": {
-          "wins": 27,
-          "losses": 38,
-          "hit_pct": 0.4153846153846154
-        },
-        "14d": {
-          "wins": 79,
-          "losses": 82,
-          "hit_pct": 0.4906832298136646
-        },
-        "30d": {
-          "wins": 163,
-          "losses": 172,
-          "hit_pct": 0.48656716417910445
-        },
-        "season": {
-          "wins": 163,
-          "losses": 172,
-          "hit_pct": 0.48656716417910445
-        },
-        "streak": {
-          "type": "L",
-          "count": 4
-        },
-        "hot": false,
-        "cold": false,
-        "vs_season_pts": 0.4
-      },
-      "bullpen_fatigue": {
+      "runs": {
         "7d": {
           "wins": 38,
-          "losses": 27,
-          "hit_pct": 0.5846153846153846
+          "losses": 31,
+          "hit_pct": 0.5507246376811594
         },
         "14d": {
-          "wins": 79,
-          "losses": 82,
-          "hit_pct": 0.4906832298136646
+          "wins": 83,
+          "losses": 78,
+          "hit_pct": 0.515527950310559
         },
         "30d": {
-          "wins": 153,
-          "losses": 182,
-          "hit_pct": 0.45671641791044776
+          "wins": 183,
+          "losses": 161,
+          "hit_pct": 0.5319767441860465
         },
         "season": {
-          "wins": 153,
-          "losses": 182,
-          "hit_pct": 0.45671641791044776
+          "wins": 183,
+          "losses": 161,
+          "hit_pct": 0.5319767441860465
         },
         "streak": {
           "type": "W",
@@ -719,7 +603,123 @@
         },
         "hot": false,
         "cold": false,
-        "vs_season_pts": 3.4
+        "vs_season_pts": -1.6
+      },
+      "sp": {
+        "7d": {
+          "wins": 33,
+          "losses": 36,
+          "hit_pct": 0.4782608695652174
+        },
+        "14d": {
+          "wins": 79,
+          "losses": 82,
+          "hit_pct": 0.4906832298136646
+        },
+        "30d": {
+          "wins": 188,
+          "losses": 156,
+          "hit_pct": 0.5465116279069767
+        },
+        "season": {
+          "wins": 188,
+          "losses": 156,
+          "hit_pct": 0.5465116279069767
+        },
+        "streak": {
+          "type": "W",
+          "count": 1
+        },
+        "hot": false,
+        "cold": true,
+        "vs_season_pts": -5.6
+      },
+      "bullpen": {
+        "7d": {
+          "wins": 38,
+          "losses": 31,
+          "hit_pct": 0.5507246376811594
+        },
+        "14d": {
+          "wins": 95,
+          "losses": 66,
+          "hit_pct": 0.5900621118012422
+        },
+        "30d": {
+          "wins": 188,
+          "losses": 156,
+          "hit_pct": 0.5465116279069767
+        },
+        "season": {
+          "wins": 188,
+          "losses": 156,
+          "hit_pct": 0.5465116279069767
+        },
+        "streak": {
+          "type": "W",
+          "count": 1
+        },
+        "hot": false,
+        "cold": false,
+        "vs_season_pts": 4.4
+      },
+      "hitting": {
+        "7d": {
+          "wins": 30,
+          "losses": 39,
+          "hit_pct": 0.43478260869565216
+        },
+        "14d": {
+          "wins": 80,
+          "losses": 81,
+          "hit_pct": 0.4968944099378882
+        },
+        "30d": {
+          "wins": 169,
+          "losses": 175,
+          "hit_pct": 0.49127906976744184
+        },
+        "season": {
+          "wins": 169,
+          "losses": 175,
+          "hit_pct": 0.49127906976744184
+        },
+        "streak": {
+          "type": "L",
+          "count": 2
+        },
+        "hot": false,
+        "cold": false,
+        "vs_season_pts": 0.6
+      },
+      "bullpen_fatigue": {
+        "7d": {
+          "wins": 42,
+          "losses": 27,
+          "hit_pct": 0.6086956521739131
+        },
+        "14d": {
+          "wins": 79,
+          "losses": 82,
+          "hit_pct": 0.4906832298136646
+        },
+        "30d": {
+          "wins": 158,
+          "losses": 186,
+          "hit_pct": 0.45930232558139533
+        },
+        "season": {
+          "wins": 158,
+          "losses": 186,
+          "hit_pct": 0.45930232558139533
+        },
+        "streak": {
+          "type": "W",
+          "count": 2
+        },
+        "hot": false,
+        "cold": false,
+        "vs_season_pts": 3.1
       }
     }
   },
@@ -769,9 +769,9 @@
       },
       {
         "week_start": "2026-09-14",
-        "wins": 15,
-        "losses": 15,
-        "hit_pct": 0.5
+        "wins": 20,
+        "losses": 19,
+        "hit_pct": 0.5128205128205128
       }
     ],
     "2": [
@@ -819,9 +819,9 @@
       },
       {
         "week_start": "2026-09-14",
-        "wins": 13,
-        "losses": 17,
-        "hit_pct": 0.43333333333333335
+        "wins": 18,
+        "losses": 21,
+        "hit_pct": 0.46153846153846156
       }
     ],
     "3": [
@@ -869,9 +869,9 @@
       },
       {
         "week_start": "2026-09-14",
-        "wins": 15,
-        "losses": 15,
-        "hit_pct": 0.5
+        "wins": 20,
+        "losses": 19,
+        "hit_pct": 0.5128205128205128
       }
     ],
     "4": [
@@ -901,124 +901,124 @@
       },
       {
         "week_start": "2026-09-14",
-        "wins": 11,
-        "losses": 19,
-        "hit_pct": 0.36666666666666664
+        "wins": 16,
+        "losses": 23,
+        "hit_pct": 0.41025641025641024
       }
     ]
   },
   "strong_plays": {
     "1": {
       "7d": {
-        "wins": 16,
-        "losses": 12,
-        "hit_pct": 0.5714285714285714,
-        "units_net": 7.0
+        "wins": 19,
+        "losses": 9,
+        "hit_pct": 0.6785714285714286,
+        "units_net": 12.0
       },
       "14d": {
-        "wins": 38,
-        "losses": 25,
-        "hit_pct": 0.6031746031746031,
-        "units_net": 13.0
+        "wins": 40,
+        "losses": 24,
+        "hit_pct": 0.625,
+        "units_net": 18.0
       },
       "30d": {
-        "wins": 89,
-        "losses": 57,
-        "hit_pct": 0.6095890410958904,
+        "wins": 87,
+        "losses": 56,
+        "hit_pct": 0.6083916083916084,
         "units_net": 23.0
       },
       "season": {
-        "wins": 243,
+        "wins": 247,
         "losses": 200,
-        "hit_pct": 0.5485327313769752,
-        "units_net": 62
+        "hit_pct": 0.5525727069351231,
+        "units_net": 67
       }
     },
     "2": {
       "7d": {
-        "wins": 16,
-        "losses": 13,
-        "hit_pct": 0.5517241379310345,
-        "units_net": 5.0
+        "wins": 18,
+        "losses": 11,
+        "hit_pct": 0.6206896551724138,
+        "units_net": 8.0
       },
       "14d": {
-        "wins": 37,
-        "losses": 25,
-        "hit_pct": 0.5967741935483871,
-        "units_net": 13.0
+        "wins": 39,
+        "losses": 24,
+        "hit_pct": 0.6190476190476191,
+        "units_net": 19.0
       },
       "30d": {
-        "wins": 88,
-        "losses": 61,
-        "hit_pct": 0.5906040268456376,
-        "units_net": 21.0
+        "wins": 85,
+        "losses": 60,
+        "hit_pct": 0.5862068965517241,
+        "units_net": 20.0
       },
       "season": {
-        "wins": 236,
+        "wins": 239,
         "losses": 196,
-        "hit_pct": 0.5462962962962963,
-        "units_net": 58
+        "hit_pct": 0.5494252873563218,
+        "units_net": 62
       }
     },
     "3": {
       "7d": {
-        "wins": 14,
-        "losses": 11,
-        "hit_pct": 0.56,
-        "units_net": 4.0
+        "wins": 17,
+        "losses": 9,
+        "hit_pct": 0.6538461538461539,
+        "units_net": 9.0
       },
       "14d": {
-        "wins": 34,
-        "losses": 25,
-        "hit_pct": 0.576271186440678,
-        "units_net": 10.0
+        "wins": 37,
+        "losses": 24,
+        "hit_pct": 0.6065573770491803,
+        "units_net": 15.0
       },
       "30d": {
-        "wins": 96,
-        "losses": 60,
-        "hit_pct": 0.6153846153846154,
+        "wins": 93,
+        "losses": 58,
+        "hit_pct": 0.6158940397350994,
         "units_net": 35.0
       },
       "season": {
-        "wins": 236,
+        "wins": 240,
         "losses": 184,
-        "hit_pct": 0.5619047619047619,
-        "units_net": 72
+        "hit_pct": 0.5660377358490566,
+        "units_net": 77
       }
     },
     "4": {
       "7d": {
-        "wins": 14,
-        "losses": 11,
-        "hit_pct": 0.56,
-        "units_net": 7.0
+        "wins": 16,
+        "losses": 8,
+        "hit_pct": 0.6666666666666666,
+        "units_net": 12.0
       },
       "14d": {
-        "wins": 35,
-        "losses": 22,
-        "hit_pct": 0.6140350877192983,
-        "units_net": 18.0
+        "wins": 37,
+        "losses": 21,
+        "hit_pct": 0.6379310344827587,
+        "units_net": 23.0
       },
       "30d": {
-        "wins": 90,
+        "wins": 93,
         "losses": 55,
-        "hit_pct": 0.6206896551724138,
-        "units_net": 39.0
+        "hit_pct": 0.6283783783783784,
+        "units_net": 44.0
       },
       "season": {
-        "wins": 90,
+        "wins": 93,
         "losses": 55,
-        "hit_pct": 0.6206896551724138,
-        "units_net": 39
+        "hit_pct": 0.6283783783783784,
+        "units_net": 44
       }
     }
   },
   "team_when_liked": [
     {
       "team": "MIL",
-      "picks_any": 61,
+      "picks_any": 62,
       "wins_any": 40,
-      "hit_pct_any": 0.6557377049180327,
+      "hit_pct_any": 0.6451612903225806,
       "picks_strong": 36,
       "wins_strong": 24,
       "hit_pct_strong": 0.6666666666666666,
@@ -1036,23 +1036,23 @@
     },
     {
       "team": "TBR",
-      "picks_any": 53,
-      "wins_any": 37,
-      "hit_pct_any": 0.6981132075471698,
-      "picks_strong": 32,
-      "wins_strong": 23,
-      "hit_pct_strong": 0.71875,
-      "units_strong": 19.0
+      "picks_any": 54,
+      "wins_any": 38,
+      "hit_pct_any": 0.7037037037037037,
+      "picks_strong": 33,
+      "wins_strong": 24,
+      "hit_pct_strong": 0.7272727272727273,
+      "units_strong": 21.0
     },
     {
       "team": "LAD",
-      "picks_any": 47,
-      "wins_any": 32,
-      "hit_pct_any": 0.6808510638297872,
-      "picks_strong": 30,
-      "wins_strong": 24,
-      "hit_pct_strong": 0.8,
-      "units_strong": 24.0
+      "picks_any": 48,
+      "wins_any": 33,
+      "hit_pct_any": 0.6875,
+      "picks_strong": 31,
+      "wins_strong": 25,
+      "hit_pct_strong": 0.8064516129032258,
+      "units_strong": 25.0
     },
     {
       "team": "PHI",
@@ -1096,19 +1096,19 @@
     },
     {
       "team": "SDP",
-      "picks_any": 38,
-      "wins_any": 22,
-      "hit_pct_any": 0.5789473684210527,
-      "picks_strong": 15,
-      "wins_strong": 8,
-      "hit_pct_strong": 0.5333333333333333,
-      "units_strong": 0.0
+      "picks_any": 39,
+      "wins_any": 23,
+      "hit_pct_any": 0.5897435897435898,
+      "picks_strong": 16,
+      "wins_strong": 9,
+      "hit_pct_strong": 0.5625,
+      "units_strong": 1.0
     },
     {
       "team": "DET",
-      "picks_any": 37,
+      "picks_any": 38,
       "wins_any": 21,
-      "hit_pct_any": 0.5675675675675675,
+      "hit_pct_any": 0.5526315789473685,
       "picks_strong": 24,
       "wins_strong": 15,
       "hit_pct_strong": 0.625,
@@ -1126,9 +1126,9 @@
     },
     {
       "team": "HOU",
-      "picks_any": 35,
-      "wins_any": 19,
-      "hit_pct_any": 0.5428571428571428,
+      "picks_any": 36,
+      "wins_any": 20,
+      "hit_pct_any": 0.5555555555555556,
       "picks_strong": 12,
       "wins_strong": 4,
       "hit_pct_strong": 0.3333333333333333,
@@ -1136,9 +1136,9 @@
     },
     {
       "team": "TEX",
-      "picks_any": 35,
+      "picks_any": 36,
       "wins_any": 17,
-      "hit_pct_any": 0.4857142857142857,
+      "hit_pct_any": 0.4722222222222222,
       "picks_strong": 8,
       "wins_strong": 3,
       "hit_pct_strong": 0.375,
@@ -1225,6 +1225,16 @@
       "units_strong": 1.0
     },
     {
+      "team": "NYM",
+      "picks_any": 28,
+      "wins_any": 17,
+      "hit_pct_any": 0.6071428571428571,
+      "picks_strong": 9,
+      "wins_strong": 5,
+      "hit_pct_strong": 0.5555555555555556,
+      "units_strong": 6.0
+    },
+    {
       "team": "STL",
       "picks_any": 28,
       "wins_any": 16,
@@ -1243,16 +1253,6 @@
       "wins_strong": 3,
       "hit_pct_strong": 0.375,
       "units_strong": 0.0
-    },
-    {
-      "team": "NYM",
-      "picks_any": 27,
-      "wins_any": 17,
-      "hit_pct_any": 0.6296296296296297,
-      "picks_strong": 9,
-      "wins_strong": 5,
-      "hit_pct_strong": 0.5555555555555556,
-      "units_strong": 6.0
     },
     {
       "team": "PIT",
@@ -1275,6 +1275,16 @@
       "units_strong": -3.0
     },
     {
+      "team": "LAA",
+      "picks_any": 20,
+      "wins_any": 8,
+      "hit_pct_any": 0.4,
+      "picks_strong": 8,
+      "wins_strong": 4,
+      "hit_pct_strong": 0.5,
+      "units_strong": -2.0
+    },
+    {
       "team": "CIN",
       "picks_any": 19,
       "wins_any": 4,
@@ -1283,16 +1293,6 @@
       "wins_strong": 1,
       "hit_pct_strong": 0.1,
       "units_strong": -9.0
-    },
-    {
-      "team": "LAA",
-      "picks_any": 19,
-      "wins_any": 7,
-      "hit_pct_any": 0.3684210526315789,
-      "picks_strong": 7,
-      "wins_strong": 3,
-      "hit_pct_strong": 0.42857142857142855,
-      "units_strong": -3.0
     },
     {
       "team": "ATH",
@@ -1321,100 +1321,100 @@
         "trends",
         "sp"
       ],
-      "picks": 572,
-      "wins": 324,
+      "picks": 576,
+      "wins": 328,
       "losses": 248,
-      "hit_pct": 0.5664335664335665
+      "hit_pct": 0.5694444444444444
     },
     {
       "cats": [
         "trends",
         "runs"
       ],
-      "picks": 634,
-      "wins": 357,
-      "losses": 277,
-      "hit_pct": 0.5630914826498423
+      "picks": 637,
+      "wins": 359,
+      "losses": 278,
+      "hit_pct": 0.5635792778649922
     },
     {
       "cats": [
         "trends",
         "bullpen"
       ],
-      "picks": 623,
-      "wins": 347,
-      "losses": 276,
-      "hit_pct": 0.5569823434991974
+      "picks": 629,
+      "wins": 352,
+      "losses": 277,
+      "hit_pct": 0.5596184419713831
+    },
+    {
+      "cats": [
+        "trends",
+        "hitting"
+      ],
+      "picks": 616,
+      "wins": 336,
+      "losses": 280,
+      "hit_pct": 0.5454545454545454
     },
     {
       "cats": [
         "runs",
         "sp"
       ],
-      "picks": 558,
-      "wins": 303,
-      "losses": 255,
-      "hit_pct": 0.543010752688172
-    },
-    {
-      "cats": [
-        "trends",
-        "hitting"
-      ],
-      "picks": 610,
-      "wins": 330,
-      "losses": 280,
-      "hit_pct": 0.5409836065573771
+      "picks": 564,
+      "wins": 306,
+      "losses": 258,
+      "hit_pct": 0.5425531914893617
     },
     {
       "cats": [
         "sp",
         "bullpen"
       ],
-      "picks": 565,
-      "wins": 302,
-      "losses": 263,
-      "hit_pct": 0.5345132743362832
+      "picks": 572,
+      "wins": 307,
+      "losses": 265,
+      "hit_pct": 0.5367132867132867
     },
     {
       "cats": [
         "runs",
         "bullpen"
       ],
-      "picks": 641,
-      "wins": 342,
-      "losses": 299,
-      "hit_pct": 0.5335413416536662
+      "picks": 647,
+      "wins": 345,
+      "losses": 302,
+      "hit_pct": 0.5332302936630603
     },
     {
       "cats": [
         "trends",
         "bullpen_fatigue"
       ],
-      "picks": 455,
-      "wins": 238,
+      "picks": 458,
+      "wins": 241,
       "losses": 217,
-      "hit_pct": 0.5230769230769231
+      "hit_pct": 0.5262008733624454
     },
     {
       "cats": [
         "sp",
         "hitting"
       ],
-      "picks": 496,
-      "wins": 257,
+      "picks": 501,
+      "wins": 262,
       "losses": 239,
-      "hit_pct": 0.5181451612903226
+      "hit_pct": 0.5229540918163673
     },
     {
       "cats": [
         "runs",
         "hitting"
       ],
-      "picks": 660,
-      "wins": 341,
-      "losses": 319,
-      "hit_pct": 0.5166666666666667
+      "picks": 664,
+      "wins": 344,
+      "losses": 320,
+      "hit_pct": 0.5180722891566265
     }
   ],
   "worst_category_combos": [
@@ -1423,100 +1423,100 @@
         "hitting",
         "bullpen_fatigue"
       ],
-      "picks": 443,
-      "wins": 203,
+      "picks": 447,
+      "wins": 207,
       "losses": 240,
-      "hit_pct": 0.4582392776523702
+      "hit_pct": 0.46308724832214765
     },
     {
       "cats": [
         "bullpen",
+        "bullpen_fatigue"
+      ],
+      "picks": 480,
+      "wins": 233,
+      "losses": 247,
+      "hit_pct": 0.48541666666666666
+    },
+    {
+      "cats": [
+        "sp",
+        "bullpen_fatigue"
+      ],
+      "picks": 493,
+      "wins": 242,
+      "losses": 251,
+      "hit_pct": 0.4908722109533469
+    },
+    {
+      "cats": [
+        "runs",
         "bullpen_fatigue"
       ],
       "picks": 474,
-      "wins": 229,
-      "losses": 245,
-      "hit_pct": 0.4831223628691983
-    },
-    {
-      "cats": [
-        "sp",
-        "bullpen_fatigue"
-      ],
-      "picks": 485,
-      "wins": 237,
-      "losses": 248,
-      "hit_pct": 0.488659793814433
-    },
-    {
-      "cats": [
-        "runs",
-        "bullpen_fatigue"
-      ],
-      "picks": 469,
-      "wins": 231,
-      "losses": 238,
-      "hit_pct": 0.4925373134328358
+      "wins": 233,
+      "losses": 241,
+      "hit_pct": 0.49156118143459915
     },
     {
       "cats": [
         "bullpen",
         "hitting"
       ],
-      "picks": 593,
-      "wins": 303,
+      "picks": 598,
+      "wins": 308,
       "losses": 290,
-      "hit_pct": 0.5109612141652614
+      "hit_pct": 0.5150501672240803
     },
     {
       "cats": [
         "runs",
         "hitting"
       ],
-      "picks": 660,
-      "wins": 341,
-      "losses": 319,
-      "hit_pct": 0.5166666666666667
+      "picks": 664,
+      "wins": 344,
+      "losses": 320,
+      "hit_pct": 0.5180722891566265
     },
     {
       "cats": [
         "sp",
         "hitting"
       ],
-      "picks": 496,
-      "wins": 257,
+      "picks": 501,
+      "wins": 262,
       "losses": 239,
-      "hit_pct": 0.5181451612903226
+      "hit_pct": 0.5229540918163673
     },
     {
       "cats": [
         "trends",
         "bullpen_fatigue"
       ],
-      "picks": 455,
-      "wins": 238,
+      "picks": 458,
+      "wins": 241,
       "losses": 217,
-      "hit_pct": 0.5230769230769231
+      "hit_pct": 0.5262008733624454
     },
     {
       "cats": [
         "runs",
         "bullpen"
       ],
-      "picks": 641,
-      "wins": 342,
-      "losses": 299,
-      "hit_pct": 0.5335413416536662
+      "picks": 647,
+      "wins": 345,
+      "losses": 302,
+      "hit_pct": 0.5332302936630603
     },
     {
       "cats": [
         "sp",
         "bullpen"
       ],
-      "picks": 565,
-      "wins": 302,
-      "losses": 263,
-      "hit_pct": 0.5345132743362832
+      "picks": 572,
+      "wins": 307,
+      "losses": 265,
+      "hit_pct": 0.5367132867132867
     }
   ]
 }
