@@ -1511,14 +1511,13 @@
         if (!p || !p.pick) return { involved: [], withTeams: [], againstTeams: [] };
         let withTeams = [], againstTeams = [];
         if (p.bet_type === 'CLP') {
-            // Parlay: every listed team is a with-team; opponents unknown
-            if (p.teams && p.teams.length) {
-                withTeams = p.teams.map(canonTeam).filter(Boolean);
-            } else {
-                // No fields blob: best-effort parse of "A / B / C Parlay -110"
-                withTeams = matchFBSTeamsIn(p.pick).map(canonTeam);
-            }
-        } else if (p.home || p.away) {
+            // RJ's rule: a parlay leg is not an accurate single-team pick,
+            // so CLP legs stay OUT of the main team records entirely. This
+            // is the single gate for it; the dedicated Can't Lose Parlays
+            // section on Team Performance tracks legs via clpLegsOfPick.
+            return { involved: [], withTeams: [], againstTeams: [] };
+        }
+        if (p.home || p.away) {
             const home = canonTeam(p.home), away = canonTeam(p.away);
             if (baseBetType(p.bet_type) === 'O/U') {
                 // Total bets ride with both teams, against neither
@@ -1542,6 +1541,50 @@
             if (t && !involved.includes(t)) involved.push(t);
         }
         return { involved, withTeams, againstTeams };
+    }
+
+    /* ===== Can't Lose Parlay tracking helpers =====
+       CLP legs live in their own section on Team Performance and never
+       touch the main team records (see teamsInvolvedInPick). */
+    // Parlay legs, canonical names, deduped. fields.teams is the authority;
+    // the "A / B / C Parlay -110" pick text is the fallback.
+    function clpLegsOfPick(p) {
+        let names;
+        if (p.teams && p.teams.length) names = p.teams;
+        else names = String(p.pick || '').replace(/\s+Parlay.*$/i, '').split('/');
+        const out = [];
+        for (const raw of names) {
+            const t = canonTeam(String(raw).trim());
+            if (t && !out.includes(t)) out.push(t);
+        }
+        return out;
+    }
+    // How many teams the parlay carried: fields.team_count first, then the
+    // teams array length, then the slash count in the pick text. Null when
+    // nothing usable (that pick is skipped by the by-count table).
+    function clpCountOfPick(p) {
+        const fc = p.fields ? Number(p.fields.team_count) : NaN;
+        if (fc >= 2 && fc <= 6) return fc;
+        const legs = (p.teams && p.teams.length)
+            ? p.teams.length
+            : String(p.pick || '').replace(/\s+Parlay.*$/i, '').split('/').filter(s => s.trim()).length;
+        if (legs >= 2) return Math.min(6, legs);
+        return null;
+    }
+    // Signed parlay odds (e.g. -110, +260), or null when unusable. Sign and
+    // points come from the flattened fields; trailing signed number in the
+    // pick text is the fallback.
+    function clpOddsOfPick(p) {
+        let sign = p.sign, pts = p.points;
+        if (!(sign === '-' || sign === '+') || pts === null || pts === undefined
+            || pts === '' || isNaN(Number(pts))) {
+            const m = String(p.pick || '').match(/([+-])(\d+(?:\.\d+)?)\s*$/);
+            if (!m) return null;
+            sign = m[1]; pts = m[2];
+        }
+        const v = Math.abs(Number(pts));
+        if (isNaN(v) || v === 0) return null;
+        return sign === '-' ? -v : v;
     }
     function numOrZero(v) { return typeof v === 'number' ? v : (Number(v) || 0); }
     function fmtNet(v) {
@@ -2109,12 +2152,50 @@
         return Object.values(map);
     }
 
+    // Can't Lose Parlay stats for one person: per-leg team records, record
+    // by parlay size (2 to 6 teams), and record by odds band. All CLP-only;
+    // pending parlays count in Picks but never in the records (tallyPick).
+    const CLP_ODDS_BUCKETS = [
+        { label: '-200 or heavier', test: v => v <= -200 },
+        { label: '-199 to -101',   test: v => v >= -199 && v <= -101 },
+        { label: '+100 to +199',   test: v => v >= 100 && v <= 199 },
+        { label: '+200 or longer', test: v => v >= 200 },
+    ];
+    function computeClpStats(who) {
+        const weeks = SEASONS[seasonSel.value] || [];
+        const teams = {};
+        const byCount = {};
+        for (let n = 2; n <= 6; n++) byCount[n] = { count: n, picks:0, wins:0, losses:0, pushes:0, net:0, uWon:0, uLost:0 };
+        const byOdds = CLP_ODDS_BUCKETS.map(b => ({ label: b.label, test: b.test, picks:0, wins:0, losses:0, pushes:0, net:0 }));
+        const oddsUnknown = { label: 'Odds unknown', picks:0, wins:0, losses:0, pushes:0, net:0 };
+        for (const w of weeks) for (const p of w[who].picks) {
+            if (p.bet_type !== 'CLP') continue;
+            for (const team of clpLegsOfPick(p)) {
+                if (!teams[team]) teams[team] = { team, picks:0, wins:0, losses:0, pushes:0, net:0 };
+                tallyPick(teams[team], p);
+            }
+            const n = clpCountOfPick(p);
+            if (n && byCount[n]) tallyPick(byCount[n], p);
+            const line = clpOddsOfPick(p);
+            const bucket = line === null ? oddsUnknown : (byOdds.find(b => b.test(line)) || oddsUnknown);
+            tallyPick(bucket, p);
+        }
+        return {
+            teams: Object.values(teams).map(t => ({
+                ...t, hit_pct: (t.wins + t.losses) > 0 ? t.wins / (t.wins + t.losses) : null })),
+            byCount: Object.values(byCount),
+            byOdds: [...byOdds, oddsUnknown],
+        };
+    }
+
     function renderTeams() {
         const el = document.getElementById('teams');
         const nickTeams = computeTeamStats('nick');
         const rjTeams = computeTeamStats('rj');
         const nickOUHA = computeTeamOUHomeAway('nick');
         const rjOUHA   = computeTeamOUHomeAway('rj');
+        const nickClp = computeClpStats('nick');
+        const rjClp   = computeClpStats('rj');
 
         function table(rows, title, mode) {
             // mode = 'best' → sort by net desc; 'worst' → sort by net asc, only negatives
@@ -2158,7 +2239,91 @@
             </div>`;
         }
 
-        const RULE_NOTE = `<div style="color:var(--dim); font-size:0.78rem; margin:-0.35rem 0 0.9rem 0.2rem;">Every graded pick counts for every team in its game, whichever side the bet was on. Win a bet against Michigan and that is 1-0 on Michigan; lose it and that is a loss to Michigan. The With and Against columns split the same record by whether the pick rode with that team or against them (O/U picks ride with both teams). Archive picks reveal only the team the bet was on, so their opponents are not counted there.</div>`;
+        const RULE_NOTE = `<div style="color:var(--dim); font-size:0.78rem; margin:-0.35rem 0 0.9rem 0.2rem;">Every graded pick counts for every team in its game, whichever side the bet was on. Win a bet against Michigan and that is 1-0 on Michigan; lose it and that is a loss to Michigan. The With and Against columns split the same record by whether the pick rode with that team or against them (O/U picks ride with both teams). Can't Lose Parlay legs are excluded here and tracked in their own section at the bottom. Archive picks reveal only the team the bet was on, so their opponents are not counted there.</div>`;
+
+        // ===== Can't Lose Parlay section (bottom of the tab) =====
+        const CLP_NOTE = `<div style="color:var(--dim); font-size:0.78rem; margin:-0.35rem 0 0.9rem 0.2rem;">Parlay legs are tracked here only. A team winning or losing inside a Can't Lose Parlay never touches its record in the team tables above, because a parlay leg is not a straight pick on that team. Pending parlays count in Parlays/Picks but not in the records.</div>`;
+        // Placeholder row cells for empty buckets, same dim glyph the other
+        // tables use (borrowed from fmtNet)
+        const dimCells = (n) => `<td class="num" style="color:var(--dim)">${fmtNet(null)}</td>`.repeat(n);
+        const pctOf = (r) => (r.wins + r.losses) > 0 ? Math.round(r.wins / (r.wins + r.losses) * 100) + '%' : fmtNet(null);
+
+        function clpTeamTable(label, rows) {
+            const sorted = [...rows].sort((a,b) => (b.net || 0) - (a.net || 0));
+            return `<div class="panel-card">
+                <h3>${label} — CLP Teams (win % as a parlay leg)</h3>
+                <table class="data">
+                    <thead><tr>
+                        <th>Team</th>
+                        <th class="num">Parlays</th>
+                        <th class="num">W-L-P</th>
+                        <th class="num">Win %</th>
+                        <th class="num">Net (u)</th>
+                    </tr></thead>
+                    <tbody>
+                        ${sorted.map(t => `<tr>
+                            <td>${t.team}</td>
+                            <td class="num">${t.picks}</td>
+                            <td class="num">${t.wins}-${t.losses}${t.pushes ? '-' + t.pushes : ''}</td>
+                            <td class="num">${pctOf(t)}</td>
+                            <td class="num ${classForNet(t.net)}">${fmtNet(t.net)}</td>
+                        </tr>`).join('') || '<tr><td colspan="5" style="text-align:center; color:var(--dim); padding:1rem;">No parlays yet.</td></tr>'}
+                    </tbody>
+                </table>
+            </div>`;
+        }
+
+        function clpCountTable(label, rows) {
+            const body = rows.map(r => r.picks === 0
+                ? `<tr><td>${r.count} Teams</td>${dimCells(5)}</tr>`
+                : `<tr>
+                    <td>${r.count} Teams</td>
+                    <td class="num">${r.picks}</td>
+                    <td class="num">${r.wins}-${r.losses}${r.pushes ? '-' + r.pushes : ''}</td>
+                    <td class="num">${pctOf(r)}</td>
+                    <td class="num"><span class="net-good">+${r.uWon.toFixed(2)}</span> / <span class="net-bad">-${r.uLost.toFixed(2)}</span></td>
+                    <td class="num ${classForNet(r.net)}">${fmtNet(r.net)}</td>
+                </tr>`).join('');
+            return `<div class="panel-card">
+                <h3>${label} — CLP by Team Count</h3>
+                <table class="data">
+                    <thead><tr>
+                        <th>Size</th>
+                        <th class="num">Picks</th>
+                        <th class="num">W-L-P</th>
+                        <th class="num">Win %</th>
+                        <th class="num" title="Gross units won on winners / gross units lost on losers">Units W / L</th>
+                        <th class="num">Net (u)</th>
+                    </tr></thead>
+                    <tbody>${body}</tbody>
+                </table>
+            </div>`;
+        }
+
+        function clpOddsTable(label, rows) {
+            const body = rows.map(r => r.picks === 0
+                ? `<tr><td>${r.label}</td>${dimCells(4)}</tr>`
+                : `<tr>
+                    <td>${r.label}</td>
+                    <td class="num">${r.picks}</td>
+                    <td class="num">${r.wins}-${r.losses}${r.pushes ? '-' + r.pushes : ''}</td>
+                    <td class="num">${pctOf(r)}</td>
+                    <td class="num ${classForNet(r.net)}">${fmtNet(r.net)}</td>
+                </tr>`).join('');
+            return `<div class="panel-card">
+                <h3>${label} — CLP by Odds</h3>
+                <table class="data">
+                    <thead><tr>
+                        <th>Parlay Odds</th>
+                        <th class="num">Picks</th>
+                        <th class="num">W-L-P</th>
+                        <th class="num">Win %</th>
+                        <th class="num">Net (u)</th>
+                    </tr></thead>
+                    <tbody>${body}</tbody>
+                </table>
+            </div>`;
+        }
 
         // O/U-by-team broken out into Home vs Away — only meaningful for
         // form-saved picks that carry p.home / p.away.
@@ -2200,7 +2365,17 @@
             RULE_NOTE +
             table(rjTeams,   "RJ — Best Teams (top 15 by Net Units)", 'best') +
             table(rjTeams,   "RJ — Worst Teams (top 15 by lowest Net Units)", 'worst') +
-            ouHomeAwayTable('RJ', rjOUHA);
+            ouHomeAwayTable('RJ', rjOUHA) +
+            `<h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.06em; font-size:0.95rem; margin:1.5rem 0 0.75rem;">Nick's Can't Lose Parlays</h2>` +
+            CLP_NOTE +
+            clpTeamTable('Nick', nickClp.teams) +
+            clpCountTable('Nick', nickClp.byCount) +
+            clpOddsTable('Nick', nickClp.byOdds) +
+            `<h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.06em; font-size:0.95rem; margin:1.5rem 0 0.75rem;">RJ's Can't Lose Parlays</h2>` +
+            CLP_NOTE +
+            clpTeamTable('RJ', rjClp.teams) +
+            clpCountTable('RJ', rjClp.byCount) +
+            clpOddsTable('RJ', rjClp.byOdds);
     }
 
     /* ===== Render — Mortal Locks tab ===== */
