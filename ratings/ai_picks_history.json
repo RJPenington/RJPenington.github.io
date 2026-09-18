@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-09-17",
+  "as_of": "2026-09-18",
   "aggregates": {
     "today": {
       "picks": 5,
@@ -12,21 +12,21 @@
     },
     "week": {
       "picks": 30,
-      "wins": 14,
-      "losses": 11,
+      "wins": 17,
+      "losses": 8,
       "pushes": 0,
       "pending": 5,
-      "units_net": 3.0,
-      "hit_pct": 0.56
+      "units_net": 8.0,
+      "hit_pct": 0.68
     },
     "season": {
-      "picks": 170,
-      "wins": 92,
-      "losses": 73,
+      "picks": 175,
+      "wins": 96,
+      "losses": 74,
       "pushes": 0,
       "pending": 5,
-      "units_net": 17.0,
-      "hit_pct": 0.5575757575757576
+      "units_net": 21.0,
+      "hit_pct": 0.5647058823529412
     }
   },
   "picks_by_date": {
@@ -2784,8 +2784,8 @@
           "units": 2,
           "confidence": "high",
           "reasoning": "All three ratings agree on Tampa Bay at essentially identical deltas (R1 +2.18, R2 +2.16, R3 +2.17), the only 2u-sized edge on the board. TBR is 37-16 (70%) when the model likes them and 23-9 (72%, +19.0u) on strong plays, while the ATH are just 5-7 overall and 1-4 (20%, -4.0u) as a model side. R1 strong plays are 89-57 (61%, +23.0u) over 30 days.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 2
         },
         {
           "rank": 2,
@@ -2797,8 +2797,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "R3 posts the largest edge here (-1.96) and is the strongest strong-play rating: 96-60 (62%, +35.0u) over 30 days and 236-184 (56%, +72.0u) on the season. LAD is 24-6 (80%, +24.0u) on strong plays, the best mark on the slate, against a Cincinnati side that is 4-15 (21%) when liked and 1-9 (10%, -9.0u) on strongs.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 3,
@@ -2810,8 +2810,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R3 (-1.61) and R1 (-1.56) both flag San Diego as a strong play, with R2 agreeing at -1.08 — full three-rating consensus. COL is only 4-8 (33%) when the model likes them and 1-3 (25%, -2.0u) on strongs; SDP's own 8-7 (53%, +0.0u) strong record is mediocre, which caps this at 1u.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 4,
@@ -2823,8 +2823,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R1 grades this at +1.66 with R2 (+1.33) and R3 (+1.43) confirming, and R1 strongs are 38-25 (60%, +13.0u) in the last 14 days. Team history is a drag on both sides — LAA 7-12 (37%) when liked, MIN 12-16 (43%) — so this stays a 1u play on the rating edge alone.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 5,
@@ -2836,13 +2836,96 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "All three ratings lean Milwaukee (R1 -0.42, R2 -0.45, R3 -0.50), and MIL owns the best overall when-liked profile on the slate at 40-21 (66%) with strongs 24-12 (67%, +14.0u). PIT is a coin flip at 13-13 (50%) and 4-5 (44%, -3.0u) on strongs; small delta means minimum size and low confidence.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         }
       ],
       "usage": {
         "input_tokens": 3606,
         "output_tokens": 1814
+      },
+      "totals": {
+        "wins": 4,
+        "losses": 1,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": 4.0
+      }
+    },
+    "2026-09-18": {
+      "generated_at": "2026-09-18T05:36:24",
+      "model": "claude-opus-5",
+      "date": "2026-09-18",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "CLE",
+          "home_team": "CLE",
+          "away_team": "ATH",
+          "rating_source": "R2",
+          "delta": 2.59,
+          "units": 3,
+          "confidence": "high",
+          "reasoning": "All three ratings agree on Cleveland with the biggest edge on the board (R1 +2.51, R2 +2.59, R3 +2.07), the only 3u strong play today. CLE is 18-12 (60%) when the model likes them and 10-7 on strong plays, while ATH is 5-7 overall and a dismal 1-4 (20%, -4.0u) on strong plays. R2 strong plays are 39-24 (62%, +19.0u) over 14 days and 85-60 (59%) over 30.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "TBR",
+          "home_team": "TBR",
+          "away_team": "BOS",
+          "rating_source": "R3",
+          "delta": 1.98,
+          "units": 1,
+          "confidence": "high",
+          "reasoning": "Unanimous strong play (R1 +1.72, R2 +1.81, R3 +1.98) on the team with the best strong-play profile in the slate: TBR is 24-9 (73%, +21.0u) on strong plays and 38-16 (70%) whenever the model likes them. R3 is the top strong-play rating at 93-58 (62%, +35.0u) over 30 days and 57% (+77.0u) on the season.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "DET",
+          "home_team": "CHW",
+          "away_team": "DET",
+          "rating_source": "R1",
+          "delta": 1.76,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "R1 has the largest edge here (+1.76) and is the hottest rating short-term at 19-9 (68%, +12.0u) over 7 days and 40-24 (62%) over 14. Detroit is 15-9 (62%, +13.0u) on strong plays while Chicago is just 15-21 (42%) when liked and 7-9 (-4.0u) on strong plays, making the fade side favorable too.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "ATL",
+          "home_team": "HOU",
+          "away_team": "ATL",
+          "rating_source": "R1",
+          "delta": 1.31,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "All three ratings flag Atlanta as a strong play (R1 1.31, R2 1.19, R3 1.20), and ATL is 20-14 (59%) when liked with 8-5 (62%, +4.0u) on strong plays. Houston is the opposite side of that coin at 4-8 (33%, -7.0u) on strong plays despite a 56% overall like rate.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 5,
+          "pick": "SDP",
+          "home_team": "SDP",
+          "away_team": "MIA",
+          "rating_source": "R3",
+          "delta": 1.47,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "R3 carries the largest edge (+1.47) and is the strongest strong-play rating historically at 240-184 (57%, +77.0u) and 62% over the last 30 days. San Diego is 23-16 (59%) when the model likes them with a profitable 9-7 (+1.0u) strong-play mark, while Miami is only 16-18 (47%) when liked.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 4389,
+        "output_tokens": 2089
       },
       "totals": {
         "wins": 0,
