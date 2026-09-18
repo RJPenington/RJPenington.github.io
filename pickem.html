@@ -965,7 +965,9 @@
         /* Phone card: the count selector rides line 1 where the H/A
            bubbles sit, the team boxes take line 2 full width (two per
            line), and line 3 stays sign/odds/units/lock/status as usual */
-        .form-row > .clp-count-slot { order: 3; margin-left: auto; }
+        /* The count slot may shrink a few pixels rather than ever wrap the
+           top row on very narrow phones; other line-1 items are untouched */
+        .form-row > .clp-count-slot { order: 3; margin-left: auto; flex: 0 1 auto; min-width: 0; }
         .form-row > .clp-teams { order: 6; flex-basis: 100%; }
         .form-row > .clp-teams input.clp-team { flex: 1 1 40%; }
         .clp-count-slot select.clp-count { min-height: 42px; font-size: 16px; }
@@ -2412,7 +2414,7 @@
                     <option value="1H O/U">1H O/U</option>
                     <option value="TTO">TTO</option>
                     <option value="1H TTO">1H TTO</option>
-                    <option value="CLP">Can't Lose Parlay</option>
+                    <option value="CLP" title="Can't Lose Parlay">CLP</option>
                 </select>
                 <span class="sign-group timeframe" title="Timeframe, decides the pick's lock time">
                     <label title="Weekday game (locks Saturday noon ET)"><input type="radio" name="tf-${uid}" value="weekday" />${TF_WEEKDAY_ICON}</label>
