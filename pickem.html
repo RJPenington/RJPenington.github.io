@@ -937,6 +937,40 @@
     /* Week Picks: stamp rides under the pick text */
     .pick-stamp { font-size: 0.62rem; color: var(--dim); opacity: 0.85; margin-top: 2px; }
 
+    /* Can't Lose Parlay rows: the H/A toggle slot carries the team-count
+       selector instead, and the home/away pair is replaced by N parlay team
+       boxes that wrap inside one container. Sign bubbles, Odds, Units, and
+       everything else keep their normal spots. */
+    .form-row.bt-clp {
+        grid-template-columns: 28px 80px 82px 96px minmax(0, 1fr) 60px 75px 65px 56px 58px;
+    }
+    .form-row.bt-clp > .clp-count-slot { grid-column: 4; }
+    .form-row.bt-clp > .clp-teams      { grid-column: 5; }
+    .form-row.bt-clp > .sign-slot      { grid-column: 6; }
+    .form-row.bt-clp > .points         { grid-column: 7; }
+    .form-row.bt-clp > .units          { grid-column: 8; }
+    .form-row.bt-clp > .idx            { grid-column: 9; }
+    .form-row.bt-clp > .row-status     { grid-column: 10; }
+    .form-row > .clp-teams {
+        display: flex; flex-wrap: wrap; gap: 0.45rem; min-width: 0;
+        align-items: center;
+    }
+    .clp-teams input.clp-team { flex: 1 1 130px; min-width: 0; }
+    .clp-count-slot { min-width: 0; }
+    .clp-count-slot select.clp-count {
+        width: 100%; min-width: 0;
+        font-family: 'Copperplate Gothic Bold', serif;
+    }
+    @media (max-width: 720px) {
+        /* Phone card: the count selector rides line 1 where the H/A
+           bubbles sit, the team boxes take line 2 full width (two per
+           line), and line 3 stays sign/odds/units/lock/status as usual */
+        .form-row > .clp-count-slot { order: 3; margin-left: auto; }
+        .form-row > .clp-teams { order: 6; flex-basis: 100%; }
+        .form-row > .clp-teams input.clp-team { flex: 1 1 40%; }
+        .clp-count-slot select.clp-count { min-height: 42px; font-size: 16px; }
+    }
+
     /* Changes tab */
     #changes .chg-del td { color: var(--bad); }
     #changes .chg-desc { white-space: normal; }
@@ -1297,6 +1331,9 @@
                 side: f && (f.side === 'H' || f.side === 'A') ? f.side : null,
                 sign: f && f.sign ? f.sign : null,
                 points: f && f.points !== undefined && f.points !== '' ? f.points : null,
+                // Parlay team list (CLP rows), for team tracking
+                teams: f && Array.isArray(f.teams)
+                    ? f.teams.map(t => String(t).trim()).filter(Boolean) : null,
                 // Creation time decides the pick's lock window
                 created_at: r.created_at || null,
             });
@@ -1410,7 +1447,7 @@
     // baseBetType() collapses a 1H type to its twin so every bet_type switch
     // can branch on the base type.
     const FIRST_HALF_TYPES = { '1H Spread': 'Spread', '1H O/U': 'O/U', '1H TTO': 'TTO' };
-    const BET_TYPES_ALL = ['ML', 'Spread', 'O/U', 'TTO', '1H Spread', '1H O/U', '1H TTO'];
+    const BET_TYPES_ALL = ['ML', 'Spread', 'O/U', 'TTO', '1H Spread', '1H O/U', '1H TTO', 'CLP'];
     function baseBetType(bt) { return FIRST_HALF_TYPES[bt] || bt; }
 
     // Canonical team name: exact FBS list match first (case-insensitive),
@@ -1471,7 +1508,15 @@
     function teamsInvolvedInPick(p) {
         if (!p || !p.pick) return { involved: [], withTeams: [], againstTeams: [] };
         let withTeams = [], againstTeams = [];
-        if (p.home || p.away) {
+        if (p.bet_type === 'CLP') {
+            // Parlay: every listed team is a with-team; opponents unknown
+            if (p.teams && p.teams.length) {
+                withTeams = p.teams.map(canonTeam).filter(Boolean);
+            } else {
+                // No fields blob: best-effort parse of "A / B / C Parlay -110"
+                withTeams = matchFBSTeamsIn(p.pick).map(canonTeam);
+            }
+        } else if (p.home || p.away) {
             const home = canonTeam(p.home), away = canonTeam(p.away);
             if (baseBetType(p.bet_type) === 'O/U') {
                 // Total bets ride with both teams, against neither
@@ -1769,7 +1814,7 @@
 
         // Bet-type breakdown: full-game types first, then the first-half
         // variants as their own categories
-        const BET_ORDER = ['ML', 'Spread', 'O/U', 'TTO', '1H Spread', '1H O/U', '1H TTO'];
+        const BET_ORDER = ['ML', 'Spread', 'O/U', 'TTO', '1H Spread', '1H O/U', '1H TTO', 'CLP'];
         const nickByType = aggregatePicksBy(weeks, 'nick', p => p.bet_type || null);
         const rjByType   = aggregatePicksBy(weeks, 'rj',   p => p.bet_type || null);
 
@@ -2305,7 +2350,7 @@
                 <ul>
                     <li>Picks grade <strong>automatically each morning</strong>.</li>
                     <li>Manual <strong>W / L / P</strong> buttons stay available on every pick in Week Picks, locks included; <strong>X</strong> clears a grade back to pending.</li>
-                    <li>First-half picks (1H Spread, 1H O/U, 1H TTO) are not auto-graded (finals cannot grade a half), so grade them with the manual <strong>W / L / P</strong> buttons.</li>
+                    <li>First-half picks (1H Spread, 1H O/U, 1H TTO) and Can't Lose Parlays are not auto-graded, so grade them with the manual <strong>W / L / P</strong> buttons.</li>
                     <li>Mortal lock results also show automatically in their slots; a manually graded lock pays the same <strong>1.5×</strong>.</li>
                 </ul>
             </div>`;
@@ -2320,6 +2365,9 @@
        First-half variants (1H Spread, 1H O/U, 1H TTO) use the exact same
        fields and completeness rules as their full-game twin; the pick string
        just carries a " (1H)" suffix.
+       CLP ("Can't Lose Parlay") swaps the H/A toggle for a 2-6 team-count
+       selector and the home/away pair for that many team boxes; sign + Odds
+       hold the parlay line, and the fields blob carries teams/team_count.
        Every bet has an Opponent so we can track "how well do we do vs Team X". */
 
     // Whose entry cards the Enter tab currently shows. RJ is the default on
@@ -2364,6 +2412,7 @@
                     <option value="1H O/U">1H O/U</option>
                     <option value="TTO">TTO</option>
                     <option value="1H TTO">1H TTO</option>
+                    <option value="CLP">Can't Lose Parlay</option>
                 </select>
                 <span class="sign-group timeframe" title="Timeframe, decides the pick's lock time">
                     <label title="Weekday game (locks Saturday noon ET)"><input type="radio" name="tf-${uid}" value="weekday" />${TF_WEEKDAY_ICON}</label>
@@ -2373,11 +2422,21 @@
                 <span class="sign-group side-h" title="Bet on home team">
                     <label><input type="radio" name="side-${uid}" value="H" />H</label>
                 </span>
+                <span class="sign-group clp-count-slot hidden-field" title="How many teams ride in the parlay">
+                    <select class="clp-count" aria-label="Number of parlay teams" onchange="onClpCountChange('${uid}')">
+                        <option value="2">2 Teams</option>
+                        <option value="3">3 Teams</option>
+                        <option value="4">4 Teams</option>
+                        <option value="5">5 Teams</option>
+                        <option value="6">6 Teams</option>
+                    </select>
+                </span>
                 <input class="home team-input" placeholder="home team" aria-label="Home team" autocomplete="off" title="Home team — type to filter FBS teams" />
                 <span class="sign-group side-a" title="Bet on away team">
                     <label><input type="radio" name="side-${uid}" value="A" />A</label>
                 </span>
                 <input class="away team-input" placeholder="away team" aria-label="Away team" autocomplete="off" title="Away team — type to filter FBS teams" />
+                <span class="clp-teams hidden-field" aria-label="Parlay teams"></span>
                 <span class="sign-group sign-slot">
                     <label><input type="radio" name="sign-${uid}" value="-" />−</label>
                     <label><input type="radio" name="sign-${uid}" value="+" />+</label>
@@ -2499,6 +2558,10 @@
     // applied to HALFTIME scores. Final scores cannot grade them, so the
     // morning auto-grader skips them on purpose; use the manual W/L/P
     // buttons on Week Picks.
+    //
+    // Can't Lose Parlays (CLP) also grade manually: every leg must hit for
+    // the W, any leg missing is the L, and the mortal lock 1.5x applies as
+    // usual. The auto-grader skips CLP by design.
     //
     // Payout: unit-neutral bets pay 1× units on win, lose 1× units on loss.
     // Mortal locks pay 1.5× units on either.
@@ -2649,7 +2712,7 @@
         const base = baseBetType(bt);
         // Per-type class so the desktop grid can reflow the row per bet type
         // exactly like the phone flex layout does
-        row.classList.remove('bt-ml', 'bt-spread', 'bt-ou', 'bt-tto');
+        row.classList.remove('bt-ml', 'bt-spread', 'bt-ou', 'bt-tto', 'bt-clp');
         row.classList.add(base === 'O/U' ? 'bt-ou' : 'bt-' + base.toLowerCase());
         const signGroup = row.querySelector('.sign-slot');
         const sideH = row.querySelector('.side-h');
@@ -2659,12 +2722,30 @@
         const signLabels = signGroup.querySelectorAll('label');
         // signLabels: 0=−, 1=+, 2=O, 3=U
         const showSign = (idx, on) => signLabels[idx].classList.toggle('hidden-field', !on);
+        // Can't Lose Parlay swaps the H/A toggle slot for the team-count
+        // selector and the home/away pair for N parlay team boxes;
+        // everything else on the row stays where it always is
+        const isClp = bt === 'CLP';
+        const clpSlot = row.querySelector('.clp-count-slot');
+        const clpTeams = row.querySelector('.clp-teams');
+        if (clpSlot) clpSlot.classList.toggle('hidden-field', !isClp);
+        if (clpTeams) clpTeams.classList.toggle('hidden-field', !isClp);
+        row.querySelector('.home').classList.toggle('hidden-field', isClp);
+        row.querySelector('.away').classList.toggle('hidden-field', isClp);
+        if (isClp) renderClpTeamBoxes(row);
         // H/A bubbles: shown for ML/Spread/TTO (single-side bets),
-        // hidden for O/U (both sides bet the total together — no "side" concept).
-        sideH.classList.toggle('hidden-field', base === 'O/U');
-        sideA.classList.toggle('hidden-field', base === 'O/U');
+        // hidden for O/U (both sides bet the total together — no "side"
+        // concept) and for CLP (the count selector takes that slot).
+        sideH.classList.toggle('hidden-field', base === 'O/U' || isClp);
+        sideA.classList.toggle('hidden-field', base === 'O/U' || isClp);
 
-        if (base === 'ML') {
+        if (isClp) {
+            // Parlay: -/+ bubble plus the parlay line (e.g. -110, +260)
+            showSign(0,true); showSign(1,true); showSign(2,false); showSign(3,false);
+            points.classList.remove('hidden-field');
+            points.placeholder = 'Odds';
+            points.title = '';
+        } else if (base === 'ML') {
             // ML now takes an actual line: -/+ bubble + line value (e.g. -110, +145)
             showSign(0,true); showSign(1,true); showSign(2,false); showSign(3,false);
             points.classList.remove('hidden-field');
@@ -2688,6 +2769,51 @@
             points.placeholder = 'Team total';
             points.title = '';
         }
+    };
+
+    /* ===== Can't Lose Parlay team boxes =====
+       A CLP row carries 2 to 6 team inputs, driven by the count selector
+       sitting in the H/A slot. Boxes are created lazily and trimmed from
+       the bottom when the count shrinks, so surviving values are kept.
+       Every box is a .team-input, so the shared typeahead dropdown and the
+       delegated autosave wiring treat it exactly like home/away. */
+    function clpTeamCount(row) {
+        const sel = row.querySelector('.clp-count');
+        const n = sel ? parseInt(sel.value, 10) : 2;
+        return Math.min(6, Math.max(2, isNaN(n) ? 2 : n));
+    }
+    function renderClpTeamBoxes(row) {
+        const box = row.querySelector('.clp-teams');
+        if (!box) return;
+        const want = clpTeamCount(row);
+        const existing = box.querySelectorAll('input.clp-team');
+        for (let i = existing.length; i < want; i++) {
+            const inp = document.createElement('input');
+            inp.className = 'clp-team team-input';
+            inp.placeholder = 'team ' + (i + 1);
+            inp.setAttribute('aria-label', 'Parlay team ' + (i + 1));
+            inp.autocomplete = 'off';
+            inp.disabled = !!row.dataset.locked;
+            box.appendChild(inp);
+        }
+        for (let i = existing.length - 1; i >= want; i--) existing[i].remove();
+    }
+    // Set the count selector and box values together (hydration path)
+    function setClpTeams(row, teams, count) {
+        const list = Array.isArray(teams) ? teams : [];
+        const sel = row.querySelector('.clp-count');
+        const n = Math.min(6, Math.max(2, Number(count) || list.length || 2));
+        if (sel) sel.value = String(n);
+        renderClpTeamBoxes(row);
+        row.querySelectorAll('.clp-teams input.clp-team').forEach((b, i) => {
+            b.value = list[i] === undefined || list[i] === null ? '' : String(list[i]);
+        });
+    }
+    // Inline onchange on the count selector; the change event also bubbles
+    // to the panel's delegated autosave listener, which schedules the save
+    window.onClpCountChange = function(uid) {
+        const row = document.querySelector(`.form-row[data-uid="${uid}"]`);
+        if (row) renderClpTeamBoxes(row);
     };
 
     /* ===== Team typeahead =====
@@ -2898,7 +3024,12 @@
         const base = baseBetType(bt);
         const home = (row.querySelector('.home').value || '').trim();
         const away = (row.querySelector('.away').value || '').trim();
-        if (!home && !away) return null;
+        // CLP rows draw their teams from the parlay boxes, not home/away
+        const clpNames = bt === 'CLP'
+            ? [...row.querySelectorAll('.clp-teams input.clp-team')]
+                .map(i => (i.value || '').trim()).filter(Boolean)
+            : [];
+        if (bt === 'CLP' ? !clpNames.length : (!home && !away)) return null;
 
         const sideEl = row.querySelector('input[name^="side-"]:checked');
         const side = sideEl ? sideEl.value : null;
@@ -2916,7 +3047,14 @@
         else team = home || away;
 
         let pick = '';
-        if (base === 'ML') {
+        if (bt === 'CLP') {
+            // "Boise State / Memphis / Tulane Parlay -110"
+            pick = clpNames.join(' / ') + ' Parlay';
+            if (hasPts) {
+                if (sign === '-' || sign === '+') pick += ' ' + sign + Math.abs(pts);
+                else pick += ' ' + (pts >= 0 ? '+' : '') + pts;   // keep the typed sign
+            }
+        } else if (base === 'ML') {
             pick = team;
         } else if (base === 'Spread') {
             if (!hasPts) pick = team;
@@ -2953,6 +3091,14 @@
         const ptsRaw = (row.querySelector('.points').value || '').trim();
         const hasPts = ptsRaw !== '' && !isNaN(Number(ptsRaw));
         if (!hasPts) return false;
+        if (bt === 'CLP') {
+            // Every team box filled, plus signed parlay odds
+            const boxes = [...row.querySelectorAll('.clp-teams input.clp-team')];
+            if (boxes.length !== clpTeamCount(row)) return false;
+            if (boxes.some(b => !(b.value || '').trim())) return false;
+            return (signEl && (signEl.value === '-' || signEl.value === '+'))
+                || ptsRaw.startsWith('-') || ptsRaw.startsWith('+');
+        }
         if (bt === 'Spread') {
             // The sign can come from the bubble or be typed into the number
             return (signEl && (signEl.value === '-' || signEl.value === '+'))
@@ -3026,7 +3172,7 @@
         const sideEl = row.querySelector('input[name^="side-"]:checked');
         const signEl = row.querySelector('.sign-slot input:checked');
         const tfEl = row.querySelector('.timeframe input:checked');
-        return {
+        const out = {
             bet_type: row.querySelector('.bet-type').value,
             section: tfEl ? tfEl.value : null,
             side: sideEl ? sideEl.value : null,
@@ -3037,6 +3183,13 @@
             units: row.querySelector('.units').value,
             lock: row.querySelector('.lock-cell input.lock').checked,
         };
+        // Parlay rows also carry their team list and count so hydration can
+        // rebuild the exact number of boxes with the exact values
+        if (out.bet_type === 'CLP') {
+            out.team_count = clpTeamCount(row);
+            out.teams = [...row.querySelectorAll('.clp-teams input.clp-team')].map(i => i.value);
+        }
+        return out;
     }
 
     /* ===== Autosave engine =====
@@ -3247,6 +3400,13 @@
         // normal path; this fallback only runs for rows without fields.)
         const bt = baseBetType(betType);
         const s = (pick || '').trim().replace(/\s*\(1H\)$/i, '');
+        if (bt === 'CLP') {
+            // "A / B / C Parlay -110" back into teams + sign + odds
+            const m = s.match(/^(.+?)\s+Parlay(?:\s+([+-])(\d+(?:\.\d+)?))?$/i);
+            if (m) return { teams: m[1].split('/').map(t => t.trim()).filter(Boolean),
+                            sign: m[2] || null, pts: m[3] || '' };
+            return { teams: [s] };
+        }
         if (bt === 'Spread') {
             const m = s.match(/^(.+?)\s+([+-])(\d+(?:\.\d+)?)$/);
             if (m) return { home: m[1], sign: m[2], pts: m[3] };
@@ -3275,7 +3435,9 @@
     function rowControls(row) {
         return [row.querySelector('.bet-type'), row.querySelector('.home'),
                 row.querySelector('.away'), row.querySelector('.points'),
-                row.querySelector('.units'), row.querySelector('.lock-cell input.lock')]
+                row.querySelector('.units'), row.querySelector('.lock-cell input.lock'),
+                row.querySelector('.clp-count')]
+            .concat([...row.querySelectorAll('.clp-teams input.clp-team')])
             .concat([...row.querySelectorAll('input[type="radio"]')])
             .filter(Boolean);
     }
@@ -3297,6 +3459,12 @@
         row.querySelector('.units').value = '';
         row.querySelector('.lock-cell input.lock').checked = false;
         row.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; });
+        // Parlay controls back to their defaults: count 2, extra boxes gone
+        const clpSel = row.querySelector('.clp-count');
+        if (clpSel) clpSel.value = '2';
+        row.querySelectorAll('.clp-teams input.clp-team').forEach((b, i) => {
+            if (i < 2) b.value = ''; else b.remove();
+        });
         onBetTypeChange(row.dataset.uid);
         setRowStatus(row, '');
     }
@@ -3323,6 +3491,10 @@
         if (sf) {
             betSel.value = BET_TYPES_ALL.includes(sf.bet_type) ? sf.bet_type : 'ML';
             onBetTypeChange(row.dataset.uid);
+            // Parlay rows: restore the exact box count and team values
+            if (betSel.value === 'CLP') {
+                setClpTeams(row, Array.isArray(sf.teams) ? sf.teams : [], sf.team_count);
+            }
             row.querySelector('.home').value = sf.home || '';
             row.querySelector('.away').value = sf.away || '';
             if (sf.side === 'H' || sf.side === 'A') {
@@ -3360,6 +3532,9 @@
         betSel.value = bt;
         onBetTypeChange(row.dataset.uid);
         const f = parsePickToFields(p.pick, bt);
+        if (bt === 'CLP' && Array.isArray(f.teams)) {
+            setClpTeams(row, f.teams, f.teams.length);
+        }
         row.querySelector('.home').value = f.home || '';
         row.querySelector('.away').value = f.away || '';
         if (f.sign) {
@@ -3643,6 +3818,11 @@
             const b = (nf2[k] === undefined || nf2[k] === null) ? '' : String(nf2[k]);
             if (a !== b) parts.push(fieldLabels[k] + ': ' + (a || 'none') + ' to ' + (b || 'none'));
         }
+        // Parlay team list (CLP rows): arrays compared as joined strings so
+        // nothing throws and reorders/renames read naturally
+        const oTeams = Array.isArray(of2.teams) ? of2.teams.filter(Boolean).join(' / ') : '';
+        const nTeams = Array.isArray(nf2.teams) ? nf2.teams.filter(Boolean).join(' / ') : '';
+        if (oTeams !== nTeams) parts.push('teams: ' + (oTeams || 'none') + ' to ' + (nTeams || 'none'));
         if (String(u(o.week)) !== String(u(n.week))) parts.push('week: ' + u(o.week) + ' to ' + u(n.week));
         return parts.length ? parts.join('; ') : 'saved again (no visible change)';
     }
