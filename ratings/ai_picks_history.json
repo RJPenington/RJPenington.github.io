@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-09-20",
+  "as_of": "2026-09-22",
   "aggregates": {
     "today": {
       "picks": 5,
@@ -11,22 +11,22 @@
       "hit_pct": null
     },
     "week": {
-      "picks": 30,
-      "wins": 19,
-      "losses": 6,
+      "picks": 35,
+      "wins": 22,
+      "losses": 8,
       "pushes": 0,
       "pending": 5,
-      "units_net": 16.0,
-      "hit_pct": 0.76
+      "units_net": 17.0,
+      "hit_pct": 0.7333333333333333
     },
     "season": {
-      "picks": 185,
-      "wins": 104,
-      "losses": 76,
+      "picks": 190,
+      "wins": 107,
+      "losses": 78,
       "pushes": 0,
       "pending": 5,
-      "units_net": 29.0,
-      "hit_pct": 0.5777777777777777
+      "units_net": 30.0,
+      "hit_pct": 0.5783783783783784
     }
   },
   "picks_by_date": {
@@ -3033,8 +3033,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "All three ratings agree on Tampa Bay (R1 +1.39, R2 +1.03, R3 +1.54), and TBR is the single best team-when-liked profile on the board at 39-17 (70%) overall and 25-10 (71%, +21.0u) on strong plays. R3 is also the top strong-play rating historically (season 250-187, 57%, +86.0u) and is hot at 22-7 (76%) over 7 days.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 2,
@@ -3046,8 +3046,8 @@
           "units": 2,
           "confidence": "high",
           "reasoning": "R1 posts the largest edge on the slate outside Texas at +2.05 with R2 (+1.93) and R3 (+1.58) agreeing, and R1 strong plays are 23-7 (77%, +19.0u) over 7 days and 93-54 (63%, +38.0u) over 30. Cleveland is 20-12 (62%) when the model likes them with strong plays 12-7 (63%, +4.0u), while the Athletics are a dismal 1-4 (20%, -4.0u) as strong-play sides.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 2
         },
         {
           "rank": 3,
@@ -3059,8 +3059,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "Unanimous three-rating agreement (R1 +1.32, R2 +1.86, R3 +1.53) on a home dog at +144, which maximizes price value. NYM is 18-11 (62%) when the model likes them with strong plays 5-4 (56%, +6.0u), and R2 strong plays are 43-21 (67%, +31.0u) over 14 days.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 4,
@@ -3072,8 +3072,8 @@
           "units": 2,
           "confidence": "medium",
           "reasoning": "R2 shows the biggest delta of the day at +2.04 with R1 (+1.50) and R3 (+1.70) on the same side; R2 strong plays are 20-9 (69%, +15.0u) over 7 days. Texas's own strong-play record is a modest 4-5 (44%, -2.0u), but Toronto is worse at 3-6 (33%, -1.0u) when liked, so the edge holds on delta size alone.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -2
         },
         {
           "rank": 5,
@@ -3085,13 +3085,96 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "Three-rating consensus (R1 +1.52, R2 +1.51, R3 +1.36) on a pick-em home side at +101, so any edge is fully priced in. R1's 30-day strong mark of 93-54 (63%, +38.0u) carries this despite Pittsburgh's weak 4-5 (44%, -3.0u) strong-play history, and the hot trends category (95-65, 59% in 14d vs 56% season) supports the model side.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
         "input_tokens": 4441,
         "output_tokens": 1817
+      },
+      "totals": {
+        "wins": 3,
+        "losses": 2,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": 1.0
+      }
+    },
+    "2026-09-22": {
+      "generated_at": "2026-09-22T05:37:52",
+      "model": "claude-opus-5",
+      "date": "2026-09-22",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "DET",
+          "home_team": "DET",
+          "away_team": "WSN",
+          "rating_source": "R3",
+          "delta": 2.7,
+          "units": 3,
+          "confidence": "high",
+          "reasoning": "All three ratings agree on Detroit with the largest edge on the board (R1 +2.70, R2 +2.85, R3 +2.70), and R3 strong plays are 45-21 (68%, +32.0u) over 14 days and 257-190 (57%, +91.0u) on the season. DET when the model likes them is 23-19 overall and 16-9 (64%, +14.0u) on strong plays, while WSN is only 7-7 (50%) as a strong side.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "ATL",
+          "home_team": "ATL",
+          "away_team": "CIN",
+          "rating_source": "R2",
+          "delta": 1.68,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "Unanimous strong play (R1 +1.45, R2 +1.68, R3 +1.28) with the best team profile on the slate: ATL is 23-14 (62%) when liked and 9-5 (64%, +5.0u) on strong plays, while CIN as a model side is a disastrous 5-15 (25%) and 1-9 (10%, -9.0u) on strong plays. R2 strong plays are 43-22 (66%, +30.0u) over 14 days.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "ARI",
+          "home_team": "COL",
+          "away_team": "ARI",
+          "rating_source": "R2",
+          "delta": 2.59,
+          "units": 3,
+          "confidence": "medium",
+          "reasoning": "Biggest raw edge of the day with all three ratings on Arizona (R1 -2.26, R2 -2.59, R3 -2.40) and COL a woeful 4-8 (33%) when liked, 1-3 (25%, -2.0u) on strong plays. The offset is ARI's own poor strong-play sample (3-9, -10.0u), so despite 3u sizing this ranks behind the cleaner DET/ATL spots; R2's 68% 7-day strong-play form (+17.0u) supports the side.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "BAL",
+          "home_team": "BAL",
+          "away_team": "TOR",
+          "rating_source": "R3",
+          "delta": 1.75,
+          "units": 1,
+          "confidence": "low",
+          "reasoning": "Unanimous strong play (R1 +1.64, R2 +1.26, R3 +1.75) from R3, the top strong-play rating (30d 94-57, 62%, +41.0u). Team histories are muted on both sides — BAL 8-11 (42%, -3.0u) on strong plays, TOR 3-6 (33%) when liked — so it's a rating-driven, low-confidence 1u.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 5,
+          "pick": "PIT",
+          "home_team": "PIT",
+          "away_team": "STL",
+          "rating_source": "R1",
+          "delta": 1.1,
+          "units": 1,
+          "confidence": "low",
+          "reasoning": "Only R1 crosses the strong threshold (+1.10) with R2 +0.96 and R3 +0.84 agreeing directionally, and R1 strong plays are 28-10 (74%, +22.0u) over 7 days and 91-55 (62%, +36.0u) over 30. Caution: PIT is just 5-5 (50%, -2.0u) on strong plays while STL is 6-3 (67%, +5.0u) when liked, hence minimum sizing.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 4478,
+        "output_tokens": 2192
       },
       "totals": {
         "wins": 0,
