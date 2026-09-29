@@ -980,10 +980,16 @@
 
         // Map of (rating, category) -> time-frame label, surfaced under each
         // expandable Grand Total row so you can see exactly what's being summed.
+        // Verified against the calc code 2026-09-29: bullpen uses the shared
+        // full/7d/14d windows on EVERY rating (BULLPEN_TIME_WINDOWS in
+        // split_mappings.py has no per-rating override), and runs uses the
+        // same TeamRankings windows (season, last 1/7/15 games, home/away)
+        // on every rating. Only sp and hitting windows differ per rating.
         const TIME_FRAMES = {
-            1: {trends: "season",  runs: "7d/15d", sp: "full/18d/42d", bullpen: "full/7d/14d", hitting: "full/5d/10d", bullpen_fatigue: "last 3d"},
-            2: {trends: "season",  runs: "2g/5g",  sp: "full/18d/42d", bullpen: "full/2d/7d",  hitting: "full/2d/4d",  bullpen_fatigue: "last 3d"},
-            3: {trends: "season",  runs: "7g/15g", sp: "full/13d/33d", bullpen: "full/5d/10d", hitting: "full/3d/7d",  bullpen_fatigue: "last 3d"},
+            1: {trends: "season",  runs: "1g/7g/15g", sp: "full/18d/42d", bullpen: "full/7d/14d", hitting: "full/5d/10d", bullpen_fatigue: "last 3d"},
+            2: {trends: "season",  runs: "1g/7g/15g", sp: "full/18d/42d", bullpen: "full/7d/14d", hitting: "full/2d/4d",  bullpen_fatigue: "last 3d"},
+            3: {trends: "season",  runs: "1g/7g/15g", sp: "full/13d/33d", bullpen: "full/7d/14d", hitting: "full/3d/7d",  bullpen_fatigue: "last 3d"},
+            4: {trends: "season",  runs: "1g/7g/15g", sp: "full/13d/33d", bullpen: "full/7d/14d", hitting: "full/5d/10d", bullpen_fatigue: "last 3d"},
         };
 
         // Grand Total data is precomputed server-side during the daily
@@ -1533,6 +1539,22 @@
                 const timeSet = new Set();
                 [...hs, ...as].forEach(s => (s.time_windows||[]).forEach(t => timeSet.add(t.time)));
                 const times = Array.from(timeSet);
+                // Partition a split's time_windows entries by member split
+                // code. SP composite groups contain several members that
+                // share a time frame (e.g. d/n and h@h d/n both carry a
+                // 'fullsp' entry); the old keying by time alone silently
+                // overwrote all but the last member, hiding real inputs
+                // (2026-09-29 audit fix). Bullpen/hitting entries carry no
+                // member split_code, collapse to one partition, unchanged.
+                const partition = (split) => {
+                    const parts = {};
+                    ((split || {}).time_windows || []).forEach(t => {
+                        const mk = t.split_code || "";
+                        if (!parts[mk]) parts[mk] = {};
+                        parts[mk][t.time] = t;
+                    });
+                    return parts;
+                };
                 // Header: split | for each time window: away / home / weight
                 const th = times.map(t =>
                     `<th colspan="3" style="text-align:center; border-left:1px solid #4a5568;">${t}</th>`
@@ -1546,27 +1568,37 @@
                     const hSplit = hByCode[code] || {};
                     const aSplit = aByCode[code] || {};
                     const label = hSplit.split_label || aSplit.split_label || code;
-                    const hTimes = Object.fromEntries((hSplit.time_windows || []).map(t => [t.time, t]));
-                    const aTimes = Object.fromEntries((aSplit.time_windows || []).map(t => [t.time, t]));
-                    const cells = times.map(t => {
-                        const h = hTimes[t] || {};
-                        const a = aTimes[t] || {};
-                        const hr = h.rating, ar = a.rating;
-                        let hCls = "neutral-val", aCls = "neutral-val";
-                        if (typeof hr === "number" && typeof ar === "number") {
-                            if (hr > ar) { hCls = "better-val"; aCls = "worse-val"; }
-                            else if (ar > hr) { aCls = "better-val"; hCls = "worse-val"; }
-                        }
-                        const wt = h.weight ?? a.weight;
-                        const wtStr = typeof wt === "number" ? wt.toFixed(1) : "—";
-                        return `<td class="${aCls}" style="text-align:right; border-left:1px solid #4a5568;">${fmt(ar)}</td>
-                                <td class="${hCls}" style="text-align:right;">${fmt(hr)}</td>
-                                <td style="text-align:right; color:#a0aec0; font-size:0.75rem;">${wtStr}</td>`;
+                    const hParts = partition(hSplit);
+                    const aParts = partition(aSplit);
+                    const memberKeys = Array.from(new Set([
+                        ...Object.keys(hParts), ...Object.keys(aParts),
+                    ]));
+                    const showTag = memberKeys.length > 1;
+                    return memberKeys.map(mk => {
+                        const hTimes = hParts[mk] || {};
+                        const aTimes = aParts[mk] || {};
+                        const cells = times.map(t => {
+                            const h = hTimes[t] || {};
+                            const a = aTimes[t] || {};
+                            const hr = h.rating, ar = a.rating;
+                            let hCls = "neutral-val", aCls = "neutral-val";
+                            if (typeof hr === "number" && typeof ar === "number") {
+                                if (hr > ar) { hCls = "better-val"; aCls = "worse-val"; }
+                                else if (ar > hr) { aCls = "better-val"; hCls = "worse-val"; }
+                            }
+                            const wt = h.weight ?? a.weight;
+                            const wtStr = typeof wt === "number" ? wt.toFixed(1) : "—";
+                            return `<td class="${aCls}" style="text-align:right; border-left:1px solid #4a5568;">${fmt(ar)}</td>
+                                    <td class="${hCls}" style="text-align:right;">${fmt(hr)}</td>
+                                    <td style="text-align:right; color:#a0aec0; font-size:0.75rem;">${wtStr}</td>`;
+                        }).join("");
+                        const memberTag = showTag
+                            ? ` <span style="color:#a0aec0; font-size:0.7rem;">· ${mk || "base"}</span>` : "";
+                        return `<tr>
+                            <td class="metric-name">${label}${memberTag} <span style="color:#a0aec0; font-size:0.7rem;">(${code})</span></td>
+                            ${cells}
+                        </tr>`;
                     }).join("");
-                    return `<tr>
-                        <td class="metric-name">${label} <span style="color:#a0aec0; font-size:0.7rem;">(${code})</span></td>
-                        ${cells}
-                    </tr>`;
                 }).join("");
                 return `<div class="metric-table" style="margin-top:0.3rem; border-left:2px solid #4299e1;">
                     <table>
@@ -1609,7 +1641,7 @@
                 return rowMain + rowSplits;
             }).join("");
             return `<div class="metric-table">
-                <p class="hint" style="margin:0 0 0.4rem 0.2rem;">Click any metric with ▸ to see its per-split breakdown across all 3 time frames.</p>
+                <p class="hint" style="margin:0 0 0.4rem 0.2rem;">Click any metric with ▸ to see its per-split breakdown across its time windows (one row per split member; members that share a window are listed separately).</p>
                 <table>
                     <thead><tr>
                         <th>Metric</th>
@@ -1653,14 +1685,19 @@
                 const deltaClass = Math.abs(g.delta) >= 1.0 ? "delta-strong" : "";
                 const cats = g.categories || {};
                 const fmt = v => (typeof v === "number") ? v.toFixed(2) : "—";
-                // Time-window labels per category per rating
+                // Time-window labels per category per rating. Must match the
+                // calc code, not aspiration: bullpen is full/7d/14d on EVERY
+                // rating and runs uses the same TR windows everywhere
+                // (verified 2026-09-29 against split_mappings.py + configs).
                 const tw = {
                     1: {sp: "(full/18d/42d)", bullpen: "(full/7d/14d)", hitting: "(full/5d/10d)",
-                        trends: "(season)", runs: "(7d/15d)", bullpen_fatigue: "(last 3d)"},
-                    2: {sp: "(full/18d/42d)", bullpen: "(full/2d/7d)", hitting: "(full/2d/4d)",
-                        trends: "(season)", runs: "(2g/5g)", bullpen_fatigue: "(last 3d)"},
-                    3: {sp: "(full/13d/33d)", bullpen: "(full/5d/10d)", hitting: "(full/3d/7d)",
-                        trends: "(season)", runs: "(7g/15g)", bullpen_fatigue: "(last 3d)"},
+                        trends: "(season)", runs: "(1g/7g/15g)", bullpen_fatigue: "(last 3d)"},
+                    2: {sp: "(full/18d/42d)", bullpen: "(full/7d/14d)", hitting: "(full/2d/4d)",
+                        trends: "(season)", runs: "(1g/7g/15g)", bullpen_fatigue: "(last 3d)"},
+                    3: {sp: "(full/13d/33d)", bullpen: "(full/7d/14d)", hitting: "(full/3d/7d)",
+                        trends: "(season)", runs: "(1g/7g/15g)", bullpen_fatigue: "(last 3d)"},
+                    4: {sp: "(full/13d/33d)", bullpen: "(full/7d/14d)", hitting: "(full/5d/10d)",
+                        trends: "(season)", runs: "(1g/7g/15g)", bullpen_fatigue: "(last 3d)"},
                 }[currentRating] || {};
                 const catList = cats.bullpen_fatigue !== undefined
                     ? ["trends","runs","sp","bullpen","hitting","bullpen_fatigue"]
@@ -1739,13 +1776,17 @@
                         oddsHtml += `<br><span style="font-size:0.8rem; color:#a0aec0;">O/U ${odds.total}</span>`;
                     }
                 }
-                // IP under each SP name: "fullsp / lastXdays / lastYdays"
+                // IP under each SP name, in the windows this rating's calc
+                // actually used (the JSON keys carry the true window names,
+                // e.g. fullsp/last13days/last33days on R3/R4). Shown as a
+                // tooltip so the numbers are never mistaken for other windows.
                 const ipLine = (side) => {
                     const ipSum = ((g.categories || {}).sp || {})[side + "_ip"] || {};
-                    const vals = Object.values(ipSum);
-                    if (!vals.length) return "";
-                    const labels = vals.map(v => (v == null ? "—" : Number(v).toFixed(1))).join("/");
-                    return `<div style="font-size:0.75rem; color:#a0aec0; margin-top:2px;">${labels}</div>`;
+                    const keys = Object.keys(ipSum);
+                    if (!keys.length) return "";
+                    const labels = keys.map(k => (ipSum[k] == null ? "—" : Number(ipSum[k]).toFixed(1))).join("/");
+                    const tip = "IP: " + keys.join(" / ");
+                    return `<div title="${tip}" style="font-size:0.75rem; color:#a0aec0; margin-top:2px;">${labels}</div>`;
                 };
                 return `<tr class="summary ${deltaClass}" data-row="${i}">
                     <td>${g.away_team} @ ${g.home_team}</td>
