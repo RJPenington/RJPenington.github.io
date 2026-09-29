@@ -1,32 +1,32 @@
 {
-  "as_of": "2026-09-22",
+  "as_of": "2026-09-29",
   "aggregates": {
     "today": {
-      "picks": 5,
+      "picks": 4,
       "wins": 0,
       "losses": 0,
       "pushes": 0,
-      "pending": 5,
+      "pending": 4,
       "units_net": 0.0,
       "hit_pct": null
     },
     "week": {
-      "picks": 35,
-      "wins": 22,
-      "losses": 8,
+      "picks": 9,
+      "wins": 2,
+      "losses": 2,
       "pushes": 0,
       "pending": 5,
-      "units_net": 17.0,
-      "hit_pct": 0.7333333333333333
+      "units_net": 0.0,
+      "hit_pct": 0.5
     },
     "season": {
-      "picks": 190,
-      "wins": 107,
-      "losses": 78,
+      "picks": 194,
+      "wins": 109,
+      "losses": 80,
       "pushes": 0,
       "pending": 5,
       "units_net": 30.0,
-      "hit_pct": 0.5783783783783784
+      "hit_pct": 0.5767195767195767
     }
   },
   "picks_by_date": {
@@ -3116,8 +3116,8 @@
           "units": 3,
           "confidence": "high",
           "reasoning": "All three ratings agree on Detroit with the largest edge on the board (R1 +2.70, R2 +2.85, R3 +2.70), and R3 strong plays are 45-21 (68%, +32.0u) over 14 days and 257-190 (57%, +91.0u) on the season. DET when the model likes them is 23-19 overall and 16-9 (64%, +14.0u) on strong plays, while WSN is only 7-7 (50%) as a strong side.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -3
         },
         {
           "rank": 2,
@@ -3129,8 +3129,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "Unanimous strong play (R1 +1.45, R2 +1.68, R3 +1.28) with the best team profile on the slate: ATL is 23-14 (62%) when liked and 9-5 (64%, +5.0u) on strong plays, while CIN as a model side is a disastrous 5-15 (25%) and 1-9 (10%, -9.0u) on strong plays. R2 strong plays are 43-22 (66%, +30.0u) over 14 days.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 3,
@@ -3142,8 +3142,8 @@
           "units": 3,
           "confidence": "medium",
           "reasoning": "Biggest raw edge of the day with all three ratings on Arizona (R1 -2.26, R2 -2.59, R3 -2.40) and COL a woeful 4-8 (33%) when liked, 1-3 (25%, -2.0u) on strong plays. The offset is ARI's own poor strong-play sample (3-9, -10.0u), so despite 3u sizing this ranks behind the cleaner DET/ATL spots; R2's 68% 7-day strong-play form (+17.0u) supports the side.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 3
         },
         {
           "rank": 4,
@@ -3168,8 +3168,8 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "Only R1 crosses the strong threshold (+1.10) with R2 +0.96 and R3 +0.84 agreeing directionally, and R1 strong plays are 28-10 (74%, +22.0u) over 7 days and 91-55 (62%, +36.0u) over 30. Caution: PIT is just 5-5 (50%, -2.0u) on strong plays while STL is 6-3 (67%, +5.0u) when liked, hence minimum sizing.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
@@ -3177,10 +3177,80 @@
         "output_tokens": 2192
       },
       "totals": {
+        "wins": 2,
+        "losses": 2,
+        "pushes": 0,
+        "pending": 1,
+        "units_net": 0.0
+      }
+    },
+    "2026-09-29": {
+      "generated_at": "2026-09-29T07:48:09",
+      "model": "claude-opus-5",
+      "date": "2026-09-29",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "ATL",
+          "home_team": "ATL",
+          "away_team": "PHI",
+          "rating_source": "R2",
+          "delta": 0.92,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "All three ratings agree on Atlanta (R1 +0.61, R2 +0.92, R3 +0.89), the largest consensus edge on the slate. ATL is 23-15 (61%) when the model likes them and 9-6 (60%, +4.0u) on strong plays, and R2's hot sp category (14d 60-42, 59%, +5.9pts over its 53% season mark) is driving the edge. R2 strong plays are 26-15 (63%, +15.0u) over 14 days.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "SDP",
+          "home_team": "SDP",
+          "away_team": "CHC",
+          "rating_source": "R1",
+          "delta": 0.9,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "R1 posts the biggest number here at +0.90 with R2/R3 both agreeing at +0.58, and San Diego is 26-16 (62%) when the model likes them, 11-7 (61%, +3.0u) on strong plays. R1 is the hottest rating over 14 days at 30-13 (70%, +20.0u) and 72-45 (62%, +26.0u) over 30 days, with trends (61-41, 60%) and sp (60-42, 59%) both firing — the trends+sp combo hits 57.8% (355-259).",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "NYY",
+          "home_team": "NYY",
+          "away_team": "BOS",
+          "rating_source": "R3",
+          "delta": 0.61,
+          "units": 1,
+          "confidence": "low",
+          "reasoning": "R3 is the strongest strong-play rating on the season (258-193, 57%, +88.0u) and is 30-13 (70%, +19.0u) over 14 days, with its runs (60-42, 59%) and hitting (56-46, 55%) categories both HOT at +5.9pts. All three ratings agree on the Yankees (R1 +0.54, R2 +0.38, R3 +0.61), but NYY's when-liked record is a red flag at 21-22 (49%) and 8-14 (36%, -5.0u) on strong plays, which caps this at low confidence and 1u.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "CHW",
+          "home_team": "HOU",
+          "away_team": "CHW",
+          "rating_source": "R2",
+          "delta": -0.1,
+          "units": 1,
+          "confidence": "low",
+          "reasoning": "All three ratings land on the White Sox as a small dog, with R2 the least negative at -0.10 (R1 -0.32, R3 -0.25). The supporting history is thin on both sides: CHW is 16-21 (43%) when liked and 7-9 (44%, -4.0u) strong, but HOU is even worse as a model side at 4-8 (33%, -7.0u) on strong plays, so taking the +108 price is the marginally better of two weak profiles.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 2982,
+        "output_tokens": 1692
+      },
+      "totals": {
         "wins": 0,
         "losses": 0,
         "pushes": 0,
-        "pending": 5,
+        "pending": 4,
         "units_net": 0.0
       }
     }
