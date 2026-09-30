@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-09-29",
+  "as_of": "2026-09-30",
   "aggregates": {
     "today": {
       "picks": 4,
@@ -11,22 +11,22 @@
       "hit_pct": null
     },
     "week": {
-      "picks": 9,
-      "wins": 2,
-      "losses": 2,
+      "picks": 8,
+      "wins": 4,
+      "losses": 0,
       "pushes": 0,
-      "pending": 5,
-      "units_net": 0.0,
-      "hit_pct": 0.5
+      "pending": 4,
+      "units_net": 4.0,
+      "hit_pct": 1.0
     },
     "season": {
-      "picks": 194,
-      "wins": 109,
+      "picks": 198,
+      "wins": 113,
       "losses": 80,
       "pushes": 0,
       "pending": 5,
-      "units_net": 30.0,
-      "hit_pct": 0.5767195767195767
+      "units_net": 34.0,
+      "hit_pct": 0.5854922279792746
     }
   },
   "picks_by_date": {
@@ -3199,8 +3199,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "All three ratings agree on Atlanta (R1 +0.61, R2 +0.92, R3 +0.89), the largest consensus edge on the slate. ATL is 23-15 (61%) when the model likes them and 9-6 (60%, +4.0u) on strong plays, and R2's hot sp category (14d 60-42, 59%, +5.9pts over its 53% season mark) is driving the edge. R2 strong plays are 26-15 (63%, +15.0u) over 14 days.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 2,
@@ -3212,8 +3212,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R1 posts the biggest number here at +0.90 with R2/R3 both agreeing at +0.58, and San Diego is 26-16 (62%) when the model likes them, 11-7 (61%, +3.0u) on strong plays. R1 is the hottest rating over 14 days at 30-13 (70%, +20.0u) and 72-45 (62%, +26.0u) over 30 days, with trends (61-41, 60%) and sp (60-42, 59%) both firing — the trends+sp combo hits 57.8% (355-259).",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 3,
@@ -3225,8 +3225,8 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "R3 is the strongest strong-play rating on the season (258-193, 57%, +88.0u) and is 30-13 (70%, +19.0u) over 14 days, with its runs (60-42, 59%) and hitting (56-46, 55%) categories both HOT at +5.9pts. All three ratings agree on the Yankees (R1 +0.54, R2 +0.38, R3 +0.61), but NYY's when-liked record is a red flag at 21-22 (49%) and 8-14 (36%, -5.0u) on strong plays, which caps this at low confidence and 1u.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 4,
@@ -3238,13 +3238,83 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "All three ratings land on the White Sox as a small dog, with R2 the least negative at -0.10 (R1 -0.32, R3 -0.25). The supporting history is thin on both sides: CHW is 16-21 (43%) when liked and 7-9 (44%, -4.0u) strong, but HOU is even worse as a model side at 4-8 (33%, -7.0u) on strong plays, so taking the +108 price is the marginally better of two weak profiles.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
         "input_tokens": 2982,
         "output_tokens": 1692
+      },
+      "totals": {
+        "wins": 4,
+        "losses": 0,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": 4.0
+      }
+    },
+    "2026-09-30": {
+      "generated_at": "2026-09-30T05:35:23",
+      "model": "claude-opus-5",
+      "date": "2026-09-30",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "SDP",
+          "home_team": "SDP",
+          "away_team": "CHC",
+          "rating_source": "R3",
+          "delta": 2.42,
+          "units": 2,
+          "confidence": "high",
+          "reasoning": "All three ratings agree on San Diego (R1 +2.19, R2 +2.22, R3 +2.42), and R3 is the best strong-play engine at 258-193 (57%, +88.0u) on the season plus 26-11 (70%, +15.0u) over 14 days. SDP is 27-16 (63%) when the model likes them and 12-7 (63%, +4.0u) on strong plays, the best profile of any favored side today.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "ATL",
+          "home_team": "ATL",
+          "away_team": "PHI",
+          "rating_source": "R1",
+          "delta": 1.07,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "Unanimous lean to Atlanta (R1 +1.07 strong, R2 +0.92, R3 +0.72) and R1 has been the hottest engine short-term at 27-11 (71%, +16.0u) in 14 days and 67-42 (61%) in 30. ATL is 24-15 (62%) when the model likes them with strong plays 9-6 (60%, +4.0u), and the edge rides the hot trends (64% 14d, +7.6pts) and SP (62% 14d, +8.6pts) categories.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "NYY",
+          "home_team": "NYY",
+          "away_team": "BOS",
+          "rating_source": "R3",
+          "delta": 1.56,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "All three models are on the Yankees (R1 +1.44, R2 +2.01, R3 +1.56), but NYY is only 22-22 (50%) when liked and a poor 8-14 (36%, -5.0u) on strong plays, so I take the smaller R3 number for a 1u sizing rather than R2's 2u. R3's 60% 30-day strong-play rate (64-43, +22.0u) carries the play despite the shaky team history.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "CHW",
+          "home_team": "HOU",
+          "away_team": "CHW",
+          "rating_source": "R2",
+          "delta": -0.26,
+          "units": 1,
+          "confidence": "low",
+          "reasoning": "All three ratings nudge toward the White Sox as a +122 dog but the delta is tiny (R1 -0.21, R2 -0.26, R3 -0.22), well under the 1.0 strong-play threshold. The counterweight is that Houston is just 4-8 (33%, -7.0u) on strong plays when liked, while CHW's 17-21 (45%) keeps this a minimum-size, low-confidence dart.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 3105,
+        "output_tokens": 1731
       },
       "totals": {
         "wins": 0,
