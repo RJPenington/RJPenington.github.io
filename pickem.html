@@ -289,6 +289,24 @@
     }
     .person-card .net.good { color: var(--good); text-shadow: 0 0 10px rgba(66, 229, 138, 0.5); }
     .person-card .net.bad  { color: var(--bad);  text-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+    /* Week stat strip under each slate header: bets, ungraded, units
+       placed, units still open. Four tiles across, sized to hold on a
+       phone without wrapping. */
+    .person-card .week-stats {
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem;
+        padding: 0.45rem 0.75rem; border-bottom: 1px solid var(--line);
+        background: rgba(0, 0, 0, 0.25);
+    }
+    .person-card .ws { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+    .person-card .ws-num {
+        font-weight: 800; font-size: 1.05rem; color: var(--ink);
+        font-variant-numeric: tabular-nums; line-height: 1.15;
+    }
+    .person-card .ws-lbl {
+        font-family: 'Copperplate Gothic Bold', 'Copperplate', serif;
+        font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase;
+        color: var(--dim); white-space: nowrap;
+    }
     .person-card table {
         width: 100%; border-collapse: collapse; font-size: 0.88rem;
     }
@@ -1692,6 +1710,37 @@
     }
 
     /* ===== Render — Week Picks tab ===== */
+    // Stat strip numbers for one person's slate: bets placed, bets still
+    // ungraded, units staked, units still open. Computed from the same
+    // week object the slate rows render from, so the strip can never
+    // disagree with the cards. Ungraded means no result yet (pickResult
+    // null), whatever the lock state. Units are the stake placed, so a
+    // mortal lock counts at its base units here, not the 1.5x payout.
+    function weekSlateStats(person) {
+        const picks = (person && person.picks) || [];
+        let bets = 0, open = 0, units = 0, unitsOpen = 0;
+        for (const p of picks) {
+            bets++;
+            const u = numOrZero(p.units);
+            units += u;
+            if (pickResult(p) === null) { open++; unitsOpen += u; }
+        }
+        return { bets, open, units, unitsOpen };
+    }
+    // "3" or "2.5": one decimal only when it says something
+    function fmtUnits(v) {
+        const s = (Number(v) || 0).toFixed(1);
+        return s.endsWith('.0') ? s.slice(0, -2) : s;
+    }
+    function weekStatsHtml(person) {
+        const s = weekSlateStats(person);
+        return `<div class="week-stats" title="Units are the stake placed this week; a mortal lock counts at its base units here, not the 1.5x payout">
+                    <div class="ws"><span class="ws-num">${s.bets}</span><span class="ws-lbl">Bets</span></div>
+                    <div class="ws"><span class="ws-num">${s.open}</span><span class="ws-lbl">Ungraded</span></div>
+                    <div class="ws"><span class="ws-num">${fmtUnits(s.units)}</span><span class="ws-lbl">Units</span></div>
+                    <div class="ws"><span class="ws-num">${fmtUnits(s.unitsOpen)}</span><span class="ws-lbl">Units open</span></div>
+                </div>`;
+    }
     function renderPicks() {
         const weeks = SEASONS[seasonSel.value] || [];
         const w = findSelectedWeek(weeks);
@@ -1802,6 +1851,7 @@
                     <span class="who">${label}</span>
                     <span class="net ${netTag}">${fmtNet(net)} u</span>
                 </div>
+                ${weekStatsHtml(person)}
                 <table>
                     <thead><tr><th>Pick</th><th>Units</th><th>Net</th>${liveSeason ? '<th>Grade</th>' : ''}</tr></thead>
                     <tbody>${rows || `<tr><td colspan="${cols}" style="color:var(--dim); text-align:center; padding:1rem;">No picks entered.</td></tr>`}</tbody>
