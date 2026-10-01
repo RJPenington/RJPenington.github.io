@@ -1,32 +1,32 @@
 {
-  "as_of": "2026-09-30",
+  "as_of": "2026-10-01",
   "aggregates": {
     "today": {
-      "picks": 4,
+      "picks": 0,
       "wins": 0,
       "losses": 0,
       "pushes": 0,
-      "pending": 4,
+      "pending": 0,
       "units_net": 0.0,
       "hit_pct": null
     },
     "week": {
       "picks": 8,
-      "wins": 4,
-      "losses": 0,
+      "wins": 7,
+      "losses": 1,
       "pushes": 0,
-      "pending": 4,
-      "units_net": 4.0,
-      "hit_pct": 1.0
+      "pending": 0,
+      "units_net": 7.0,
+      "hit_pct": 0.875
     },
     "season": {
       "picks": 198,
-      "wins": 113,
-      "losses": 80,
+      "wins": 116,
+      "losses": 81,
       "pushes": 0,
-      "pending": 5,
-      "units_net": 34.0,
-      "hit_pct": 0.5854922279792746
+      "pending": 1,
+      "units_net": 37.0,
+      "hit_pct": 0.5888324873096447
     }
   },
   "picks_by_date": {
@@ -3269,8 +3269,8 @@
           "units": 2,
           "confidence": "high",
           "reasoning": "All three ratings agree on San Diego (R1 +2.19, R2 +2.22, R3 +2.42), and R3 is the best strong-play engine at 258-193 (57%, +88.0u) on the season plus 26-11 (70%, +15.0u) over 14 days. SDP is 27-16 (63%) when the model likes them and 12-7 (63%, +4.0u) on strong plays, the best profile of any favored side today.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 2
         },
         {
           "rank": 2,
@@ -3282,8 +3282,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "Unanimous lean to Atlanta (R1 +1.07 strong, R2 +0.92, R3 +0.72) and R1 has been the hottest engine short-term at 27-11 (71%, +16.0u) in 14 days and 67-42 (61%) in 30. ATL is 24-15 (62%) when the model likes them with strong plays 9-6 (60%, +4.0u), and the edge rides the hot trends (64% 14d, +7.6pts) and SP (62% 14d, +8.6pts) categories.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 3,
@@ -3295,8 +3295,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "All three models are on the Yankees (R1 +1.44, R2 +2.01, R3 +1.56), but NYY is only 22-22 (50%) when liked and a poor 8-14 (36%, -5.0u) on strong plays, so I take the smaller R3 number for a 1u sizing rather than R2's 2u. R3's 60% 30-day strong-play rate (64-43, +22.0u) carries the play despite the shaky team history.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 4,
@@ -3308,8 +3308,8 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "All three ratings nudge toward the White Sox as a +122 dog but the delta is tiny (R1 -0.21, R2 -0.26, R3 -0.22), well under the 1.0 strong-play threshold. The counterweight is that Houston is just 4-8 (33%, -7.0u) on strong plays when liked, while CHW's 17-21 (45%) keeps this a minimum-size, low-confidence dart.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
@@ -3317,11 +3317,11 @@
         "output_tokens": 1731
       },
       "totals": {
-        "wins": 0,
-        "losses": 0,
+        "wins": 3,
+        "losses": 1,
         "pushes": 0,
-        "pending": 4,
-        "units_net": 0.0
+        "pending": 0,
+        "units_net": 3.0
       }
     }
   }
