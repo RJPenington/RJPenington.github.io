@@ -1,32 +1,32 @@
 {
-  "as_of": "2026-10-03",
+  "as_of": "2026-10-04",
   "aggregates": {
     "today": {
-      "picks": 3,
+      "picks": 1,
       "wins": 0,
       "losses": 0,
       "pushes": 0,
-      "pending": 3,
+      "pending": 1,
       "units_net": 0.0,
       "hit_pct": null
     },
     "week": {
-      "picks": 11,
-      "wins": 7,
+      "picks": 12,
+      "wins": 10,
       "losses": 1,
       "pushes": 0,
-      "pending": 3,
-      "units_net": 7.0,
-      "hit_pct": 0.875
+      "pending": 1,
+      "units_net": 11.0,
+      "hit_pct": 0.9090909090909091
     },
     "season": {
-      "picks": 201,
-      "wins": 116,
+      "picks": 202,
+      "wins": 119,
       "losses": 81,
       "pushes": 0,
-      "pending": 4,
-      "units_net": 37.0,
-      "hit_pct": 0.5888324873096447
+      "pending": 2,
+      "units_net": 41.0,
+      "hit_pct": 0.595
     }
   },
   "picks_by_date": {
@@ -3339,8 +3339,8 @@
           "units": 2,
           "confidence": "high",
           "reasoning": "All three ratings agree on Milwaukee (R1 +2.01, R2 +2.03, R3 +2.41), and R3 is the top strong-play model at 57% / +91.0u on the season with a 17-8 (68%, +11.0u) last-14 run. MIL when the model likes them is 41-22 (65%) overall and 25-12 (68%, +15.0u) on strong plays, the best combination of agreement and team history on the board.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 2
         },
         {
           "rank": 2,
@@ -3352,8 +3352,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "R3 posts the largest edge on Tampa (+0.50 vs R1 +0.25, R2 +0.24) and all three ratings agree on the home side. TBR is 41-18 (69%) when the model likes them with a 26-10 (72%, +22.0u) strong-play record, while NYY is just 23-22 (51%) and 9-14 (39%, -4.0u) as a model side.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 3,
@@ -3365,8 +3365,8 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "R2 and R3 both show the same -0.64 lean to the White Sox at +125, a price that needs only ~44.4% to break even, and R2's trends (65% L14, +8.8pts) and runs (61% L14, +8.9pts) categories are both firing. Confidence is capped because CHW is only 18-21 (46%) when the model likes them and 7-9 (-4.0u) on strong plays, versus CLE at 22-12 (65%).",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
@@ -3374,10 +3374,41 @@
         "output_tokens": 1252
       },
       "totals": {
+        "wins": 3,
+        "losses": 0,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": 4.0
+      }
+    },
+    "2026-10-04": {
+      "generated_at": "2026-10-04T05:27:01",
+      "model": "claude-opus-5",
+      "date": "2026-10-04",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "MIL",
+          "home_team": "MIL",
+          "away_team": "SDP",
+          "rating_source": "R3",
+          "delta": 0.59,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "All three ratings agree on Milwaukee (R1 +0.32, R2 +0.55, R3 +0.59), and R3 is the strongest strong-play rating at 57% season (+93.0u) with 3-0 last 7d and 11-6 (65%, +7.0u) last 14d. MIL is 42-22 (66%, n=64) when the model likes them and 26-12 (68%, +17.0u) on strong plays. Edge is driven by the hot SP (R3 14d 27-19, 59%) and trends (30-16, 65%) categories, whose combo hits 58.1% (n=623); delta under 1.0 keeps this at 1 unit. Only one game on the slate, so no additional qualifying plays exist.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 2649,
+        "output_tokens": 472
+      },
+      "totals": {
         "wins": 0,
         "losses": 0,
         "pushes": 0,
-        "pending": 3,
+        "pending": 1,
         "units_net": 0.0
       }
     }
