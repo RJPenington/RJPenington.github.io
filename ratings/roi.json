@@ -3,7 +3,7 @@
     "1": {
       "per_day": [
         {
-          "date": "2026-10-03",
+          "date": "2026-10-04",
           "flat": {
             "bets": 0,
             "wins": 0,
@@ -64,10 +64,10 @@
           },
           "games": [
             {
-              "matchup": "CHW@CLE",
-              "pick": "CHW",
-              "delta": -0.47657442655115734,
-              "odds_american": "+125",
+              "matchup": "SDP@MIL",
+              "pick": "MIL",
+              "delta": 0.3169032837752406,
+              "odds_american": "-144",
               "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
@@ -76,12 +76,95 @@
             {
               "matchup": "ATL@LAD",
               "pick": "LAD",
-              "delta": 0.688695040550444,
-              "odds_american": "-215",
-              "units": 1.0,
+              "delta": 1.891887899322148,
+              "odds_american": "-156",
+              "units": 2.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
+            }
+          ]
+        },
+        {
+          "date": "2026-10-03",
+          "flat": {
+            "bets": 4,
+            "wins": 4,
+            "losses": 0,
+            "stake": 400.0,
+            "profit": 295.59,
+            "roi_pct": 73.9
+          },
+          "scaled": {
+            "bets": 4,
+            "wins": 4,
+            "losses": 0,
+            "stake": 550.0,
+            "profit": 370.59,
+            "roi_pct": 67.38
+          },
+          "by_units": {
+            "1.0u": {
+              "bets": 3,
+              "wins": 3,
+              "losses": 0,
+              "stake": 300.0,
+              "profit": 245.59,
+              "roi_pct": 81.86
+            },
+            "1.5u": {
+              "bets": 0,
+              "wins": 0,
+              "losses": 0,
+              "stake": 0.0,
+              "profit": 0.0,
+              "roi_pct": 0
+            },
+            "2.0u": {
+              "bets": 0,
+              "wins": 0,
+              "losses": 0,
+              "stake": 0.0,
+              "profit": 0.0,
+              "roi_pct": 0
+            },
+            "2.5u": {
+              "bets": 1,
+              "wins": 1,
+              "losses": 0,
+              "stake": 250.0,
+              "profit": 125.0,
+              "roi_pct": 50.0
+            },
+            "3.0u": {
+              "bets": 0,
+              "wins": 0,
+              "losses": 0,
+              "stake": 0.0,
+              "profit": 0.0,
+              "roi_pct": 0
+            }
+          },
+          "games": [
+            {
+              "matchup": "CHW@CLE",
+              "pick": "CHW",
+              "delta": -0.47657442655115734,
+              "odds_american": "+125",
+              "units": 1.0,
+              "outcome": "W",
+              "profit_flat": 125.0,
+              "profit_scaled": 125.0
+            },
+            {
+              "matchup": "ATL@LAD",
+              "pick": "LAD",
+              "delta": 0.688695040550444,
+              "odds_american": "-215",
+              "units": 1.0,
+              "outcome": "W",
+              "profit_flat": 46.51,
+              "profit_scaled": 46.51
             },
             {
               "matchup": "NYY@TBR",
@@ -89,9 +172,9 @@
               "delta": 0.2509397965533404,
               "odds_american": "-135",
               "units": 1.0,
-              "outcome": null,
-              "profit_flat": 0.0,
-              "profit_scaled": 0.0
+              "outcome": "W",
+              "profit_flat": 74.07,
+              "profit_scaled": 74.07
             },
             {
               "matchup": "SDP@MIL",
@@ -99,9 +182,9 @@
               "delta": 2.0077610638706043,
               "odds_american": "-200",
               "units": 2.5,
-              "outcome": null,
-              "profit_flat": 0.0,
-              "profit_scaled": 0.0
+              "outcome": "W",
+              "profit_flat": 50.0,
+              "profit_scaled": 125.0
             }
           ]
         },
@@ -16384,29 +16467,29 @@
         }
       ],
       "overall_flat": {
-        "bets": 1079,
-        "wins": 603,
+        "bets": 1083,
+        "wins": 607,
         "losses": 476,
-        "stake": 107900.0,
-        "profit": 2643.71,
-        "roi_pct": 2.45
+        "stake": 108300.0,
+        "profit": 2939.3,
+        "roi_pct": 2.71
       },
       "overall_scaled": {
-        "bets": 1079,
-        "wins": 603,
+        "bets": 1083,
+        "wins": 607,
         "losses": 476,
-        "stake": 152400.0,
-        "profit": 829.62,
-        "roi_pct": 0.54
+        "stake": 152950.0,
+        "profit": 1200.21,
+        "roi_pct": 0.78
       },
       "overall_by_units": {
         "1.0u": {
-          "bets": 605,
-          "wins": 333,
+          "bets": 608,
+          "wins": 336,
           "losses": 272,
-          "stake": 60500.0,
-          "profit": 4230.11,
-          "roi_pct": 6.99
+          "stake": 60800.0,
+          "profit": 4475.7,
+          "roi_pct": 7.36
         },
         "1.5u": {
           "bets": 226,
@@ -16425,12 +16508,12 @@
           "roi_pct": -2.2
         },
         "2.5u": {
-          "bets": 72,
-          "wins": 42,
+          "bets": 73,
+          "wins": 43,
           "losses": 30,
-          "stake": 18000.0,
-          "profit": -753.34,
-          "roi_pct": -4.19
+          "stake": 18250.0,
+          "profit": -628.34,
+          "roi_pct": -3.44
         },
         "3.0u": {
           "bets": 48,
@@ -16445,7 +16528,7 @@
     "2": {
       "per_day": [
         {
-          "date": "2026-10-03",
+          "date": "2026-10-04",
           "flat": {
             "bets": 0,
             "wins": 0,
@@ -16506,10 +16589,10 @@
           },
           "games": [
             {
-              "matchup": "CHW@CLE",
-              "pick": "CHW",
-              "delta": -0.6439929039952528,
-              "odds_american": "+125",
+              "matchup": "SDP@MIL",
+              "pick": "MIL",
+              "delta": 0.5515524061163983,
+              "odds_american": "-144",
               "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
@@ -16518,12 +16601,95 @@
             {
               "matchup": "ATL@LAD",
               "pick": "LAD",
-              "delta": 0.5911232918601623,
-              "odds_american": "-215",
-              "units": 1.0,
+              "delta": 1.900359117195828,
+              "odds_american": "-156",
+              "units": 2.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
+            }
+          ]
+        },
+        {
+          "date": "2026-10-03",
+          "flat": {
+            "bets": 4,
+            "wins": 4,
+            "losses": 0,
+            "stake": 400.0,
+            "profit": 295.59,
+            "roi_pct": 73.9
+          },
+          "scaled": {
+            "bets": 4,
+            "wins": 4,
+            "losses": 0,
+            "stake": 550.0,
+            "profit": 370.59,
+            "roi_pct": 67.38
+          },
+          "by_units": {
+            "1.0u": {
+              "bets": 3,
+              "wins": 3,
+              "losses": 0,
+              "stake": 300.0,
+              "profit": 245.59,
+              "roi_pct": 81.86
+            },
+            "1.5u": {
+              "bets": 0,
+              "wins": 0,
+              "losses": 0,
+              "stake": 0.0,
+              "profit": 0.0,
+              "roi_pct": 0
+            },
+            "2.0u": {
+              "bets": 0,
+              "wins": 0,
+              "losses": 0,
+              "stake": 0.0,
+              "profit": 0.0,
+              "roi_pct": 0
+            },
+            "2.5u": {
+              "bets": 1,
+              "wins": 1,
+              "losses": 0,
+              "stake": 250.0,
+              "profit": 125.0,
+              "roi_pct": 50.0
+            },
+            "3.0u": {
+              "bets": 0,
+              "wins": 0,
+              "losses": 0,
+              "stake": 0.0,
+              "profit": 0.0,
+              "roi_pct": 0
+            }
+          },
+          "games": [
+            {
+              "matchup": "CHW@CLE",
+              "pick": "CHW",
+              "delta": -0.6439929039952528,
+              "odds_american": "+125",
+              "units": 1.0,
+              "outcome": "W",
+              "profit_flat": 125.0,
+              "profit_scaled": 125.0
+            },
+            {
+              "matchup": "ATL@LAD",
+              "pick": "LAD",
+              "delta": 0.5911232918601623,
+              "odds_american": "-215",
+              "units": 1.0,
+              "outcome": "W",
+              "profit_flat": 46.51,
+              "profit_scaled": 46.51
             },
             {
               "matchup": "NYY@TBR",
@@ -16531,9 +16697,9 @@
               "delta": 0.24171760580146007,
               "odds_american": "-135",
               "units": 1.0,
-              "outcome": null,
-              "profit_flat": 0.0,
-              "profit_scaled": 0.0
+              "outcome": "W",
+              "profit_flat": 74.07,
+              "profit_scaled": 74.07
             },
             {
               "matchup": "SDP@MIL",
@@ -16541,9 +16707,9 @@
               "delta": 2.0282677453717186,
               "odds_american": "-200",
               "units": 2.5,
-              "outcome": null,
-              "profit_flat": 0.0,
-              "profit_scaled": 0.0
+              "outcome": "W",
+              "profit_flat": 50.0,
+              "profit_scaled": 125.0
             }
           ]
         },
@@ -32613,29 +32779,29 @@
         }
       ],
       "overall_flat": {
-        "bets": 1064,
-        "wins": 586,
+        "bets": 1068,
+        "wins": 590,
         "losses": 478,
-        "stake": 106400.0,
-        "profit": 1619.92,
-        "roi_pct": 1.52
+        "stake": 106800.0,
+        "profit": 1915.51,
+        "roi_pct": 1.79
       },
       "overall_scaled": {
-        "bets": 1064,
-        "wins": 586,
+        "bets": 1068,
+        "wins": 590,
         "losses": 478,
-        "stake": 149600.0,
-        "profit": 88.06,
-        "roi_pct": 0.06
+        "stake": 150150.0,
+        "profit": 458.65,
+        "roi_pct": 0.31
       },
       "overall_by_units": {
         "1.0u": {
-          "bets": 610,
-          "wins": 333,
+          "bets": 613,
+          "wins": 336,
           "losses": 277,
-          "stake": 61000.0,
-          "profit": 3817.15,
-          "roi_pct": 6.26
+          "stake": 61300.0,
+          "profit": 4062.74,
+          "roi_pct": 6.63
         },
         "1.5u": {
           "bets": 203,
@@ -32654,12 +32820,12 @@
           "roi_pct": 6.52
         },
         "2.5u": {
-          "bets": 69,
-          "wins": 39,
+          "bets": 70,
+          "wins": 40,
           "losses": 30,
-          "stake": 17250.0,
-          "profit": -1127.11,
-          "roi_pct": -6.53
+          "stake": 17500.0,
+          "profit": -1002.11,
+          "roi_pct": -5.73
         },
         "3.0u": {
           "bets": 45,
@@ -32674,7 +32840,7 @@
     "3": {
       "per_day": [
         {
-          "date": "2026-10-03",
+          "date": "2026-10-04",
           "flat": {
             "bets": 0,
             "wins": 0,
@@ -32735,10 +32901,10 @@
           },
           "games": [
             {
-              "matchup": "CHW@CLE",
-              "pick": "CHW",
-              "delta": -0.6445277866978083,
-              "odds_american": "+125",
+              "matchup": "SDP@MIL",
+              "pick": "MIL",
+              "delta": 0.5933501423923344,
+              "odds_american": "-144",
               "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
@@ -32747,12 +32913,95 @@
             {
               "matchup": "ATL@LAD",
               "pick": "LAD",
-              "delta": 0.9975063910254516,
-              "odds_american": "-215",
-              "units": 1.0,
+              "delta": 2.025414384770788,
+              "odds_american": "-156",
+              "units": 2.5,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
+            }
+          ]
+        },
+        {
+          "date": "2026-10-03",
+          "flat": {
+            "bets": 4,
+            "wins": 4,
+            "losses": 0,
+            "stake": 400.0,
+            "profit": 295.59,
+            "roi_pct": 73.9
+          },
+          "scaled": {
+            "bets": 4,
+            "wins": 4,
+            "losses": 0,
+            "stake": 550.0,
+            "profit": 370.59,
+            "roi_pct": 67.38
+          },
+          "by_units": {
+            "1.0u": {
+              "bets": 3,
+              "wins": 3,
+              "losses": 0,
+              "stake": 300.0,
+              "profit": 245.59,
+              "roi_pct": 81.86
+            },
+            "1.5u": {
+              "bets": 0,
+              "wins": 0,
+              "losses": 0,
+              "stake": 0.0,
+              "profit": 0.0,
+              "roi_pct": 0
+            },
+            "2.0u": {
+              "bets": 0,
+              "wins": 0,
+              "losses": 0,
+              "stake": 0.0,
+              "profit": 0.0,
+              "roi_pct": 0
+            },
+            "2.5u": {
+              "bets": 1,
+              "wins": 1,
+              "losses": 0,
+              "stake": 250.0,
+              "profit": 125.0,
+              "roi_pct": 50.0
+            },
+            "3.0u": {
+              "bets": 0,
+              "wins": 0,
+              "losses": 0,
+              "stake": 0.0,
+              "profit": 0.0,
+              "roi_pct": 0
+            }
+          },
+          "games": [
+            {
+              "matchup": "CHW@CLE",
+              "pick": "CHW",
+              "delta": -0.6445277866978083,
+              "odds_american": "+125",
+              "units": 1.0,
+              "outcome": "W",
+              "profit_flat": 125.0,
+              "profit_scaled": 125.0
+            },
+            {
+              "matchup": "ATL@LAD",
+              "pick": "LAD",
+              "delta": 0.9975063910254516,
+              "odds_american": "-215",
+              "units": 1.0,
+              "outcome": "W",
+              "profit_flat": 46.51,
+              "profit_scaled": 46.51
             },
             {
               "matchup": "NYY@TBR",
@@ -32760,9 +33009,9 @@
               "delta": 0.4963822015093404,
               "odds_american": "-135",
               "units": 1.0,
-              "outcome": null,
-              "profit_flat": 0.0,
-              "profit_scaled": 0.0
+              "outcome": "W",
+              "profit_flat": 74.07,
+              "profit_scaled": 74.07
             },
             {
               "matchup": "SDP@MIL",
@@ -32770,9 +33019,9 @@
               "delta": 2.4061511447726662,
               "odds_american": "-200",
               "units": 2.5,
-              "outcome": null,
-              "profit_flat": 0.0,
-              "profit_scaled": 0.0
+              "outcome": "W",
+              "profit_flat": 50.0,
+              "profit_scaled": 125.0
             }
           ]
         },
@@ -48842,29 +49091,29 @@
         }
       ],
       "overall_flat": {
-        "bets": 1064,
-        "wins": 572,
+        "bets": 1068,
+        "wins": 576,
         "losses": 492,
-        "stake": 106400.0,
-        "profit": -2402.0,
-        "roi_pct": -2.26
+        "stake": 106800.0,
+        "profit": -2106.41,
+        "roi_pct": -1.97
       },
       "overall_scaled": {
-        "bets": 1064,
-        "wins": 572,
+        "bets": 1068,
+        "wins": 576,
         "losses": 492,
-        "stake": 147450.0,
-        "profit": -3963.87,
-        "roi_pct": -2.69
+        "stake": 148000.0,
+        "profit": -3593.28,
+        "roi_pct": -2.43
       },
       "overall_by_units": {
         "1.0u": {
-          "bets": 620,
-          "wins": 314,
+          "bets": 623,
+          "wins": 317,
           "losses": 306,
-          "stake": 62000.0,
-          "profit": -1525.31,
-          "roi_pct": -2.46
+          "stake": 62300.0,
+          "profit": -1279.72,
+          "roi_pct": -2.05
         },
         "1.5u": {
           "bets": 214,
@@ -48883,12 +49132,12 @@
           "roi_pct": -6.62
         },
         "2.5u": {
-          "bets": 71,
-          "wins": 45,
+          "bets": 72,
+          "wins": 46,
           "losses": 26,
-          "stake": 17750.0,
-          "profit": 842.06,
-          "roi_pct": 4.74
+          "stake": 18000.0,
+          "profit": 967.06,
+          "roi_pct": 5.37
         },
         "3.0u": {
           "bets": 38,
@@ -48903,7 +49152,7 @@
     "4": {
       "per_day": [
         {
-          "date": "2026-10-03",
+          "date": "2026-10-04",
           "flat": {
             "bets": 0,
             "wins": 0,
@@ -48964,10 +49213,10 @@
           },
           "games": [
             {
-              "matchup": "CHW@CLE",
-              "pick": "CHW",
-              "delta": -0.5631338772683989,
-              "odds_american": "+125",
+              "matchup": "SDP@MIL",
+              "pick": "MIL",
+              "delta": 0.5496201836687087,
+              "odds_american": "-144",
               "units": 1.0,
               "outcome": null,
               "profit_flat": 0.0,
@@ -48976,12 +49225,95 @@
             {
               "matchup": "ATL@LAD",
               "pick": "LAD",
-              "delta": 0.8600950998918622,
-              "odds_american": "-215",
-              "units": 1.0,
+              "delta": 1.8438311750904743,
+              "odds_american": "-156",
+              "units": 2.0,
               "outcome": null,
               "profit_flat": 0.0,
               "profit_scaled": 0.0
+            }
+          ]
+        },
+        {
+          "date": "2026-10-03",
+          "flat": {
+            "bets": 4,
+            "wins": 4,
+            "losses": 0,
+            "stake": 400.0,
+            "profit": 295.59,
+            "roi_pct": 73.9
+          },
+          "scaled": {
+            "bets": 4,
+            "wins": 4,
+            "losses": 0,
+            "stake": 550.0,
+            "profit": 370.59,
+            "roi_pct": 67.38
+          },
+          "by_units": {
+            "1.0u": {
+              "bets": 3,
+              "wins": 3,
+              "losses": 0,
+              "stake": 300.0,
+              "profit": 245.59,
+              "roi_pct": 81.86
+            },
+            "1.5u": {
+              "bets": 0,
+              "wins": 0,
+              "losses": 0,
+              "stake": 0.0,
+              "profit": 0.0,
+              "roi_pct": 0
+            },
+            "2.0u": {
+              "bets": 0,
+              "wins": 0,
+              "losses": 0,
+              "stake": 0.0,
+              "profit": 0.0,
+              "roi_pct": 0
+            },
+            "2.5u": {
+              "bets": 1,
+              "wins": 1,
+              "losses": 0,
+              "stake": 250.0,
+              "profit": 125.0,
+              "roi_pct": 50.0
+            },
+            "3.0u": {
+              "bets": 0,
+              "wins": 0,
+              "losses": 0,
+              "stake": 0.0,
+              "profit": 0.0,
+              "roi_pct": 0
+            }
+          },
+          "games": [
+            {
+              "matchup": "CHW@CLE",
+              "pick": "CHW",
+              "delta": -0.5631338772683989,
+              "odds_american": "+125",
+              "units": 1.0,
+              "outcome": "W",
+              "profit_flat": 125.0,
+              "profit_scaled": 125.0
+            },
+            {
+              "matchup": "ATL@LAD",
+              "pick": "LAD",
+              "delta": 0.8600950998918622,
+              "odds_american": "-215",
+              "units": 1.0,
+              "outcome": "W",
+              "profit_flat": 46.51,
+              "profit_scaled": 46.51
             },
             {
               "matchup": "NYY@TBR",
@@ -48989,9 +49321,9 @@
               "delta": 0.348602944216581,
               "odds_american": "-135",
               "units": 1.0,
-              "outcome": null,
-              "profit_flat": 0.0,
-              "profit_scaled": 0.0
+              "outcome": "W",
+              "profit_flat": 74.07,
+              "profit_scaled": 74.07
             },
             {
               "matchup": "SDP@MIL",
@@ -48999,9 +49331,9 @@
               "delta": 2.020724637159823,
               "odds_american": "-200",
               "units": 2.5,
-              "outcome": null,
-              "profit_flat": 0.0,
-              "profit_scaled": 0.0
+              "outcome": "W",
+              "profit_flat": 50.0,
+              "profit_scaled": 125.0
             }
           ]
         },
@@ -55319,29 +55651,29 @@
         }
       ],
       "overall_flat": {
-        "bets": 416,
-        "wins": 241,
+        "bets": 420,
+        "wins": 245,
         "losses": 175,
-        "stake": 41600.0,
-        "profit": -297.48,
-        "roi_pct": -0.72
+        "stake": 42000.0,
+        "profit": -1.89,
+        "roi_pct": -0.0
       },
       "overall_scaled": {
-        "bets": 416,
-        "wins": 241,
+        "bets": 420,
+        "wins": 245,
         "losses": 175,
-        "stake": 58800.0,
-        "profit": -276.59,
-        "roi_pct": -0.47
+        "stake": 59350.0,
+        "profit": 94.0,
+        "roi_pct": 0.16
       },
       "overall_by_units": {
         "1.0u": {
-          "bets": 236,
-          "wins": 125,
+          "bets": 239,
+          "wins": 128,
           "losses": 111,
-          "stake": 23600.0,
-          "profit": -1180.45,
-          "roi_pct": -5.0
+          "stake": 23900.0,
+          "profit": -934.86,
+          "roi_pct": -3.91
         },
         "1.5u": {
           "bets": 76,
@@ -55360,12 +55692,12 @@
           "roi_pct": 3.24
         },
         "2.5u": {
-          "bets": 24,
-          "wins": 16,
+          "bets": 25,
+          "wins": 17,
           "losses": 8,
-          "stake": 6000.0,
-          "profit": 98.45,
-          "roi_pct": 1.64
+          "stake": 6250.0,
+          "profit": 223.45,
+          "roi_pct": 3.58
         },
         "3.0u": {
           "bets": 18,
