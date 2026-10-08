@@ -1,32 +1,32 @@
 {
-  "as_of": "2026-10-07",
+  "as_of": "2026-10-08",
   "aggregates": {
     "today": {
-      "picks": 3,
+      "picks": 1,
       "wins": 0,
       "losses": 0,
       "pushes": 0,
-      "pending": 3,
+      "pending": 1,
       "units_net": 0.0,
       "hit_pct": null
     },
     "week": {
-      "picks": 15,
-      "wins": 10,
-      "losses": 2,
+      "picks": 12,
+      "wins": 8,
+      "losses": 3,
       "pushes": 0,
-      "pending": 3,
-      "units_net": 10.0,
-      "hit_pct": 0.8333333333333334
+      "pending": 1,
+      "units_net": 6.0,
+      "hit_pct": 0.7272727272727273
     },
     "season": {
-      "picks": 209,
-      "wins": 123,
-      "losses": 82,
+      "picks": 210,
+      "wins": 124,
+      "losses": 84,
       "pushes": 0,
-      "pending": 4,
-      "units_net": 44.0,
-      "hit_pct": 0.6
+      "pending": 2,
+      "units_net": 43.0,
+      "hit_pct": 0.5961538461538461
     }
   },
   "picks_by_date": {
@@ -3515,8 +3515,8 @@
           "units": 1,
           "confidence": "high",
           "reasoning": "All three ratings flag this as a STRONG play on the same side (R1 1.08, R2 1.12, R3 1.16), and R3 is the top strong-play rating at 57% season (+91.0u) and 51-26 (66%, +33.0u) over 30 days. LAD when the model likes them is 38-16 (70%) overall and an elite 27-7 (79%, +26.0u) on strong plays, far better than ATL's 9-7 (56%, +3.0u) strong mark.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         },
         {
           "rank": 2,
@@ -3528,8 +3528,8 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "R3 shows the largest edge of the three ratings here (0.85 vs R1 0.68 and R2 0.40) and is riding a 3-1 (75%) last-14 strong-play run with runs 13-6 (68%) and hitting 14-5 (74%) both HOT. The caution is NYY's when-liked record of just 23-23 (50%) and 9-14 (39%, -4.0u) as a strong play, plus TBR's 42-18 (70%) fade profile, so this stays a 1u low-confidence play.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 3,
@@ -3541,8 +3541,8 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "R2 posts the biggest number on CHW (0.86, vs R1 0.81 and R3 0.72) and is 3-1 (75%, +5.0u) in the last 14 days with hitting HOT at 14-5 (74%, +24.5pts over its 49% season rate). All three ratings agree on the side, but CHW when-liked is only 19-21 (48%) with strong plays 7-9 (44%, -4.0u) while CLE sits at 22-13 (63%), so this is the weakest of today's three edges.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         }
       ],
       "usage": {
@@ -3550,10 +3550,41 @@
         "output_tokens": 1441
       },
       "totals": {
+        "wins": 1,
+        "losses": 2,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": -1.0
+      }
+    },
+    "2026-10-08": {
+      "generated_at": "2026-10-08T05:30:21",
+      "model": "claude-opus-5",
+      "date": "2026-10-08",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "CLE",
+          "home_team": "CHW",
+          "away_team": "CLE",
+          "rating_source": "R2",
+          "delta": 0.2,
+          "units": 1,
+          "confidence": "low",
+          "reasoning": "Only one game on the slate, and the team-level history strongly favors Cleveland: CLE is 22-13 (63%) when the model likes them with strong plays 13-7 (65%, +6.0u), while CHW is 19-22 (46%) overall and 7-9 (44%, -4.0u) on strong plays. R2 is the lone rating on CLE but it is the hottest strong-play book short-term at 4-1 (80%, +6.0u) over 14 days and 48-26 (65%, +34.0u) over 30 days, with hitting (16-7, 70%, +20.3pts) and bullpen_fatigue (16-7, 70%, +22.9pts) firing. The edge is razor-thin (|d|=0.20, all three ratings inside 0.2), so this is a 1u minimum-size play at -118.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 2637,
+        "output_tokens": 788
+      },
+      "totals": {
         "wins": 0,
         "losses": 0,
         "pushes": 0,
-        "pending": 3,
+        "pending": 1,
         "units_net": 0.0
       }
     }
