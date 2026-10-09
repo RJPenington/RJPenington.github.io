@@ -1,32 +1,32 @@
 {
-  "as_of": "2026-10-08",
+  "as_of": "2026-10-09",
   "aggregates": {
     "today": {
-      "picks": 1,
+      "picks": 0,
       "wins": 0,
       "losses": 0,
       "pushes": 0,
-      "pending": 1,
+      "pending": 0,
       "units_net": 0.0,
       "hit_pct": null
     },
     "week": {
       "picks": 12,
-      "wins": 8,
+      "wins": 9,
       "losses": 3,
       "pushes": 0,
-      "pending": 1,
-      "units_net": 6.0,
-      "hit_pct": 0.7272727272727273
+      "pending": 0,
+      "units_net": 7.0,
+      "hit_pct": 0.75
     },
     "season": {
       "picks": 210,
-      "wins": 124,
+      "wins": 125,
       "losses": 84,
       "pushes": 0,
-      "pending": 2,
-      "units_net": 43.0,
-      "hit_pct": 0.5961538461538461
+      "pending": 1,
+      "units_net": 44.0,
+      "hit_pct": 0.5980861244019139
     }
   },
   "picks_by_date": {
@@ -3572,8 +3572,8 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "Only one game on the slate, and the team-level history strongly favors Cleveland: CLE is 22-13 (63%) when the model likes them with strong plays 13-7 (65%, +6.0u), while CHW is 19-22 (46%) overall and 7-9 (44%, -4.0u) on strong plays. R2 is the lone rating on CLE but it is the hottest strong-play book short-term at 4-1 (80%, +6.0u) over 14 days and 48-26 (65%, +34.0u) over 30 days, with hitting (16-7, 70%, +20.3pts) and bullpen_fatigue (16-7, 70%, +22.9pts) firing. The edge is razor-thin (|d|=0.20, all three ratings inside 0.2), so this is a 1u minimum-size play at -118.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
@@ -3581,11 +3581,11 @@
         "output_tokens": 788
       },
       "totals": {
-        "wins": 0,
+        "wins": 1,
         "losses": 0,
         "pushes": 0,
-        "pending": 1,
-        "units_net": 0.0
+        "pending": 0,
+        "units_net": 1.0
       }
     }
   }
