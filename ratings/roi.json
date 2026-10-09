@@ -5,29 +5,29 @@
         {
           "date": "2026-10-08",
           "flat": {
-            "bets": 0,
+            "bets": 1,
             "wins": 0,
-            "losses": 0,
-            "stake": 0.0,
-            "profit": 0.0,
-            "roi_pct": 0
+            "losses": 1,
+            "stake": 100.0,
+            "profit": -100.0,
+            "roi_pct": -100.0
           },
           "scaled": {
-            "bets": 0,
+            "bets": 1,
             "wins": 0,
-            "losses": 0,
-            "stake": 0.0,
-            "profit": 0.0,
-            "roi_pct": 0
+            "losses": 1,
+            "stake": 100.0,
+            "profit": -100.0,
+            "roi_pct": -100.0
           },
           "by_units": {
             "1.0u": {
-              "bets": 0,
+              "bets": 1,
               "wins": 0,
-              "losses": 0,
-              "stake": 0.0,
-              "profit": 0.0,
-              "roi_pct": 0
+              "losses": 1,
+              "stake": 100.0,
+              "profit": -100.0,
+              "roi_pct": -100.0
             },
             "1.5u": {
               "bets": 0,
@@ -69,9 +69,9 @@
               "delta": 0.08292430857948574,
               "odds_american": "+100",
               "units": 1.0,
-              "outcome": null,
-              "profit_flat": 0.0,
-              "profit_scaled": 0.0
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -100.0
             }
           ]
         },
@@ -16809,29 +16809,29 @@
         }
       ],
       "overall_flat": {
-        "bets": 1093,
+        "bets": 1094,
         "wins": 612,
-        "losses": 481,
-        "stake": 109300.0,
-        "profit": 2836.07,
-        "roi_pct": 2.59
+        "losses": 482,
+        "stake": 109400.0,
+        "profit": 2736.07,
+        "roi_pct": 2.5
       },
       "overall_scaled": {
-        "bets": 1093,
+        "bets": 1094,
         "wins": 612,
-        "losses": 481,
-        "stake": 154150.0,
-        "profit": 1067.58,
-        "roi_pct": 0.69
+        "losses": 482,
+        "stake": 154250.0,
+        "profit": 967.58,
+        "roi_pct": 0.63
       },
       "overall_by_units": {
         "1.0u": {
-          "bets": 615,
+          "bets": 616,
           "wins": 339,
-          "losses": 276,
-          "stake": 61500.0,
-          "profit": 4331.29,
-          "roi_pct": 7.04
+          "losses": 277,
+          "stake": 61600.0,
+          "profit": 4231.29,
+          "roi_pct": 6.87
         },
         "1.5u": {
           "bets": 228,
@@ -16872,29 +16872,29 @@
         {
           "date": "2026-10-08",
           "flat": {
-            "bets": 0,
-            "wins": 0,
+            "bets": 1,
+            "wins": 1,
             "losses": 0,
-            "stake": 0.0,
-            "profit": 0.0,
-            "roi_pct": 0
+            "stake": 100.0,
+            "profit": 84.75,
+            "roi_pct": 84.75
           },
           "scaled": {
-            "bets": 0,
-            "wins": 0,
+            "bets": 1,
+            "wins": 1,
             "losses": 0,
-            "stake": 0.0,
-            "profit": 0.0,
-            "roi_pct": 0
+            "stake": 100.0,
+            "profit": 84.75,
+            "roi_pct": 84.75
           },
           "by_units": {
             "1.0u": {
-              "bets": 0,
-              "wins": 0,
+              "bets": 1,
+              "wins": 1,
               "losses": 0,
-              "stake": 0.0,
-              "profit": 0.0,
-              "roi_pct": 0
+              "stake": 100.0,
+              "profit": 84.75,
+              "roi_pct": 84.75
             },
             "1.5u": {
               "bets": 0,
@@ -16936,9 +16936,9 @@
               "delta": -0.20369782318948548,
               "odds_american": "-118",
               "units": 1.0,
-              "outcome": null,
-              "profit_flat": 0.0,
-              "profit_scaled": 0.0
+              "outcome": "W",
+              "profit_flat": 84.75,
+              "profit_scaled": 84.75
             }
           ]
         },
@@ -33463,29 +33463,29 @@
         }
       ],
       "overall_flat": {
-        "bets": 1078,
-        "wins": 595,
+        "bets": 1079,
+        "wins": 596,
         "losses": 483,
-        "stake": 107800.0,
-        "profit": 1812.28,
-        "roi_pct": 1.68
+        "stake": 107900.0,
+        "profit": 1897.03,
+        "roi_pct": 1.76
       },
       "overall_scaled": {
-        "bets": 1078,
-        "wins": 595,
+        "bets": 1079,
+        "wins": 596,
         "losses": 483,
-        "stake": 151300.0,
-        "profit": 288.98,
-        "roi_pct": 0.19
+        "stake": 151400.0,
+        "profit": 373.73,
+        "roi_pct": 0.25
       },
       "overall_by_units": {
         "1.0u": {
-          "bets": 621,
-          "wins": 340,
+          "bets": 622,
+          "wins": 341,
           "losses": 281,
-          "stake": 62100.0,
-          "profit": 3992.4,
-          "roi_pct": 6.43
+          "stake": 62200.0,
+          "profit": 4077.15,
+          "roi_pct": 6.55
         },
         "1.5u": {
           "bets": 204,
@@ -33526,29 +33526,29 @@
         {
           "date": "2026-10-08",
           "flat": {
-            "bets": 0,
+            "bets": 1,
             "wins": 0,
-            "losses": 0,
-            "stake": 0.0,
-            "profit": 0.0,
-            "roi_pct": 0
+            "losses": 1,
+            "stake": 100.0,
+            "profit": -100.0,
+            "roi_pct": -100.0
           },
           "scaled": {
-            "bets": 0,
+            "bets": 1,
             "wins": 0,
-            "losses": 0,
-            "stake": 0.0,
-            "profit": 0.0,
-            "roi_pct": 0
+            "losses": 1,
+            "stake": 100.0,
+            "profit": -100.0,
+            "roi_pct": -100.0
           },
           "by_units": {
             "1.0u": {
-              "bets": 0,
+              "bets": 1,
               "wins": 0,
-              "losses": 0,
-              "stake": 0.0,
-              "profit": 0.0,
-              "roi_pct": 0
+              "losses": 1,
+              "stake": 100.0,
+              "profit": -100.0,
+              "roi_pct": -100.0
             },
             "1.5u": {
               "bets": 0,
@@ -33590,9 +33590,9 @@
               "delta": 0.16445046810740838,
               "odds_american": "+100",
               "units": 1.0,
-              "outcome": null,
-              "profit_flat": 0.0,
-              "profit_scaled": 0.0
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -100.0
             }
           ]
         },
@@ -50117,29 +50117,29 @@
         }
       ],
       "overall_flat": {
-        "bets": 1078,
+        "bets": 1079,
         "wins": 581,
-        "losses": 497,
-        "stake": 107800.0,
-        "profit": -2209.64,
-        "roi_pct": -2.05
+        "losses": 498,
+        "stake": 107900.0,
+        "profit": -2309.64,
+        "roi_pct": -2.14
       },
       "overall_scaled": {
-        "bets": 1078,
+        "bets": 1079,
         "wins": 581,
-        "losses": 497,
-        "stake": 149200.0,
-        "profit": -3812.95,
-        "roi_pct": -2.56
+        "losses": 498,
+        "stake": 149300.0,
+        "profit": -3912.95,
+        "roi_pct": -2.62
       },
       "overall_by_units": {
         "1.0u": {
-          "bets": 631,
+          "bets": 632,
           "wins": 321,
-          "losses": 310,
-          "stake": 63100.0,
-          "profit": -1350.06,
-          "roi_pct": -2.14
+          "losses": 311,
+          "stake": 63200.0,
+          "profit": -1450.06,
+          "roi_pct": -2.29
         },
         "1.5u": {
           "bets": 215,
@@ -50180,29 +50180,29 @@
         {
           "date": "2026-10-08",
           "flat": {
-            "bets": 0,
+            "bets": 1,
             "wins": 0,
-            "losses": 0,
-            "stake": 0.0,
-            "profit": 0.0,
-            "roi_pct": 0
+            "losses": 1,
+            "stake": 100.0,
+            "profit": -100.0,
+            "roi_pct": -100.0
           },
           "scaled": {
-            "bets": 0,
+            "bets": 1,
             "wins": 0,
-            "losses": 0,
-            "stake": 0.0,
-            "profit": 0.0,
-            "roi_pct": 0
+            "losses": 1,
+            "stake": 100.0,
+            "profit": -100.0,
+            "roi_pct": -100.0
           },
           "by_units": {
             "1.0u": {
-              "bets": 0,
+              "bets": 1,
               "wins": 0,
-              "losses": 0,
-              "stake": 0.0,
-              "profit": 0.0,
-              "roi_pct": 0
+              "losses": 1,
+              "stake": 100.0,
+              "profit": -100.0,
+              "roi_pct": -100.0
             },
             "1.5u": {
               "bets": 0,
@@ -50244,9 +50244,9 @@
               "delta": 0.050803110578151234,
               "odds_american": "+100",
               "units": 1.0,
-              "outcome": null,
-              "profit_flat": 0.0,
-              "profit_scaled": 0.0
+              "outcome": "L",
+              "profit_flat": -100.0,
+              "profit_scaled": -100.0
             }
           ]
         },
@@ -57019,29 +57019,29 @@
         }
       ],
       "overall_flat": {
-        "bets": 430,
+        "bets": 431,
         "wins": 251,
-        "losses": 179,
-        "stake": 43000.0,
-        "profit": 125.88,
-        "roi_pct": 0.29
+        "losses": 180,
+        "stake": 43100.0,
+        "profit": 25.88,
+        "roi_pct": 0.06
       },
       "overall_scaled": {
-        "bets": 430,
+        "bets": 431,
         "wins": 251,
-        "losses": 179,
-        "stake": 60500.0,
-        "profit": 71.77,
-        "roi_pct": 0.12
+        "losses": 180,
+        "stake": 60600.0,
+        "profit": -28.23,
+        "roi_pct": -0.05
       },
       "overall_by_units": {
         "1.0u": {
-          "bets": 247,
+          "bets": 248,
           "wins": 134,
-          "losses": 113,
-          "stake": 24700.0,
-          "profit": -607.09,
-          "roi_pct": -2.46
+          "losses": 114,
+          "stake": 24800.0,
+          "profit": -707.09,
+          "roi_pct": -2.85
         },
         "1.5u": {
           "bets": 77,
