@@ -1159,9 +1159,9 @@
     }
 
     /* ===== Pick lock windows (house rules, current season only) =====
-       A pick created BEFORE its week's Saturday 12:00 PM Eastern belongs to
-       Weekday/Main Slate and locks at that Saturday noon; a pick created
-       AFTER Saturday noon is a Gameday Addition and locks Sunday 11:59 PM
+       A pick created BEFORE its week's Saturday 12:05 PM Eastern belongs to
+       Weekday/Main Slate and locks at that Saturday 12:05; a pick created
+       AFTER that is a Gameday Addition and locks Sunday 11:59 PM
        Eastern. Cutoffs are built as UTC timestamps from the Eastern wall
        time; the CFB season runs on daylight time, so Eastern is UTC-4. */
     const ET_OFFSET_HOURS = 4;
@@ -1170,8 +1170,11 @@
         const week0MondayUtc = Date.UTC(parts[0], parts[1] - 1, parts[2]);
         const weekMondayUtc = week0MondayUtc + week * 7 * 86400000;
         return {
-            // Saturday 12:00 PM ET, as UTC ms
-            saturdayNoonEt: weekMondayUtc + 5 * 86400000 + (12 + ET_OFFSET_HOURS) * 3600000,
+            // Saturday 12:05 PM ET (9:05 AM Arizona), as UTC ms. The five
+            // minute grace past the noon kickoffs is RJ's house rule
+            // (2026-10-10) so a pick typed as the early games start still
+            // lands in the slate.
+            saturdayNoonEt: weekMondayUtc + 5 * 86400000 + (12 + ET_OFFSET_HOURS) * 3600000 + 5 * 60000,
             // Sunday 11:59 PM ET, as UTC ms
             sundayNightEt: weekMondayUtc + 6 * 86400000 + (23 + ET_OFFSET_HOURS) * 3600000 + 59 * 60000,
         };
@@ -2548,7 +2551,7 @@
                 <h3>Lock Schedule</h3>
                 <ul>
                     <li>Every pick carries a <strong>timeframe tag</strong> chosen on its entry card (weekday game, main slate, or gameday addition); the tag decides which lock time applies.</li>
-                    <li><strong>Weekday Games + Main Slate</strong> picks lock at <strong>Saturday 12:00 PM EST</strong>.</li>
+                    <li><strong>Weekday Games + Main Slate</strong> picks lock at <strong>Saturday 12:05 PM Eastern</strong> (9:05 AM Arizona).</li>
                     <li><strong>Gameday Additions</strong> lock <strong>Sunday night</strong>.</li>
                     <li>Once a pick's lock time passes, deleting and editing are disabled; its card shows dimmed with a small locked note.</li>
                 </ul>
@@ -2642,8 +2645,8 @@
                     <option value="CLP" title="Can't Lose Parlay">CLP</option>
                 </select>
                 <span class="sign-group timeframe" title="Timeframe, decides the pick's lock time">
-                    <label title="Weekday game (locks Saturday noon ET)"><input type="radio" name="tf-${uid}" value="weekday" />${TF_WEEKDAY_ICON}</label>
-                    <label title="Main Slate, Saturday (locks Saturday noon ET)"><input type="radio" name="tf-${uid}" value="main" />${TF_MAIN_ICON}</label>
+                    <label title="Weekday game (locks Saturday 12:05 PM ET)"><input type="radio" name="tf-${uid}" value="weekday" />${TF_WEEKDAY_ICON}</label>
+                    <label title="Main Slate, Saturday (locks Saturday 12:05 PM ET)"><input type="radio" name="tf-${uid}" value="main" />${TF_MAIN_ICON}</label>
                     <label title="Gameday Addition (locks Sunday night)"><input type="radio" name="tf-${uid}" value="gameday" />${TF_GAMEDAY_ICON}</label>
                 </span>
                 <span class="sign-group side-h" title="Bet on home team">
