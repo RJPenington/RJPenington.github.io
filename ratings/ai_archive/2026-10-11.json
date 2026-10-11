@@ -1,0 +1,10 @@
+{
+  "as_of": "2026-10-11",
+  "generated_at": "2026-10-11T05:25:13",
+  "model": "claude-sonnet-5",
+  "summary": "The slate boils down to one game, and it's a split decision that lands right on top of the model's two best teams-when-liked. LAD @ MIL has R1 and R3 siding with Milwaukee (+0.09 and +0.07) while R2 and R4 lean Dodgers (-0.03 and -0.09) — thin deltas across the board, which tells you this is a coin-flip on raw rating strength. But zoom into the team data and MIL is 44-22 (67%, n=66) when the model backs them, with a strong-play record of 26-12 (68%, +17.0u). LAD when liked is even better at 39-16 (71%, n=55) and an elite 28-7 (80%, +27.0u) on strong plays. Both are proven gold when the model leans their way, so the split here isn't noise to ignore — it's a signal that whichever side clears the strong-play threshold (|delta| >= 1.0) deserves real weight, while the sub-0.1 deltas on their own are too soft to lean on blind.\n\nCategory-wise, hitting and bullpen_fatigue are the hottest levers across every rating right now — R2 hitting is up to 72% (18-7, n=25, +22.7pts over season) and bullpen_fatigue sits at 68% (17-8, n=25, +21.3pts) across R1-R4. Bullpen also carries a 5-game win streak at R1/R2/R3 and 64% over the last 14 at n=25. If either MIL or LAD grades out hot on hitting or bullpen_fatigue specifically for this matchup, that's the category to lean on over raw composite rating today. Be cautious with trends and sp, though — both show a 4L streak across every rating and trends is flagged COLD for R4 (-5.9pts), so don't let a trends-driven pick carry extra confidence even though trends+sp (57.7%) is technically the best category combo historically. Overall strong-play money is hot across the board (R1 +29.0u/30d, R3 67% hit rate/30d), so if this game clears the 1.0 delta threshold on any rating, it's worth full strong-play sizing.",
+  "usage": {
+    "input_tokens": 2830,
+    "output_tokens": 695
+  }
+}
