@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-10",
+  "as_of": "2026-10-11",
   "aggregates": {
     "today": {
       "picks": 1,
@@ -11,22 +11,22 @@
       "hit_pct": null
     },
     "week": {
-      "picks": 13,
-      "wins": 9,
+      "picks": 11,
+      "wins": 7,
       "losses": 3,
       "pushes": 0,
       "pending": 1,
-      "units_net": 7.0,
-      "hit_pct": 0.75
+      "units_net": 4.0,
+      "hit_pct": 0.7
     },
     "season": {
-      "picks": 211,
-      "wins": 125,
+      "picks": 212,
+      "wins": 126,
       "losses": 84,
       "pushes": 0,
       "pending": 2,
-      "units_net": 44.0,
-      "hit_pct": 0.5980861244019139
+      "units_net": 45.0,
+      "hit_pct": 0.6
     }
   },
   "picks_by_date": {
@@ -3603,13 +3603,44 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "All three ratings agree on Cleveland (R1 +0.29, R2 +0.37, R3 +0.14), and CLE is 22-13 (63%) when the model likes them, including 13-7 (65%, +6.0u) on strong plays, while CHW is just 19-23 (45%) and 7-9 (-4.0u) strong. R2 is 4-1 (80%, +6.0u) over 14 days and 39-23 (63%, +25.0u) over 30 days, with its hitting (17-7, 71%, +21.6pts) and bullpen_fatigue (16-8, 67%, +20.0pts) categories both running hot. The delta is small (<1.0), so this is a minimum 1u play at a modest -137 price; it is the only game on the slate, so no second through fifth plays qualify.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
         "input_tokens": 2649,
         "output_tokens": 684
+      },
+      "totals": {
+        "wins": 1,
+        "losses": 0,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": 1.0
+      }
+    },
+    "2026-10-11": {
+      "generated_at": "2026-10-11T05:25:26",
+      "model": "claude-opus-5",
+      "date": "2026-10-11",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "MIL",
+          "home_team": "MIL",
+          "away_team": "LAD",
+          "rating_source": "R3",
+          "delta": 0.07,
+          "units": 1,
+          "confidence": "low",
+          "reasoning": "Two of three ratings (R1 +0.09, R3 +0.07) land on Milwaukee, and R3 is the strongest strong-play rating on the board at 262-194 (57%, +92.0u) on the season and 39-19 (67%, +24.0u) over 30 days. Milwaukee is 44-22 (67%) when the model likes them, including 26-12 (68%, +17.0u) on strong plays, and at -112 home they are essentially a pick'em price. The delta is only +0.07 so this is a minimum 1u lean, not a conviction play; the slate offers no second game, so no further picks are listed.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 2661,
+        "output_tokens": 576
       },
       "totals": {
         "wins": 0,
