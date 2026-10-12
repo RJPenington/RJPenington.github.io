@@ -1,32 +1,32 @@
 {
-  "as_of": "2026-10-11",
+  "as_of": "2026-10-12",
   "aggregates": {
     "today": {
-      "picks": 1,
+      "picks": 5,
       "wins": 0,
       "losses": 0,
       "pushes": 0,
-      "pending": 1,
+      "pending": 5,
       "units_net": 0.0,
       "hit_pct": null
     },
     "week": {
-      "picks": 11,
+      "picks": 15,
       "wins": 7,
       "losses": 3,
       "pushes": 0,
-      "pending": 1,
+      "pending": 5,
       "units_net": 4.0,
       "hit_pct": 0.7
     },
     "season": {
-      "picks": 212,
-      "wins": 126,
+      "picks": 217,
+      "wins": 127,
       "losses": 84,
       "pushes": 0,
-      "pending": 2,
-      "units_net": 45.0,
-      "hit_pct": 0.6
+      "pending": 6,
+      "units_net": 46.0,
+      "hit_pct": 0.6018957345971564
     }
   },
   "picks_by_date": {
@@ -3634,8 +3634,8 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "Two of three ratings (R1 +0.09, R3 +0.07) land on Milwaukee, and R3 is the strongest strong-play rating on the board at 262-194 (57%, +92.0u) on the season and 39-19 (67%, +24.0u) over 30 days. Milwaukee is 44-22 (67%) when the model likes them, including 26-12 (68%, +17.0u) on strong plays, and at -112 home they are essentially a pick'em price. The delta is only +0.07 so this is a minimum 1u lean, not a conviction play; the slate offers no second game, so no further picks are listed.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
@@ -3643,10 +3643,93 @@
         "output_tokens": 576
       },
       "totals": {
+        "wins": 1,
+        "losses": 0,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": 1.0
+      }
+    },
+    "2026-10-12": {
+      "generated_at": "2026-10-12T05:28:34",
+      "model": "claude-opus-5",
+      "date": "2026-10-12",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "TBR",
+          "home_team": "TBR",
+          "away_team": "CLE",
+          "rating_source": "R3",
+          "delta": 2.01,
+          "units": 2,
+          "confidence": "high",
+          "reasoning": "R3 is the strongest strong-play rating historically (season 262-194, 57%, +92.0u) and is running hot at 38-18 (68%, +24.0u) over 30 days and 4-1 in the last 14. TBR when the model likes them is 42-18 (70%) overall and 26-10 (72%, +22.0u) on strong plays, and R3's hot categories — hitting 19-7 (73%, +23.5 pts), runs 16-10 (62%) and bullpen_fatigue 17-9 (65%) — are driving this 2.01 edge.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 2,
+          "pick": "TBR",
+          "home_team": "TBR",
+          "away_team": "CLE",
+          "rating_source": "R2",
+          "delta": 2.02,
+          "units": 2,
+          "confidence": "high",
+          "reasoning": "R2 posts the largest delta on the slate (+2.02) and confirms the same side, with strong plays 35-20 (64%, +22.0u) in 30 days and 4-1 (80%) in 14 days. R2's hitting category is the hottest of its groups at 19-7 (73%, +23.7 pts above its 49% season mark), and TBR's 26-10 (72%) strong-play record backs the number.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 3,
+          "pick": "TBR",
+          "home_team": "TBR",
+          "away_team": "CLE",
+          "rating_source": "R1",
+          "delta": 1.66,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "All three ratings agree on Tampa Bay, and R1 is the hottest in the very short term (2-0 last 7, 6-2 75% last 14, 40-19 68% last 30, +84.0u season). R1's bullpen (16-10, 62%, +9.4 pts) and bullpen_fatigue (17-9, 65%, +18.7 pts) categories are firing, while CLE's when-liked record (23-13, 64%) is the weakest of the four slate teams.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 4,
+          "pick": "LAD",
+          "home_team": "MIL",
+          "away_team": "LAD",
+          "rating_source": "R3",
+          "delta": -0.35,
+          "units": 1,
+          "confidence": "low",
+          "reasoning": "Sub-1.0 delta so this is a lean, not a strong play, but LAD has the best when-model-likes-them profile on the board at 39-16 (71%) and 28-7 (80%, +27.0u) on strong plays. R3's hot runs (16-10, 62%) and hitting (19-7, 73%) categories support the Dodgers side even at a modest -137 price.",
+          "outcome": null,
+          "net": 0
+        },
+        {
+          "rank": 5,
+          "pick": "LAD",
+          "home_team": "MIL",
+          "away_team": "LAD",
+          "rating_source": "R1",
+          "delta": -0.37,
+          "units": 1,
+          "confidence": "low",
+          "reasoning": "R1 shows the largest (though still small) edge on the Dodgers at -0.37 and is 40-19 (68%, +27.0u) over 30 days. LAD's 28-7 (80%) strong-play history dwarfs MIL's 26-12 (68%), but the thin delta against a +115 home dog keeps this at minimum size.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 2836,
+        "output_tokens": 1632
+      },
+      "totals": {
         "wins": 0,
         "losses": 0,
         "pushes": 0,
-        "pending": 1,
+        "pending": 5,
         "units_net": 0.0
       }
     }
