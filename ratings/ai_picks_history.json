@@ -1,32 +1,32 @@
 {
-  "as_of": "2026-10-12",
+  "as_of": "2026-10-13",
   "aggregates": {
     "today": {
-      "picks": 5,
+      "picks": 1,
       "wins": 0,
       "losses": 0,
       "pushes": 0,
-      "pending": 5,
+      "pending": 1,
       "units_net": 0.0,
       "hit_pct": null
     },
     "week": {
-      "picks": 15,
-      "wins": 7,
-      "losses": 3,
+      "picks": 14,
+      "wins": 6,
+      "losses": 7,
       "pushes": 0,
-      "pending": 5,
-      "units_net": 4.0,
-      "hit_pct": 0.7
+      "pending": 1,
+      "units_net": -3.0,
+      "hit_pct": 0.46153846153846156
     },
     "season": {
-      "picks": 217,
+      "picks": 218,
       "wins": 127,
-      "losses": 84,
+      "losses": 89,
       "pushes": 0,
-      "pending": 6,
-      "units_net": 46.0,
-      "hit_pct": 0.6018957345971564
+      "pending": 2,
+      "units_net": 39.0,
+      "hit_pct": 0.5879629629629629
     }
   },
   "picks_by_date": {
@@ -3665,8 +3665,8 @@
           "units": 2,
           "confidence": "high",
           "reasoning": "R3 is the strongest strong-play rating historically (season 262-194, 57%, +92.0u) and is running hot at 38-18 (68%, +24.0u) over 30 days and 4-1 in the last 14. TBR when the model likes them is 42-18 (70%) overall and 26-10 (72%, +22.0u) on strong plays, and R3's hot categories — hitting 19-7 (73%, +23.5 pts), runs 16-10 (62%) and bullpen_fatigue 17-9 (65%) — are driving this 2.01 edge.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -2
         },
         {
           "rank": 2,
@@ -3678,8 +3678,8 @@
           "units": 2,
           "confidence": "high",
           "reasoning": "R2 posts the largest delta on the slate (+2.02) and confirms the same side, with strong plays 35-20 (64%, +22.0u) in 30 days and 4-1 (80%) in 14 days. R2's hitting category is the hottest of its groups at 19-7 (73%, +23.7 pts above its 49% season mark), and TBR's 26-10 (72%) strong-play record backs the number.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -2
         },
         {
           "rank": 3,
@@ -3691,8 +3691,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "All three ratings agree on Tampa Bay, and R1 is the hottest in the very short term (2-0 last 7, 6-2 75% last 14, 40-19 68% last 30, +84.0u season). R1's bullpen (16-10, 62%, +9.4 pts) and bullpen_fatigue (17-9, 65%, +18.7 pts) categories are firing, while CLE's when-liked record (23-13, 64%) is the weakest of the four slate teams.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 4,
@@ -3704,8 +3704,8 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "Sub-1.0 delta so this is a lean, not a strong play, but LAD has the best when-model-likes-them profile on the board at 39-16 (71%) and 28-7 (80%, +27.0u) on strong plays. R3's hot runs (16-10, 62%) and hitting (19-7, 73%) categories support the Dodgers side even at a modest -137 price.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         },
         {
           "rank": 5,
@@ -3717,8 +3717,8 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "R1 shows the largest (though still small) edge on the Dodgers at -0.37 and is 40-19 (68%, +27.0u) over 30 days. LAD's 28-7 (80%) strong-play history dwarfs MIL's 26-12 (68%), but the thin delta against a +115 home dog keeps this at minimum size.",
-          "outcome": null,
-          "net": 0
+          "outcome": "L",
+          "net": -1
         }
       ],
       "usage": {
@@ -3727,9 +3727,40 @@
       },
       "totals": {
         "wins": 0,
+        "losses": 5,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": -7.0
+      }
+    },
+    "2026-10-13": {
+      "generated_at": "2026-10-13T05:26:36",
+      "model": "claude-opus-5",
+      "date": "2026-10-13",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "CLE",
+          "home_team": "TBR",
+          "away_team": "CLE",
+          "rating_source": "R1",
+          "delta": -1.22,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "All three ratings land on the same side (R1 -1.22, R2 -1.14, R3 -0.86), and R1 is the hottest strong-play engine right now at 36-16 (69%, +25.0u) over 30 days and 6-3 (+5.0u) over 14 days. CLE is 23-13 (64%) when the model likes them, including 13-7 (65%, +6.0u) on strong plays, and the +112 price gives extra value on a sub-2.0 delta. Edge is being driven by the hot categories — hitting (R1 18-10, +13.6pts) and bullpen_fatigue (17-11, +14.2pts) — rather than the cold SP bucket (13-15, -6.3pts).",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 2691,
+        "output_tokens": 531
+      },
+      "totals": {
+        "wins": 0,
         "losses": 0,
         "pushes": 0,
-        "pending": 5,
+        "pending": 1,
         "units_net": 0.0
       }
     }
