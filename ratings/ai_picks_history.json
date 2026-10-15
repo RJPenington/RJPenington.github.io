@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-14",
+  "as_of": "2026-10-15",
   "aggregates": {
     "today": {
       "picks": 1,
@@ -11,22 +11,22 @@
       "hit_pct": null
     },
     "week": {
-      "picks": 13,
+      "picks": 11,
       "wins": 4,
-      "losses": 8,
+      "losses": 6,
       "pushes": 0,
       "pending": 1,
-      "units_net": -6.0,
-      "hit_pct": 0.3333333333333333
+      "units_net": -4.0,
+      "hit_pct": 0.4
     },
     "season": {
-      "picks": 219,
-      "wins": 127,
+      "picks": 220,
+      "wins": 128,
       "losses": 90,
       "pushes": 0,
       "pending": 2,
-      "units_net": 38.0,
-      "hit_pct": 0.5852534562211982
+      "units_net": 39.0,
+      "hit_pct": 0.5871559633027523
     }
   },
   "picks_by_date": {
@@ -3779,13 +3779,44 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "All three ratings land on Milwaukee (R1 -0.89, R2 -1.06 STRONG, R3 -0.81), and R2 is the only one clearing the 1.0 strong-play threshold, so it's the source of record at 1u. R2 strong plays are 30-18 (62%, +18.0u) over 30 days and 259-208 (55%, +75.0u) on the season, while MIL when the model likes them is 45-22 (67%) overall and 26-12 (68%, +17.0u) on strong plays. The edge is supported by the hot categories — R2 hitting is 17-8 (68%) in 14 days (+18.8pts over its 49% season mark) and bullpen 15-10 (60%, +8.0pts) — though the cold SP bucket (10-15, 40%, -12.7pts) and LAD's own 28-7 (80%) when-liked record at +150/-181 keep this at medium confidence and a single unit.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
         "input_tokens": 2706,
         "output_tokens": 605
+      },
+      "totals": {
+        "wins": 1,
+        "losses": 0,
+        "pushes": 0,
+        "pending": 0,
+        "units_net": 1.0
+      }
+    },
+    "2026-10-15": {
+      "generated_at": "2026-10-15T05:29:21",
+      "model": "claude-opus-5",
+      "date": "2026-10-15",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "CLE",
+          "home_team": "CLE",
+          "away_team": "TBR",
+          "rating_source": "R1",
+          "delta": 1.44,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "All three ratings agree on Cleveland (R1 +1.44, R2 +1.36, R3 +1.02), and consensus across R1/R2/R3 is the strongest signal available on a one-game slate. The strong-play engines are profitable over the 30-day window (R1 36-17/+24.0u, R3 34-15/+21.0u, R2 31-18/+19.0u) and CLE is 23-14 (62%) when the model likes them, 13-8 (+5.0u) on strong plays. Edge is supported by the HOT bullpen (14d 14-8, 64%, +11.6pts) and hitting categories (R2 15-7, 68%) rather than the COLD SP category (8-14, 36%), so only a 1u sizing at delta 1.44 with CLE priced at -134.  Note: slate contains only one game, so a full five-pick card is not available without duplicating it.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 2701,
+        "output_tokens": 542
       },
       "totals": {
         "wins": 0,
