@@ -1,32 +1,32 @@
 {
-  "as_of": "2026-10-18",
+  "as_of": "2026-10-19",
   "aggregates": {
     "today": {
-      "picks": 1,
+      "picks": 0,
       "wins": 0,
       "losses": 0,
       "pushes": 0,
-      "pending": 1,
+      "pending": 0,
       "units_net": 0.0,
       "hit_pct": null
     },
     "week": {
-      "picks": 11,
+      "picks": 10,
       "wins": 3,
       "losses": 7,
       "pushes": 0,
-      "pending": 1,
+      "pending": 0,
       "units_net": -6.0,
       "hit_pct": 0.3
     },
     "season": {
       "picks": 222,
-      "wins": 129,
+      "wins": 130,
       "losses": 91,
       "pushes": 0,
-      "pending": 2,
-      "units_net": 39.0,
-      "hit_pct": 0.5863636363636363
+      "pending": 1,
+      "units_net": 40.0,
+      "hit_pct": 0.5882352941176471
     }
   },
   "picks_by_date": {
@@ -3872,8 +3872,8 @@
           "units": 1,
           "confidence": "medium",
           "reasoning": "All three ratings (R1 -0.34, R2 -0.63, R3 -0.14) agree on Tampa Bay, and R2 carries the largest edge of the three. TBR is 42-19 (69%) when the model likes them, including 26-11 (70%, +21.0u) on strong plays, versus CLE's 24-15 (62%) / 14-8 (64%, +6.0u). R2 strong plays are 23-12 (66%, +16.0u) over 30 days and 262-208 (56%, +78.0u) on the season, with the hot hitting category firing at 13-7 (65%) in the last 14 days (+15.7pts over season); the small delta keeps this to 1 unit.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
@@ -3881,11 +3881,11 @@
         "output_tokens": 629
       },
       "totals": {
-        "wins": 0,
+        "wins": 1,
         "losses": 0,
         "pushes": 0,
-        "pending": 1,
-        "units_net": 0.0
+        "pending": 0,
+        "units_net": 1.0
       }
     }
   }
