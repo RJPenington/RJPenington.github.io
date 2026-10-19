@@ -999,6 +999,19 @@
         border: 1px solid var(--line); border-radius: 8px;
         font-size: 0.68rem; color: var(--dim);
     }
+
+    /* Narratives tab: long-form analyst write-ups. The picker reuses the
+       season/week dropdown look (season-row); the body keeps a phone
+       friendly measure and the site palette. */
+    .narr-row select { flex: 1 1 100%; }
+    .narrative { text-align: left; line-height: 1.6; }
+    .narrative .narr-title { text-align: center; margin: 0.2rem 0 0.3rem; font-size: 1.25rem; }
+    .narrative .byline { text-align: center; color: var(--dim); font-size: 0.78rem; margin-bottom: 1rem; }
+    .narrative h3 { margin: 1.3rem 0 0.5rem; }
+    .narrative p { margin: 0 0 0.8rem; max-width: 42rem; }
+    .narrative strong { color: #f7f9fb; }
+    .narrative table.data { margin: 0.6rem 0 1rem; }
+    .narrative ol, .narrative ul { margin: 0.2rem 0 0.8rem 1.3rem; }
 </style>
 </head>
 <body>
@@ -1078,6 +1091,7 @@
             <button class="tab" data-panel="locks">Mortal Locks</button>
             <button class="tab" data-panel="rules">Rules</button>
             <button class="tab" data-panel="changes">Changes</button>
+            <button class="tab" data-panel="narratives">Narratives</button>
         </div>
 
         <section class="panel active" id="enter"></section>
@@ -1087,6 +1101,7 @@
         <section class="panel" id="locks"></section>
         <section class="panel" id="rules"></section>
         <section class="panel" id="changes"></section>
+        <section class="panel" id="narratives"></section>
 
         <footer>
             <p>Pick'em · Pigskin, points, and the perpetual attempt to outsmart the other guy.</p>
@@ -1104,6 +1119,11 @@
 
 <!-- FBS teams list — hardcoded for the current season -->
 <script id="fbsTeams" type="application/json">["Air Force", "Akron", "Alabama", "App State", "Arizona", "Arizona State", "Arkansas", "Arkansas State", "Army", "Auburn", "BYU", "Ball State", "Baylor", "Boise State", "Boston College", "Bowling Green", "Buffalo", "California", "Central Michigan", "Charlotte", "Cincinnati", "Clemson", "Coastal Carolina", "Colorado", "Colorado State", "Connecticut", "Delaware", "Duke", "East Carolina", "Eastern Michigan", "FIU", "Florida", "Florida Atlantic", "Florida State", "Fresno State", "Georgia", "Georgia Southern", "Georgia State", "Georgia Tech", "Hawaii", "Houston", "Illinois", "Indiana", "Iowa", "Iowa State", "Jacksonville State", "James Madison", "Kansas", "Kansas State", "Kennesaw State", "Kent State", "Kentucky", "LSU", "Liberty", "Louisiana", "Louisiana Tech", "Louisville", "Marshall", "Maryland", "Massachusetts", "Memphis", "Miami (FL)", "Miami (OH)", "Michigan", "Michigan State", "Middle Tennessee", "Minnesota", "Mississippi State", "Missouri", "Missouri State", "NC State", "Navy", "Nebraska", "Nevada", "New Mexico", "New Mexico State", "North Carolina", "North Dakota State", "North Texas", "Northern Illinois", "Northwestern", "Notre Dame", "Ohio", "Ohio State", "Oklahoma", "Oklahoma State", "Old Dominion", "Ole Miss", "Oregon", "Oregon State", "Penn State", "Pittsburgh", "Purdue", "Rice", "Rutgers", "SMU", "Sam Houston", "San Diego State", "San Jose State", "South Alabama", "South Carolina", "South Florida", "Southern Miss", "Stanford", "Syracuse", "TCU", "Temple", "Tennessee", "Texas", "Texas A&M", "Texas State", "Texas Tech", "Toledo", "Troy", "Tulane", "Tulsa", "UAB", "UCF", "UCLA", "UNLV", "USC", "UT Martin", "UTEP", "UTSA", "Utah", "Utah State", "Vanderbilt", "Virginia", "Virginia Tech", "Wake Forest", "Washington", "Washington State", "West Virginia", "Western Kentucky", "Western Michigan", "Wisconsin", "Wyoming"]</script>
+
+<!-- Narratives: analyst write-ups shown on the Narratives tab. Append new
+     entries to this array ({id, title, date, author, html}); the archive tag
+     above is never touched for this. -->
+<script id="pickemNarratives" type="application/json">[{"id": 1, "title": "Head to Head: Two Seasons, 433 Graded Picks", "date": "2026-10-19", "author": "the model's analyst", "html": "<h3>The big picture</h3>\n<p>All-time: <strong>RJ 129-123, +35.6 units</strong> (13.2% ROI). <strong>Nick 85-95-1, +1.8 units</strong> (0.7% ROI). Weeks won: RJ 13, Nick 9, one tie. The nickname math checks out over two years.</p>\n<p>This season is a different story. <strong>Nick 42-39-1, +15.8 units</strong> (17.7% ROI). <strong>RJ 57-50, +14.9 units</strong> (15.7% ROI). Weeks are 4-4. Nick is ahead in units and ROI with seven weeks left, and RJ has four picks pending this week that decide the lead. The \"Nick the Average\" era is over, whether RJ likes it or not.</p>\n<table class=\"data\">\n<thead><tr><th></th><th class=\"num\">All-time record</th><th class=\"num\">All-time units</th><th class=\"num\">This season record</th><th class=\"num\">This season units</th><th class=\"num\">Weeks won (all-time)</th></tr></thead>\n<tbody>\n<tr><td>RJ</td><td class=\"num\">129-123</td><td class=\"num net-good\">+35.6</td><td class=\"num\">57-50</td><td class=\"num net-good\">+14.9</td><td class=\"num\">13</td></tr>\n<tr><td>Nick</td><td class=\"num\">85-95-1</td><td class=\"num net-good\">+1.8</td><td class=\"num\">42-39-1</td><td class=\"num net-good\">+15.8</td><td class=\"num\">9</td></tr>\n</tbody>\n</table>\n\n<h3>RJ the Great: profile</h3>\n<p>RJ is a spread-and-dog bettor, and one lane pays for everything: underdogs getting 3.5 to 7 points, <strong>29-14 lifetime, +25.2 units</strong>. It held in both seasons (17-7 last year, 12-7 this year), so it is a real skill, not a hot streak. Moneylines are the second engine: <strong>23-18, +17.1 units</strong>, and better this year (13-8).</p>\n<p>The mortal lock was last year's weapon: <strong>10-1, +24.8 units</strong>. This year it is 4-4, +0.4. The lock magic has faded, and that is most of why the lead evaporated.</p>\n<p>Where RJ leaks money, in order of damage: (1) Totals: <strong>8-13, -7.0 units</strong> lifetime; he bets them rarely and loses them reliably. (2) Laying 7.5 to 14 points: <strong>3-10, -4.0 units</strong> (2-8 this year); the one favorite range he cannot hit. (3) Small dogs, +0 to +3: 4-8, -6.2 units. (4) The small-stake pile: half-unit and 1-unit picks are <strong>92-102 lifetime, -7.3 units</strong>. Every dollar of his profit is in 1.5 units and up: 1.5u 13-5, 2.5u 4-0, 3u 3-0. His conviction is genuinely predictive; his filler is not. Volume is up to 13.4 picks a week this year (22 in week 6), and the extra volume is break-even noise.</p>\n\n<h3>Nick: profile</h3>\n<p>Nick is a totals-and-weekday bettor who rebuilt himself in one offseason. The turnaround is specific: spreads went from 10-21 (-22 units) to <strong>15-13-1 (+6.2)</strong>; locks went from 3-7 (-15) to <strong>5-2-1 (+11.2)</strong>; team totals from 5-11 to 8-8. Overs are his constant: 42-44 lifetime but <strong>+11 units</strong> because he sizes them right (+7.5 last year, +3.5 this year).</p>\n<p>The hidden edge: weekday games, <strong>18-11-1, +16.8 units</strong> this season. Nearly his whole year. His Saturday main slate is 11-16, -2.5. He is a Tuesday-through-Friday bettor who thinks he is a Saturday bettor.</p>\n<p>Where Nick leaks: (1) Laying 14 or more: <strong>0-5, -9.0 units</strong>. Never once. (2) The 1-unit pile: <strong>47-60-1, -13.5 units</strong>. His 2-unit-and-up plays are 28-24, +8.5. Same lesson as RJ: the conviction plays win, the filler loses. (3) Small dogs, +0 to +3: 2-6. Both of you lose this spot; the line is tight because the game is tight. (4) Moneylines are <strong>10-3, +9.5 units</strong>, and he barely uses them.</p>\n\n<h3>Head to head</h3>\n<p>RJ wins by consistency: <strong>14 winning weeks of 23</strong>, average +1.55 a week, lower volatility. Nick wins by swings: his three best weeks this year (+7.5, +6.5, +5.5) beat anything RJ posted, but he gives chunks back. Nick's week-to-week swing is 25% bigger than RJ's. RJ is the index fund; Nick is the growth stock that finally started growing.</p>\n\n<h3>What to focus on, rest of the year</h3>\n<p><strong>RJ:</strong> stay in the +3.5 to +7 dog lane and moneylines, that is the whole edge. Stop betting totals entirely. Stop laying 7.5 to 14. Cut the half-unit and 1-unit filler and put the same money into fewer plays at 1.5 units and up. Pick locks from the dog lane where the edge actually lives.</p>\n<p><strong>Nick:</strong> weekday games are the franchise; treat Saturday like the risk it has been. Keep the overs, never lay 14+, and kill the 1-unit pile in favor of 2-unit conviction. Use the moneyline more; 10-3 is an edge being ignored.</p>\n<table class=\"data\">\n<thead><tr><th></th><th>Keep doing</th><th>Stop doing</th></tr></thead>\n<tbody>\n<tr><td>RJ</td><td>Dogs +3.5 to +7, moneylines, locks from the dog lane, 1.5 units and up</td><td>Totals, laying 7.5 to 14, half-unit and 1-unit filler</td></tr>\n<tr><td>Nick</td><td>Weekday games, overs, 2-unit conviction plays, more moneylines</td><td>Laying 14 or more, the 1-unit pile, treating Saturday as the main event</td></tr>\n</tbody>\n</table>\n<p>The race: RJ leads all-time 13 weeks to 9, but this season is 4-4 with Nick up 0.9 units. Whoever fixes their filler problem first probably takes the year.</p>"}]</script>
 
 <script>
     /* ===== Data + rendering ===== */
@@ -1354,6 +1374,9 @@
                 side: f && (f.side === 'H' || f.side === 'A') ? f.side : null,
                 sign: f && f.sign ? f.sign : null,
                 points: f && f.points !== undefined && f.points !== '' ? f.points : null,
+                // Timeframe tag (weekday / main / gameday) for the Breakdown
+                // tab's weekday-vs-weekend and By Timeframe tables
+                section: f && ['weekday', 'main', 'gameday'].includes(f.section) ? f.section : null,
                 // Parlay team list (CLP rows), for team tracking
                 teams: f && Array.isArray(f.teams)
                     ? f.teams.map(t => String(t).trim()).filter(Boolean) : null,
@@ -1894,6 +1917,20 @@
         return Object.values(buckets);
     }
 
+    // Weekday vs weekend bucket for one pick, shared by the Breakdown cross
+    // table and the Mortal Locks split. Keyed on the timeframe tag every
+    // form-saved pick carries (fields.section, flattened to p.section):
+    // weekday is a Weekday game, main and gameday are both Weekend
+    // (Saturday slate, Sunday gameday add). Untagged rows (archive seasons,
+    // any legacy row) land in Unknown. Both tables used to key on a
+    // game_date that no pick ever carried, so everything fell into the
+    // unknown bucket and neither split ever calculated.
+    function weekdayBucket(p) {
+        if (p.section === 'weekday') return 'WD';
+        if (p.section === 'main' || p.section === 'gameday') return 'WE';
+        return '?';
+    }
+
     function renderH2H() {
         const weeks = SEASONS[seasonSel.value] || [];
         let nickTotal = 0, rjTotal = 0;
@@ -1950,28 +1987,17 @@
             </div>`;
         }
 
-        // Weekday vs weekend split by bet type.
-        //   p.game_date is present on new form-saved picks (Phase 2) → we can
-        //   bucket into Weekday / Weekend. Historical picks lack a date and
-        //   land in "Date unknown".
-        function isWeekend(dateStr) {
-            if (!dateStr) return null;
-            const d = new Date(dateStr);
-            if (isNaN(d)) return null;
-            const dow = d.getDay();     // 0 Sun, 6 Sat
-            return dow === 0 || dow === 5 || dow === 6;   // Fri/Sat/Sun = "gameday weekend"
-        }
+        // Weekday vs weekend split by bet type, rows from weekdayBucket
+        // (the shared timeframe-tag helper above renderH2H).
         function wdCrossTable(label, weeks, who) {
             const cell = {WD:{}, WE:{}, '?':{}};
             for (const bucket of ['WD','WE','?'])
                 for (const bt of BET_ORDER) cell[bucket][bt] = {picks:0, wins:0, losses:0, pushes:0, net:0, uWon:0, uLost:0};
             for (const w of weeks) for (const p of w[who].picks) {
                 const bt = p.bet_type; if (!bt || !BET_ORDER.includes(bt)) continue;
-                const we = isWeekend(p.game_date);
-                const bucket = we === true ? 'WE' : (we === false ? 'WD' : '?');
-                tallyPick(cell[bucket][bt], p);
+                tallyPick(cell[weekdayBucket(p)][bt], p);
             }
-            const rowLabel = {WD:'Weekday (Mon–Thu)', WE:'Weekend (Fri–Sun)', '?':'Date unknown (historical)'};
+            const rowLabel = {WD:'Weekday games', WE:'Weekend (main slate + gameday)', '?':'Unknown (untagged)'};
             const rows = ['WD','WE','?'].map(bucket => {
                 const tds = BET_ORDER.map(bt => {
                     const c = cell[bucket][bt];
@@ -2001,7 +2027,53 @@
                     </tr></thead>
                     <tbody>${rows}</tbody>
                 </table>
-                <div style="color:var(--dim); font-size:0.78rem; margin-top:0.5rem;">Each cell shows <em>W-L · Net · Hit %</em>. Historical picks land in "Date unknown" until the new form saves game dates.</div>
+                <div style="color:var(--dim); font-size:0.78rem; margin-top:0.5rem;">Each cell shows <em>W-L · Net · Hit %</em>. Rows come from each pick's timeframe tag: Weekday games, or Weekend for main slate and gameday adds. Archive picks have no tag and sit under Unknown.</div>
+            </div>`;
+        }
+
+        // By Timeframe: one record row per timeframe tag, same columns as
+        // the By Bet Type table. Untagged shows only when the view holds
+        // untagged picks (archive seasons, the All view).
+        const TF_ROWS = [
+            { key: 'weekday', label: 'Weekday games' },
+            { key: 'main',    label: 'Main slate' },
+            { key: 'gameday', label: 'Gameday adds' },
+        ];
+        function timeframeTable(label, weeks, who) {
+            const rec = {};
+            for (const r of TF_ROWS) rec[r.key] = {picks:0, wins:0, losses:0, pushes:0, net:0, uWon:0, uLost:0};
+            const untagged = {picks:0, wins:0, losses:0, pushes:0, net:0, uWon:0, uLost:0};
+            for (const w of weeks) for (const p of w[who].picks) {
+                tallyPick(rec[p.section] ? rec[p.section] : untagged, p);
+            }
+            const rowList = TF_ROWS.map(r => ({ label: r.label, b: rec[r.key] }));
+            if (untagged.picks > 0) rowList.push({ label: 'Untagged', b: untagged });
+            const rows = rowList.map(({ label: name, b }) => {
+                const g = b.wins + b.losses;
+                const pct = g > 0 ? Math.round(b.wins/g * 100) + '%' : fmtNet(null);
+                return `<tr>
+                    <td>${name}</td>
+                    <td class="num">${b.picks}</td>
+                    <td class="num">${b.wins}-${b.losses}${b.pushes ? '-' + b.pushes : ''}</td>
+                    <td class="num">${pct}</td>
+                    <td class="num"><span class="net-good">+${b.uWon.toFixed(2)}</span> / <span class="net-bad">-${b.uLost.toFixed(2)}</span></td>
+                    <td class="num ${classForNet(b.net)}">${fmtNet(b.net)}</td>
+                </tr>`;
+            }).join('');
+            return `<div class="panel-card">
+                <h3>${label} · By Timeframe</h3>
+                <table class="data">
+                    <thead><tr>
+                        <th>Timeframe</th>
+                        <th class="num">Picks</th>
+                        <th class="num">W-L-P</th>
+                        <th class="num">Win %</th>
+                        <th class="num" title="Gross units won on winners / gross units lost on losers">Units W / L</th>
+                        <th class="num">Net (u)</th>
+                    </tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+                <div style="color:var(--dim); font-size:0.78rem; margin-top:0.5rem;">Record by the timeframe tag chosen on the entry card. Pending picks count in Picks only.</div>
             </div>`;
         }
 
@@ -2075,7 +2147,9 @@
             ${haCrossTable('Nick', weeks, 'nick')}
             ${haCrossTable('RJ',   weeks, 'rj')}
             ${wdCrossTable('Nick', weeks, 'nick')}
-            ${wdCrossTable('RJ',   weeks, 'rj')}`;
+            ${wdCrossTable('RJ',   weeks, 'rj')}
+            ${timeframeTable('Nick', weeks, 'nick')}
+            ${timeframeTable('RJ',   weeks, 'rj')}`;
     }
 
     // ML line-range buckets — used by the ML performance breakdown on the
@@ -2304,7 +2378,7 @@
         function clpTeamTable(label, rows) {
             const sorted = [...rows].sort((a,b) => (b.net || 0) - (a.net || 0));
             return `<div class="panel-card">
-                <h3>${label} — CLP Teams (win % as a parlay leg)</h3>
+                <h3>${label} · CLP Teams (win % as a parlay leg)</h3>
                 <table class="data">
                     <thead><tr>
                         <th>Team</th>
@@ -2338,7 +2412,7 @@
                     <td class="num ${classForNet(r.net)}">${fmtNet(r.net)}</td>
                 </tr>`).join('');
             return `<div class="panel-card">
-                <h3>${label} — CLP by Team Count</h3>
+                <h3>${label} · CLP by Team Count</h3>
                 <table class="data">
                     <thead><tr>
                         <th>Size</th>
@@ -2364,7 +2438,7 @@
                     <td class="num ${classForNet(r.net)}">${fmtNet(r.net)}</td>
                 </tr>`).join('');
             return `<div class="panel-card">
-                <h3>${label} — CLP by Odds</h3>
+                <h3>${label} · CLP by Odds</h3>
                 <table class="data">
                     <thead><tr>
                         <th>Parlay Odds</th>
@@ -2442,13 +2516,6 @@
             rj:   {picks:0, wins:0, losses:0, pushes:0, net:0, rows:[],
                    wd: empty(), we: empty(), unk: empty()},
         };
-        function isWkndDate(dateStr) {
-            if (!dateStr) return null;
-            const d = new Date(dateStr);
-            if (isNaN(d)) return null;
-            const dow = d.getDay();
-            return dow === 0 || dow === 5 || dow === 6;   // Fri/Sat/Sun
-        }
         for (const w of weeks) {
             for (const who of ['nick', 'rj']) {
                 for (const p of w[who].picks) {
@@ -2457,11 +2524,10 @@
                     // Pending locks stay listed below but do not count as
                     // pushes in the record (tallyPick skips ungraded picks)
                     tallyPick(s, p);
-                    s.rows.push({week: w.week, label: w.label, pick: p.pick, units: p.units, net: p.net, game_date: p.game_date});
-                    // WD/WE bucketing — historical picks have no date → 'unk'
-                    const we = isWkndDate(p.game_date);
-                    const bucket = we === true ? 'we' : (we === false ? 'wd' : 'unk');
-                    tallyPick(s[bucket], p);
+                    s.rows.push({week: w.week, label: w.label, pick: p.pick, units: p.units, net: p.net});
+                    // Weekday / Weekend / Unknown from the timeframe tag
+                    const wb = weekdayBucket(p);
+                    tallyPick(s[wb === 'WD' ? 'wd' : (wb === 'WE' ? 'we' : 'unk')], p);
                 }
             }
         }
@@ -2507,9 +2573,9 @@
                 <table class="data">
                     <thead><tr>
                         <th></th>
-                        <th class="num">Weekday (Mon–Thu)</th>
-                        <th class="num">Weekend (Fri–Sun)</th>
-                        <th class="num">Date unknown (historical)</th>
+                        <th class="num">Weekday games</th>
+                        <th class="num">Weekend (main slate + gameday)</th>
+                        <th class="num">Unknown (untagged)</th>
                         <th class="num">All</th>
                     </tr></thead>
                     <tbody>
@@ -2522,7 +2588,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <div style="color:var(--dim); font-size:0.78rem; margin-top:0.5rem;">Each cell shows <em>W-L · Net · Hit %</em>. Historical picks have no game date and land under "Date unknown"; new picks entered via the form (once Phase 2 saves dates) auto-populate the Weekday/Weekend columns.</div>
+                <div style="color:var(--dim); font-size:0.78rem; margin-top:0.5rem;">Each cell shows <em>W-L · Net · Hit %</em>. Columns come from each lock's timeframe tag: Weekday games, or Weekend for main slate and gameday adds. Archive locks have no tag and sit under Unknown.</div>
             </div>`;
         }
 
@@ -3937,7 +4003,7 @@
         // for picks only, so every fresh week showed "Tie" from Monday until
         // the first grade landed.
         const hasGraded = [...w.nick.picks, ...w.rj.picks].some(p => pickResult(p) !== null);
-        const winner = !hasGraded ? '—' : (n > r ? 'Nick' : (r > n ? 'RJ' : 'Tie'));
+        const winner = !hasGraded ? fmtNet(null) : (n > r ? 'Nick' : (r > n ? 'RJ' : 'Tie'));
         // Season-to-date tallies (all weeks in the season, not just current)
         let nSeason = 0, rSeason = 0;
         for (const wk of weeks) {
@@ -3973,7 +4039,7 @@
             </div>`;
     }
 
-    /* ===== Render — Changes tab (audit change log) =====
+    /* ===== Render: Changes tab (audit change log) =====
        Reads the pickem_audit table, filled by DB triggers once RJ runs
        SUPABASE_AUDIT.sql in the Supabase SQL editor. Select-only over the
        same anon REST pattern as everything else. Until the table exists the
@@ -4107,6 +4173,54 @@
         makeCollapsible(el);
     }
 
+    /* ===== Narratives tab =====
+       Long-form analyst write-ups embedded in the pickemNarratives JSON
+       tag. The picker lists every stored narrative newest first and the
+       newest is selected by default. */
+    const NARRATIVES = (() => {
+        try {
+            const tagEl = document.getElementById('pickemNarratives');
+            const arr = tagEl ? JSON.parse(tagEl.textContent) : [];
+            return Array.isArray(arr) ? arr : [];
+        } catch (e) { return []; }
+    })();
+    let narrativeSelId = null;
+    // "Oct 19, 2026" from an ISO date, parsed by parts so no timezone shift
+    function fmtNarrDate(iso) {
+        const m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (!m) return String(iso || '');
+        const names = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        return names[Number(m[2]) - 1] + ' ' + Number(m[3]) + ', ' + m[1];
+    }
+    function renderNarratives() {
+        const el = document.getElementById('narratives');
+        if (!el) return;
+        if (!NARRATIVES.length) {
+            el.innerHTML = '<div class="panel-card" style="color:var(--dim);">No narratives yet.</div>';
+            return;
+        }
+        const sorted = [...NARRATIVES].sort((a, b) =>
+            String(b.date || '').localeCompare(String(a.date || '')) || (Number(b.id) - Number(a.id)));
+        if (narrativeSelId === null || !sorted.some(n => String(n.id) === String(narrativeSelId))) {
+            narrativeSelId = sorted[0].id;
+        }
+        const cur = sorted.find(n => String(n.id) === String(narrativeSelId));
+        const opts = sorted.map(n => {
+            const id = escapeHtml(String(n.id));
+            const sel = String(n.id) === String(narrativeSelId) ? ' selected' : '';
+            return `<option value="${id}"${sel}>Narrative ${id} (${escapeHtml(fmtNarrDate(n.date))})</option>`;
+        }).join('');
+        const byline = escapeHtml(fmtNarrDate(cur.date)) + (cur.author ? ' \u00b7 by ' + escapeHtml(cur.author) : '');
+        el.innerHTML = `<div class="season-row narr-row"><select id="narrativeSel" aria-label="Narrative">${opts}</select></div>
+            <div class="panel-card narrative">
+                <h2 class="narr-title">${escapeHtml(cur.title || '')}</h2>
+                <div class="byline">${byline}</div>
+                ${cur.html || ''}
+            </div>`;
+        const sel = el.querySelector('#narrativeSel');
+        if (sel) sel.addEventListener('change', () => { narrativeSelId = sel.value; renderNarratives(); });
+    }
+
     function renderAll() {
         renderSummary();
         const active = document.querySelector('.tab.active').dataset.panel;
@@ -4116,6 +4230,7 @@
         else if (active === 'locks') renderLocks();
         else if (active === 'rules') renderRules();
         else if (active === 'changes') renderChanges();
+        else if (active === 'narratives') renderNarratives();
         else if (active === 'enter') renderEnter();
         makeCollapsible(document.querySelector('.panel.active'));
     }
