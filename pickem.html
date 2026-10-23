@@ -991,8 +991,25 @@
         .clp-count-slot select.clp-count { min-height: 42px; font-size: 16px; }
     }
 
-    /* Changes tab */
+    /* Changes tab. Row tints by what changed: red deleted, orange teams
+       changed, yellow units changed; translucent so they read on the dark
+       palette, with a matching left border. */
     #changes .chg-del td { color: var(--bad); }
+    #changes tr.chg-del td { background: rgba(239, 68, 68, 0.15); }
+    #changes tr.chg-del td:first-child { border-left: 3px solid rgba(239, 68, 68, 0.85); }
+    #changes tr.chg-teams td { background: rgba(255, 150, 40, 0.16); }
+    #changes tr.chg-teams td:first-child { border-left: 3px solid rgba(255, 150, 40, 0.85); }
+    #changes tr.chg-units td { background: rgba(255, 215, 60, 0.14); }
+    #changes tr.chg-units td:first-child { border-left: 3px solid rgba(255, 215, 60, 0.85); }
+    #changes .chg-legend { color: var(--dim); font-size: 0.74rem; margin: 0 0 0.6rem; }
+    #changes .chg-legend .lg {
+        display: inline-block; width: 10px; height: 10px; border-radius: 2px;
+        margin: 0 4px 0 10px; vertical-align: middle;
+    }
+    #changes .chg-legend .lg:first-child { margin-left: 0; }
+    #changes .chg-legend .lg-del { background: rgba(239, 68, 68, 0.6); }
+    #changes .chg-legend .lg-teams { background: rgba(255, 150, 40, 0.6); }
+    #changes .chg-legend .lg-units { background: rgba(255, 215, 60, 0.6); }
     #changes .chg-desc { white-space: normal; }
     #changes .chg-count {
         display: inline-block; margin-left: 6px; padding: 0 6px;
@@ -1178,41 +1195,46 @@
         return Math.min(CURRENT_SEASON_TOTAL_WEEKS - 1, Math.max(0, wk));
     }
 
-    /* ===== Pick lock windows (house rules, current season only) =====
-       A pick created BEFORE its week's Saturday 12:05 PM Eastern belongs to
-       Weekday/Main Slate and locks at that Saturday 12:05; a pick created
-       AFTER that is a Gameday Addition and locks Sunday 11:59 PM
-       Eastern. Cutoffs are built as UTC timestamps from the Eastern wall
-       time; the CFB season runs on daylight time, so Eastern is UTC-4. */
-    const ET_OFFSET_HOURS = 4;
+    /* ===== Pick lock (house rules, current season only) =====
+       Every pick in a week, whatever its timeframe tag, locks at ONE
+       cutoff: that week's Sunday 2:00 AM Eastern (week Monday + 6 days,
+       02:00 ET). The tags (weekday / main / gameday) stay purely for
+       categorization and the Breakdown tables; they no longer pick a lock
+       time. Cutoffs are built as UTC instants from the Eastern wall time
+       with a daylight-saving aware offset, so the lock is right both
+       before and after the November fall back. */
+    // Hours Eastern sits behind UTC at a given UTC instant: 4 (EDT) from
+    // the second Sunday of March 2:00 AM ET through the first Sunday of
+    // November 2:00 AM ET, 5 (EST) otherwise. Transition instants use the
+    // offset in effect just before them (see weekLockTimes).
+    function easternOffsetHours(utcMs) {
+        const y = new Date(utcMs).getUTCFullYear();
+        const nthSundayUtc = (month, n) => {
+            const first = new Date(Date.UTC(y, month, 1));
+            const day = 1 + ((7 - first.getUTCDay()) % 7) + (n - 1) * 7;
+            return Date.UTC(y, month, day);
+        };
+        const dstStart = nthSundayUtc(2, 2) + (2 + 5) * 3600000;   // 2:00 AM EST is 07:00Z
+        const dstEnd   = nthSundayUtc(10, 1) + (2 + 4) * 3600000;  // 2:00 AM EDT is 06:00Z
+        return (utcMs >= dstStart && utcMs < dstEnd) ? 4 : 5;
+    }
     function weekLockTimes(week) {
         const parts = CURRENT_SEASON_WEEK0_MONDAY.split('-').map(Number);
         const week0MondayUtc = Date.UTC(parts[0], parts[1] - 1, parts[2]);
-        const weekMondayUtc = week0MondayUtc + week * 7 * 86400000;
-        return {
-            // Saturday 12:05 PM ET (9:05 AM Arizona), as UTC ms. The five
-            // minute grace past the noon kickoffs is RJ's house rule
-            // (2026-10-10) so a pick typed as the early games start still
-            // lands in the slate.
-            saturdayNoonEt: weekMondayUtc + 5 * 86400000 + (12 + ET_OFFSET_HOURS) * 3600000 + 5 * 60000,
-            // Sunday 11:59 PM ET, as UTC ms
-            sundayNightEt: weekMondayUtc + 6 * 86400000 + (23 + ET_OFFSET_HOURS) * 3600000 + 59 * 60000,
-        };
+        const sundayMidnightUtc = week0MondayUtc + (week * 7 + 6) * 86400000;
+        // Sunday 2:00 AM ET as a UTC instant. The offset is read from the
+        // instant just before the EDT reading of that wall time, so on the
+        // fall back Sunday itself (Nov 1 2026, when 2:00 AM EDT is the very
+        // moment clocks turn back) the cutoff stays 2:00 AM EDT, 06:00Z,
+        // rather than jumping to the EST reading an hour later.
+        const edtReading = sundayMidnightUtc + (2 + 4) * 3600000;
+        const offset = easternOffsetHours(edtReading - 1);
+        return { sunday2amEt: sundayMidnightUtc + (2 + offset) * 3600000 };
     }
     function pickLockTime(p, week) {
-        const cut = weekLockTimes(week);
-        // The pick's own timeframe tag (fields.section) is authoritative:
-        // weekday and main lock Saturday noon, gameday locks Sunday night.
-        const section = p && p.fields && p.fields.section;
-        if (section === 'gameday') return cut.sundayNightEt;
-        if (section === 'weekday' || section === 'main') return cut.saturdayNoonEt;
-        // Legacy rows without a tag keep the created_at heuristic: created
-        // after Saturday noon means a Gameday Addition with the later
-        // cutoff. Missing/unparseable created_at falls back to the earlier
-        // Saturday cutoff, the conservative choice.
-        const created = p && p.created_at ? Date.parse(p.created_at) : NaN;
-        if (!isNaN(created) && created > cut.saturdayNoonEt) return cut.sundayNightEt;
-        return cut.saturdayNoonEt;
+        // One cutoff for every pick in the week, tagged or untagged; no
+        // created_at heuristic any more
+        return weekLockTimes(week).sunday2amEt;
     }
     function pickIsLocked(p, week) {
         return Date.now() > pickLockTime(p, week);
@@ -1839,8 +1861,8 @@
                     // Every row grades here, lock rows included (gradePick
                     // pays lock nets at 1.5x, same math as the auto-grader).
                     // The trash disappears once the pick's lock time passes
-                    // (Saturday noon ET, or Sunday night for Gameday adds);
-                    // deletePick double-checks against stale DOM.
+                    // (Sunday 2:00 AM Eastern for every pick); deletePick
+                    // double-checks against stale DOM.
                     const lockMs = pickLockTime(p, w.week);
                     const delBtn = Date.now() > lockMs ? ''
                         : `<button class="grade-btn del" title="Delete pick" onclick="deletePick('${p._id}', ${lockMs})">${TRASH_ICON}</button>`;
@@ -2616,9 +2638,8 @@
             <div class="panel-card rules-prose">
                 <h3>Lock Schedule</h3>
                 <ul>
-                    <li>Every pick carries a <strong>timeframe tag</strong> chosen on its entry card (weekday game, main slate, or gameday addition); the tag decides which lock time applies.</li>
-                    <li><strong>Weekday Games + Main Slate</strong> picks lock at <strong>Saturday 12:05 PM Eastern</strong> (9:05 AM Arizona).</li>
-                    <li><strong>Gameday Additions</strong> lock <strong>Sunday night</strong>.</li>
+                    <li>Every pick carries a <strong>timeframe tag</strong> chosen on its entry card (weekday game, main slate, or gameday addition); the tag is for tracking only and does not change the lock time.</li>
+                    <li><strong>All picks lock Sunday 2:00 AM Eastern</strong>, which is <strong>Saturday 11:00 PM Arizona</strong> while Eastern is on daylight time, and <strong>Sunday 12:00 AM Arizona</strong> once Eastern falls back to standard time on November 1.</li>
                     <li>Once a pick's lock time passes, deleting and editing are disabled; its card shows dimmed with a small locked note.</li>
                 </ul>
             </div>
@@ -2690,7 +2711,7 @@
         // what autosave reads, so attribution can never depend on where the
         // row sits. RJ cards keep the dark look, Nick cards go steel via the
         // person-nick class. Every card carries a required timeframe tag
-        // (weekday, main slate, gameday add) that sets its lock window and
+        // (weekday, main slate, gameday add) kept for tracking, which
         // persists in fields.section.
         function formRow(person, i) {
             const personLabel = person === 'nick' ? 'Nick' : 'RJ';
@@ -2710,10 +2731,10 @@
                     <option value="1H TTO">1H TTO</option>
                     <option value="CLP" title="Can't Lose Parlay">CLP</option>
                 </select>
-                <span class="sign-group timeframe" title="Timeframe, decides the pick's lock time">
-                    <label title="Weekday game (locks Saturday 12:05 PM ET)"><input type="radio" name="tf-${uid}" value="weekday" />${TF_WEEKDAY_ICON}</label>
-                    <label title="Main Slate, Saturday (locks Saturday 12:05 PM ET)"><input type="radio" name="tf-${uid}" value="main" />${TF_MAIN_ICON}</label>
-                    <label title="Gameday Addition (locks Sunday night)"><input type="radio" name="tf-${uid}" value="gameday" />${TF_GAMEDAY_ICON}</label>
+                <span class="sign-group timeframe" title="Timeframe tag, for tracking only">
+                    <label title="Weekday game"><input type="radio" name="tf-${uid}" value="weekday" />${TF_WEEKDAY_ICON}</label>
+                    <label title="Main Slate, Saturday"><input type="radio" name="tf-${uid}" value="main" />${TF_MAIN_ICON}</label>
+                    <label title="Gameday Addition"><input type="radio" name="tf-${uid}" value="gameday" />${TF_GAMEDAY_ICON}</label>
                 </span>
                 <span class="sign-group side-h" title="Bet on home team">
                     <label><input type="radio" name="side-${uid}" value="H" />H</label>
@@ -4122,6 +4143,24 @@
         if (String(u(o.week)) !== String(u(n.week))) parts.push('week: ' + u(o.week) + ' to ' + u(n.week));
         return parts.length ? parts.join('; ') : 'saved again (no visible change)';
     }
+    // Row tint for one (possibly coalesced) entry: red for a deleted pick,
+    // orange when the teams changed (home, away, picked side, or the CLP
+    // teams array), yellow when the units changed. Priority when several
+    // apply: delete, then teams, then units. Everything else stays neutral.
+    function auditRowTint(action, oldRow, newRow) {
+        if (action === 'DELETE') return 'chg-del';
+        if (action !== 'UPDATE') return '';
+        const o = oldRow || {}, n = newRow || {};
+        const of2 = (o.fields && typeof o.fields === 'object') ? o.fields : {};
+        const nf2 = (n.fields && typeof n.fields === 'object') ? n.fields : {};
+        const str = v => (v === undefined || v === null) ? '' : String(v).trim();
+        const teamsOf = f => Array.isArray(f.teams) ? f.teams.map(str).filter(Boolean).join(' / ') : '';
+        const teamsChanged = str(of2.home) !== str(nf2.home) || str(of2.away) !== str(nf2.away)
+            || str(of2.side) !== str(nf2.side) || teamsOf(of2) !== teamsOf(nf2);
+        if (teamsChanged) return 'chg-teams';
+        if (str(o.units) !== str(n.units)) return 'chg-units';
+        return '';
+    }
     // --- end changes-tab pure helpers ---
 
     async function renderChanges() {
@@ -4150,7 +4189,7 @@
             const wkName = (src.week === null || src.week === undefined) ? '?' : weekDisplayName(Number(src.week));
             const actWord = en.action === 'INSERT' ? 'Added' : (en.action === 'DELETE' ? 'Deleted' : 'Edited');
             const badge = en.count > 1 ? `<span class="chg-count">${en.count} saves</span>` : '';
-            return `<tr class="${en.action === 'DELETE' ? 'chg-del' : ''}">
+            return `<tr class="${auditRowTint(en.action, en.old_row, en.new_row)}">
                 <td>${fmtStamp(en.happened_at)}</td>
                 <td>${who}</td>
                 <td>${wkName}</td>
@@ -4160,7 +4199,8 @@
         }).join('');
         el.innerHTML = `<div class="panel-card">
             <h3>Change Log</h3>
-            <div style="color:var(--dim); font-size:0.78rem; margin:0 0 0.6rem;">Every pick added, edited, deleted, or graded, newest first. Rapid autosave edits to the same pick collapse into one line. Showing the latest 300 raw changes.</div>
+            <div style="color:var(--dim); font-size:0.78rem; margin:0 0 0.4rem;">Every pick added, edited, deleted, or graded, newest first. Rapid autosave edits to the same pick collapse into one line. Showing the latest 300 raw changes.</div>
+            <div class="chg-legend"><span class="lg lg-del"></span>red = deleted <span class="lg lg-teams"></span>orange = teams changed <span class="lg lg-units"></span>yellow = units changed</div>
             <table class="data">
                 <thead><tr>
                     <th>When</th><th>Who</th><th>Week</th><th>Action</th><th>Change</th>
