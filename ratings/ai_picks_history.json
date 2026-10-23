@@ -1,30 +1,30 @@
 {
-  "as_of": "2026-10-22",
+  "as_of": "2026-10-23",
   "aggregates": {
     "today": {
-      "picks": 0,
+      "picks": 1,
       "wins": 0,
       "losses": 0,
       "pushes": 0,
-      "pending": 0,
+      "pending": 1,
       "units_net": 0.0,
       "hit_pct": null
     },
     "week": {
       "picks": 3,
-      "wins": 2,
+      "wins": 1,
       "losses": 1,
       "pushes": 0,
-      "pending": 0,
-      "units_net": 1.0,
-      "hit_pct": 0.6666666666666666
+      "pending": 1,
+      "units_net": 0.0,
+      "hit_pct": 0.5
     },
     "season": {
-      "picks": 222,
+      "picks": 223,
       "wins": 130,
       "losses": 91,
       "pushes": 0,
-      "pending": 1,
+      "pending": 2,
       "units_net": 40.0,
       "hit_pct": 0.5882352941176471
     }
@@ -3886,6 +3886,37 @@
         "pushes": 0,
         "pending": 0,
         "units_net": 1.0
+      }
+    },
+    "2026-10-23": {
+      "generated_at": "2026-10-23T05:25:04",
+      "model": "claude-opus-5",
+      "date": "2026-10-23",
+      "picks": [
+        {
+          "rank": 1,
+          "pick": "MIL",
+          "home_team": "MIL",
+          "away_team": "TBR",
+          "rating_source": "R2",
+          "delta": 1.64,
+          "units": 1,
+          "confidence": "medium",
+          "reasoning": "All three ratings agree on Milwaukee (R1 +1.43, R2 +1.64, R3 +1.33), and R2 carries the largest delta while being the hottest strong-play model: 8-3 (73%, +7.0u) over 30 days, 4-2 over 14 days, and 263-208 (56%, +79.0u) on the season. Milwaukee is 47-22 (68%) when the model likes them, including 26-12 (68%, +17.0u) on strong plays, and the edge is supported by the trends category which is firing at 8-3 (73%) in the last 14 days versus a 56% season baseline. Only one game on the slate, so this is the lone play rather than forcing duplicate exposure on the same game.",
+          "outcome": null,
+          "net": 0
+        }
+      ],
+      "usage": {
+        "input_tokens": 2506,
+        "output_tokens": 491
+      },
+      "totals": {
+        "wins": 0,
+        "losses": 0,
+        "pushes": 0,
+        "pending": 1,
+        "units_net": 0.0
       }
     }
   }
