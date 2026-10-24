@@ -997,10 +997,20 @@
     #changes .chg-del td { color: var(--bad); }
     #changes tr.chg-del td { background: rgba(239, 68, 68, 0.15); }
     #changes tr.chg-del td:first-child { border-left: 3px solid rgba(239, 68, 68, 0.85); }
-    #changes tr.chg-teams td { background: rgba(255, 150, 40, 0.16); }
-    #changes tr.chg-teams td:first-child { border-left: 3px solid rgba(255, 150, 40, 0.85); }
-    #changes tr.chg-units td { background: rgba(255, 215, 60, 0.14); }
-    #changes tr.chg-units td:first-child { border-left: 3px solid rgba(255, 215, 60, 0.85); }
+    #changes tr.chg-teams td { background: rgba(255, 120, 0, 0.22); }
+    #changes tr.chg-teams td:first-child { border-left: 3px solid #ff7a00; }
+    #changes tr.chg-units td { background: rgba(255, 221, 0, 0.20); }
+    #changes tr.chg-units td:first-child { border-left: 3px solid #ffd400; }
+    /* Tag word on the right of each tinted row, so the kind of change never
+       depends on tint alone */
+    #changes .chg-tag {
+        float: right; margin-left: 8px; padding: 1px 6px; border-radius: 3px;
+        font-size: 0.62rem; font-weight: 800; letter-spacing: 0.08em;
+        border: 1px solid currentColor; line-height: 1.4;
+    }
+    #changes tr.chg-del .chg-tag { color: #ff5a5a; }
+    #changes tr.chg-teams .chg-tag { color: #ff7a00; }
+    #changes tr.chg-units .chg-tag { color: #ffd400; }
     #changes .chg-legend { color: var(--dim); font-size: 0.74rem; margin: 0 0 0.6rem; }
     #changes .chg-legend .lg {
         display: inline-block; width: 10px; height: 10px; border-radius: 2px;
@@ -1008,8 +1018,8 @@
     }
     #changes .chg-legend .lg:first-child { margin-left: 0; }
     #changes .chg-legend .lg-del { background: rgba(239, 68, 68, 0.6); }
-    #changes .chg-legend .lg-teams { background: rgba(255, 150, 40, 0.6); }
-    #changes .chg-legend .lg-units { background: rgba(255, 215, 60, 0.6); }
+    #changes .chg-legend .lg-teams { background: #ff7a00; }
+    #changes .chg-legend .lg-units { background: #ffd400; }
     #changes .chg-desc { white-space: normal; }
     #changes .chg-count {
         display: inline-block; margin-left: 6px; padding: 0 6px;
@@ -2053,6 +2063,147 @@
             </div>`;
         }
 
+        /* ===== By Unit Size =====
+           Everything below is built from the same graded data as the rest
+           of the tab: pending picks count in Picks only, pushes are graded,
+           the mortal lock 1.5x is already baked into net. Units risked is
+           the stake on GRADED picks, so ROI is net over risked. */
+        const UNIT_SIZES = [0.5, 1, 1.5, 2, 2.5, 3, 4];
+        const sizeKey = u => UNIT_SIZES.includes(u) ? String(u) : 'other';
+        const sizeLabel = k => k === 'other' ? 'Other sizes' : k + 'u';
+        const UNIT_TF_COLS = [
+            { key: 'weekday', label: 'Weekday' }, { key: 'main', label: 'Main' },
+            { key: 'gameday', label: 'Gameday' }, { key: 'untagged', label: 'Untagged' },
+        ];
+        const emptyUnit = () => ({picks:0, wins:0, losses:0, pushes:0, net:0, uWon:0, uLost:0, risked:0});
+        const tallyUnit = (b, p, u) => {
+            tallyPick(b, p);
+            if (pickResult(p) !== null) b.risked += u;
+        };
+        const roiOf = b => b.risked > 0 ? Math.round(b.net / b.risked * 100) + '%' : fmtNet(null);
+        const pctOfB = b => (b.wins + b.losses) > 0 ? Math.round(b.wins / (b.wins + b.losses) * 100) + '%' : fmtNet(null);
+        const recOf = b => `${b.wins}-${b.losses}${b.pushes ? '-' + b.pushes : ''}`;
+        // Matrix cell "W-L net", colored by net sign; placeholder until graded
+        const cellOf = (b, bold) => (b.wins + b.losses + b.pushes) === 0
+            ? `<td class="num" style="color:var(--dim)">${fmtNet(null)}</td>`
+            : `<td class="num ${classForNet(b.net)}"${bold ? ' style="font-weight:700"' : ''}>${b.wins}-${b.losses} ${fmtNet(b.net)}</td>`;
+        const tierOf = u => u < 1.5 ? 'small' : (u < 2.5 ? 'standard' : 'conviction');
+
+        function computeUnitStats(weeks, who) {
+            const keys = [...UNIT_SIZES.map(String), 'other'];
+            const bySize = {}; const byBt = {}; const byTf = {}; const locks = {};
+            for (const k of keys) {
+                bySize[k] = emptyUnit(); byBt[k] = {}; byTf[k] = {}; locks[k] = emptyUnit();
+                for (const bt of BET_ORDER) byBt[k][bt] = emptyUnit();
+                for (const c of UNIT_TF_COLS) byTf[k][c.key] = emptyUnit();
+            }
+            const tiers = { small: emptyUnit(), standard: emptyUnit(), conviction: emptyUnit() };
+            let placed = 0, convictionPlaced = 0, totalPicks = 0;
+            const weeksWithPicks = new Set();
+            for (const w of weeks) for (const p of w[who].picks) {
+                const u = numOrZero(p.units);
+                const k = sizeKey(u);
+                totalPicks++; placed += u;
+                weeksWithPicks.add((w.label || '') + '#' + w.week);
+                tallyUnit(bySize[k], p, u);
+                if (BET_ORDER.includes(p.bet_type)) tallyUnit(byBt[k][p.bet_type], p, u);
+                tallyUnit(byTf[k][UNIT_TF_COLS.some(c => c.key === p.section) ? p.section : 'untagged'], p, u);
+                const t = tierOf(u);
+                tallyUnit(tiers[t], p, u);
+                if (t === 'conviction') convictionPlaced += u;
+                if (p.mortal_lock) tallyUnit(locks[k], p, u);
+            }
+            return { keys, bySize, byBt, byTf, locks, tiers, placed, convictionPlaced, totalPicks,
+                     weeks: weeksWithPicks.size };
+        }
+
+        function unitSizeSection(label, weeks, who) {
+            const st = computeUnitStats(weeks, who);
+            const tile = (name, b) => `<div class="stat-tile">
+                <div class="value ${classForNet(b.net)}">${recOf(b)}</div>
+                <div class="label">${name}<br>${fmtNet(b.net)}u, ROI ${roiOf(b)}</div>
+            </div>`;
+            const strip = `<div class="stat-row">
+                ${tile('Small plays (under 1.5u)', st.tiers.small)}
+                ${tile('Standard (1.5u to 2u)', st.tiers.standard)}
+                ${tile('Conviction (2.5u+)', st.tiers.conviction)}
+            </div>`;
+            const avgWeek = st.weeks > 0 ? (st.placed / st.weeks) : 0;
+            const avgPick = st.totalPicks > 0 ? (st.placed / st.totalPicks) : 0;
+            const convShare = st.placed > 0 ? Math.round(st.convictionPlaced / st.placed * 100) + '%' : fmtNet(null);
+            const profile = `<div style="color:var(--dim); font-size:0.78rem; margin:-0.35rem 0 0.9rem 0.2rem;">${label} stake profile: <strong>${avgWeek.toFixed(1)}u</strong> placed per week on average, <strong>${avgPick.toFixed(2)}u</strong> per pick, <strong>${convShare}</strong> of all units on conviction plays (2.5u and up). Records count graded picks only; ROI is net over units risked on graded picks.</div>`;
+
+            const sizeRows = st.keys.map(k => {
+                const b = st.bySize[k];
+                if (b.picks === 0) return '';
+                return `<tr>
+                    <td>${sizeLabel(k)}</td>
+                    <td class="num">${b.picks}</td>
+                    <td class="num">${recOf(b)}</td>
+                    <td class="num">${pctOfB(b)}</td>
+                    <td class="num">${b.risked.toFixed(1)}</td>
+                    <td class="num"><span class="net-good">+${b.uWon.toFixed(2)}</span> / <span class="net-bad">-${b.uLost.toFixed(2)}</span></td>
+                    <td class="num ${classForNet(b.net)}">${fmtNet(b.net)}</td>
+                    <td class="num ${classForNet(b.net)}">${roiOf(b)}</td>
+                </tr>`;
+            }).join('');
+            const sizeTable = `<div class="panel-card">
+                <h3>${label} · Record by Unit Size</h3>
+                <table class="data">
+                    <thead><tr>
+                        <th>Stake</th><th class="num">Picks</th><th class="num">W-L-P</th><th class="num">Win %</th>
+                        <th class="num" title="Stake on graded picks">Risked</th>
+                        <th class="num" title="Gross units won on winners / gross units lost on losers">Units W / L</th>
+                        <th class="num">Net (u)</th><th class="num" title="Net divided by units risked">ROI</th>
+                    </tr></thead>
+                    <tbody>${sizeRows || '<tr><td colspan="8" style="text-align:center; color:var(--dim); padding:1rem;">No picks yet.</td></tr>'}</tbody>
+                </table>
+            </div>`;
+
+            // Generic size x column matrix with a Total column and a Total row
+            function matrix(title, cols, cellsFor) {
+                const usedKeys = st.keys.filter(k => st.bySize[k].picks > 0);
+                const colTotals = {}; for (const c of cols) colTotals[c.key] = emptyUnit();
+                const grand = emptyUnit();
+                const addInto = (acc, b) => { acc.picks += b.picks; acc.wins += b.wins; acc.losses += b.losses; acc.pushes += b.pushes; acc.net += b.net; };
+                const rows = usedKeys.map(k => {
+                    const rowTotal = emptyUnit();
+                    const tds = cols.map(c => {
+                        const b = cellsFor(k)[c.key];
+                        addInto(rowTotal, b); addInto(colTotals[c.key], b);
+                        return cellOf(b);
+                    }).join('');
+                    addInto(grand, rowTotal);
+                    return `<tr><td>${sizeLabel(k)}</td>${tds}${cellOf(rowTotal, true)}</tr>`;
+                }).join('');
+                const totalRow = `<tr><td><strong>Total</strong></td>${cols.map(c => cellOf(colTotals[c.key], true)).join('')}${cellOf(grand, true)}</tr>`;
+                return `<div class="panel-card">
+                    <h3>${label} · ${title}</h3>
+                    <table class="data">
+                        <thead><tr><th>Stake</th>${cols.map(c => `<th class="num">${c.label}</th>`).join('')}<th class="num">Total</th></tr></thead>
+                        <tbody>${rows || '<tr><td colspan="' + (cols.length + 2) + '" style="text-align:center; color:var(--dim); padding:1rem;">No picks yet.</td></tr>'}${rows ? totalRow : ''}</tbody>
+                    </table>
+                    <div style="color:var(--dim); font-size:0.78rem; margin-top:0.5rem;">Each cell shows <em>W-L net</em> for graded picks at that stake.</div>
+                </div>`;
+            }
+            const btMatrix = matrix('Unit Size by Bet Type', BET_ORDER.map(bt => ({ key: bt, label: bt })), k => st.byBt[k]);
+            const tfMatrix = matrix('Unit Size by Timeframe', UNIT_TF_COLS, k => st.byTf[k]);
+
+            const lockRows = st.keys.filter(k => st.locks[k].picks > 0).map(k => {
+                const b = st.locks[k];
+                return `<tr><td>${sizeLabel(k)}</td><td class="num">${recOf(b)} <span class="${classForNet(b.net)}">${fmtNet(b.net)}u</span></td></tr>`;
+            }).join('');
+            const lockTable = `<div class="panel-card">
+                <h3>${label} · Mortal Locks by Unit Size</h3>
+                <table class="data">
+                    <thead><tr><th>Stake</th><th class="num">Lock W-L-P and net</th></tr></thead>
+                    <tbody>${lockRows || '<tr><td colspan="2" style="text-align:center; color:var(--dim); padding:1rem;">No locks yet.</td></tr>'}</tbody>
+                </table>
+            </div>`;
+
+            return `<h3 style="text-align:center; margin:0.4rem 0 0.6rem;">${label}</h3>` + strip + profile + sizeTable + btMatrix + tfMatrix + lockTable;
+        }
+
         // By Timeframe: one record row per timeframe tag, same columns as
         // the By Bet Type table. Untagged shows only when the view holds
         // untagged picks (archive seasons, the All view).
@@ -2171,7 +2322,10 @@
             ${wdCrossTable('Nick', weeks, 'nick')}
             ${wdCrossTable('RJ',   weeks, 'rj')}
             ${timeframeTable('Nick', weeks, 'nick')}
-            ${timeframeTable('RJ',   weeks, 'rj')}`;
+            ${timeframeTable('RJ',   weeks, 'rj')}
+            <h2 style="color:var(--accent); text-transform:uppercase; letter-spacing:0.06em; font-size:0.95rem; margin:1.5rem 0 0.75rem;">By Unit Size</h2>
+            ${unitSizeSection('Nick', weeks, 'nick')}
+            ${unitSizeSection('RJ',   weeks, 'rj')}`;
     }
 
     // ML line-range buckets — used by the ML performance breakdown on the
@@ -4189,12 +4343,15 @@
             const wkName = (src.week === null || src.week === undefined) ? '?' : weekDisplayName(Number(src.week));
             const actWord = en.action === 'INSERT' ? 'Added' : (en.action === 'DELETE' ? 'Deleted' : 'Edited');
             const badge = en.count > 1 ? `<span class="chg-count">${en.count} saves</span>` : '';
-            return `<tr class="${auditRowTint(en.action, en.old_row, en.new_row)}">
+            const tint = auditRowTint(en.action, en.old_row, en.new_row);
+            const tagWord = tint === 'chg-del' ? 'DELETED' : (tint === 'chg-teams' ? 'TEAMS' : (tint === 'chg-units' ? 'UNITS' : ''));
+            const tag = tagWord ? `<span class="chg-tag">${tagWord}</span>` : '';
+            return `<tr class="${tint}">
                 <td>${fmtStamp(en.happened_at)}</td>
                 <td>${who}</td>
                 <td>${wkName}</td>
                 <td>${actWord}${badge}</td>
-                <td class="chg-desc">${escapeHtml(describeAuditChange(en.action, en.old_row, en.new_row))}</td>
+                <td class="chg-desc">${tag}${escapeHtml(describeAuditChange(en.action, en.old_row, en.new_row))}</td>
             </tr>`;
         }).join('');
         el.innerHTML = `<div class="panel-card">
