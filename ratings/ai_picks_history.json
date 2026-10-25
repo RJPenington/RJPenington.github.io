@@ -1,32 +1,32 @@
 {
-  "as_of": "2026-10-24",
+  "as_of": "2026-10-25",
   "aggregates": {
     "today": {
-      "picks": 1,
+      "picks": 0,
       "wins": 0,
       "losses": 0,
       "pushes": 0,
-      "pending": 1,
+      "pending": 0,
       "units_net": 0.0,
       "hit_pct": null
     },
     "week": {
-      "picks": 4,
-      "wins": 2,
-      "losses": 1,
+      "picks": 3,
+      "wins": 3,
+      "losses": 0,
       "pushes": 0,
-      "pending": 1,
-      "units_net": 1.0,
-      "hit_pct": 0.6666666666666666
+      "pending": 0,
+      "units_net": 3.0,
+      "hit_pct": 1.0
     },
     "season": {
       "picks": 224,
-      "wins": 131,
+      "wins": 132,
       "losses": 91,
       "pushes": 0,
-      "pending": 2,
-      "units_net": 41.0,
-      "hit_pct": 0.5900900900900901
+      "pending": 1,
+      "units_net": 42.0,
+      "hit_pct": 0.5919282511210763
     }
   },
   "picks_by_date": {
@@ -3934,8 +3934,8 @@
           "units": 1,
           "confidence": "low",
           "reasoning": "Only one game on the slate, and all three ratings agree on Milwaukee (R1 +0.25, R2 +0.57, R3 +0.73), with R3 the strongest and the best season strong-play rating at 264-195 (58%, +92.0u) plus 6-2 (75%, +4.0u) over 30 days. MIL when the model likes them is 48-22 (69%) overall and 27-12 (69%, +18.0u) on strong plays, and the edge leans on the trends category which is 9-3 (75%) in the last 14 days versus 56% on the season. Delta is under 1.0 so this is a minimum 1u play at a modest -125 price; no second game exists to avoid duplicating.",
-          "outcome": null,
-          "net": 0
+          "outcome": "W",
+          "net": 1
         }
       ],
       "usage": {
@@ -3943,11 +3943,11 @@
         "output_tokens": 482
       },
       "totals": {
-        "wins": 0,
+        "wins": 1,
         "losses": 0,
         "pushes": 0,
-        "pending": 1,
-        "units_net": 0.0
+        "pending": 0,
+        "units_net": 1.0
       }
     }
   }
