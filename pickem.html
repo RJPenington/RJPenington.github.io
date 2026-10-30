@@ -478,6 +478,15 @@
     }
     .form-row.bt-ou > .home       { grid-column: 4; }
     .form-row.bt-ou > .away       { grid-column: 5; }
+    /* Away-first weeks (AWAY_FIRST_FROM_WEEK and later): the same inputs
+       shown Away then Home, with the A toggle before the H toggle. DOM
+       order, bindings and field identities never change. */
+    .form-row.away-first > .side-a { grid-column: 4; }
+    .form-row.away-first > .away   { grid-column: 5; }
+    .form-row.away-first > .side-h { grid-column: 6; }
+    .form-row.away-first > .home   { grid-column: 7; }
+    .form-row.bt-ou.away-first > .away { grid-column: 4; }
+    .form-row.bt-ou.away-first > .home { grid-column: 5; }
     .form-row.bt-ou > .sign-slot  { grid-column: 6; }
     .form-row.bt-ou > .points     { grid-column: 7; }
     .form-row.bt-ou > .units      { grid-column: 8; }
@@ -880,6 +889,12 @@
         .form-row > .side-a     { order: 4; }
         .form-row > .home       { order: 6; flex: 1 1 40%; min-width: 0; }
         .form-row > .away       { order: 7; flex: 1 1 40%; min-width: 0; }
+        /* Away-first weeks: A toggle takes the right corner spot, away box
+           leads line 2 */
+        .form-row.away-first > .side-a { order: 3; margin-left: auto; }
+        .form-row.away-first > .side-h { order: 4; margin-left: 0; }
+        .form-row.away-first > .away   { order: 6; }
+        .form-row.away-first > .home   { order: 7; }
         .form-row > .sign-slot  { order: 9; }
         /* O/U only: the direction bubbles ride the top right corner of
            line 1 (the hidden H/A bubbles free that corner). TTO keeps its
@@ -1190,6 +1205,12 @@
        purely from their embedded data. */
     const CURRENT_SEASON_TOTAL_WEEKS = 18;              // weeks 0 through 17, postseason included
     const CURRENT_SEASON_WEEK0_MONDAY = '2026-08-24';   // Monday starting CFB Week 0's game week
+    // Enter cards read Away then Home ("Away @ Home" order) from this week
+    // on; earlier weeks keep Home then Away so a week already in progress
+    // never shuffles mid-week. Pure layout: the inputs keep their identity
+    // and bindings, only their visual order (and the H/A toggle order)
+    // changes, via the away-first class and CSS alone.
+    const AWAY_FIRST_FROM_WEEK = 10;
     // Weeks 15 to 17 are the postseason slots; the numeric week value stays
     // in the DB, only the display name changes.
     const SPECIAL_WEEK_NAMES = { 15: 'Conf. Champs', 16: 'Bowl Games', 17: 'CFP Playoff' };
@@ -2867,11 +2888,11 @@
         // person-nick class. Every card carries a required timeframe tag
         // (weekday, main slate, gameday add) kept for tracking, which
         // persists in fields.section.
-        function formRow(person, i) {
+        function formRow(person, i, awayFirst) {
             const personLabel = person === 'nick' ? 'Nick' : 'RJ';
             // Scope uid by person so RJ's row #1 does not collide with Nick's row #1
             const uid = `${person}-slate-${i}`;
-            return `<div class="form-row${person === 'nick' ? ' person-nick' : ''}" data-uid="${uid}" data-person="${person}">
+            return `<div class="form-row${person === 'nick' ? ' person-nick' : ''}${awayFirst ? ' away-first' : ''}" data-uid="${uid}" data-person="${person}">
                 <label class="lock-cell" title="Mortal Lock — pays 1.5× units on win/loss. Only one per week.">
                     <input type="checkbox" class="lock" aria-label="Mortal lock" onchange="onMortalLockChange(this)" />
                 </label>
@@ -2925,18 +2946,26 @@
         // One continuous slate: 25 cards per person, alternating RJ #1,
         // Nick #1, RJ #2, ... with per-person numbering.
         function slateSection() {
+            // Away-first order for the selected week and every later one
+            const awayFirst = enterWeek() >= AWAY_FIRST_FROM_WEEK;
             let rows = '';
             for (let i = 1; i <= 25; i++) {
-                rows += formRow('rj', i) + formRow('nick', i);
+                rows += formRow('rj', i, awayFirst) + formRow('nick', i, awayFirst);
             }
+            const teamCols = awayFirst
+                ? `<span>A</span>
+                <span>Away Team</span>
+                <span>H</span>
+                <span>Home Team</span>`
+                : `<span>H</span>
+                <span>Home Team</span>
+                <span>A</span>
+                <span>Away Team</span>`;
             const header = `<div class="form-col-header">
                 <span title="Mortal Lock">${LOCK_ICON}</span>
                 <span>Bet Type</span>
                 <span>When</span>
-                <span>H</span>
-                <span>Home Team</span>
-                <span>A</span>
-                <span>Away Team</span>
+                ${teamCols}
                 <span>±/OU</span>
                 <span>Pts</span>
                 <span>Units</span>
