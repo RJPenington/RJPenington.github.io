@@ -129,6 +129,14 @@
         .metric-table td.advantage-A { background: rgba(252, 129, 129, 0.1); }
         .hint { font-size: 0.8rem; color: #a0aec0; margin: 0.5rem 0 0.3rem 0; font-style: italic; }
         @media (max-width: 800px) { .breakdown { grid-template-columns: repeat(2, 1fr); } }
+        /* Gambling ROI view on phones (2026-10-30): the four rating cards stack
+           instead of sharing one row, and the wide tables scroll sideways inside
+           their own box instead of crushing every number together. */
+        @media (max-width: 700px) {
+            .roi-grid { grid-template-columns: 1fr !important; }
+            .roi-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .roi-table th, .roi-table td { white-space: nowrap; }
+        }
     </style>
 </head>
 <body>
@@ -428,7 +436,7 @@
             // NOTE: html is declared once at the top of this function. A
             // duplicate `let html` here was a SyntaxError that killed this
             // page's ENTIRE script block (fixed 2026-09-29).
-            html += `<div style="display:grid; grid-template-columns:repeat(${ALL_RATINGS.length}, minmax(0,1fr)); gap:1rem; margin-bottom:1rem;">`;
+            html += `<div class="roi-grid" style="display:grid; grid-template-columns:repeat(${ALL_RATINGS.length}, minmax(0,1fr)); gap:1rem; margin-bottom:1rem;">`;
             for (const r of ALL_RATINGS) {
                 const a = agg[r];
                 html += `<div style="background:#252932; padding:0.8rem; border-radius:6px; border:1px solid #4a5568;">
@@ -444,7 +452,7 @@
 
             // ─── Three WEEKLY cards (Mon–Sun containing today) ─────────────
             html += `<h4 style="margin:1.2rem 0 0.4rem 0; color:#e2e8f0;">This week (Mon ${shortDate(weekStart)} – Sun ${shortDate(weekEnd)})</h4>`;
-            html += `<div style="display:grid; grid-template-columns:repeat(${ALL_RATINGS.length}, minmax(0,1fr)); gap:1rem; margin-bottom:1rem;">`;
+            html += `<div class="roi-grid" style="display:grid; grid-template-columns:repeat(${ALL_RATINGS.length}, minmax(0,1fr)); gap:1rem; margin-bottom:1rem;">`;
             for (const r of ALL_RATINGS) {
                 const a = agg[r];
                 html += `<div style="background:#252932; padding:0.8rem; border-radius:6px; border:1px solid #4a5568;">
@@ -467,7 +475,7 @@
 
             // ─── Per-unit-size tally — both bet-every and strong-plays modes ──
             html += `<h4 style="margin:1rem 0 0.5rem 0; color:#e2e8f0;">By unit size (scaled mode breakdown)</h4>`;
-            html += `<table style="width:100%; border-collapse:collapse; font-size:0.8rem; margin-bottom:1.5rem;">
+            html += `<table class="roi-table" style="width:100%; border-collapse:collapse; font-size:0.8rem; margin-bottom:1.5rem;">
                 <thead>
                   <tr style="background:#252932;">
                     <th rowspan="2" style="text-align:left; padding:0.4rem; border-right:1px solid #4a5568;">Unit</th>
@@ -506,7 +514,7 @@
             html += `</tbody></table>`;
 
             // Day-by-day table: shows each rating's flat/scaled per day
-            html += `<table class="games-table" style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+            html += `<table class="games-table roi-table" style="width:100%; border-collapse:collapse; font-size:0.85rem;">
                 <thead><tr style="background:#252932;">
                   <th style="text-align:left;padding:0.5rem;">Date</th>
                   ${ALL_RATINGS.map(r => `<th style="text-align:right;padding:0.5rem;">R${r} Flat</th>`).join("")}
@@ -549,7 +557,7 @@
                         matchups[game.matchup][r] = game;
                     }
                 }
-                html += `<table style="width:100%; border-collapse:collapse; font-size:0.8rem;">
+                html += `<table class="roi-table" style="width:100%; border-collapse:collapse; font-size:0.8rem;">
                     <thead><tr style="color:#a0aec0;">
                         <th style="text-align:left; padding:0.3rem;">Game</th>
                         ${ALL_RATINGS.map(r => `<th style="text-align:center; padding:0.3rem;">R${r} pick / Δ / units / O / P/L</th>`).join("")}
@@ -601,7 +609,7 @@
             const weeksSorted = [...weekKeys].sort().reverse();
             if (weeksSorted.length) {
                 html += `<h4 style="margin:1.5rem 0 0.5rem 0; color:#e2e8f0;">By week</h4>`;
-                html += `<table style="width:100%; border-collapse:collapse; font-size:0.8rem; margin-bottom:1rem;">
+                html += `<table class="roi-table" style="width:100%; border-collapse:collapse; font-size:0.8rem; margin-bottom:1rem;">
                     <thead>
                       <tr style="background:#252932;">
                         <th rowspan="2" style="text-align:left; padding:0.4rem; border-right:1px solid #4a5568;">Week (Mon)</th>
@@ -681,7 +689,7 @@
                     }
                     html += `</tbody></table>`;
                     // delta-bucket breakdown: does a bigger rating spread mean more trust?
-                    html += `<table style="width:100%; border-collapse:collapse; font-size:0.8rem; margin-bottom:1.5rem;">
+                    html += `<table class="roi-table" style="width:100%; border-collapse:collapse; font-size:0.8rem; margin-bottom:1.5rem;">
                         <thead><tr style="background:#252932; color:#a0aec0; font-size:0.72rem;">
                             <th style="padding:0.35rem; text-align:left;">By rating spread (|delta|)</th>
                             <th style="padding:0.35rem; text-align:center;">0-0.5</th>
@@ -809,7 +817,7 @@
             }
 
             let html = `<h3 style="margin:0.5rem 0;">Postgame: each game shows every rating's pick + final score</h3>`;
-            html += `<div style="display:grid; grid-template-columns:repeat(${ALL_RATINGS.length}, minmax(0,1fr)); gap:1rem; margin-bottom:1rem;">`;
+            html += `<div class="roi-grid" style="display:grid; grid-template-columns:repeat(${ALL_RATINGS.length}, minmax(0,1fr)); gap:1rem; margin-bottom:1rem;">`;
             for (const r of ALL_RATINGS) {
                 const tT = todayTally[r], tO = overallTally[r];
                 const tdayPct = (tT.w+tT.l) ? Math.round(tT.w/(tT.w+tT.l)*100) : "—";
