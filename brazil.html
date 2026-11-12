@@ -213,6 +213,14 @@
   .rate > div { flex: 1 1 140px; }
   .hint { color: var(--dim); font-size: 0.78rem; margin-top: 6px; }
 
+  /* Pack list */
+  .prow { display: grid; grid-template-columns: 34px 30px 1fr 28px; gap: 8px; align-items: center; margin: 6px 0; }
+  .prow .n { color: var(--dim); font-size: 0.8rem; text-align: right; }
+  .prow input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--neon); cursor: pointer; margin: 0 auto; display: block; }
+  .prow input.item { padding: 8px 10px; }
+  .prow.packed input.item { color: var(--dim); text-decoration: line-through; }
+  .packbar { display: flex; justify-content: space-between; align-items: baseline; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); }
+  .packbar .big { font-family: 'Bebas Neue', Impact, sans-serif; font-size: 1.6rem; color: var(--neon); letter-spacing: 0.05em; }
   .banner { padding: 10px 14px; border-radius: 10px; font-size: 0.85rem; margin: 0 0 12px; border: 1px solid; }
   .banner.warn { background: rgba(255, 223, 0, 0.08); border-color: rgba(255, 223, 0, 0.5); color: #ffe866; }
   .banner.err { background: rgba(255, 93, 93, 0.08); border-color: rgba(255, 93, 93, 0.5); color: #ff9c9c; }
@@ -230,6 +238,7 @@
     .money-head { display: none; }
     .mrow { grid-template-columns: 26px 1fr 92px 70px 22px; gap: 5px; }
     .mrow input, .mrow select { padding: 8px 6px; font-size: 0.9rem; }
+    .prow { grid-template-columns: 26px 28px 1fr 22px; gap: 5px; }
     .act .time { min-width: 54px; font-size: 0.66rem; }
   }
 </style>
@@ -300,12 +309,14 @@
   <div class="tabs">
     <div class="tab active" data-tab="itin">Itinerary</div>
     <div class="tab" data-tab="money">Money Tracking</div>
+    <div class="tab" data-tab="pack">Pack List</div>
   </div>
 
   <section id="itin"></section>
   <section id="money" class="hidden"></section>
+  <section id="pack" class="hidden"></section>
 
-  <footer>Rio 2026 trip board. Saves straight to the shared database, so everyone sees the same list.</footer>
+  <footer>Rio 2026 trip board. Itinerary, money, and pack lists save to the shared database, so everyone sees the same thing.</footer>
 </div>
 
 <script>
@@ -318,6 +329,11 @@ const PEOPLE = [
   { key: 'tyler', name: 'Tyler' },
 ];
 const SLOTS = 25;
+const PACK_SLOTS = 45;
+const PACK_OWNERS = [{ key: 'group', name: 'Bring Together' }, ...PEOPLE];
+// Starter items for the shared Bring Together list (local mode only; the
+// SQL setup seeds the shared table the same way)
+const PACK_SEED = ['Type N adapters for charging', 'Bug spray', 'Portable chargers'];
 const DEFAULT_RATE = 5.3;   // BRL per 1 USD, editable on the Subtotal tab
 const DAYS = [
   '2026-11-27', '2026-11-28', '2026-11-29', '2026-11-30', '2026-12-01',
@@ -409,6 +425,7 @@ const store = {
       await sb('/rest/v1/brazil_activities?select=id&limit=1');
       await sb('/rest/v1/brazil_charges?select=id&limit=1');
       await sb('/rest/v1/brazil_settings?select=key&limit=1');
+      await sb('/rest/v1/brazil_packing?select=id&limit=1');
       this.mode = 'live';
     } catch (e) {
       this.mode = 'local';
@@ -417,6 +434,9 @@ const store = {
         : 'Could not reach the shared database. Saving on this device only until it is back.';
       if (LS.get('brazil_activities', null) === null) {
         LS.set('brazil_activities', SEED.map((s, i) => ({ id: 'seed-' + (i + 1), ...s, created_at: '2026-11-12T00:00:00Z' })));
+      }
+      if (LS.get('brazil_packing', null) === null) {
+        LS.set('brazil_packing', PACK_SEED.map((item, i) => ({ owner: 'group', slot: i + 1, item, packed: false })));
       }
     }
   },
@@ -465,6 +485,28 @@ const store = {
     LS.set('brazil_charges', LS.get('brazil_charges', []).filter(x => !(x.person === person && x.slot === slot)));
   },
 
+  /* packing: one row per (owner, slot) */
+  async listPacking() {
+    if (this.mode === 'live') return await sb('/rest/v1/brazil_packing?select=*&order=owner.asc,slot.asc');
+    return LS.get('brazil_packing', []);
+  },
+  async upsertPacking(row) {
+    if (this.mode === 'live') {
+      return await sb('/rest/v1/brazil_packing?on_conflict=owner,slot', {
+        method: 'POST', body: [row], prefer: 'resolution=merge-duplicates,return=representation',
+      });
+    }
+    const list = LS.get('brazil_packing', []).filter(x => !(x.owner === row.owner && x.slot === row.slot));
+    list.push({ ...row });
+    LS.set('brazil_packing', list);
+  },
+  async deletePacking(owner, slot) {
+    if (this.mode === 'live') {
+      return await sb('/rest/v1/brazil_packing?owner=eq.' + encodeURIComponent(owner) + '&slot=eq.' + slot, { method: 'DELETE', prefer: 'return=minimal' });
+    }
+    LS.set('brazil_packing', LS.get('brazil_packing', []).filter(x => !(x.owner === owner && x.slot === slot)));
+  },
+
   /* settings */
   async getRate() {
     if (this.mode === 'live') {
@@ -488,7 +530,9 @@ const store = {
 /* ===== State ===== */
 let ACTIVITIES = [];
 let CHARGES = [];
+let PACKING = [];
 let RATE = DEFAULT_RATE;
+let packSub = 'group';   // 'group' | person key
 let activeTab = 'itin';
 let itinSub = 'add';      // 'add' | 'all' | <iso day> | 'notes'
 let moneySub = 'mike';    // person key | 'subtotal'
@@ -502,9 +546,10 @@ function showBanner() {
 
 async function loadAll() {
   try {
-    const [acts, chg, rate] = await Promise.all([store.listActivities(), store.listCharges(), store.getRate()]);
+    const [acts, chg, pk, rate] = await Promise.all([store.listActivities(), store.listCharges(), store.listPacking(), store.getRate()]);
     ACTIVITIES = Array.isArray(acts) ? acts : [];
     CHARGES = Array.isArray(chg) ? chg : [];
+    PACKING = Array.isArray(pk) ? pk : [];
     RATE = rate;
   } catch (e) {
     document.getElementById('banner').innerHTML = `<div class="banner err">Could not load: ${esc(e.message || e)}</div>`;
@@ -517,11 +562,14 @@ document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () =>
   document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
   document.getElementById('itin').classList.toggle('hidden', activeTab !== 'itin');
   document.getElementById('money').classList.toggle('hidden', activeTab !== 'money');
+  document.getElementById('pack').classList.toggle('hidden', activeTab !== 'pack');
   render();
 }));
 
 function render() {
-  if (activeTab === 'itin') renderItin(); else renderMoney();
+  if (activeTab === 'itin') renderItin();
+  else if (activeTab === 'money') renderMoney();
+  else renderPack();
 }
 
 /* ===== Itinerary ===== */
@@ -825,12 +873,93 @@ async function saveMoneyRow(row) {
   }
 }
 
+/* ===== Pack list ===== */
+function packFor(owner) {
+  const map = new Map();
+  for (const r of PACKING) if (r.owner === owner) map.set(Number(r.slot), r);
+  return map;
+}
+function packCounts(owner) {
+  let total = 0, packed = 0;
+  for (const r of PACKING) if (r.owner === owner && (r.item || '').trim()) { total++; if (r.packed) packed++; }
+  return { total, packed };
+}
+function renderPack() {
+  const el = document.getElementById('pack');
+  const subs = PACK_OWNERS.map(o => {
+    const c = packCounts(o.key);
+    return `<div class="subtab${packSub === o.key ? ' active' : ''}" data-sub="${o.key}">${esc(o.name)}<small>${c.packed}/${c.total} packed</small></div>`;
+  }).join('');
+  const o = PACK_OWNERS.find(x => x.key === packSub) || PACK_OWNERS[0];
+  const map = packFor(o.key);
+  let rows = '';
+  for (let i = 1; i <= PACK_SLOTS; i++) {
+    const r = map.get(i);
+    const item = r ? r.item || '' : '';
+    const packed = !!(r && r.packed);
+    rows += `<div class="prow${packed ? ' packed' : ''}" data-owner="${o.key}" data-slot="${i}">
+      <div class="n">${i}</div>
+      <input type="checkbox" class="chk"${packed ? ' checked' : ''} title="Packed" aria-label="Packed">
+      <input class="item" placeholder="${o.key === 'group' ? 'Something we bring as a group' : 'Something to bring'}" value="${esc(item)}" autocomplete="off">
+      <span class="st${r ? ' saved' : ''}">${r ? '&#10003;' : ''}</span>
+    </div>`;
+  }
+  const c = packCounts(o.key);
+  const title = o.key === 'group'
+    ? `<h2>Bring <span class="d">together</span></h2><div class="meta">Shared stuff for the house and the group. One person grabs it, everyone uses it.</div>`
+    : `<h2><span class="who ${o.key}">${esc(o.name)}</span> is packing</h2><div class="meta">Write it down now so you remember it later. Tick the box once it is in the bag.</div>`;
+  el.innerHTML = `<div class="subtabs">${subs}</div>
+    <div class="card">
+      ${title}
+      <div class="stripe"></div>
+      ${rows}
+      <div class="packbar"><span class="meta" style="margin:0">Packed</span><span class="big" id="packcount-${o.key}">${c.packed} / ${c.total}</span></div>
+    </div>`;
+  el.querySelectorAll('.subtab').forEach(s => s.addEventListener('click', () => { packSub = s.dataset.sub; renderPack(); }));
+  el.querySelectorAll('.prow').forEach(row => {
+    const handler = () => {
+      clearTimeout(row._t);
+      setSt(row, 'saving');
+      row.classList.toggle('packed', row.querySelector('.chk').checked);
+      row._t = setTimeout(() => savePackRow(row), SAVE_DEBOUNCE_MS);
+    };
+    row.querySelector('.item').addEventListener('input', handler);
+    row.querySelector('.chk').addEventListener('change', handler);
+  });
+}
+async function savePackRow(row) {
+  const owner = row.dataset.owner, slot = Number(row.dataset.slot);
+  const item = row.querySelector('.item').value.trim();
+  const packed = row.querySelector('.chk').checked;
+  try {
+    if (!item) {
+      await store.deletePacking(owner, slot);
+      setSt(row, '');
+      row.classList.remove('packed');
+    } else {
+      await store.upsertPacking({ owner, slot, item, packed });
+      setSt(row, 'saved');
+    }
+    PACKING = await store.listPacking();
+    const c = packCounts(owner);
+    const big = document.getElementById('packcount-' + owner);
+    if (big) big.textContent = c.packed + ' / ' + c.total;
+    document.querySelectorAll('#pack .subtab[data-sub]').forEach(s => {
+      const cc = packCounts(s.dataset.sub);
+      const sm = s.querySelector('small'); if (sm) sm.textContent = cc.packed + '/' + cc.total + ' packed';
+    });
+  } catch (e) {
+    setSt(row, 'err');
+  }
+}
+
 /* ===== Boot + quiet refresh ===== */
 let refreshing = false;
 async function quietRefresh() {
   if (refreshing || document.hidden || store.mode !== 'live') return;
   // Never yank inputs out from under someone typing on the money sheet
   if (activeTab === 'money' && moneySub !== 'subtotal' && document.activeElement && document.activeElement.closest('.mrow')) return;
+  if (activeTab === 'pack' && document.activeElement && document.activeElement.closest('.prow')) return;
   if (editingId !== null) return;
   refreshing = true;
   try { await loadAll(); render(); } finally { refreshing = false; }
