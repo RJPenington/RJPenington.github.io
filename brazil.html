@@ -21,9 +21,18 @@
     --ink: #eaf7ee;
     --dim: #8fb39c;
     --red: #ff5d5d;
+    --forest: #0e3b22;
+    --forest-hi: #145431;
+    --glow-blue: #2563eb;
+    --glow-blue-soft: rgba(37, 99, 235, 0.55);
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
+  html { scrollbar-color: #1a2a20 #050806; scrollbar-width: thin; }
+  ::-webkit-scrollbar { width: 10px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #050806; }
+  ::-webkit-scrollbar-thumb { background: #1a2a20; border-radius: 6px; border: 2px solid #050806; }
+  ::-webkit-scrollbar-thumb:hover { background: #24402f; }
   body {
     background: var(--bg);
     color: var(--ink);
@@ -39,7 +48,7 @@
   /* ===== Header: waving flag + dancer ===== */
   header {
     display: flex; align-items: center; justify-content: center; gap: 22px;
-    padding: 18px 10px 8px; flex-wrap: wrap;
+    padding: 26px 10px 22px; flex-wrap: wrap;
   }
   .flag-box {
     width: 260px; height: 182px; flex: 0 0 auto;
@@ -103,20 +112,22 @@
   }
 
   /* ===== Tabs ===== */
-  .tabs { display: flex; gap: 8px; justify-content: center; margin: 10px 0 14px; flex-wrap: wrap; }
+  .tabs { display: flex; gap: 10px; justify-content: center; margin: 22px 0 28px; flex-wrap: wrap; }
   .tab {
     font-family: 'Bebas Neue', Impact, sans-serif; letter-spacing: 0.12em; font-size: 1.25rem;
     padding: 10px 22px; border-radius: 999px; cursor: pointer; user-select: none;
     background: var(--card); color: var(--dim); border: 1px solid var(--line);
     transition: all 0.15s ease;
   }
-  .tab:hover { color: var(--ink); border-color: var(--neon); }
+  .tab:hover { color: var(--ink); border-color: var(--glow-blue); }
   .tab.active {
-    color: #041a0c; background: var(--neon); border-color: var(--neon);
-    box-shadow: 0 0 18px var(--neon-dim), 0 0 2px var(--neon);
+    color: var(--ink); background: linear-gradient(180deg, var(--forest-hi), var(--forest));
+    border: 2px solid var(--glow-blue);
+    box-shadow: 0 0 18px var(--glow-blue-soft), 0 0 42px rgba(37, 99, 235, 0.3), inset 0 0 14px rgba(57, 255, 122, 0.12);
+    text-shadow: 0 0 8px rgba(57, 255, 122, 0.35);
   }
   .subtabs {
-    display: flex; gap: 6px; overflow-x: auto; padding: 4px 2px 10px; margin-bottom: 8px;
+    display: flex; gap: 6px; overflow-x: auto; padding: 4px 2px 12px; margin-bottom: 18px;
     -webkit-overflow-scrolling: touch; scrollbar-width: thin;
   }
   .subtab {
@@ -124,10 +135,13 @@
     background: var(--card); color: var(--dim); border: 1px solid var(--line); white-space: nowrap;
   }
   .subtab small { display: block; font-weight: 400; font-size: 0.68rem; color: var(--dim); }
-  .subtab.active { color: var(--ink); border-color: var(--yellow); background: #15200f; box-shadow: 0 0 10px rgba(255, 223, 0, 0.25); }
-  .subtab.active small { color: var(--yellow); }
+  .subtab.active {
+    color: var(--ink); border-color: var(--glow-blue); background: linear-gradient(180deg, var(--forest-hi), var(--forest));
+    box-shadow: 0 0 12px var(--glow-blue-soft), 0 0 26px rgba(37, 99, 235, 0.25);
+  }
+  .subtab.active small { color: var(--neon); }
   .subtab.add { border-color: var(--neon); color: var(--neon); }
-  .subtab.add.active { background: var(--neon); color: #041a0c; }
+  .subtab.add.active { color: var(--ink); }
   .subtab .cnt { display: inline-block; min-width: 18px; margin-left: 6px; padding: 0 5px; border-radius: 9px; font-size: 0.68rem; background: var(--line); color: var(--ink); text-align: center; }
 
   /* ===== Cards ===== */
@@ -160,7 +174,7 @@
     width: 30px; height: 30px; border-radius: 7px; border: 1px solid var(--line); background: #0a120e; color: var(--dim);
     cursor: pointer; font-size: 0.85rem; display: inline-flex; align-items: center; justify-content: center;
   }
-  .ibtn:hover { color: var(--ink); border-color: var(--neon); }
+  .ibtn:hover { color: var(--ink); border-color: var(--glow-blue); background: var(--forest); box-shadow: 0 0 8px var(--glow-blue-soft); }
   .ibtn.del:hover { color: var(--red); border-color: var(--red); }
   .act textarea { width: 100%; }
   .act .editbar { display: flex; gap: 6px; margin-top: 6px; }
@@ -179,12 +193,15 @@
   textarea { min-height: 96px; resize: vertical; }
   .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .btn {
-    display: inline-block; padding: 11px 20px; border-radius: 10px; border: 1px solid var(--neon); cursor: pointer;
-    background: var(--neon); color: #041a0c; font-weight: 800; letter-spacing: 0.04em; margin-top: 12px;
-    box-shadow: 0 0 16px var(--neon-dim);
+    display: inline-block; padding: 11px 20px; border-radius: 10px; border: 2px solid var(--glow-blue); cursor: pointer;
+    background: linear-gradient(180deg, var(--forest-hi), var(--forest)); color: var(--ink); font-weight: 800; letter-spacing: 0.04em; margin-top: 12px;
+    box-shadow: 0 0 16px var(--glow-blue-soft), 0 0 34px rgba(37, 99, 235, 0.25);
+    text-shadow: 0 0 8px rgba(57, 255, 122, 0.35);
   }
+  .btn:hover { background: linear-gradient(180deg, #1a6a3e, var(--forest-hi)); }
   .btn:disabled { opacity: 0.5; cursor: default; }
-  .btn.ghost { background: transparent; color: var(--neon); box-shadow: none; }
+  .btn.ghost { background: transparent; color: var(--ink); box-shadow: none; border-color: var(--line); }
+  .btn.ghost:hover { border-color: var(--glow-blue); }
   .btn.small { padding: 6px 12px; font-size: 0.85rem; margin-top: 0; }
   .toast { margin-top: 10px; color: var(--neon); font-size: 0.9rem; min-height: 1.2em; }
 
@@ -230,7 +247,8 @@
   .hidden { display: none !important; }
 
   @media (max-width: 640px) {
-    header { gap: 10px; padding-top: 12px; }
+    header { gap: 10px; padding: 18px 10px 16px; }
+    .tabs { margin: 16px 0 22px; }
     .flag-box { width: 200px; height: 140px; }
     .dancer { width: 70px; height: 140px; }
     .dancer .figure { width: 66px; height: 90px; margin-left: -33px; top: 18px; }
