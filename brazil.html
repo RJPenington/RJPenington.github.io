@@ -207,8 +207,9 @@
   .toast { margin-top: 10px; color: var(--neon); font-size: 0.9rem; min-height: 1.2em; }
 
   /* Money */
-  .money-head { display: grid; grid-template-columns: 34px 1fr 108px 108px 28px; gap: 8px; padding: 0 2px 6px; color: var(--dim); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }
-  .mrow { display: grid; grid-template-columns: 34px 1fr 108px 108px 28px; gap: 8px; align-items: center; margin: 6px 0; }
+  .money-head { display: grid; grid-template-columns: 34px 1fr 108px 108px 28px 30px; gap: 8px; padding: 0 2px 6px; color: var(--dim); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  .mrow { display: grid; grid-template-columns: 34px 1fr 108px 108px 28px 30px; gap: 8px; align-items: center; margin: 6px 0; }
+  .mrow .ibtn, .prow .ibtn { width: 30px; height: 30px; }
   .mrow input.amt.derived { color: var(--dim); border-style: dashed; }
   .mrow input.amt::placeholder { color: #3f5a49; }
   /* No spinner arrows on any number box */
@@ -248,7 +249,7 @@
   .hint { color: var(--dim); font-size: 0.78rem; margin-top: 6px; }
 
   /* Pack list */
-  .prow { display: grid; grid-template-columns: 34px 30px 1fr 28px; gap: 8px; align-items: center; margin: 6px 0; }
+  .prow { display: grid; grid-template-columns: 34px 30px 1fr 28px 30px; gap: 8px; align-items: center; margin: 6px 0; }
   .prow .n { color: var(--dim); font-size: 0.8rem; text-align: right; }
   .prow input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--neon); cursor: pointer; margin: 0 auto; display: block; }
   .prow input.item { padding: 8px 10px; }
@@ -271,10 +272,11 @@
     .dancer .figure { width: 66px; height: 90px; margin-left: -33px; top: 18px; }
     .row2 { grid-template-columns: 1fr; }
     .money-head { display: none; }
-    .mrow { grid-template-columns: 22px 1fr 84px 84px 18px; gap: 4px; }
+    .mrow { grid-template-columns: 20px 1fr 78px 78px 16px 28px; gap: 4px; }
+    .mrow .ibtn, .prow .ibtn { width: 28px; height: 28px; }
     .mrow .n { font-size: 0.7rem; }
     .mrow input, .mrow select { padding: 8px 6px; font-size: 0.9rem; }
-    .prow { grid-template-columns: 26px 28px 1fr 22px; gap: 5px; }
+    .prow { grid-template-columns: 22px 26px 1fr 18px 28px; gap: 4px; }
     .act .time { min-width: 54px; font-size: 0.66rem; }
   }
 </style>
@@ -813,6 +815,7 @@ function personSheetHtml(key) {
       <input class="amt brl${has && src === 'USD' ? ' derived' : ''}" type="text" inputmode="numeric" autocomplete="off" placeholder="R$ 0.00" value="${brlV === null ? '' : brlV.toFixed(2)}" aria-label="Amount in reais">
       <input class="amt usd${has && src === 'BRL' ? ' derived' : ''}" type="text" inputmode="numeric" autocomplete="off" placeholder="$ 0.00" value="${usdV === null ? '' : usdV.toFixed(2)}" aria-label="Amount in dollars">
       <span class="st${c ? ' saved' : ''}" title="${c ? 'Saved' : ''}">${c ? '&#10003;' : ''}</span>
+      <button class="ibtn del" title="Delete this entry" aria-label="Delete" onclick="clearMoneyRow(this)">&#10005;</button>
     </div>`;
   }
   const paid = personPaidUsd(p.key);
@@ -820,7 +823,7 @@ function personSheetHtml(key) {
     <h2><span class="who ${p.key}">${esc(p.name)}</span> paid for</h2>
     <div class="meta">Type a description, then the amount in either box. Digits fill in from the right (type 1 2 5 0 for 12.50) and the other currency fills itself at the rate on the Subtotal tab. Rows save on their own.</div>
     <div class="stripe"></div>
-    <div class="money-head"><div></div><div>Description</div><div style="text-align:right">R$</div><div style="text-align:right">USD</div><div></div></div>
+    <div class="money-head"><div></div><div>Description</div><div style="text-align:right">R$</div><div style="text-align:right">USD</div><div></div><div></div></div>
     ${rows}
     <div class="ptotal"><span class="meta" style="margin:0">Total paid by ${esc(p.name)}</span>
       <span class="pair"><span class="big" id="ptotal-${p.key}">${money(paid)}</span><span class="brl" id="ptotalbrl-${p.key}">${reais(paid * RATE)}</span></span></div>
@@ -956,6 +959,21 @@ async function saveMoneyRow(row) {
   }
 }
 
+// Trash button on a money row: wipe the boxes and remove the saved entry
+window.clearMoneyRow = async function(btn) {
+  const row = btn.closest('.mrow');
+  if (!row) return;
+  const desc = row.querySelector('.desc'), brl = row.querySelector('.amt.brl'), usd = row.querySelector('.amt.usd');
+  const hadContent = desc.value.trim() || brl.value.trim() || usd.value.trim();
+  if (!hadContent) return;
+  if (!confirm('Delete this entry for everyone?' + (desc.value.trim() ? '\n\n' + desc.value.trim() : ''))) return;
+  clearTimeout(row._t);
+  desc.value = ''; brl.value = ''; usd.value = '';
+  brl.classList.remove('derived'); usd.classList.remove('derived');
+  row.dataset.src = '';
+  await saveMoneyRow(row);
+};
+
 /* ===== Pack list ===== */
 function packFor(owner) {
   const map = new Map();
@@ -985,6 +1003,7 @@ function renderPack() {
       <input type="checkbox" class="chk"${packed ? ' checked' : ''} title="Packed" aria-label="Packed">
       <input class="item" placeholder="${o.key === 'group' ? 'Something we bring as a group' : 'Something to bring'}" value="${esc(item)}" autocomplete="off">
       <span class="st${r ? ' saved' : ''}">${r ? '&#10003;' : ''}</span>
+      <button class="ibtn del" title="Delete this item" aria-label="Delete" onclick="clearPackRow(this)">&#10005;</button>
     </div>`;
   }
   const c = packCounts(o.key);
@@ -1035,6 +1054,18 @@ async function savePackRow(row) {
     setSt(row, 'err');
   }
 }
+
+// Trash button on a pack row: wipe the item and remove the saved entry
+window.clearPackRow = async function(btn) {
+  const row = btn.closest('.prow');
+  if (!row) return;
+  const item = row.querySelector('.item'), chk = row.querySelector('.chk');
+  if (!item.value.trim()) return;
+  if (!confirm('Delete this item for everyone?\n\n' + item.value.trim())) return;
+  clearTimeout(row._t);
+  item.value = ''; chk.checked = false; row.classList.remove('packed');
+  await savePackRow(row);
+};
 
 /* ===== Boot + quiet refresh ===== */
 let refreshing = false;
