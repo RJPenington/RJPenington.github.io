@@ -154,6 +154,8 @@
   .subtab.active small { color: var(--neon); }
   .subtab.add { border-color: var(--red); color: var(--red); }
   .subtab.add.active { background: #000; color: var(--red); border-color: var(--red); box-shadow: 0 0 12px rgba(255, 93, 93, 0.55), 0 0 26px rgba(255, 93, 93, 0.25); text-shadow: 0 0 8px rgba(255, 93, 93, 0.5); }
+  #money .subtabs { justify-content: center; }
+  #money .subtab { flex: 1 1 0; min-width: 0; }
   .subtab .cnt { display: inline-block; min-width: 18px; margin-left: 6px; padding: 0 5px; border-radius: 9px; font-size: 0.68rem; background: var(--line); color: var(--ink); text-align: center; }
 
   /* ===== Cards ===== */
@@ -174,9 +176,15 @@
   .plus {
     flex: 0 0 auto; width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
     border: 2px solid var(--glow-blue); background: linear-gradient(180deg, var(--forest-hi), var(--forest));
-    color: var(--ink); font-size: 1.5rem; line-height: 1; display: inline-flex; align-items: center; justify-content: center;
-    box-shadow: 0 0 12px var(--glow-blue-soft);
+    color: var(--ink); font-size: 0; line-height: 0; padding: 0; display: inline-flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 12px var(--glow-blue-soft); position: relative;
   }
+  .plus::before, .plus::after {
+    content: ''; position: absolute; left: 50%; top: 50%; background: var(--ink); border-radius: 1px;
+    transform: translate(-50%, -50%);
+  }
+  .plus::before { width: 16px; height: 2.5px; }
+  .plus::after  { width: 2.5px; height: 16px; }
   .plus:hover { background: linear-gradient(180deg, #1a6a3e, var(--forest-hi)); }
   .plus.open { transform: rotate(45deg); }
   .quick { margin: 4px 0 12px; padding: 12px 12px 14px; border-radius: 10px; background: rgba(0, 0, 0, 0.3); border: 1px dashed var(--glow-blue); }
@@ -745,7 +753,7 @@ function dayCardHtml(day, showEmpty) {
         <h2><span class="wk">${esc(p.weekday)}</span>, ${esc(p.month)} <span class="d">${p.dom}</span></h2>
         <div class="meta">${list.length} ${list.length === 1 ? 'activity' : 'activities'}</div>
       </div>
-      <button class="plus${open ? ' open' : ''}" title="Add an activity to ${esc(dayLabel(day))}" aria-label="Add activity" onclick="toggleQuickAdd('${day}')">+</button>
+      <button class="plus${open ? ' open' : ''}" title="Add an activity to ${esc(dayLabel(day))}" aria-label="Add activity" onclick="toggleQuickAdd('${day}')"></button>
     </div>
     <div class="stripe"></div>
     ${quick}
