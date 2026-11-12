@@ -235,6 +235,7 @@
   .money-head { display: grid; grid-template-columns: 34px 1fr 108px 108px 28px 30px; gap: 8px; padding: 0 2px 6px; color: var(--dim); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }
   .mrow { display: grid; grid-template-columns: 34px 1fr 108px 108px 28px 30px; gap: 8px; align-items: center; margin: 6px 0; }
   .mrow .ibtn, .prow .ibtn { width: 30px; height: 30px; }
+  .money-head .ch { text-align: center; color: var(--ink); font-weight: 800; font-size: 0.8rem; letter-spacing: 0.06em; }
   .mrow input.amt.derived { color: var(--dim); border-style: dashed; }
   .mrow input.amt::placeholder { color: #3f5a49; }
   /* No spinner arrows on any number box */
@@ -297,7 +298,7 @@
     .dancer { width: 70px; height: 140px; }
     .dancer .figure { width: 66px; height: 90px; margin-left: -33px; top: 18px; }
     .row2 { grid-template-columns: 1fr; }
-    .money-head { display: none; }
+    .money-head { grid-template-columns: 20px 1fr 78px 78px 16px 28px; gap: 4px; font-size: 0.62rem; }
     .mrow { grid-template-columns: 20px 1fr 78px 78px 16px 28px; gap: 4px; }
     .mrow .ibtn, .prow .ibtn { width: 28px; height: 28px; }
     .mrow .n { font-size: 0.7rem; }
@@ -455,6 +456,17 @@ function fromUsd(usd, currency, rate) {
 }
 // Cash-register entry: digits fill in from the right, so typing 1 2 5 0
 // reads 0.01, 0.12, 1.25, 12.50. Returns the display string ('' when empty).
+// "$ 12.50" / "R$ 66.25" inside the boxes once a number is in; empty stays empty
+function amtText(v, cur) {
+  if (v === null || v === undefined || v === '') return '';
+  return (cur === 'BRL' ? 'R$ ' : '$ ') + Number(v).toFixed(2);
+}
+function amtNum(str) {
+  const t = String(str || '').replace(/[^\d.]/g, '');
+  if (t === '') return null;
+  const n = Number(t);
+  return isNaN(n) ? null : n;
+}
 function centsDisplay(raw) {
   const digits = String(raw || '').replace(/\D/g, '').replace(/^0+/, '');
   if (!digits) return '';
@@ -893,8 +905,8 @@ function personSheetHtml(key) {
     rows += `<div class="mrow" data-person="${p.key}" data-slot="${i}" data-src="${has ? src : ''}">
       <div class="n">${i}</div>
       <input class="desc" placeholder="What was it" value="${esc(desc)}" autocomplete="off">
-      <input class="amt brl${has && src === 'USD' ? ' derived' : ''}" type="text" inputmode="numeric" autocomplete="off" placeholder="R$ 0.00" value="${brlV === null ? '' : brlV.toFixed(2)}" aria-label="Amount in reais">
-      <input class="amt usd${has && src === 'BRL' ? ' derived' : ''}" type="text" inputmode="numeric" autocomplete="off" placeholder="$ 0.00" value="${usdV === null ? '' : usdV.toFixed(2)}" aria-label="Amount in dollars">
+      <input class="amt brl${has && src === 'USD' ? ' derived' : ''}" type="text" inputmode="numeric" autocomplete="off" placeholder="R$ 0.00" value="${esc(amtText(brlV, 'BRL'))}" aria-label="Amount in reais">
+      <input class="amt usd${has && src === 'BRL' ? ' derived' : ''}" type="text" inputmode="numeric" autocomplete="off" placeholder="$ 0.00" value="${esc(amtText(usdV, 'USD'))}" aria-label="Amount in dollars">
       <span class="st${c ? ' saved' : ''}" title="${c ? 'Saved' : ''}">${c ? '&#10003;' : ''}</span>
       <button class="ibtn del" title="Delete this entry" aria-label="Delete" onclick="clearMoneyRow(this)">&#10005;</button>
     </div>`;
@@ -904,7 +916,7 @@ function personSheetHtml(key) {
     <h2><span class="who ${p.key}">${esc(p.name)}</span> paid for</h2>
     <div class="meta">Type a description, then the amount in either box. Digits fill in from the right (type 1 2 5 0 for 12.50) and the other currency fills itself at the rate on the Subtotal tab. Rows save on their own.</div>
     <div class="stripe"></div>
-    <div class="money-head"><div></div><div>Description</div><div style="text-align:right">R$</div><div style="text-align:right">USD</div><div></div><div></div></div>
+    <div class="money-head"><div></div><div>Description</div><div class="ch">R$</div><div class="ch">$ USD</div><div></div><div></div></div>
     ${rows}
     <div class="ptotal"><span class="meta" style="margin:0">Total paid by ${esc(p.name)}</span>
       <span class="pair"><span class="big" id="ptotal-${p.key}">${money(paid)}</span><span class="brl" id="ptotalbrl-${p.key}">${reais(paid * RATE)}</span></span></div>
@@ -986,14 +998,15 @@ function wireMoneyRows() {
     row.querySelector('.desc').addEventListener('input', schedule);
     const onAmount = (srcEl, otherEl, srcCur) => () => {
       // Cash-register formatting on the box being typed in
-      srcEl.value = centsDisplay(srcEl.value);
+      const shown = centsDisplay(srcEl.value);
+      srcEl.value = shown === '' ? '' : amtText(shown, srcCur);
       srcEl.classList.remove('derived');
-      if (srcEl.value === '') {
+      if (shown === '') {
         otherEl.value = ''; otherEl.classList.remove('derived'); row.dataset.src = '';
       } else {
-        const v = Number(srcEl.value);
+        const v = Number(shown);
         const other = srcCur === 'BRL' ? (RATE > 0 ? v / RATE : 0) : v * RATE;
-        otherEl.value = other.toFixed(2);
+        otherEl.value = amtText(other, srcCur === 'BRL' ? 'USD' : 'BRL');
         otherEl.classList.add('derived');
         row.dataset.src = srcCur;
       }
@@ -1014,8 +1027,7 @@ async function saveMoneyRow(row) {
   const desc = row.querySelector('.desc').value.trim();
   const src = row.dataset.src === 'BRL' ? 'BRL' : (row.dataset.src === 'USD' ? 'USD' : '');
   const srcEl = src === 'BRL' ? row.querySelector('.amt.brl') : row.querySelector('.amt.usd');
-  const raw = src ? srcEl.value.trim() : '';
-  const amount = raw === '' ? null : Number(raw);
+  const amount = src ? amtNum(srcEl.value) : null;
   try {
     if (!desc && amount === null) {
       await store.deleteCharge(person, slot);
