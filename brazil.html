@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rio 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #04070a;
+    --card: #0a1410;
+    --card2: #0d1a14;
+    --line: #15402a;
+    --green: #009c3b;
+    --neon: #39ff7a;
+    --neon-dim: rgba(57, 255, 122, 0.35);
+    --yellow: #ffdf00;
+    --blue: #1d4ed8;
+    --blue-deep: #002776;
+    --ink: #eaf7ee;
+    --dim: #8fb39c;
+    --red: #ff5d5d;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(0, 156, 59, 0.18), transparent 55%),
+      radial-gradient(ellipse at 80% 100%, rgba(0, 39, 118, 0.25), transparent 55%);
+  }
+  a { color: var(--neon); }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 14px 60px; }
+
+  /* ===== Header: waving flag + dancer ===== */
+  header {
+    display: flex; align-items: center; justify-content: center; gap: 22px;
+    padding: 18px 10px 8px; flex-wrap: wrap;
+  }
+  .flag-box {
+    width: 260px; height: 182px; flex: 0 0 auto;
+    filter: drop-shadow(0 0 18px var(--neon-dim)) drop-shadow(0 0 2px rgba(255, 223, 0, 0.5));
+    animation: flagSway 5s ease-in-out infinite;
+    transform-origin: left center;
+  }
+  .flag-box svg { width: 100%; height: 100%; overflow: visible; }
+  @keyframes flagSway {
+    0%   { transform: rotate(-1.2deg) skewY(0.6deg); }
+    50%  { transform: rotate(1.2deg) skewY(-0.6deg); }
+    100% { transform: rotate(-1.2deg) skewY(0.6deg); }
+  }
+  .title-box { text-align: center; min-width: 220px; }
+  .title-box h1 {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: clamp(2.6rem, 8vw, 4.6rem); letter-spacing: 0.08em; margin: 0; line-height: 1;
+    color: var(--yellow);
+    text-shadow: 0 0 12px rgba(255, 223, 0, 0.45), 0 0 30px var(--neon-dim);
+  }
+  .title-box .sub {
+    font-family: 'Bebas Neue', Impact, sans-serif; letter-spacing: 0.2em; font-size: 1.1rem;
+    color: var(--neon); text-shadow: 0 0 10px var(--neon-dim);
+  }
+  .title-box .dates { color: var(--dim); font-size: 0.85rem; margin-top: 6px; }
+  /* Pole dancer: stylized silhouette orbiting a pole */
+  .dancer {
+    width: 96px; height: 182px; flex: 0 0 auto; position: relative;
+    perspective: 420px;
+    filter: drop-shadow(0 0 14px var(--neon-dim));
+  }
+  .dancer .pole {
+    position: absolute; left: 50%; top: 4px; bottom: 4px; width: 5px; margin-left: -2.5px;
+    background: linear-gradient(90deg, #6b7a6f, #e8f5ee 45%, #6b7a6f);
+    border-radius: 3px; box-shadow: 0 0 10px rgba(255, 255, 255, 0.35);
+  }
+  .dancer .pole::before, .dancer .pole::after {
+    content: ''; position: absolute; left: -9px; width: 23px; height: 6px; border-radius: 50%;
+    background: #9fb5a6;
+  }
+  .dancer .pole::before { top: -3px; }
+  .dancer .pole::after { bottom: -3px; }
+  .dancer .figure {
+    position: absolute; left: 50%; top: 22px; width: 90px; height: 120px; margin-left: -45px;
+    transform-style: preserve-3d;
+    animation: orbit 3.2s linear infinite;
+  }
+  .dancer .figure svg { width: 100%; height: 100%; fill: var(--yellow); filter: drop-shadow(0 0 6px rgba(255, 223, 0, 0.5)); }
+  .dancer .glow {
+    position: absolute; left: 50%; bottom: -2px; width: 80px; height: 14px; margin-left: -40px;
+    border-radius: 50%; background: var(--neon); opacity: 0.35; filter: blur(8px);
+    animation: glowPulse 3.2s ease-in-out infinite;
+  }
+  @keyframes orbit {
+    0%   { transform: rotateY(0deg) translateZ(26px); }
+    100% { transform: rotateY(360deg) translateZ(26px); }
+  }
+  @keyframes glowPulse { 0%, 100% { opacity: 0.25; } 50% { opacity: 0.55; } }
+  @media (prefers-reduced-motion: reduce) {
+    .flag-box, .dancer .figure, .dancer .glow { animation: none; }
+  }
+
+  /* ===== Tabs ===== */
+  .tabs { display: flex; gap: 8px; justify-content: center; margin: 10px 0 14px; flex-wrap: wrap; }
+  .tab {
+    font-family: 'Bebas Neue', Impact, sans-serif; letter-spacing: 0.12em; font-size: 1.25rem;
+    padding: 10px 22px; border-radius: 999px; cursor: pointer; user-select: none;
+    background: var(--card); color: var(--dim); border: 1px solid var(--line);
+    transition: all 0.15s ease;
+  }
+  .tab:hover { color: var(--ink); border-color: var(--neon); }
+  .tab.active {
+    color: #041a0c; background: var(--neon); border-color: var(--neon);
+    box-shadow: 0 0 18px var(--neon-dim), 0 0 2px var(--neon);
+  }
+  .subtabs {
+    display: flex; gap: 6px; overflow-x: auto; padding: 4px 2px 10px; margin-bottom: 8px;
+    -webkit-overflow-scrolling: touch; scrollbar-width: thin;
+  }
+  .subtab {
+    flex: 0 0 auto; padding: 7px 13px; border-radius: 8px; cursor: pointer; font-size: 0.82rem; font-weight: 600;
+    background: var(--card); color: var(--dim); border: 1px solid var(--line); white-space: nowrap;
+  }
+  .subtab small { display: block; font-weight: 400; font-size: 0.68rem; color: var(--dim); }
+  .subtab.active { color: var(--ink); border-color: var(--yellow); background: #15200f; box-shadow: 0 0 10px rgba(255, 223, 0, 0.25); }
+  .subtab.active small { color: var(--yellow); }
+  .subtab.add { border-color: var(--neon); color: var(--neon); }
+  .subtab.add.active { background: var(--neon); color: #041a0c; }
+  .subtab .cnt { display: inline-block; min-width: 18px; margin-left: 6px; padding: 0 5px; border-radius: 9px; font-size: 0.68rem; background: var(--line); color: var(--ink); text-align: center; }
+
+  /* ===== Cards ===== */
+  .card {
+    background: linear-gradient(180deg, var(--card2), var(--card));
+    border: 1px solid var(--line); border-radius: 14px; padding: 16px 16px 14px; margin-bottom: 14px;
+    box-shadow: 0 0 0 1px rgba(57, 255, 122, 0.08), 0 0 24px rgba(57, 255, 122, 0.10), inset 0 0 40px rgba(0, 156, 59, 0.06);
+  }
+  .card h2 {
+    font-family: 'Bebas Neue', Impact, sans-serif; letter-spacing: 0.1em; font-size: 1.7rem; margin: 0 0 4px;
+    color: var(--ink);
+  }
+  .card h2 .wk { color: var(--yellow); }
+  .card h2 .d { color: var(--neon); }
+  .card .meta { color: var(--dim); font-size: 0.8rem; margin-bottom: 10px; }
+  .stripe { height: 3px; border-radius: 2px; margin: 0 0 12px; background: linear-gradient(90deg, var(--green), var(--yellow) 50%, var(--blue)); opacity: 0.9; }
+
+  /* Activities */
+  .act { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-top: 1px solid rgba(21, 64, 42, 0.7); }
+  .act:first-of-type { border-top: 0; }
+  .act .time {
+    flex: 0 0 auto; min-width: 64px; text-align: center; padding: 3px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 700;
+    background: rgba(29, 78, 216, 0.25); color: #9fc0ff; border: 1px solid rgba(29, 78, 216, 0.5);
+  }
+  .act .time.none { opacity: 0.45; }
+  .act .body { flex: 1 1 auto; min-width: 0; line-height: 1.45; font-size: 0.95rem; white-space: pre-wrap; word-wrap: break-word; }
+  .act .by { color: var(--dim); font-size: 0.7rem; margin-top: 3px; }
+  .act .btns { flex: 0 0 auto; display: flex; gap: 4px; }
+  .ibtn {
+    width: 30px; height: 30px; border-radius: 7px; border: 1px solid var(--line); background: #0a120e; color: var(--dim);
+    cursor: pointer; font-size: 0.85rem; display: inline-flex; align-items: center; justify-content: center;
+  }
+  .ibtn:hover { color: var(--ink); border-color: var(--neon); }
+  .ibtn.del:hover { color: var(--red); border-color: var(--red); }
+  .act textarea { width: 100%; }
+  .act .editbar { display: flex; gap: 6px; margin-top: 6px; }
+  .empty { color: var(--dim); font-style: italic; padding: 8px 0; }
+
+  /* Forms */
+  label.f { display: block; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); margin: 10px 0 4px; }
+  input, select, textarea, button {
+    font-family: inherit; font-size: 1rem; color: var(--ink);
+  }
+  input, select, textarea {
+    width: 100%; background: #060d09; border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px;
+    outline: none;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--neon); box-shadow: 0 0 0 2px var(--neon-dim); }
+  textarea { min-height: 96px; resize: vertical; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .btn {
+    display: inline-block; padding: 11px 20px; border-radius: 10px; border: 1px solid var(--neon); cursor: pointer;
+    background: var(--neon); color: #041a0c; font-weight: 800; letter-spacing: 0.04em; margin-top: 12px;
+    box-shadow: 0 0 16px var(--neon-dim);
+  }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .btn.ghost { background: transparent; color: var(--neon); box-shadow: none; }
+  .btn.small { padding: 6px 12px; font-size: 0.85rem; margin-top: 0; }
+  .toast { margin-top: 10px; color: var(--neon); font-size: 0.9rem; min-height: 1.2em; }
+
+  /* Money */
+  .money-head { display: grid; grid-template-columns: 34px 1fr 120px 86px 28px; gap: 8px; padding: 0 2px 6px; color: var(--dim); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  .mrow { display: grid; grid-template-columns: 34px 1fr 120px 86px 28px; gap: 8px; align-items: center; margin: 6px 0; }
+  .mrow .n { color: var(--dim); font-size: 0.8rem; text-align: right; }
+  .mrow input, .mrow select { padding: 8px 10px; }
+  .mrow input.amt { text-align: right; font-variant-numeric: tabular-nums; }
+  .mrow .st { width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+  .st.saved { color: var(--neon); }
+  .st.saving { color: var(--yellow); }
+  .st.err { color: var(--red); }
+  .ptotal { display: flex; justify-content: space-between; align-items: baseline; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); }
+  .ptotal .big { font-family: 'Bebas Neue', Impact, sans-serif; font-size: 1.9rem; color: var(--yellow); letter-spacing: 0.05em; }
+  table.data { width: 100%; border-collapse: collapse; margin-top: 6px; }
+  table.data th, table.data td { padding: 9px 8px; text-align: left; border-bottom: 1px solid rgba(21, 64, 42, 0.7); font-size: 0.92rem; }
+  table.data th { color: var(--dim); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  table.data td.num, table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .pos { color: var(--neon); } .neg { color: var(--red); } .zero { color: var(--dim); }
+  .settle { margin-top: 10px; }
+  .settle .line { padding: 8px 10px; border-radius: 8px; background: rgba(29, 78, 216, 0.15); border: 1px solid rgba(29, 78, 216, 0.4); margin: 6px 0; }
+  .who { font-weight: 800; }
+  .who.mike { color: var(--yellow); } .who.rj { color: var(--neon); } .who.tyler { color: #7fa7ff; }
+  .rate { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; }
+  .rate > div { flex: 1 1 140px; }
+  .hint { color: var(--dim); font-size: 0.78rem; margin-top: 6px; }
+
+  .banner { padding: 10px 14px; border-radius: 10px; font-size: 0.85rem; margin: 0 0 12px; border: 1px solid; }
+  .banner.warn { background: rgba(255, 223, 0, 0.08); border-color: rgba(255, 223, 0, 0.5); color: #ffe866; }
+  .banner.err { background: rgba(255, 93, 93, 0.08); border-color: rgba(255, 93, 93, 0.5); color: #ff9c9c; }
+  .notes h3 { font-family: 'Bebas Neue', Impact, sans-serif; letter-spacing: 0.1em; font-size: 1.25rem; color: var(--yellow); margin: 14px 0 4px; }
+  .notes ul { margin: 0 0 6px 18px; padding: 0; line-height: 1.6; }
+  footer { text-align: center; color: var(--dim); font-size: 0.75rem; margin-top: 30px; }
+  .hidden { display: none !important; }
+
+  @media (max-width: 640px) {
+    header { gap: 10px; padding-top: 12px; }
+    .flag-box { width: 200px; height: 140px; }
+    .dancer { width: 70px; height: 140px; }
+    .dancer .figure { width: 66px; height: 90px; margin-left: -33px; top: 18px; }
+    .row2 { grid-template-columns: 1fr; }
+    .money-head { display: none; }
+    .mrow { grid-template-columns: 26px 1fr 92px 70px 22px; gap: 5px; }
+    .mrow input, .mrow select { padding: 8px 6px; font-size: 0.9rem; }
+    .act .time { min-width: 54px; font-size: 0.66rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="flag-box" aria-label="Brazil flag">
+      <svg viewBox="0 0 280 196" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="wave" x="-10%" y="-10%" width="120%" height="120%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.012 0.03" numOctaves="2" seed="3" result="noise">
+              <animate attributeName="baseFrequency" dur="6s" values="0.012 0.03;0.018 0.045;0.012 0.03" repeatCount="indefinite"/>
+            </feTurbulence>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="14" xChannelSelector="R" yChannelSelector="G">
+              <animate attributeName="scale" dur="4s" values="10;18;10" repeatCount="indefinite"/>
+            </feDisplacementMap>
+          </filter>
+          <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#000" stop-opacity="0.18"/>
+            <stop offset="0.35" stop-color="#fff" stop-opacity="0.10"/>
+            <stop offset="0.65" stop-color="#000" stop-opacity="0.16"/>
+            <stop offset="1" stop-color="#fff" stop-opacity="0.08"/>
+            <animate attributeName="x1" dur="4s" values="-1;1" repeatCount="indefinite"/>
+            <animate attributeName="x2" dur="4s" values="0;2" repeatCount="indefinite"/>
+          </linearGradient>
+        </defs>
+        <g filter="url(#wave)">
+          <rect x="4" y="4" width="272" height="188" rx="4" fill="#009c3b"/>
+          <polygon points="140,20 258,98 140,176 22,98" fill="#ffdf00"/>
+          <circle cx="140" cy="98" r="50" fill="#002776"/>
+          <path d="M92,84 Q140,66 188,88 L188,100 Q140,78 92,96 Z" fill="#fff"/>
+          <text x="140" y="92" font-size="7" text-anchor="middle" fill="#009c3b" font-family="Inter, sans-serif" font-weight="700" letter-spacing="0.6">ORDEM E PROGRESSO</text>
+          <g fill="#fff">
+            <circle cx="122" cy="118" r="1.9"/><circle cx="134" cy="126" r="1.6"/><circle cx="148" cy="121" r="2.1"/>
+            <circle cx="160" cy="130" r="1.5"/><circle cx="170" cy="112" r="1.7"/><circle cx="110" cy="130" r="1.4"/>
+            <circle cx="140" cy="140" r="1.8"/><circle cx="128" cy="108" r="1.2"/><circle cx="156" cy="108" r="1.3"/>
+            <circle cx="104" cy="112" r="1.1"/><circle cx="176" cy="126" r="1.2"/><circle cx="150" cy="135" r="1.1"/>
+          </g>
+          <rect x="4" y="4" width="272" height="188" rx="4" fill="url(#sheen)"/>
+        </g>
+      </svg>
+    </div>
+    <div class="title-box">
+      <div class="sub">Mike, RJ and Tyler</div>
+      <h1>RIO 2026</h1>
+      <div class="dates">Nov 27 to Dec 5 &middot; Rio de Janeiro</div>
+    </div>
+    <div class="dancer" aria-hidden="true" title="Day 1 off with a bang">
+      <div class="pole"></div>
+      <div class="figure">
+        <svg viewBox="0 0 90 120" xmlns="http://www.w3.org/2000/svg">
+          <!-- stylized silhouette: head, arched torso, arm up on the pole, legs kicked out -->
+          <circle cx="36" cy="16" r="8"/>
+          <path d="M40 24 C46 30 50 40 48 52 C46 62 40 70 38 80 L46 84 L44 90 L30 86 C28 74 30 62 32 52 C34 42 30 34 28 28 Z"/>
+          <path d="M42 30 L52 14 L60 8 L63 12 L55 20 L48 36 Z"/>
+          <path d="M33 60 L12 70 L8 66 L30 52 Z"/>
+          <path d="M38 80 L70 92 L68 98 L36 88 Z"/>
+          <path d="M30 86 L22 112 L28 114 L38 90 Z"/>
+        </svg>
+      </div>
+      <div class="glow"></div>
+    </div>
+  </header>
+
+  <div id="banner"></div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="itin">Itinerary</div>
+    <div class="tab" data-tab="money">Money Tracking</div>
+  </div>
+
+  <section id="itin"></section>
+  <section id="money" class="hidden"></section>
+
+  <footer>Rio 2026 trip board. Saves straight to the shared database, so everyone sees the same list.</footer>
+</div>
+
+<script>
+/* ===== Config ===== */
+const SUPABASE_URL = 'https://ewiklljunudxcqbmeobq.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_qHTNl7gE4gprLpP2j-IPIA_odkoPUSt';
+const PEOPLE = [
+  { key: 'mike', name: 'Mike' },
+  { key: 'rj', name: 'RJ' },
+  { key: 'tyler', name: 'Tyler' },
+];
+const SLOTS = 25;
+const DEFAULT_RATE = 5.3;   // BRL per 1 USD, editable on the Subtotal tab
+const DAYS = [
+  '2026-11-27', '2026-11-28', '2026-11-29', '2026-11-30', '2026-12-01',
+  '2026-12-02', '2026-12-03', '2026-12-04', '2026-12-05',
+];
+const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+// Michael's plan, used to seed the list the first time a device runs in
+// local mode (the SQL setup file seeds the shared database the same way).
+const SEED = [
+  { day: '2026-11-27', time: '10:15 AM', plan: 'RJ and Mike land at GIG. Should time it perfectly to get to the house and check in right away.', added_by: 'Mike' },
+  { day: '2026-11-27', time: '1:00 PM', plan: 'Pull up to the crib, check-in opens at 1:00 PM.', added_by: 'Mike' },
+  { day: '2026-11-27', time: 'Night', plan: 'Tyler is getting tickets to rip the club and see Dam Swindle. Party with some sexy Brazilians, start day 1 off with a bang.', added_by: 'Mike' },
+  { day: '2026-11-28', time: 'Morning', plan: 'Keep the morning open after a late night. Take it easy, explore our area and the beach.', added_by: 'Mike' },
+  { day: '2026-11-28', time: 'Night', plan: 'Dinner at night?', added_by: 'Mike' },
+  { day: '2026-11-29', time: '', plan: 'Fluminense vs Cruzeiro at Maracana Stadium (date not confirmed yet). RJ is gonna cop tickets.', added_by: 'Mike' },
+  { day: '2026-11-30', time: 'Day', plan: 'Touch some grass: Tijuca National Park hiking, waterfalls, jungle, MANKEYS.', added_by: 'Mike' },
+  { day: '2026-11-30', time: 'Dinner', plan: 'Brazilian steakhouse reservation. Brasileiro?', added_by: 'Mike' },
+  { day: '2026-12-01', time: 'Morning', plan: 'Christ the Redeemer hike in the morning?', added_by: 'Mike' },
+  { day: '2026-12-01', time: 'Sunset', plan: 'Sugarloaf Mountain for sunset. There is a cable car that takes you up so we do not have to hike.', added_by: 'Mike' },
+  { day: '2026-12-02', time: 'All day', plan: 'Rip the beach all day and surf. Do whatever we want, nice to have a day with no plans.', added_by: 'Mike' },
+  { day: '2026-12-03', time: 'Day', plan: 'Mirante Dona Marta park, sick viewpoint.', added_by: 'Mike' },
+  { day: '2026-12-03', time: 'Sunset', plan: 'Booze cruise for sunset. Last day for Mike to get rinsed, his flight is super early Saturday.', added_by: 'Mike' },
+  { day: '2026-12-04', time: '', plan: 'Last full day. Figure something out for this day. Ideas?', added_by: 'Mike' },
+  { day: '2026-12-05', time: '7:00 AM', plan: 'Mike peaces ooooot early, flight leaves at 7:00 AM. Lowkey should just pull an all-nighter.', added_by: 'Mike' },
+];
+
+/* ===== Helpers ===== */
+function esc(s) {
+  return String(s === null || s === undefined ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function dayParts(iso) {
+  const m = String(iso).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  return { weekday: WEEKDAYS[d.getDay()], month: MONTHS[d.getMonth()], dom: d.getDate(), short: WEEKDAYS[d.getDay()].slice(0, 3) };
+}
+function dayLabel(iso) { const p = dayParts(iso); return `${p.weekday}, ${p.month} ${p.dom}`; }
+function dayShort(iso) { const p = dayParts(iso); return `${p.short} ${p.dom}`; }
+function money(n) {
+  const v = Number(n) || 0;
+  return (v < 0 ? '-' : '') + '$' + Math.abs(v).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+function todayIso() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function toUsd(amount, currency, rate) {
+  const a = Number(amount) || 0;
+  if (currency === 'BRL') return rate > 0 ? a / rate : 0;
+  return a;
+}
+
+/* ===== Storage: shared Supabase first, this-device fallback ===== */
+async function sb(path, opts) {
+  opts = opts || {};
+  const headers = {
+    'apikey': SUPABASE_ANON_KEY,
+    'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+    'Content-Type': 'application/json',
+    'Prefer': opts.prefer || 'return=representation',
+  };
+  const res = await fetch(SUPABASE_URL + path, {
+    method: opts.method || 'GET', headers,
+    body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
+  });
+  if (!res.ok) {
+    let detail = '';
+    try { detail = (await res.text()).slice(0, 300); } catch (e) { /* unreadable */ }
+    const err = new Error('Supabase ' + res.status + (detail ? ': ' + detail : ''));
+    err.status = res.status; err.detail = detail;
+    throw err;
+  }
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+
+const LS = {
+  get(k, fallback) { try { const v = localStorage.getItem(k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage blocked */ } },
+};
+
+const store = {
+  mode: 'checking',   // 'live' | 'local'
+  reason: '',
+  async probe() {
+    try {
+      await sb('/rest/v1/brazil_activities?select=id&limit=1');
+      await sb('/rest/v1/brazil_charges?select=id&limit=1');
+      await sb('/rest/v1/brazil_settings?select=key&limit=1');
+      this.mode = 'live';
+    } catch (e) {
+      this.mode = 'local';
+      this.reason = (e && (e.status === 404 || /PGRST205|does not exist|relation/i.test(e.detail || '')))
+        ? 'The shared tables are not set up yet (run SUPABASE_SETUP.sql in the Supabase SQL editor). Saving on this device only until then.'
+        : 'Could not reach the shared database. Saving on this device only until it is back.';
+      if (LS.get('brazil_activities', null) === null) {
+        LS.set('brazil_activities', SEED.map((s, i) => ({ id: 'seed-' + (i + 1), ...s, created_at: '2026-11-12T00:00:00Z' })));
+      }
+    }
+  },
+
+  /* activities */
+  async listActivities() {
+    if (this.mode === 'live') return await sb('/rest/v1/brazil_activities?select=*&order=day.asc,created_at.asc');
+    return LS.get('brazil_activities', []);
+  },
+  async addActivity(a) {
+    if (this.mode === 'live') return await sb('/rest/v1/brazil_activities', { method: 'POST', body: [a] });
+    const list = LS.get('brazil_activities', []);
+    list.push({ id: 'loc-' + Date.now(), created_at: new Date().toISOString(), ...a });
+    LS.set('brazil_activities', list);
+  },
+  async updateActivity(id, fields) {
+    if (this.mode === 'live') return await sb('/rest/v1/brazil_activities?id=eq.' + encodeURIComponent(id), { method: 'PATCH', body: fields });
+    const list = LS.get('brazil_activities', []);
+    const i = list.findIndex(x => String(x.id) === String(id));
+    if (i >= 0) { Object.assign(list[i], fields); LS.set('brazil_activities', list); }
+  },
+  async deleteActivity(id) {
+    if (this.mode === 'live') return await sb('/rest/v1/brazil_activities?id=eq.' + encodeURIComponent(id), { method: 'DELETE', prefer: 'return=minimal' });
+    LS.set('brazil_activities', LS.get('brazil_activities', []).filter(x => String(x.id) !== String(id)));
+  },
+
+  /* charges: one row per (person, slot) */
+  async listCharges() {
+    if (this.mode === 'live') return await sb('/rest/v1/brazil_charges?select=*&order=person.asc,slot.asc');
+    return LS.get('brazil_charges', []);
+  },
+  async upsertCharge(row) {
+    if (this.mode === 'live') {
+      return await sb('/rest/v1/brazil_charges?on_conflict=person,slot', {
+        method: 'POST', body: [row], prefer: 'resolution=merge-duplicates,return=representation',
+      });
+    }
+    const list = LS.get('brazil_charges', []).filter(x => !(x.person === row.person && x.slot === row.slot));
+    list.push({ ...row, updated_at: new Date().toISOString() });
+    LS.set('brazil_charges', list);
+  },
+  async deleteCharge(person, slot) {
+    if (this.mode === 'live') {
+      return await sb('/rest/v1/brazil_charges?person=eq.' + encodeURIComponent(person) + '&slot=eq.' + slot, { method: 'DELETE', prefer: 'return=minimal' });
+    }
+    LS.set('brazil_charges', LS.get('brazil_charges', []).filter(x => !(x.person === person && x.slot === slot)));
+  },
+
+  /* settings */
+  async getRate() {
+    if (this.mode === 'live') {
+      const rows = await sb('/rest/v1/brazil_settings?key=eq.brl_rate&select=value');
+      const v = rows && rows[0] ? Number(rows[0].value) : NaN;
+      return isNaN(v) || v <= 0 ? DEFAULT_RATE : v;
+    }
+    const v = Number(LS.get('brazil_rate', DEFAULT_RATE));
+    return isNaN(v) || v <= 0 ? DEFAULT_RATE : v;
+  },
+  async setRate(v) {
+    if (this.mode === 'live') {
+      return await sb('/rest/v1/brazil_settings?on_conflict=key', {
+        method: 'POST', body: [{ key: 'brl_rate', value: String(v) }], prefer: 'resolution=merge-duplicates,return=representation',
+      });
+    }
+    LS.set('brazil_rate', v);
+  },
+};
+
+/* ===== State ===== */
+let ACTIVITIES = [];
+let CHARGES = [];
+let RATE = DEFAULT_RATE;
+let activeTab = 'itin';
+let itinSub = 'add';      // 'add' | 'all' | <iso day> | 'notes'
+let moneySub = 'mike';    // person key | 'subtotal'
+let editingId = null;
+
+function showBanner() {
+  const el = document.getElementById('banner');
+  if (store.mode === 'live') { el.innerHTML = ''; return; }
+  el.innerHTML = `<div class="banner warn">${esc(store.reason)}</div>`;
+}
+
+async function loadAll() {
+  try {
+    const [acts, chg, rate] = await Promise.all([store.listActivities(), store.listCharges(), store.getRate()]);
+    ACTIVITIES = Array.isArray(acts) ? acts : [];
+    CHARGES = Array.isArray(chg) ? chg : [];
+    RATE = rate;
+  } catch (e) {
+    document.getElementById('banner').innerHTML = `<div class="banner err">Could not load: ${esc(e.message || e)}</div>`;
+  }
+}
+
+/* ===== Tabs ===== */
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  activeTab = t.dataset.tab;
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+  document.getElementById('itin').classList.toggle('hidden', activeTab !== 'itin');
+  document.getElementById('money').classList.toggle('hidden', activeTab !== 'money');
+  render();
+}));
+
+function render() {
+  if (activeTab === 'itin') renderItin(); else renderMoney();
+}
+
+/* ===== Itinerary ===== */
+function actsForDay(day) {
+  return ACTIVITIES.filter(a => a.day === day).sort((a, b) => String(a.created_at || '').localeCompare(String(b.created_at || '')));
+}
+function activityHtml(a, showDay) {
+  if (editingId !== null && String(editingId) === String(a.id)) {
+    return `<div class="act" data-id="${esc(a.id)}">
+      <div style="flex:1">
+        <div class="row2">
+          <div><label class="f">Day</label><select class="e-day">${DAYS.map(d => `<option value="${d}"${d === a.day ? ' selected' : ''}>${esc(dayLabel(d))}</option>`).join('')}</select></div>
+          <div><label class="f">Time (optional)</label><input class="e-time" value="${esc(a.time || '')}" placeholder="e.g. 1:00 PM, Sunset"></div>
+        </div>
+        <label class="f">Plan</label>
+        <textarea class="e-plan">${esc(a.plan)}</textarea>
+        <div class="editbar">
+          <button class="btn small" onclick="saveEdit('${esc(a.id)}')">Save</button>
+          <button class="btn small ghost" onclick="cancelEdit()">Cancel</button>
+        </div>
+      </div>
+    </div>`;
+  }
+  const t = (a.time || '').trim();
+  return `<div class="act" data-id="${esc(a.id)}">
+    <div class="time${t ? '' : ' none'}">${esc(t || 'TBD')}</div>
+    <div class="body">${esc(a.plan)}${showDay ? `<div class="by">${esc(dayLabel(a.day))}</div>` : ''}${a.added_by ? `<div class="by">added by ${esc(a.added_by)}</div>` : ''}</div>
+    <div class="btns">
+      <button class="ibtn" title="Edit" onclick="startEdit('${esc(a.id)}')">&#9998;</button>
+      <button class="ibtn del" title="Delete" onclick="delActivity('${esc(a.id)}')">&#10005;</button>
+    </div>
+  </div>`;
+}
+function dayCardHtml(day, showEmpty) {
+  const list = actsForDay(day);
+  const p = dayParts(day);
+  const body = list.length ? list.map(a => activityHtml(a, false)).join('')
+    : (showEmpty ? '<div class="empty">Nothing planned yet. Add something on the Add Activity tab.</div>' : '');
+  return `<div class="card">
+    <h2><span class="wk">${esc(p.weekday)}</span>, ${esc(p.month)} <span class="d">${p.dom}</span></h2>
+    <div class="meta">${list.length} ${list.length === 1 ? 'activity' : 'activities'}</div>
+    <div class="stripe"></div>
+    ${body}
+  </div>`;
+}
+function renderItin() {
+  const el = document.getElementById('itin');
+  const subs = [
+    `<div class="subtab add${itinSub === 'add' ? ' active' : ''}" data-sub="add">+ Add Activity</div>`,
+    `<div class="subtab${itinSub === 'all' ? ' active' : ''}" data-sub="all">Full Itinerary<span class="cnt">${ACTIVITIES.length}</span></div>`,
+    ...DAYS.map(d => {
+      const p = dayParts(d); const n = actsForDay(d).length;
+      return `<div class="subtab${itinSub === d ? ' active' : ''}" data-sub="${d}">${p.short} ${p.dom}${n ? `<span class="cnt">${n}</span>` : ''}<small>${esc(p.month.slice(0, 3))}</small></div>`;
+    }),
+    `<div class="subtab${itinSub === 'notes' ? ' active' : ''}" data-sub="notes">Notes</div>`,
+  ].join('');
+  let body = '';
+  if (itinSub === 'add') {
+    const def = DAYS.includes(todayIso()) ? todayIso() : DAYS[0];
+    body = `<div class="card">
+      <h2>Add an <span class="d">activity</span></h2>
+      <div class="meta">Pick the day, write the plan. It lands on that day's tab and in the full itinerary for everyone.</div>
+      <div class="stripe"></div>
+      <div class="row2">
+        <div><label class="f">Day</label>
+          <select id="addDay">${DAYS.map(d => `<option value="${d}"${d === def ? ' selected' : ''}>${esc(dayLabel(d))}</option>`).join('')}</select></div>
+        <div><label class="f">Time (optional)</label><input id="addTime" placeholder="e.g. 1:00 PM, Morning, Sunset"></div>
+      </div>
+      <label class="f">The plan</label>
+      <textarea id="addPlan" placeholder="What are we doing?"></textarea>
+      <label class="f">Added by</label>
+      <select id="addBy"><option value="">(no name)</option>${PEOPLE.map(p => `<option value="${esc(p.name)}">${esc(p.name)}</option>`).join('')}</select>
+      <button class="btn" id="addBtn" onclick="addActivity()">Add to itinerary</button>
+      <div class="toast" id="addToast"></div>
+    </div>`;
+  } else if (itinSub === 'all') {
+    body = DAYS.map(d => dayCardHtml(d, true)).join('');
+  } else if (itinSub === 'notes') {
+    body = notesHtml();
+  } else if (DAYS.includes(itinSub)) {
+    body = dayCardHtml(itinSub, true);
+  }
+  el.innerHTML = `<div class="subtabs">${subs}</div>${body}`;
+  el.querySelectorAll('.subtab').forEach(s => s.addEventListener('click', () => { itinSub = s.dataset.sub; editingId = null; renderItin(); }));
+  const by = document.getElementById('addBy');
+  if (by) { const last = LS.get('brazil_me', ''); if (last) by.value = last; }
+}
+function notesHtml() {
+  return `<div class="card notes">
+    <h2>Mike's <span class="d">notes</span></h2>
+    <div class="stripe"></div>
+    <h3>Going out</h3>
+    <ul><li>Lapa, the OG nightlife area, not as popular anymore</li><li>Leblon: Boteco Belmar</li><li>Gavea: Basque bar, Rufi bar, Aldeia bar</li></ul>
+    <h3>Best places to surf nearby</h3>
+    <ul><li>Arpoador beach</li><li>Praia do Diabo</li><li>Leblon</li></ul>
+    <h3>Booze cruises</h3>
+    <ul><li>Bem Brasil boat party</li><li>Civitatis Rio party boat</li><li>Both depart from Marina da Gloria</li></ul>
+    <h3>Steakhouses</h3>
+    <ul><li>Churrascaria Palace</li><li>Carretao Ipanema Grill</li><li>Brasileiro</li></ul>
+    <h3>Items to pack or get</h3>
+    <ul><li>Type N adapter for charging</li><li>Crossbody bag</li><li>Passport, visa</li><li>Bug spray</li><li>Portable charger</li><li>Prescriptions</li></ul>
+  </div>`;
+}
+
+window.addActivity = async function() {
+  const day = document.getElementById('addDay').value;
+  const time = document.getElementById('addTime').value.trim();
+  const plan = document.getElementById('addPlan').value.trim();
+  const by = document.getElementById('addBy').value;
+  const toast = document.getElementById('addToast');
+  if (!plan) { toast.textContent = 'Write the plan first.'; return; }
+  const btn = document.getElementById('addBtn'); btn.disabled = true;
+  try {
+    await store.addActivity({ day, time, plan, added_by: by || null });
+    LS.set('brazil_me', by);
+    await loadAll();
+    renderItin();
+    const t2 = document.getElementById('addToast');
+    if (t2) t2.textContent = 'Added to ' + dayLabel(day) + '.';
+    const sel = document.getElementById('addDay'); if (sel) sel.value = day;
+  } catch (e) {
+    toast.textContent = 'Could not save: ' + (e.message || e);
+    btn.disabled = false;
+  }
+};
+window.startEdit = function(id) { editingId = id; renderItin(); };
+window.cancelEdit = function() { editingId = null; renderItin(); };
+window.saveEdit = async function(id) {
+  const row = document.querySelector(`.act[data-id="${CSS.escape(String(id))}"]`);
+  if (!row) return;
+  const fields = {
+    day: row.querySelector('.e-day').value,
+    time: row.querySelector('.e-time').value.trim(),
+    plan: row.querySelector('.e-plan').value.trim(),
+  };
+  if (!fields.plan) return;
+  try {
+    await store.updateActivity(id, fields);
+    editingId = null;
+    await loadAll(); renderItin();
+  } catch (e) { alert('Could not save: ' + (e.message || e)); }
+};
+window.delActivity = async function(id) {
+  const a = ACTIVITIES.find(x => String(x.id) === String(id));
+  if (!a) return;
+  if (!confirm('Delete this activity for everyone?\n\n' + a.plan)) return;
+  try { await store.deleteActivity(id); await loadAll(); renderItin(); }
+  catch (e) { alert('Could not delete: ' + (e.message || e)); }
+};
+
+/* ===== Money ===== */
+function chargesFor(person) {
+  const map = new Map();
+  for (const c of CHARGES) if (c.person === person) map.set(Number(c.slot), c);
+  return map;
+}
+function personPaidUsd(person) {
+  let t = 0;
+  for (const c of CHARGES) if (c.person === person) t += toUsd(c.amount, c.currency, RATE);
+  return t;
+}
+function renderMoney() {
+  const el = document.getElementById('money');
+  const subs = [
+    ...PEOPLE.map(p => `<div class="subtab${moneySub === p.key ? ' active' : ''}" data-sub="${p.key}">${esc(p.name)}<small>${money(personPaidUsd(p.key))}</small></div>`),
+    `<div class="subtab${moneySub === 'subtotal' ? ' active' : ''}" data-sub="subtotal">Subtotal<small>who owes what</small></div>`,
+  ].join('');
+  let body = '';
+  if (moneySub === 'subtotal') body = subtotalHtml();
+  else body = personSheetHtml(moneySub);
+  el.innerHTML = `<div class="subtabs">${subs}</div>${body}`;
+  el.querySelectorAll('.subtab').forEach(s => s.addEventListener('click', () => { moneySub = s.dataset.sub; renderMoney(); }));
+  wireMoneyRows();
+}
+function personSheetHtml(key) {
+  const p = PEOPLE.find(x => x.key === key) || PEOPLE[0];
+  const map = chargesFor(p.key);
+  let rows = '';
+  for (let i = 1; i <= SLOTS; i++) {
+    const c = map.get(i);
+    const desc = c ? c.description || '' : '';
+    const amt = c && c.amount !== null && c.amount !== undefined ? c.amount : '';
+    const cur = c && c.currency === 'BRL' ? 'BRL' : 'USD';
+    rows += `<div class="mrow" data-person="${p.key}" data-slot="${i}">
+      <div class="n">${i}</div>
+      <input class="desc" placeholder="What was it" value="${esc(desc)}" autocomplete="off">
+      <input class="amt" type="number" step="0.01" min="0" inputmode="decimal" placeholder="0.00" value="${esc(amt)}">
+      <select class="cur"><option value="USD"${cur === 'USD' ? ' selected' : ''}>USD</option><option value="BRL"${cur === 'BRL' ? ' selected' : ''}>R$</option></select>
+      <span class="st${c ? ' saved' : ''}" title="${c ? 'Saved' : ''}">${c ? '&#10003;' : ''}</span>
+    </div>`;
+  }
+  return `<div class="card">
+    <h2><span class="who ${p.key}">${esc(p.name)}</span> paid for</h2>
+    <div class="meta">Type a description and the amount. Rows save on their own. Pick R$ for anything paid in reais; it converts at the rate on the Subtotal tab.</div>
+    <div class="stripe"></div>
+    <div class="money-head"><div></div><div>Description</div><div style="text-align:right">Amount</div><div>Currency</div><div></div></div>
+    ${rows}
+    <div class="ptotal"><span class="meta" style="margin:0">Total paid by ${esc(p.name)} (USD)</span><span class="big" id="ptotal-${p.key}">${money(personPaidUsd(p.key))}</span></div>
+  </div>`;
+}
+function subtotalHtml() {
+  const paid = PEOPLE.map(p => ({ ...p, paid: personPaidUsd(p.key) }));
+  const total = paid.reduce((s, p) => s + p.paid, 0);
+  const share = total / PEOPLE.length;
+  const bal = paid.map(p => ({ ...p, bal: p.paid - share }));
+  const cls = v => Math.abs(v) < 0.005 ? 'zero' : (v > 0 ? 'pos' : 'neg');
+  const rows = bal.map(p => `<tr>
+      <td><span class="who ${p.key}">${esc(p.name)}</span></td>
+      <td class="num">${money(p.paid)}</td>
+      <td class="num">${money(share)}</td>
+      <td class="num ${cls(p.bal)}">${p.bal > 0.005 ? '+' : ''}${money(p.bal)}</td>
+      <td>${Math.abs(p.bal) < 0.005 ? 'even' : (p.bal > 0 ? 'is owed' : 'owes')}</td>
+    </tr>`).join('');
+  // Settle up: whoever is below their share pays whoever is above it
+  const debtors = bal.filter(p => p.bal < -0.005).map(p => ({ ...p, left: -p.bal })).sort((a, b) => b.left - a.left);
+  const creditors = bal.filter(p => p.bal > 0.005).map(p => ({ ...p, left: p.bal })).sort((a, b) => b.left - a.left);
+  const lines = [];
+  let i = 0, j = 0;
+  while (i < debtors.length && j < creditors.length) {
+    const amt = Math.min(debtors[i].left, creditors[j].left);
+    if (amt > 0.005) lines.push(`<div class="line"><span class="who ${debtors[i].key}">${esc(debtors[i].name)}</span> pays <span class="who ${creditors[j].key}">${esc(creditors[j].name)}</span> <strong>${money(amt)}</strong></div>`);
+    debtors[i].left -= amt; creditors[j].left -= amt;
+    if (debtors[i].left < 0.005) i++;
+    if (creditors[j].left < 0.005) j++;
+  }
+  const nCharges = CHARGES.filter(c => (Number(c.amount) || 0) > 0).length;
+  return `<div class="card">
+    <h2>Who is <span class="d">up</span>, who <span class="wk">owes</span></h2>
+    <div class="meta">${nCharges} charges logged. Group total <strong>${money(total)}</strong>, split three ways is <strong>${money(share)}</strong> each.</div>
+    <div class="stripe"></div>
+    <table class="data">
+      <thead><tr><th>Person</th><th class="num">Paid</th><th class="num">Share</th><th class="num">Balance</th><th></th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="settle">
+      ${lines.length ? lines.join('') : '<div class="empty">Everyone is square.</div>'}
+    </div>
+  </div>
+  <div class="card">
+    <h2>Exchange <span class="d">rate</span></h2>
+    <div class="meta">Used to turn R$ charges into dollars everywhere on this tab.</div>
+    <div class="stripe"></div>
+    <div class="rate">
+      <div><label class="f">Reais per 1 USD</label><input id="rateInput" type="number" step="0.01" min="0.5" inputmode="decimal" value="${esc(RATE)}"></div>
+      <div><button class="btn" style="margin-top:0" onclick="saveRate()">Save rate</button></div>
+    </div>
+    <div class="hint">R$ 100 is ${money(toUsd(100, 'BRL', RATE))} at this rate. <span id="rateToast" class="pos"></span></div>
+  </div>`;
+}
+window.saveRate = async function() {
+  const v = Number(document.getElementById('rateInput').value);
+  const t = document.getElementById('rateToast');
+  if (!(v > 0)) { t.textContent = 'Enter a rate above zero.'; return; }
+  try { await store.setRate(v); RATE = v; renderMoney(); }
+  catch (e) { t.textContent = 'Could not save: ' + (e.message || e); }
+};
+
+const SAVE_DEBOUNCE_MS = 700;
+function wireMoneyRows() {
+  document.querySelectorAll('.mrow').forEach(row => {
+    const handler = () => {
+      clearTimeout(row._t);
+      setSt(row, 'saving');
+      row._t = setTimeout(() => saveMoneyRow(row), SAVE_DEBOUNCE_MS);
+    };
+    row.querySelector('.desc').addEventListener('input', handler);
+    row.querySelector('.amt').addEventListener('input', handler);
+    row.querySelector('.cur').addEventListener('change', handler);
+  });
+}
+function setSt(row, state) {
+  const el = row.querySelector('.st');
+  el.className = 'st' + (state ? ' ' + state : '');
+  el.innerHTML = state === 'saved' ? '&#10003;' : state === 'saving' ? '&#8230;' : state === 'err' ? '!' : '';
+  el.title = state === 'err' ? 'Not saved, check connection and type again' : '';
+}
+async function saveMoneyRow(row) {
+  const person = row.dataset.person, slot = Number(row.dataset.slot);
+  const desc = row.querySelector('.desc').value.trim();
+  const amtRaw = row.querySelector('.amt').value.trim();
+  const amount = amtRaw === '' ? null : Number(amtRaw);
+  const currency = row.querySelector('.cur').value === 'BRL' ? 'BRL' : 'USD';
+  try {
+    if (!desc && amount === null) {
+      await store.deleteCharge(person, slot);
+      setSt(row, '');
+    } else {
+      await store.upsertCharge({ person, slot, description: desc, amount: amount === null || isNaN(amount) ? null : amount, currency });
+      setSt(row, 'saved');
+    }
+    CHARGES = await store.listCharges();
+    const tot = document.getElementById('ptotal-' + person);
+    if (tot) tot.textContent = money(personPaidUsd(person));
+    // refresh the per-person subtab totals without rebuilding the inputs
+    document.querySelectorAll('#money .subtab[data-sub]').forEach(s => {
+      const p = PEOPLE.find(x => x.key === s.dataset.sub);
+      if (p) { const sm = s.querySelector('small'); if (sm) sm.textContent = money(personPaidUsd(p.key)); }
+    });
+  } catch (e) {
+    setSt(row, 'err');
+  }
+}
+
+/* ===== Boot + quiet refresh ===== */
+let refreshing = false;
+async function quietRefresh() {
+  if (refreshing || document.hidden || store.mode !== 'live') return;
+  // Never yank inputs out from under someone typing on the money sheet
+  if (activeTab === 'money' && moneySub !== 'subtotal' && document.activeElement && document.activeElement.closest('.mrow')) return;
+  if (editingId !== null) return;
+  refreshing = true;
+  try { await loadAll(); render(); } finally { refreshing = false; }
+}
+(async function boot() {
+  await store.probe();
+  showBanner();
+  await loadAll();
+  render();
+  setInterval(quietRefresh, 45000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) quietRefresh(); });
+})();
+</script>
+</body>
+</html>
