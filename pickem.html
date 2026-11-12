@@ -984,6 +984,15 @@
     .form-row.bt-clp > .units          { grid-column: 8; }
     .form-row.bt-clp > .idx            { grid-column: 9; }
     .form-row.bt-clp > .row-status     { grid-column: 10; }
+    /* Penalty dock rows: lock, type, timeframe, one wide reason box, units.
+       Sits after the away-first pins so the reason box keeps column 4. */
+    .form-row.bt-penalty {
+        grid-template-columns: 28px 80px 82px minmax(0, 1fr) 65px 56px 58px;
+    }
+    .form-row.bt-penalty > .home       { grid-column: 4; }
+    .form-row.bt-penalty > .units      { grid-column: 5; }
+    .form-row.bt-penalty > .idx        { grid-column: 6; }
+    .form-row.bt-penalty > .row-status { grid-column: 7; }
     .form-row > .clp-teams {
         display: flex; flex-wrap: wrap; gap: 0.45rem; min-width: 0;
         align-items: center;
@@ -1546,7 +1555,11 @@
     // baseBetType() collapses a 1H type to its twin so every bet_type switch
     // can branch on the base type.
     const FIRST_HALF_TYPES = { '1H Spread': 'Spread', '1H O/U': 'O/U', '1H TTO': 'TTO' };
-    const BET_TYPES_ALL = ['ML', 'Spread', 'O/U', 'TTO', '1H Spread', '1H O/U', '1H TTO', 'CLP'];
+    const BET_TYPES_ALL = ['ML', 'Spread', 'O/U', 'TTO', '1H Spread', '1H O/U', '1H TTO', 'CLP', 'Penalty'];
+    // Penalty dock: not a wager. Saves pre-graded as a loss of its units so
+    // the weekly and season totals carry the dock, and stays out of every
+    // record, lane, and team table (tallyPick and teamsInvolvedInPick gate it).
+    const PENALTY_TYPE = 'Penalty';
     function baseBetType(bt) { return FIRST_HALF_TYPES[bt] || bt; }
 
     // Canonical team name: exact FBS list match first (case-insensitive),
@@ -1586,6 +1599,9 @@
     // W/L/push, net, and gross unit tallies only move once the pick is
     // graded, so pending picks can never masquerade as pushes.
     function tallyPick(b, p) {
+        // Penalty docks live only in total_net (week and season standings);
+        // they are not picks and must not count as losses in any breakdown
+        if (p && p.bet_type === PENALTY_TYPE) return;
         b.picks++;
         const res = pickResult(p);
         if (res === null) return;
@@ -1607,7 +1623,9 @@
     function teamsInvolvedInPick(p) {
         if (!p || !p.pick) return { involved: [], withTeams: [], againstTeams: [] };
         let withTeams = [], againstTeams = [];
-        if (p.bet_type === 'CLP') {
+        if (p.bet_type === 'CLP' || p.bet_type === PENALTY_TYPE) {
+            // Penalty rows carry a free-text reason in the home slot, never a
+            // team, so they stay out of the team tables with the parlays.
             // RJ's rule: a parlay leg is not an accurate single-team pick,
             // so CLP legs stay OUT of the main team records entirely. This
             // is the single gate for it; the dedicated Can't Lose Parlays
@@ -1797,14 +1815,18 @@
     // mortal lock counts at its base units here, not the 1.5x payout.
     function weekSlateStats(person) {
         const picks = (person && person.picks) || [];
-        let bets = 0, open = 0, units = 0, unitsOpen = 0;
+        let bets = 0, open = 0, units = 0, unitsOpen = 0, docked = 0;
         for (const p of picks) {
-            bets++;
             const u = numOrZero(p.units);
+            // A penalty dock is not a bet and not units wagered; it shows
+            // as its own tile so the header never claims units that were
+            // never placed
+            if (p.bet_type === PENALTY_TYPE) { docked += u; continue; }
+            bets++;
             units += u;
             if (pickResult(p) === null) { open++; unitsOpen += u; }
         }
-        return { bets, open, units, unitsOpen };
+        return { bets, open, units, unitsOpen, docked };
     }
     // "3" or "2.5": one decimal only when it says something
     function fmtUnits(v) {
@@ -1818,6 +1840,7 @@
                     <div class="ws"><span class="ws-num">${s.open}</span><span class="ws-lbl">Ungraded</span></div>
                     <div class="ws"><span class="ws-num">${fmtUnits(s.units)}</span><span class="ws-lbl">Units</span></div>
                     <div class="ws"><span class="ws-num">${fmtUnits(s.unitsOpen)}</span><span class="ws-lbl">Units open</span></div>
+                    ${s.docked > 0 ? `<div class="ws ws-docked"><span class="ws-num net-bad">-${fmtUnits(s.docked)}</span><span class="ws-lbl">Docked</span></div>` : ''}
                 </div>`;
     }
     function renderPicks() {
@@ -1898,7 +1921,7 @@
                     const delBtn = Date.now() > lockMs ? ''
                         : `<button class="grade-btn del" title="Delete pick" onclick="deletePick('${p._id}', ${lockMs})">${TRASH_ICON}</button>`;
                     actions = `<td class="grade-cell"><span class="grade-btns">`
-                        + gradeBtnsFor(p)
+                        + (p.bet_type === PENALTY_TYPE ? '' : gradeBtnsFor(p))
                         + delBtn
                         + `</span></td>`;
                 } else if (liveSeason) {
@@ -2817,6 +2840,7 @@
                     <li>At least <strong>1 unit</strong> of that must be spread across <strong>Thursday and Friday games</strong>.</li>
                     <li>At least <strong>1 unit</strong> must be spread across <strong>Tuesday and Wednesday games</strong> once those games are on the schedule.</li>
                     <li><strong>Penalty:</strong> any shortfall under a minimum counts as <strong>negative units</strong> for that week. Wager 7 units against the 9-unit floor and the missing 2 units are scored as -2; skip the Thursday and Friday games entirely and that unwagered unit is scored as -1.</li>
+                    <li><strong>Entering a dock:</strong> on Enter Picks choose <strong>Penalty</strong> as the bet type, type an optional reason, and enter the units docked. It saves already graded at negative units, counts in that week's and the season's totals, and stays out of the records, bet-type tables, team pages, and breakdowns. Docked units show as their own tile in the Week Picks header.</li>
                 </ul>
             </div>
             <div class="panel-card rules-prose">
@@ -2914,6 +2938,7 @@
                     <option value="TTO">TTO</option>
                     <option value="1H TTO">1H TTO</option>
                     <option value="CLP" title="Can't Lose Parlay">CLP</option>
+                    <option value="Penalty" title="Penalty dock: units docked for missing a weekly minimum">Penalty</option>
                 </select>
                 <span class="sign-group timeframe" title="Timeframe tag, for tracking only">
                     <label title="Weekday game"><input type="radio" name="tf-${uid}" value="weekday" />${TF_WEEKDAY_ICON}</label>
@@ -3221,7 +3246,7 @@
         const base = baseBetType(bt);
         // Per-type class so the desktop grid can reflow the row per bet type
         // exactly like the phone flex layout does
-        row.classList.remove('bt-ml', 'bt-spread', 'bt-ou', 'bt-tto', 'bt-clp');
+        row.classList.remove('bt-ml', 'bt-spread', 'bt-ou', 'bt-tto', 'bt-clp', 'bt-penalty');
         row.classList.add(base === 'O/U' ? 'bt-ou' : 'bt-' + base.toLowerCase());
         const signGroup = row.querySelector('.sign-slot');
         const sideH = row.querySelector('.side-h');
@@ -3235,20 +3260,39 @@
         // selector and the home/away pair for N parlay team boxes;
         // everything else on the row stays where it always is
         const isClp = bt === 'CLP';
+        // Penalty dock: the home box becomes an optional reason, everything
+        // else but Units (and the timeframe tag) hides, and the lock is
+        // forced off since a dock can never be a mortal lock
+        const isPen = bt === PENALTY_TYPE;
         const clpSlot = row.querySelector('.clp-count-slot');
         const clpTeams = row.querySelector('.clp-teams');
         if (clpSlot) clpSlot.classList.toggle('hidden-field', !isClp);
         if (clpTeams) clpTeams.classList.toggle('hidden-field', !isClp);
-        row.querySelector('.home').classList.toggle('hidden-field', isClp);
-        row.querySelector('.away').classList.toggle('hidden-field', isClp);
+        const homeEl = row.querySelector('.home');
+        homeEl.classList.toggle('hidden-field', isClp);
+        row.querySelector('.away').classList.toggle('hidden-field', isClp || isPen);
+        if (!homeEl.dataset.teamTitle) homeEl.dataset.teamTitle = homeEl.title;
+        homeEl.placeholder = isPen ? 'reason (optional)' : 'home team';
+        homeEl.title = isPen ? 'Why the units are docked, e.g. no Tuesday/Wednesday wager' : homeEl.dataset.teamTitle;
+        const lockCb = row.querySelector('.lock-cell input.lock');
+        if (lockCb) {
+            if (isPen && lockCb.checked) { lockCb.checked = false; updateEnterLockSlots(); }
+            lockCb.disabled = isPen || !!row.dataset.locked;
+        }
         if (isClp) renderClpTeamBoxes(row);
         // H/A bubbles: shown for ML/Spread/TTO (single-side bets),
-        // hidden for O/U (both sides bet the total together — no "side"
-        // concept) and for CLP (the count selector takes that slot).
-        sideH.classList.toggle('hidden-field', base === 'O/U' || isClp);
-        sideA.classList.toggle('hidden-field', base === 'O/U' || isClp);
+        // hidden for O/U (both sides bet the total together, no "side"
+        // concept), for CLP (the count selector takes that slot), and for
+        // a penalty dock (no side to bet).
+        sideH.classList.toggle('hidden-field', base === 'O/U' || isClp || isPen);
+        sideA.classList.toggle('hidden-field', base === 'O/U' || isClp || isPen);
 
-        if (isClp) {
+        if (isPen) {
+            // Dock: no sign, no line, just units docked
+            showSign(0,false); showSign(1,false); showSign(2,false); showSign(3,false);
+            points.classList.add('hidden-field');
+            points.title = '';
+        } else if (isClp) {
             // Parlay: -/+ bubble plus the parlay line (e.g. -110, +260)
             showSign(0,true); showSign(1,true); showSign(2,false); showSign(3,false);
             points.classList.remove('hidden-field');
@@ -3446,6 +3490,8 @@
         const t = e.target;
         if (!t.classList || !t.classList.contains('team-input')) return;
         if (taSuppress) return;
+        // The home box on a penalty row holds a free-text reason, not a team
+        if (t.closest('.form-row.bt-penalty')) return;
         updateTeamDropdown(t);
     });
 
@@ -3533,6 +3579,15 @@
         const base = baseBetType(bt);
         const home = (row.querySelector('.home').value || '').trim();
         const away = (row.querySelector('.away').value || '').trim();
+        if (bt === PENALTY_TYPE) {
+            // "Penalty dock: no Tuesday/Wednesday wager". Saves on units
+            // alone; the reason is optional. A row with neither is empty
+            // (and clearing both on a saved dock deletes it, like teams).
+            const penUnits = Number(row.querySelector('.units').value);
+            if (!home && !(penUnits > 0)) return null;
+            return { pick: 'Penalty dock' + (home ? ': ' + home : ''), bet_type: bt,
+                     units: isNaN(penUnits) ? 0 : penUnits, mortal_lock: false };
+        }
         // CLP rows draw their teams from the parlay boxes, not home/away
         const clpNames = bt === 'CLP'
             ? [...row.querySelectorAll('.clp-teams input.clp-team')]
@@ -3592,6 +3647,9 @@
     function isRowComplete(row) {
         const built = buildPickFromRow(row);
         if (!built || !(built.units > 0)) return false;
+        // A penalty dock is complete on units alone; the timeframe tag is
+        // optional context (which minimum was missed)
+        if (built.bet_type === PENALTY_TYPE) return true;
         if (!row.querySelector('.timeframe input:checked')) return false;
         // 1H types share their twin's completeness rules
         const bt = baseBetType(built.bet_type);
@@ -3806,6 +3864,9 @@
                 // current Week box value.
                 const patchBody = { pick: built.pick, bet_type: built.bet_type,
                                     units: built.units, mortal_lock: built.mortal_lock };
+                // A dock is graded the moment it is saved: a loss of its
+                // units, re-stated on every edit so the net tracks the units
+                if (built.bet_type === PENALTY_TYPE) { patchBody.outcome = 'L'; patchBody.net = -built.units; }
                 if (FIELDS_COLUMN_OK) {
                     patchBody.fields = captureRowFields(row);
                     stampRowTimes(row, patchBody.fields, false);
@@ -3822,6 +3883,7 @@
                 const postBody = { season: RAW.season, week: week, person: rowPerson(row),
                                    pick: built.pick, bet_type: built.bet_type,
                                    units: built.units, mortal_lock: built.mortal_lock };
+                if (built.bet_type === PENALTY_TYPE) { postBody.outcome = 'L'; postBody.net = -built.units; }
                 if (FIELDS_COLUMN_OK) {
                     postBody.fields = captureRowFields(row);
                     stampRowTimes(row, postBody.fields, true);
@@ -3909,6 +3971,11 @@
         // normal path; this fallback only runs for rows without fields.)
         const bt = baseBetType(betType);
         const s = (pick || '').trim().replace(/\s*\(1H\)$/i, '');
+        if (bt === PENALTY_TYPE) {
+            // "Penalty dock: reason" back into the reason box
+            const m = s.match(/^Penalty dock(?::\s*(.*))?$/i);
+            return { home: m ? (m[1] || '') : s };
+        }
         if (bt === 'CLP') {
             // "A / B / C Parlay -110" back into teams + sign + odds
             const m = s.match(/^(.+?)\s+Parlay(?:\s+([+-])(\d+(?:\.\d+)?))?$/i);
