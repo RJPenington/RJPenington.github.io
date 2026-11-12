@@ -169,6 +169,20 @@
   .card h2 .wk { color: var(--yellow); }
   .card h2 .d { color: var(--neon); }
   .card .meta { color: var(--dim); font-size: 0.8rem; margin-bottom: 10px; }
+  .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .card-head > div { min-width: 0; }
+  .plus {
+    flex: 0 0 auto; width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+    border: 2px solid var(--glow-blue); background: linear-gradient(180deg, var(--forest-hi), var(--forest));
+    color: var(--ink); font-size: 1.5rem; line-height: 1; display: inline-flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 12px var(--glow-blue-soft);
+  }
+  .plus:hover { background: linear-gradient(180deg, #1a6a3e, var(--forest-hi)); }
+  .plus.open { transform: rotate(45deg); }
+  .quick { margin: 4px 0 12px; padding: 12px 12px 14px; border-radius: 10px; background: rgba(0, 0, 0, 0.3); border: 1px dashed var(--glow-blue); }
+  .quick .f { margin-top: 6px; }
+  .quick .bar { display: flex; gap: 8px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+  .quick .bar .btn { margin-top: 0; }
   .stripe { height: 3px; border-radius: 2px; margin: 0 0 12px; background: linear-gradient(90deg, var(--green), var(--yellow) 50%, var(--blue)); opacity: 0.9; }
 
   /* Activities */
@@ -605,6 +619,7 @@ let activeTab = 'itin';
 let itinSub = 'add';      // 'add' | 'all' | <iso day> | 'notes'
 let moneySub = 'mike';    // person key | 'subtotal'
 let editingId = null;
+let quickAddDay = null;   // iso day whose inline add form is open
 
 function showBanner() {
   const el = document.getElementById('banner');
@@ -676,10 +691,30 @@ function dayCardHtml(day, showEmpty) {
   const p = dayParts(day);
   const body = list.length ? list.map(a => activityHtml(a, false)).join('')
     : (showEmpty ? '<div class="empty">Nothing planned yet. Add something on the Add Activity tab.</div>' : '');
+  const open = quickAddDay === day;
+  const quick = open ? `<div class="quick" data-day="${day}">
+      <div class="row2">
+        <div><label class="f">Time (optional)</label><input class="q-time" placeholder="e.g. 1:00 PM, Sunset"></div>
+        <div><label class="f">Added by</label><select class="q-by"><option value="">(no name)</option>${PEOPLE.map(x => `<option value="${esc(x.name)}">${esc(x.name)}</option>`).join('')}</select></div>
+      </div>
+      <label class="f">The plan for ${esc(dayLabel(day))}</label>
+      <textarea class="q-plan" placeholder="What are we doing?"></textarea>
+      <div class="bar">
+        <button class="btn" onclick="quickAdd('${day}')">Add to ${esc(dayShort(day))}</button>
+        <button class="btn ghost" onclick="toggleQuickAdd('${day}')">Cancel</button>
+        <span class="toast q-toast" style="margin:0"></span>
+      </div>
+    </div>` : '';
   return `<div class="card">
-    <h2><span class="wk">${esc(p.weekday)}</span>, ${esc(p.month)} <span class="d">${p.dom}</span></h2>
-    <div class="meta">${list.length} ${list.length === 1 ? 'activity' : 'activities'}</div>
+    <div class="card-head">
+      <div>
+        <h2><span class="wk">${esc(p.weekday)}</span>, ${esc(p.month)} <span class="d">${p.dom}</span></h2>
+        <div class="meta">${list.length} ${list.length === 1 ? 'activity' : 'activities'}</div>
+      </div>
+      <button class="plus${open ? ' open' : ''}" title="Add an activity to ${esc(dayLabel(day))}" aria-label="Add activity" onclick="toggleQuickAdd('${day}')">+</button>
+    </div>
     <div class="stripe"></div>
+    ${quick}
     ${body}
   </div>`;
 }
@@ -721,7 +756,7 @@ function renderItin() {
     body = dayCardHtml(itinSub, true);
   }
   el.innerHTML = `<div class="subtabs">${subs}</div>${body}`;
-  el.querySelectorAll('.subtab').forEach(s => s.addEventListener('click', () => { itinSub = s.dataset.sub; editingId = null; renderItin(); }));
+  el.querySelectorAll('.subtab').forEach(s => s.addEventListener('click', () => { itinSub = s.dataset.sub; editingId = null; quickAddDay = null; renderItin(); }));
   const by = document.getElementById('addBy');
   if (by) { const last = LS.get('brazil_me', ''); if (last) by.value = last; }
 }
@@ -761,6 +796,37 @@ window.addActivity = async function() {
   } catch (e) {
     toast.textContent = 'Could not save: ' + (e.message || e);
     btn.disabled = false;
+  }
+};
+window.toggleQuickAdd = function(day) {
+  quickAddDay = quickAddDay === day ? null : day;
+  renderItin();
+  const box = document.querySelector(`.quick[data-day="${day}"]`);
+  if (box) {
+    const by = box.querySelector('.q-by'); const last = LS.get('brazil_me', ''); if (by && last) by.value = last;
+    const ta = box.querySelector('.q-plan'); if (ta) ta.focus();
+  }
+};
+// Inline add from a day card: same shared row as the Add Activity tab, so
+// it shows up on that day, in the Full Itinerary, and for everyone
+window.quickAdd = async function(day) {
+  const box = document.querySelector(`.quick[data-day="${day}"]`);
+  if (!box) return;
+  const plan = box.querySelector('.q-plan').value.trim();
+  const time = box.querySelector('.q-time').value.trim();
+  const by = box.querySelector('.q-by').value;
+  const toast = box.querySelector('.q-toast');
+  if (!plan) { toast.textContent = 'Write the plan first.'; return; }
+  box.querySelectorAll('button').forEach(b => { b.disabled = true; });
+  try {
+    await store.addActivity({ day, time, plan, added_by: by || null });
+    LS.set('brazil_me', by);
+    quickAddDay = null;
+    await loadAll();
+    renderItin();
+  } catch (e) {
+    toast.textContent = 'Could not save: ' + (e.message || e);
+    box.querySelectorAll('button').forEach(b => { b.disabled = false; });
   }
 };
 window.startEdit = function(id) { editingId = id; renderItin(); };
@@ -1089,7 +1155,7 @@ async function quietRefresh() {
   // Never yank inputs out from under someone typing on the money sheet
   if (activeTab === 'money' && moneySub !== 'subtotal' && document.activeElement && document.activeElement.closest('.mrow')) return;
   if (activeTab === 'pack' && document.activeElement && document.activeElement.closest('.prow')) return;
-  if (editingId !== null) return;
+  if (editingId !== null || quickAddDay !== null) return;
   refreshing = true;
   try { await loadAll(); render(); } finally { refreshing = false; }
 }
