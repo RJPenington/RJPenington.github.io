@@ -134,6 +134,7 @@
     flex: 0 0 auto; padding: 7px 13px; border-radius: 8px; cursor: pointer; font-size: 0.82rem; font-weight: 600;
     background: var(--card); color: var(--dim); border: 1px solid var(--line); white-space: nowrap;
   }
+  .subtab { text-align: center; }
   .subtab small { display: block; font-weight: 400; font-size: 0.68rem; color: var(--dim); }
   .subtab.active {
     color: var(--ink); border-color: var(--glow-blue); background: linear-gradient(180deg, var(--forest-hi), var(--forest));
@@ -206,8 +207,24 @@
   .toast { margin-top: 10px; color: var(--neon); font-size: 0.9rem; min-height: 1.2em; }
 
   /* Money */
-  .money-head { display: grid; grid-template-columns: 34px 1fr 120px 86px 28px; gap: 8px; padding: 0 2px 6px; color: var(--dim); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }
-  .mrow { display: grid; grid-template-columns: 34px 1fr 120px 86px 28px; gap: 8px; align-items: center; margin: 6px 0; }
+  .money-head { display: grid; grid-template-columns: 34px 1fr 108px 108px 28px; gap: 8px; padding: 0 2px 6px; color: var(--dim); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  .mrow { display: grid; grid-template-columns: 34px 1fr 108px 108px 28px; gap: 8px; align-items: center; margin: 6px 0; }
+  .mrow input.amt.derived { color: var(--dim); border-style: dashed; }
+  .mrow input.amt::placeholder { color: #3f5a49; }
+  /* No spinner arrows on any number box */
+  input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+  input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .ptotal .pair { text-align: right; }
+  .ptotal .pair .big { display: block; line-height: 1; }
+  .ptotal .pair .brl { display: block; color: var(--neon); font-size: 0.95rem; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .tscroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .tscroll table.data th, .tscroll table.data td { white-space: nowrap; }
+  .sub2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 4px 0 10px; }
+  .sub2 .box { background: rgba(0, 0, 0, 0.3); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .sub2 .lbl { color: var(--dim); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  .sub2 .val { font-family: 'Bebas Neue', Impact, sans-serif; font-size: 1.8rem; letter-spacing: 0.04em; line-height: 1.1; }
+  .sub2 .val.usd { color: var(--yellow); } .sub2 .val.brl { color: var(--neon); }
+  .sub2 .each { color: var(--dim); font-size: 0.78rem; }
   .mrow .n { color: var(--dim); font-size: 0.8rem; text-align: right; }
   .mrow input, .mrow select { padding: 8px 10px; }
   .mrow input.amt { text-align: right; font-variant-numeric: tabular-nums; }
@@ -254,7 +271,8 @@
     .dancer .figure { width: 66px; height: 90px; margin-left: -33px; top: 18px; }
     .row2 { grid-template-columns: 1fr; }
     .money-head { display: none; }
-    .mrow { grid-template-columns: 26px 1fr 92px 70px 22px; gap: 5px; }
+    .mrow { grid-template-columns: 22px 1fr 84px 84px 18px; gap: 4px; }
+    .mrow .n { font-size: 0.7rem; }
     .mrow input, .mrow select { padding: 8px 6px; font-size: 0.9rem; }
     .prow { grid-template-columns: 26px 28px 1fr 22px; gap: 5px; }
     .act .time { min-width: 54px; font-size: 0.66rem; }
@@ -395,6 +413,21 @@ function dayShort(iso) { const p = dayParts(iso); return `${p.short} ${p.dom}`; 
 function money(n) {
   const v = Number(n) || 0;
   return (v < 0 ? '-' : '') + '$' + Math.abs(v).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+function reais(n) {
+  const v = Number(n) || 0;
+  return (v < 0 ? '-' : '') + 'R$ ' + Math.abs(v).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+function fromUsd(usd, currency, rate) {
+  const a = Number(usd) || 0;
+  return currency === 'BRL' ? a * rate : a;
+}
+// Cash-register entry: digits fill in from the right, so typing 1 2 5 0
+// reads 0.01, 0.12, 1.25, 12.50. Returns the display string ('' when empty).
+function centsDisplay(raw) {
+  const digits = String(raw || '').replace(/\D/g, '').replace(/^0+/, '');
+  if (!digits) return '';
+  return (Number(digits) / 100).toFixed(2);
 }
 function todayIso() {
   const d = new Date();
@@ -769,23 +802,28 @@ function personSheetHtml(key) {
   for (let i = 1; i <= SLOTS; i++) {
     const c = map.get(i);
     const desc = c ? c.description || '' : '';
-    const amt = c && c.amount !== null && c.amount !== undefined ? c.amount : '';
-    const cur = c && c.currency === 'BRL' ? 'BRL' : 'USD';
-    rows += `<div class="mrow" data-person="${p.key}" data-slot="${i}">
+    const has = c && c.amount !== null && c.amount !== undefined && c.amount !== '';
+    const src = c && c.currency === 'BRL' ? 'BRL' : 'USD';
+    const usd = has ? toUsd(c.amount, src, RATE) : null;
+    const brlV = has ? (src === 'BRL' ? Number(c.amount) : usd * RATE) : null;
+    const usdV = has ? (src === 'USD' ? Number(c.amount) : usd) : null;
+    rows += `<div class="mrow" data-person="${p.key}" data-slot="${i}" data-src="${has ? src : ''}">
       <div class="n">${i}</div>
       <input class="desc" placeholder="What was it" value="${esc(desc)}" autocomplete="off">
-      <input class="amt" type="number" step="0.01" min="0" inputmode="decimal" placeholder="0.00" value="${esc(amt)}">
-      <select class="cur"><option value="USD"${cur === 'USD' ? ' selected' : ''}>USD</option><option value="BRL"${cur === 'BRL' ? ' selected' : ''}>R$</option></select>
+      <input class="amt brl${has && src === 'USD' ? ' derived' : ''}" type="text" inputmode="numeric" autocomplete="off" placeholder="R$ 0.00" value="${brlV === null ? '' : brlV.toFixed(2)}" aria-label="Amount in reais">
+      <input class="amt usd${has && src === 'BRL' ? ' derived' : ''}" type="text" inputmode="numeric" autocomplete="off" placeholder="$ 0.00" value="${usdV === null ? '' : usdV.toFixed(2)}" aria-label="Amount in dollars">
       <span class="st${c ? ' saved' : ''}" title="${c ? 'Saved' : ''}">${c ? '&#10003;' : ''}</span>
     </div>`;
   }
+  const paid = personPaidUsd(p.key);
   return `<div class="card">
     <h2><span class="who ${p.key}">${esc(p.name)}</span> paid for</h2>
-    <div class="meta">Type a description and the amount. Rows save on their own. Pick R$ for anything paid in reais; it converts at the rate on the Subtotal tab.</div>
+    <div class="meta">Type a description, then the amount in either box. Digits fill in from the right (type 1 2 5 0 for 12.50) and the other currency fills itself at the rate on the Subtotal tab. Rows save on their own.</div>
     <div class="stripe"></div>
-    <div class="money-head"><div></div><div>Description</div><div style="text-align:right">Amount</div><div>Currency</div><div></div></div>
+    <div class="money-head"><div></div><div>Description</div><div style="text-align:right">R$</div><div style="text-align:right">USD</div><div></div></div>
     ${rows}
-    <div class="ptotal"><span class="meta" style="margin:0">Total paid by ${esc(p.name)} (USD)</span><span class="big" id="ptotal-${p.key}">${money(personPaidUsd(p.key))}</span></div>
+    <div class="ptotal"><span class="meta" style="margin:0">Total paid by ${esc(p.name)}</span>
+      <span class="pair"><span class="big" id="ptotal-${p.key}">${money(paid)}</span><span class="brl" id="ptotalbrl-${p.key}">${reais(paid * RATE)}</span></span></div>
   </div>`;
 }
 function subtotalHtml() {
@@ -794,11 +832,13 @@ function subtotalHtml() {
   const share = total / PEOPLE.length;
   const bal = paid.map(p => ({ ...p, bal: p.paid - share }));
   const cls = v => Math.abs(v) < 0.005 ? 'zero' : (v > 0 ? 'pos' : 'neg');
+  const sgn = v => (v > 0.005 ? '+' : '');
   const rows = bal.map(p => `<tr>
       <td><span class="who ${p.key}">${esc(p.name)}</span></td>
       <td class="num">${money(p.paid)}</td>
-      <td class="num">${money(share)}</td>
-      <td class="num ${cls(p.bal)}">${p.bal > 0.005 ? '+' : ''}${money(p.bal)}</td>
+      <td class="num">${reais(p.paid * RATE)}</td>
+      <td class="num ${cls(p.bal)}">${sgn(p.bal)}${money(p.bal)}</td>
+      <td class="num ${cls(p.bal)}">${sgn(p.bal)}${reais(p.bal * RATE)}</td>
       <td>${Math.abs(p.bal) < 0.005 ? 'even' : (p.bal > 0 ? 'is owed' : 'owes')}</td>
     </tr>`).join('');
   // Settle up: whoever is below their share pays whoever is above it
@@ -808,7 +848,7 @@ function subtotalHtml() {
   let i = 0, j = 0;
   while (i < debtors.length && j < creditors.length) {
     const amt = Math.min(debtors[i].left, creditors[j].left);
-    if (amt > 0.005) lines.push(`<div class="line"><span class="who ${debtors[i].key}">${esc(debtors[i].name)}</span> pays <span class="who ${creditors[j].key}">${esc(creditors[j].name)}</span> <strong>${money(amt)}</strong></div>`);
+    if (amt > 0.005) lines.push(`<div class="line"><span class="who ${debtors[i].key}">${esc(debtors[i].name)}</span> pays <span class="who ${creditors[j].key}">${esc(creditors[j].name)}</span> <strong>${money(amt)}</strong> <span class="zero">(${reais(amt * RATE)})</span></div>`);
     debtors[i].left -= amt; creditors[j].left -= amt;
     if (debtors[i].left < 0.005) i++;
     if (creditors[j].left < 0.005) j++;
@@ -816,25 +856,29 @@ function subtotalHtml() {
   const nCharges = CHARGES.filter(c => (Number(c.amount) || 0) > 0).length;
   return `<div class="card">
     <h2>Who is <span class="d">up</span>, who <span class="wk">owes</span></h2>
-    <div class="meta">${nCharges} charges logged. Group total <strong>${money(total)}</strong>, split three ways is <strong>${money(share)}</strong> each.</div>
+    <div class="meta">${nCharges} charges logged, converted at R$ ${esc(RATE)} per dollar.</div>
     <div class="stripe"></div>
-    <table class="data">
-      <thead><tr><th>Person</th><th class="num">Paid</th><th class="num">Share</th><th class="num">Balance</th><th></th></tr></thead>
+    <div class="sub2">
+      <div class="box"><div class="lbl">Group total, USD</div><div class="val usd">${money(total)}</div><div class="each">${money(share)} each</div></div>
+      <div class="box"><div class="lbl">Group total, R$</div><div class="val brl">${reais(total * RATE)}</div><div class="each">${reais(share * RATE)} each</div></div>
+    </div>
+    <div class="tscroll"><table class="data">
+      <thead><tr><th>Person</th><th class="num">Paid $</th><th class="num">Paid R$</th><th class="num">Balance $</th><th class="num">Balance R$</th><th></th></tr></thead>
       <tbody>${rows}</tbody>
-    </table>
+    </table></div>
     <div class="settle">
       ${lines.length ? lines.join('') : '<div class="empty">Everyone is square.</div>'}
     </div>
   </div>
   <div class="card">
     <h2>Exchange <span class="d">rate</span></h2>
-    <div class="meta">Used to turn R$ charges into dollars everywhere on this tab.</div>
+    <div class="meta">Reais per 1 US dollar. Every R$ figure on the money tabs uses this number.</div>
     <div class="stripe"></div>
     <div class="rate">
       <div><label class="f">Reais per 1 USD</label><input id="rateInput" type="number" step="0.01" min="0.5" inputmode="decimal" value="${esc(RATE)}"></div>
       <div><button class="btn" style="margin-top:0" onclick="saveRate()">Save rate</button></div>
     </div>
-    <div class="hint">R$ 100 is ${money(toUsd(100, 'BRL', RATE))} at this rate. <span id="rateToast" class="pos"></span></div>
+    <div class="hint">R$ 100 is ${money(toUsd(100, 'BRL', RATE))} and $100 is ${reais(100 * RATE)} at this rate. <span id="rateToast" class="pos"></span></div>
   </div>`;
 }
 window.saveRate = async function() {
@@ -848,14 +892,31 @@ window.saveRate = async function() {
 const SAVE_DEBOUNCE_MS = 700;
 function wireMoneyRows() {
   document.querySelectorAll('.mrow').forEach(row => {
-    const handler = () => {
+    const brl = row.querySelector('.amt.brl');
+    const usd = row.querySelector('.amt.usd');
+    const schedule = () => {
       clearTimeout(row._t);
       setSt(row, 'saving');
       row._t = setTimeout(() => saveMoneyRow(row), SAVE_DEBOUNCE_MS);
     };
-    row.querySelector('.desc').addEventListener('input', handler);
-    row.querySelector('.amt').addEventListener('input', handler);
-    row.querySelector('.cur').addEventListener('change', handler);
+    row.querySelector('.desc').addEventListener('input', schedule);
+    const onAmount = (srcEl, otherEl, srcCur) => () => {
+      // Cash-register formatting on the box being typed in
+      srcEl.value = centsDisplay(srcEl.value);
+      srcEl.classList.remove('derived');
+      if (srcEl.value === '') {
+        otherEl.value = ''; otherEl.classList.remove('derived'); row.dataset.src = '';
+      } else {
+        const v = Number(srcEl.value);
+        const other = srcCur === 'BRL' ? (RATE > 0 ? v / RATE : 0) : v * RATE;
+        otherEl.value = other.toFixed(2);
+        otherEl.classList.add('derived');
+        row.dataset.src = srcCur;
+      }
+      schedule();
+    };
+    brl.addEventListener('input', onAmount(brl, usd, 'BRL'));
+    usd.addEventListener('input', onAmount(usd, brl, 'USD'));
   });
 }
 function setSt(row, state) {
@@ -867,20 +928,24 @@ function setSt(row, state) {
 async function saveMoneyRow(row) {
   const person = row.dataset.person, slot = Number(row.dataset.slot);
   const desc = row.querySelector('.desc').value.trim();
-  const amtRaw = row.querySelector('.amt').value.trim();
-  const amount = amtRaw === '' ? null : Number(amtRaw);
-  const currency = row.querySelector('.cur').value === 'BRL' ? 'BRL' : 'USD';
+  const src = row.dataset.src === 'BRL' ? 'BRL' : (row.dataset.src === 'USD' ? 'USD' : '');
+  const srcEl = src === 'BRL' ? row.querySelector('.amt.brl') : row.querySelector('.amt.usd');
+  const raw = src ? srcEl.value.trim() : '';
+  const amount = raw === '' ? null : Number(raw);
   try {
     if (!desc && amount === null) {
       await store.deleteCharge(person, slot);
       setSt(row, '');
     } else {
-      await store.upsertCharge({ person, slot, description: desc, amount: amount === null || isNaN(amount) ? null : amount, currency });
+      await store.upsertCharge({ person, slot, description: desc, amount: amount === null || isNaN(amount) ? null : amount, currency: src || 'USD' });
       setSt(row, 'saved');
     }
     CHARGES = await store.listCharges();
+    const paid = personPaidUsd(person);
     const tot = document.getElementById('ptotal-' + person);
-    if (tot) tot.textContent = money(personPaidUsd(person));
+    if (tot) tot.textContent = money(paid);
+    const totB = document.getElementById('ptotalbrl-' + person);
+    if (totB) totB.textContent = reais(paid * RATE);
     // refresh the per-person subtab totals without rebuilding the inputs
     document.querySelectorAll('#money .subtab[data-sub]').forEach(s => {
       const p = PEOPLE.find(x => x.key === s.dataset.sub);
