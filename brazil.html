@@ -145,15 +145,15 @@
     flex: 0 0 auto; padding: 7px 13px; border-radius: 8px; cursor: pointer; font-size: 0.82rem; font-weight: 600;
     background: var(--card); color: var(--dim); border: 1px solid var(--line); white-space: nowrap;
   }
-  .subtab { text-align: center; }
+  .subtab { text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 46px; }
   .subtab small { display: block; font-weight: 400; font-size: 0.68rem; color: var(--dim); }
   .subtab.active {
     color: var(--ink); border-color: var(--glow-blue); background: linear-gradient(180deg, var(--forest-hi), var(--forest));
     box-shadow: 0 0 12px var(--glow-blue-soft), 0 0 26px rgba(37, 99, 235, 0.25);
   }
   .subtab.active small { color: var(--neon); }
-  .subtab.add { border-color: var(--neon); color: var(--neon); }
-  .subtab.add.active { color: var(--ink); }
+  .subtab.add { border-color: var(--red); color: var(--red); }
+  .subtab.add.active { color: var(--red); border-color: var(--red); box-shadow: 0 0 12px rgba(255, 93, 93, 0.55), 0 0 26px rgba(255, 93, 93, 0.25); text-shadow: 0 0 8px rgba(255, 93, 93, 0.5); }
   .subtab .cnt { display: inline-block; min-width: 18px; margin-left: 6px; padding: 0 5px; border-radius: 9px; font-size: 0.68rem; background: var(--line); color: var(--ink); text-align: center; }
 
   /* ===== Cards ===== */
@@ -305,12 +305,19 @@
   .hidden { display: none !important; }
 
   @media (max-width: 640px) {
-    header { gap: 10px; padding: 18px 10px 16px; }
-    .tabs { margin: 16px 0 22px; }
-    .flag-box { width: 200px; height: 140px; }
-    .guy-box { width: 140px; height: 140px; }
-    .dancer { width: 70px; height: 140px; }
-    .dancer .figure { width: 66px; height: 90px; margin-left: -33px; top: 18px; }
+    header { gap: 8px 6px; padding: 10px 6px 14px; flex-wrap: wrap; align-items: center; }
+    .tabs { margin: 14px 0 20px; flex-wrap: nowrap; gap: 6px; }
+    .tab { flex: 1 1 0; padding: 9px 4px; font-size: 1rem; letter-spacing: 0.06em; white-space: nowrap; text-align: center; }
+    /* Flag spans the full width on top; the portrait, title and dancer
+       share the row under it */
+    .flag-box { order: 1; flex: 0 0 100%; width: 100%; height: auto; aspect-ratio: 280 / 196; max-height: 240px; margin-bottom: 4px; transform-origin: center; }
+    .guy-box { order: 2; width: 96px; height: 110px; }
+    .title-box { order: 3; flex: 1 1 0; min-width: 0; }
+    .title-box h1 { font-size: clamp(2rem, 11vw, 2.8rem); }
+    .title-box .sub { font-size: 0.85rem; letter-spacing: 0.12em; }
+    .title-box .dates { font-size: 0.72rem; }
+    .dancer { order: 4; width: 62px; height: 110px; }
+    .dancer .figure { width: 56px; height: 76px; margin-left: -28px; top: 14px; }
     .row2 { grid-template-columns: 1fr; }
     .money-head { grid-template-columns: 20px 1fr 78px 78px 16px 28px; gap: 4px; font-size: 0.62rem; }
     .mrow { grid-template-columns: 20px 1fr 78px 78px 16px 28px; gap: 4px; }
