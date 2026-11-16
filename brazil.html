@@ -658,7 +658,7 @@ let PACKING = [];
 let RATE = DEFAULT_RATE;
 let packSub = 'group';   // 'group' | person key
 let activeTab = 'itin';
-let itinSub = 'add';      // 'add' | 'all' | <iso day> | 'notes'
+let itinSub = 'all';      // 'all' | 'add' | <iso day> | 'notes'
 let moneySub = 'mike';    // person key | 'subtotal'
 let editingId = null;
 let quickAddDay = null;   // iso day whose inline add form is open
@@ -763,8 +763,8 @@ function dayCardHtml(day, showEmpty) {
 function renderItin() {
   const el = document.getElementById('itin');
   const subs = [
-    `<div class="subtab add${itinSub === 'add' ? ' active' : ''}" data-sub="add">+ Add Activity</div>`,
     `<div class="subtab${itinSub === 'all' ? ' active' : ''}" data-sub="all">Full Itinerary<span class="cnt">${ACTIVITIES.length}</span></div>`,
+    `<div class="subtab add${itinSub === 'add' ? ' active' : ''}" data-sub="add">+ Add Activity</div>`,
     ...DAYS.map(d => {
       const p = dayParts(d); const n = actsForDay(d).length;
       return `<div class="subtab${itinSub === d ? ' active' : ''}" data-sub="${d}">${p.short} ${p.dom}${n ? `<span class="cnt">${n}</span>` : ''}<small>${esc(p.month.slice(0, 3))}</small></div>`;
