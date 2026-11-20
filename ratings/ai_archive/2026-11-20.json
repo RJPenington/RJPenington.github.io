@@ -1,0 +1,10 @@
+{
+  "as_of": "2026-11-20",
+  "generated_at": "2026-11-20T05:20:47",
+  "model": "claude-sonnet-5",
+  "summary": "No slate data showing today's actual games, so this briefing leans on what's live in the model right now: the last-14-day window is completely dead across all four ratings and every category — zero volume everywhere. That's unusual this late in a 137-date sample and it means the only usable signal is season-long baseline plus the 30-day strong-play window, which is thin but clean. All four ratings went 3-1 over the last 30 days on strong plays (|delta| >= 1.0), and the SP category streak is 3W across every rating while bullpen_fatigue is bleeding a 5L streak across R1-R4. If today's board has any strong-play SP picks, lean in; fade anything leaning on bullpen_fatigue as the standalone driver, it's ice cold with zero bounce signal in 14 days to offset the skid.\n\nCategory agreement is the play structure to use on today's card: trends+sp is the best combo on the board at 58% (370-268, n=638), with trends+runs right behind at 57.3% (404-301, n=705) and trends+bullpen at 56.8% (391-297, n=688). If a game today has trends and sp both landing on the same side, that's the highest-confidence stack available, materially ahead of runs+sp at 55.2%. Cross-reference team trends too — MIL (69%, n=74), TBR (70%, n=63), BOS (70%, n=56) and LAD (70%, n=56, strong plays 80% at +27.0u) are the teams the model has hammered all year, and LAD's strong-play number is the single best figure in the whole blob. Any LAD game tonight where sp and trends both check the box is about as strong a signal as this model produces. On the flip side, fade NYY as a model side — 49% straight up and strong plays actually losing money at -4.0u, the only team on the list bleeding units when \"liked.\" Given the flat recent window, treat every rating (R1-R4) as functionally equal today; nothing separates them except R3's slightly better season strong-play return (+92.0u, 58%), so if R3 and another rating split on a game, lean R3.",
+  "usage": {
+    "input_tokens": 2455,
+    "output_tokens": 675
+  }
+}
